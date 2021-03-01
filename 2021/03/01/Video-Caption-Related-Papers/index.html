@@ -17,7 +17,7 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <title>Linux常用打包、压缩、解压指令 - Kamino&#39;s Blog</title>
+  <title>Video Captioning相关论文调查 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -174,7 +174,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Linux常用打包、压缩、解压指令">
+            <span class="h2" id="subtitle" title="Video Captioning相关论文调查">
               
             </span>
 
@@ -184,8 +184,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-02-23 23:00" pubdate>
-        2021年2月23日 晚上
+      <time datetime="2021-03-01 13:16" pubdate>
+        2021年3月1日 下午
       </time>
     </span>
   
@@ -196,7 +196,7 @@
     
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      555 字
+      1.6k 字
     </span>
   
 
@@ -206,7 +206,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      6
+      19
        分钟
     </span>
   
@@ -244,22 +244,152 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Linux常用打包、压缩、解压指令</h1>
+            <h1 style="display: none">Video Captioning相关论文调查</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年2月23日 晚上
+                  本文最后更新于：2021年3月1日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux常用打包、压缩、解压指令"><a href="#Linux常用打包、压缩、解压指令" class="headerlink" title="Linux常用打包、压缩、解压指令"></a>Linux常用打包、压缩、解压指令</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>打包</strong>是指将一大堆文件或目录打包为一个文件。</p>
-<p><strong>压缩</strong>是将一个大文件通过某些压缩算法压缩为一个更小的文件。</p>
-<p>Linux很多压缩程序只能针对一个文件进行压缩，要压缩很多文件时，要<strong>先打包再压缩。</strong></p>
-<h2 id="tar命令"><a href="#tar命令" class="headerlink" title="tar命令"></a>tar命令</h2><p>tar命令可以为Linux的文件和目录创建档案。tar可以进行打包、压缩、解压三种操作。</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># tar命令基本格式</span></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 必须包含-f 以及解包或者打包或者查看的指令</span></span><br>tar [指令] [参数（若需要）] <br><span class="hljs-meta">   #</span><span class="bash"><span class="hljs-comment"># 下面这两行命令是等价的</span></span><br>tar -c -v -f new.tar /home/tmp/file/<br>tar -cvf new.tar /home/tmp/file/<br></code></pre></td></tr></table></figure>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## 常用参数</span></span> <br>-c  # create 建立新文件（打包或者压缩）<br>-x  # extract 解压，解包<br>-t  # list 列出备份文件内容<br>-r  # renew 添加文件到已经压缩的文件<br>-f  # file 作为最后一个参数 ，表示新建的文件名，可以随意指定后缀名，但最好用指定的名字。Linux不根据后缀名识别文件类型。<br><br>-v  # verbose 打包或者解压时显示详细信息<br>-C  # 大写的C 解压、解包到某特定目录<br><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## 压缩参数</span></span><br>-z  # 用gzip命令处理  .tar.gz<br>-j  # 用bzip2命令处理  .tar.bz2<br><br>tar -cvf new.tar ./file/  # 将./file/目录下所有文件打包为new.tar，并保存在当前目录，过程显示详细信息<br>tar -cvf new.tar ./file1/ ./file2/  # 可以一次包含多个目录<br>tar -tvf new.tar  # 不解包的情况下查看包内文件信息<br>tar -xvf new.tar -C ./file3/ # 解压new,tar到另一个目录<br>tar -rvf new.tar ./file4/  # 向new.tar中加入新的目录<br></code></pre></td></tr></table></figure>
-<h2 id="其他压缩命令"><a href="#其他压缩命令" class="headerlink" title="其他压缩命令"></a>其他压缩命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## zip .zip</span></span><br>zip new.zip ./file  # 压缩<br>-m  # 压缩后删除源文件<br>-q  # 安静模式<br>-o  # 将文件最新变动时间更新<br>-r  # 压缩目录<br>-S  # 大写S 包含系统和隐藏文件<br>-[1-9]  # 压缩效率 1表示最快<br>unzip new.zip  # 解压<br>-n  # 解压时不覆盖原有文件<br>-o  # 解压后覆盖原有文件<br>-q  # 安静模式<br>-P [密码]  # 解压密码<br>-d [目录]  # 选择解压目录<br></code></pre></td></tr></table></figure>
+              <h1 id="Video-Captioning相关论文调查"><a href="#Video-Captioning相关论文调查" class="headerlink" title="Video Captioning相关论文调查"></a>Video Captioning相关论文调查</h1><p>不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。</p>
+<p>对目前基于深度学习的Video Captioning(视频描述)的论文进行调查，统计现在得到的最好结果。</p>
+<h2 id="S2VT"><a href="#S2VT" class="headerlink" title="S2VT"></a>S2VT</h2><p><em>S. Venugopalan, M. Rohrbach, J. Donahue, R. J. Mooney, T. Darrell, and K. Saenko. Sequence to sequence - video to text. In ICCV, 2015</em></p>
+<p><strong>代码实现</strong>：</p>
+<ul>
+<li>官方caffe：<a target="_blank" rel="noopener" href="https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt">https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt</a></li>
+<li>复现pytorch：<a target="_blank" rel="noopener" href="https://github.com/xiadingZ/video-caption.pytorch">xiadingZ/video-caption.pytorch: pytorch implementation of video captioning (github.com)</a></li>
+<li>我的复现（pytorch）（暂未完成，最新可看readme）：<a target="_blank" rel="noopener" href="https://github.com/Kamino666/S2VT-video-caption">Kamino666/S2VT-video-caption: the recurrence of paper “Sequence to Sequence – Video to Text” (github.com)</a></li>
+</ul>
+<p><strong>论文简介</strong>：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112335.png" srcset="/img/loading.gif" alt="image-20210301112335348" style="zoom:50%;" /></p>
+<p>大概结构如图，对于视频图像，使用预训练的CNN网络，对视频的每一帧进行特征的提取，每个视频会得到一个[len, feat_dim]的特征，其中每个视频的len不相同。视频的图像输入，可以是RGB图像也可以是光流图。论文中RGB用VGG16，光流图用AlexNet提取feature。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112655.png" srcset="/img/loading.gif" alt="红色为图像层，绿色为文字层"></p>
+<p>训练时，之前由CNN提取的不定长的feature，在编码阶段逐步送进图像层，在图像输入结束后，给文字层提供<code>&lt;BOS&gt;</code>标志开始预测文字，预测到文字层输出<code>&lt;EOS&gt;</code>结束。这样实现了输入和输出都能不定长度。文字层的输入由图像层的输出结合文字输入得到（这里的结合是在hid之前那个维度上的拼接）。</p>
+<p>由于要保持格式不变，在图像输入结束之前，给文字层提供的文字数据是<code>&lt;pad&gt;</code>，在图像输入之后，给图像层提供的图像数据是<code>&lt;pad&gt;</code>。<code>&lt;pad&gt;</code>在实现中简单填充为0.</p>
+<p>注意实现的时候这两层的输入大小不同，得分成两个CNN。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 29.8%，M-VAD数据集 METEOR 6.7%，MPII-MD数据集 METEOR 7.1%。</p>
+<h2 id="Multimodal-Memory-Modelling"><a href="#Multimodal-Memory-Modelling" class="headerlink" title="Multimodal Memory Modelling"></a>Multimodal Memory Modelling</h2><p><em>Wang J, Wang W, Huang Y, et al. M3: Multimodal memory modelling for video captioning. CVPR, IEEE 2018</em></p>
+<p><strong>论文简介</strong>：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301113305.png" srcset="/img/loading.gif" alt="image-20210301090931120" style="zoom: 67%;" /></p>
+<p>对记忆建模（Memory Modeling），主要处理长视频，比较复杂，没深入研究。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 33.3%，MSR-VTT数据集 METEOR 26.58%。</p>
+<h2 id="MRS（Multi-Representation-Switching）"><a href="#MRS（Multi-Representation-Switching）" class="headerlink" title="MRS（Multi-Representation Switching）"></a>MRS（Multi-Representation Switching）</h2><p><em>Heechan Kim, Soowon Lee. A Video Captioning Method Based on Multi-Representation Switching for Sustainable Computing. Sustainability 2021</em></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301115135.png" srcset="/img/loading.gif" alt="image-20210301115135156"></p>
+<p>比较新的一篇论文，在Sustainability上发的，所以注重可持续计算，网络不大。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120022.png" srcset="/img/loading.gif" alt="image-20210301120022647"></p>
+<p>作者的思想就是认为在Video Caption生成的句子中，有的单词是要依靠画面来生成的，而有的单词只是语法需要，比如图中“a baby is dancing on a chair”，只有标了颜色的那几个单词是要从画面中提取的，其余都是语法上的要求。</p>
+<p>所以作者分别弄了行为特征模块和文字特征模块，通过一个switcher来学习使用哪个模块。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 34.0%。</p>
+<h2 id="RecNet"><a href="#RecNet" class="headerlink" title="RecNet"></a>RecNet</h2><p><em>Bairui Wang, Lin Ma, Wei Zhang, Wei Liu. Reconstruction Network for Video Captioning. arxiv 1803.11438</em></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/79810631">Reconstruction Network for Video Captioning - 知乎 (zhihu.com)</a></p>
+<p><strong>论文简介</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120712.png" srcset="/img/loading.gif" alt="image-20210301120712622"></p>
+<p>腾讯AI实验室的一篇论文，在解码器后面新增了一个Reconstructor。Encoder和Decoder不是重点，可以用注意力机制的模型，也可以用S2VT。</p>
+<p>重点是Reconstructor，Reconstructor是搭建在解码器之上的，旨在根据解码器的隐状态h，恢复原视频信息。但是考虑到原视频帧的多样性以及较高的维度，这种方案较为棘手。因此重建为由编码器得到的视觉特征也是个很好的选择。Reconstructor可以加强视觉序列和caption之间的关系，有望于改善video caption的质量。在具体实现上，Reconstructor是一个LSTM，文中提供两种结构的Reconstructor，分别是侧重于原始视频的全局结构和局部结构。</p>
+<p>（这一部分还待更仔细看一看论文，预计会专门写一篇感想。）</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 34.1%。</p>
+<h2 id="OA-BTG"><a href="#OA-BTG" class="headerlink" title="OA-BTG"></a>OA-BTG</h2><p><em>Junchao Zhang and Yuxin Peng, Object-aware Aggregation with Bidirectional Temporal Graph for Video Captioning, 2019 CVPR.</em> </p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73935242">使用双向时空图做视频描述(video captioning) - 知乎 (zhihu.com)</a></p>
+<p><strong>论文简介</strong>：</p>
+<p>太复杂了，不适用于我目前的研究。但是这篇论文是目前找到的效果最好的。(但是有点作弊的是它输入数据还手动分隔了对象的区域)</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 36.2%， MSR-VTT数据集 METEOR 28.2%。</p>
+<h2 id="multirate-GRU"><a href="#multirate-GRU" class="headerlink" title="multirate GRU"></a>multirate GRU</h2><p><em>Linchao Zhu, Zhongwen Xu, Yi Yang. Bidirectional Multirate Reconstruction for Temporal Modeling in Videos. 2016, arxiv 1611.09053v1.</em></p>
+<p><strong>论文简介</strong>：</p>
+<p>不是专门弄video caption的，论文中提到的很少。论文主要是用到了多速率GRU的技术，即让GRU有的一个一个读，有的隔一个读，有的隔两个，这样形成不同的速率。没有仔细读这篇论文，仅记录下效果。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 33.4%</p>
+<h2 id="GRU-EVE"><a href="#GRU-EVE" class="headerlink" title="GRU-EVE"></a>GRU-EVE</h2><p><em>Nayyer Aafaq, Naveed Akhtar et. Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning. 2019, arxiv 1902.10322v2.</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chr1991/article/details/103806439">论文介绍—Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning_信道者-CSDN博客 </a></p>
+<p><strong>论文简介</strong>：</p>
+<p>挺复杂的，结合了2D-CNN 3D-CNN和对象识别三个数据来源，还用了一个什么傅里叶变换.第一就是用层级的短时傅里叶变换对卷积网络提取出来的特征进行浓缩，把时间信息融入其中；第二就是用物体检测模型从视频中提取高层的语义信息，丰富编码器提炼的视频表示。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301130437.png" srcset="/img/loading.gif" alt="image-20210301090845060"></p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 35.0%， MSR-VTT数据集 METEOR 28.4%</p>
+<h2 id="SibNet"><a href="#SibNet" class="headerlink" title="SibNet"></a>SibNet</h2><p><em>Sheng Liu, Zhou Ren, Junsong Yuan. SibNet: Sibling Convolutional Encoder for Video Captioning. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3240508.3240667">https://doi.org/10.1145/3240508.3240667</a></em></p>
+<p><strong>论文简介</strong>：</p>
+<p>重点在于encode videos。编码分成两部分，一部分用自编码器，另一部分用一种视觉语义互相组合embed的编码（目前理解也是非监督学习）。然后这两个编码再解码生成caption，这三部分都有train_loss。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301131059.png" srcset="/img/loading.gif" alt="image-20210301090803104"></p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 34.8%， MSR-VTT数据集 METEOR 27.5%</p>
+<h1 id="MSVD数据集汇总"><a href="#MSVD数据集汇总" class="headerlink" title="MSVD数据集汇总"></a>MSVD数据集汇总</h1><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>模型名字</th>
+<th>METEOR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>S2VT</td>
+<td>29.8</td>
+</tr>
+<tr>
+<td>M^3^-C3D+InceptionV3</td>
+<td>33.3</td>
+</tr>
+<tr>
+<td>MRS-ew+</td>
+<td>34.0</td>
+</tr>
+<tr>
+<td>RecNet~local~(SA-LSTM)</td>
+<td>34.1</td>
+</tr>
+<tr>
+<td>OA-BTG</td>
+<td>36.2</td>
+</tr>
+<tr>
+<td>mGRU</td>
+<td>34.5</td>
+</tr>
+<tr>
+<td>GRU-EVE</td>
+<td>35.0</td>
+</tr>
+<tr>
+<td>SibNet</td>
+<td>34.8</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h1 id="MSR-VTT数据集汇总"><a href="#MSR-VTT数据集汇总" class="headerlink" title="MSR-VTT数据集汇总"></a>MSR-VTT数据集汇总</h1><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>模型名字</th>
+<th>METEOR</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>M^3^</td>
+<td>26.6</td>
+</tr>
+<tr>
+<td>OA-BTG</td>
+<td>28.2</td>
+</tr>
+<tr>
+<td>RecNet</td>
+<td>26.6</td>
+</tr>
+<tr>
+<td>GRU-EVE</td>
+<td>28.4</td>
+</tr>
+</tbody>
+</table>
+</div>
 
             </div>
             <hr>
@@ -270,7 +400,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
                     
                   </div>
                 
@@ -283,18 +415,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/02/25/test/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">test</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/02/23/LaTex%20Math%E8%AF%AD%E6%B3%95/">
-                        <span class="hidden-mobile">LaTex Math语法</span>
+                      <a href="/2021/02/25/test/">
+                        <span class="hidden-mobile">test</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
