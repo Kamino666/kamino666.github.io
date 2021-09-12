@@ -1,0 +1,613 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="2020年的一个平淡的一天，累了一天的你打开手机，发现满朋友圈的“手把手教你写Python爬虫爬取小姐姐照片”广告，有没有疑惑过爬虫究竟是个啥？怎么突然就这么火了？接下来这个系列的文章将会告诉你，爬虫是如何从一只小虫，变成布满整个互联网、在所有人面前张牙舞爪的可怕巨虫的。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="2020年的一个平淡的一天，累了一天的你打开手机，发现满朋友圈的“手把手教你写Python爬虫爬取小姐姐照片”广告，有没有疑惑过爬虫究竟是个啥？怎么突然就这么火了？接下来这个系列的文章将会告诉你，爬虫是如何从一只小虫，变成布满整个互联网、在所有人面前张牙舞爪的可怕巨虫的。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="网络爬虫进化史，原来你是这样的爬虫：第1期">
+<meta property="og:url" content="http://blog.kamino.link/2021/02/21/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB%E8%BF%9B%E5%8C%96%E5%8F%B2%EF%BC%8C%E5%8E%9F%E6%9D%A5%E4%BD%A0%E6%98%AF%E8%BF%99%E6%A0%B7%E7%9A%84%E7%88%AC%E8%99%AB%EF%BC%9A%E7%AC%AC1%E6%9C%9F/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="2020年的一个平淡的一天，累了一天的你打开手机，发现满朋友圈的“手把手教你写Python爬虫爬取小姐姐照片”广告，有没有疑惑过爬虫究竟是个啥？怎么突然就这么火了？接下来这个系列的文章将会告诉你，爬虫是如何从一只小虫，变成布满整个互联网、在所有人面前张牙舞爪的可怕巨虫的。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post6.png">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post2.jpg">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post10.jpg">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post7.png">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post1.jpg">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post5.png">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post3.png">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post9.jpg">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post8.jpg">
+<meta property="og:image" content="http://blog.kamino.link/img/1/post4.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/671DEC2D0C09137F94251F74940B395C.jpg">
+<meta property="article:published_time" content="2021-02-21T02:01:01.000Z">
+<meta property="article:modified_time" content="2021-03-08T11:50:29.986Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="爬虫">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="http://blog.kamino.link/img/1/post6.png">
+  
+  <title>网络爬虫进化史，原来你是这样的爬虫：第1期 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/1/index.webp') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="网络爬虫进化史，原来你是这样的爬虫：第1期">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-02-21 10:01" pubdate>
+        2021年2月21日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">网络爬虫进化史，原来你是这样的爬虫：第1期</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年3月8日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="网络爬虫进化史，原来你是这样的爬虫：第1期"><a href="#网络爬虫进化史，原来你是这样的爬虫：第1期" class="headerlink" title="网络爬虫进化史，原来你是这样的爬虫：第1期"></a>网络爬虫进化史，原来你是这样的爬虫：第1期</h1><h2 id="导语"><a href="#导语" class="headerlink" title="导语"></a>导语</h2><p><img src="/img/1/post6.png" srcset="/img/loading.gif" lazyload alt="image-20200930210703651"></p>
+<p>2020年的一个平淡的一天，累了一天的你打开手机，发现满朋友圈的“手把手教你写Python爬虫爬取小姐姐照片”广告，有没有疑惑过爬虫究竟是个啥？怎么突然就这么火了？</p>
+<p>接下来这个系列的文章将会告诉你，爬虫是如何从一只小虫，变成布满整个互联网、在所有人面前张牙舞爪的可怕巨虫的。</p>
+<h2 id="出生之前"><a href="#出生之前" class="headerlink" title="出生之前"></a>出生之前</h2><p>我们的故事要从1989年的瑞士开始。在瑞士日内瓦西部与德国的边境处有一片荒野，在这片荒野里，一群智商高达250的精英们躲在这偷偷研究世界上最小的物质——这里建立着世界上最大的粒子物理学实验室：欧洲核子研究委员会（CERN）。八十年代，切尔诺贝利事故的阴影笼罩在整个欧洲上空，然而年轻的<strong>蒂姆·伯纳斯·李（Timothy John Berners-Lee）</strong>和其他CERN的科学家们却没有停下脚步，仍然在继续研究。</p>
+<p>话说这蒂姆并不是很有名气的资深教授，CERN的研究也轮不上他，但是Boss也不能让他闲着，看蒂姆的爸妈都参与了第一台商业电脑<strong>曼切斯特1型（Manchester Mark I）</strong>的发明，就让他开发个计算机软件，目的能让CERN与其他国家的研究室更加便捷地交流。</p>
+<p>蒂姆虽然拿到了牛津的荣誉物理学士学位，本该研究物理，但是他还是接了这项工作。令人出乎意料的是，不久之后，在1989年的夏夜，世界上第一个Web服务器和客户端出现在了CERN的一台NeXT计算机上。<strong>他将这项技术命名为World Wide Web，也就是www，或者叫做万维网，从此，互联网的青春开始了。</strong></p>
+<p><img src="/img/1/post2.jpg" srcset="/img/loading.gif" lazyload alt="万维网的诞生机器"></p>
+<p>等等，你不是要讲爬虫吗，怎么讲起万维网来了？</p>
+<p>别急，蒂姆发明万维网的同时，还带来了三项关键的技术，这三项技术为爬虫的诞生构建了温床，那就是<strong>URI、HTML和HTTP</strong>。</p>
+<p>先说最基础的http吧，这个大家应该不陌生，你打开浏览器访问任何网页的时候，看网址开头都是<code>http://</code>。爬虫说到底还是一堆0和1，它们靠着http在万维网中伸展拳脚。</p>
+<p>之后就是URI，用来精确定位互联网上的资源，简单说就是咱们说的网址，网址各部分的意思如图所示，通过一堆字符确定了服务器、端口、路径、内容和传送的方式，爬虫靠着他提供的“地址”敲响每个服务器的门。</p>
+<p><img src="/img/1/post10.jpg" srcset="/img/loading.gif" lazyload alt="URL"></p>
+<p>最后就是HTML，这是与爬虫联系最精密的一项技术。HTML是超文本标记语言，作家写文章的时候可能会给编辑留下一些非正文的消息，比如</p>
+<blockquote>
+<p>作家：</p>
+<p>……我家门口有两棵树，其中一棵是枣树，另一棵也是枣树。（注：这两棵树品种不同）……</p>
+<p>编辑：</p>
+<p>把括号里的文字放在书的最下方，并用小号字体标注是注释，正文中删去括号中的话。</p>
+</blockquote>
+<p>HTML就是作家写的原文，网页编写者通过<code>&lt;h&gt;&lt;/h&gt;</code>这样的标签对来标记文章的内容，然后咱们优秀的编辑——浏览器把这些标签解释出来，然后形成你现在正在看的这个网页。有了这些标签，你就能看见这些有<strong>粗体</strong> <em>斜体</em> <font size="5">大</font><font size="2">小<font color="#dd0000">颜色</font></font>不同的字了。这让人们能把他们宝贵的知识放到网上共享，也能让你天天在微信发各种各样的朋友圈，而这些有用的数据就是爬虫的<strong>最终目标。</strong></p>
+<p>值得一提的是，HTML有一种特殊的标签<code>&lt;a&gt;</code>，被这个标签标记的文本会被认为是一个<strong>超链接</strong>，超链接的发明，让阅览网页与阅读书籍产生的本质上的区别，这是一种<strong>“所见即所得”</strong>的体验，比如这篇推送的“阅读原文”，你只要动动手指点一下阅读原文就能跳转页面过去，而不是从书架上翻一本新的书。超链接就像虫洞一样，爬虫靠着这个完美的交通工具，在万维网上爬来爬去。</p>
+<h2 id="万维网需要爬虫"><a href="#万维网需要爬虫" class="headerlink" title="万维网需要爬虫"></a>万维网需要爬虫</h2><p>之前我们说到那蒂姆发明了万维网，在1991年这项技术被公之于众之后，它可是成了当时的“网红”，1993年只有130个网站，1996年就有十万个了，1993年Web服务器占比1.5%，1996年就已经有50%的服务器是Web服务器了。如此快的增长速度，也伴随着巨量的数据，而数据一多，要找到特定的数据就尤为困难。假如你想知道爬虫是啥，你可能打开电脑首先就百度去，可是当时的人没有搜索引擎，他们使用一种类似黄页的东西，要查询到爬虫是啥，他们可能会选择从厚厚的书中找到某生物研究机构的主页，然后在控制台敲上网址，然后访问（虽然结果还是无功而返）。</p>
+<p><img src="/img/1/post7.png" srcset="/img/loading.gif" lazyload alt="碟中谍1"></p>
+<p>其实在万维网发布之前就出现了第一个搜索引擎——<strong>Archie</strong>，不过它与百度谷歌相差甚远，它只是一个搜索匿名ftp下载服务器的脚本。ftp是文件传输协议，在万维网出现之前就已经流行起来，即使是当下也有很多文件是通过ftp协议下载的。Archie虽然叫做搜索引擎，但是搜索功能很蛋疼，用户搜索的每个字都必须要精确符合标题才可以搜索到结果，但即使功能如此简陋，但是在其巅峰时期，使用这个引擎的流量占据蒙特利尔总带宽的50%。</p>
+<p><img src="/img/1/post1.jpg" srcset="/img/loading.gif" lazyload alt="Archie"></p>
+<p>Archie体现了搜索引擎的需求，而开发者们选择了两种方式来开发搜索引擎：</p>
+<p><strong>马丁·科斯特（Martijn Koster）的尝试是ALIWEB</strong>，这是最早的万维网搜索引擎之一，于1993年12月发布，ALIWEB的数据来源是用户的主动提交，它允许网站站长上传他们网站的URL，并手动添加描述，之后用户就可以通过ALIWEB查询到对应的网站。然而，来提交网站的站长并没有马丁想象的那么多，有的可能不知道如何提交，有的可能懒得提交，有的可能根本就不知道这个网站，所以ALIWEB就这样慢慢的消失在了互联网的发展长河中。</p>
+<p><img src="/img/1/post5.png" srcset="/img/loading.gif" lazyload alt="ALIWEB在1997年的页面"></p>
+<p><strong>而另一波开发者选择了一个更聪明的数据获取方式，他们准备发明一个能够自动环游万维网的探索者，主动去探索万维网，获取网站的信息，再通过算法索引它们来建立搜索引擎，这样就不需要被动的等待站长们来提交网页了。</strong></p>
+<p>然而他们都没有想到，这是一个潘多拉宝盒，这个探索者转眼间就变成了依附于万维网上的爬虫。在三十年后的今天，这些爬虫密密麻麻地分布在网络上，互联网的每个角落都有爬虫的身影，即使是冰山底下的暗网也被特殊的爬虫涉足，据传言，<strong>互联网上50%的流量都是爬虫创造的</strong>，也许人们称这项技术为“爬虫”时就已经潜意识认为这项技术像爬虫一样，虽然无害甚至有益，但总是让人恐惧。</p>
+<p><img src="/img/1/post3.png" srcset="/img/loading.gif" lazyload alt="传统爬虫结构"></p>
+<p>工程师们最初设计的传统爬虫的结构由图中这几部分组成，这是一个很简单的架构，简单来说就是获取网页-&gt;提取网页的数据和连接-&gt;从新获取的连接中获取新网页。</p>
+<p>我们可以把爬虫想象为一位攻城掠地的常胜将军，他带着初始的补给去攻打一个个城池，每攻下一个城池就能获得新的补给，然后他就带着新的补给去攻打新的城池……直到他征服了全世界。</p>
+<p>然而，有的将军脑子不是那么灵光，他走到一个城池地下，在脑子里想半天才能回忆起来这个城池是否已经攻略，还有的将军的战略不太好，攻下一个城池的时间过于久，以至于他一辈子也征服不了世界。这些都是常胜将军的训练员——爬虫工程师们将要解决的问题。</p>
+<h2 id="初露锋芒"><a href="#初露锋芒" class="headerlink" title="初露锋芒"></a>初露锋芒</h2><p>虽然爬虫的需求是依附于搜索引擎的，但是世界上第一个爬虫程序并不是用于搜索引擎的。</p>
+<p>在万维网成为“网红”并展示其惊人的发展速度后，<strong>MIT的一位学生，马修·格雷（Matthew Gray），决定研究一下万维网的拓张速度，于是他在1993年写下了历史上第一个爬虫——<em>World Wide Web Wanderer</em>。</strong></p>
+<p>马修使用了当时热门的Perl语言来编写这个爬虫，爬虫会生成一个叫做Wandex的Web数据库，这个数据库里存储着爬取到的所有URL和服务器，只要稍加改进，这个数据库就能成为搜索引擎，比雅虎和谷歌早了好多年。然而马修只想着他的课题——研究万维网的拓张速度，并没有兴趣开发搜索引擎。</p>
+<p><img src="/img/1/post9.jpg" srcset="/img/loading.gif" lazyload alt="然而这位马修·格雷在2017年还是去了谷歌工作"></p>
+<p>马修的爬虫引起了许多人的关注，早期的代码也在互联网上广泛流传，然而还是学生的马修写出的代码出现了严重的bug，再加上许多人同时运行这个爬虫，导致相同的一个页面一天被访问上百次，在带宽不高的当时，这样的访问直接让几个服务器宕机了。隔壁ALIWEB的马丁立刻在万维网开发者的讨论区——www-talk中喷了一波爬虫，并且提议设立<strong>机器人排除标准（Robots Exclusion Standard）</strong>，又叫做robots.txt。这是历史最悠久并存在至今的反爬虫技术。</p>
+<p><img src="/img/1/post8.jpg" srcset="/img/loading.gif" lazyload alt="Robots.txt介绍"></p>
+<p><img src="/img/1/post4.png" srcset="/img/loading.gif" lazyload alt="百度的部分robots.txt，图中禁止了百度自家爬虫爬取自己"></p>
+<blockquote>
+<p>可怜的爬虫技术，自其一出生就遇见了死对头，爬虫与反爬虫从此开始了道高一尺魔高一丈的斗争。爬虫的合法性常常被人质疑，俗话说“爬虫写得好，牢饭吃得早”，由于反爬虫技术越来越强，反反爬虫技术也一直革新，而反反爬虫有被认为是非法盗取信息以及侵犯隐私的嫌疑，于是许多爬虫开发者都游走在灰色区域。在国外非常著名的案件有eBay VS. Bidder’s Edge案，在国内有百度起诉360搜索案，然而这都是后话……</p>
+</blockquote>
+<p>robots.txt是什么呢，其实并不是什么高级的技术，只是在网站的根目录下的一个普通txt文档而已。与其说它是网站的高大城墙，不如说它是酒店房间门口挂的“请勿打扰”，站长可以通过编辑robots.txt来指定爬虫能爬取哪些页面，或者指定哪些不道德的爬虫不允许来爬取这个网站，但是这些规则都不是强制性的，爬虫技术上完全可以无视这些规则。</p>
+<h2 id="接下来？"><a href="#接下来？" class="headerlink" title="接下来？"></a>接下来？</h2><p>1993年和1994年是爬虫发展最为迅速的两年，许多爬虫的开发都是同时进行的，几乎每个月都能有新的爬虫出现，一张大网已经为织好，接下来，就有请它们闪亮登场吧……</p>
+<div class="note note-info">
+            <p>这篇文章也发布在下面这个公众号数媒极客，公众号里面有其他很有趣的文章，可以扫码看一看~</p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/671DEC2D0C09137F94251F74940B395C.jpg" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+          </div>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E7%88%AC%E8%99%AB%E5%8E%86%E5%8F%B2%E7%B3%BB%E5%88%97/">爬虫历史系列</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%88%AC%E8%99%AB/">爬虫</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/02/21/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB%E8%BF%9B%E5%8C%96%E5%8F%B2%EF%BC%8C%E5%8E%9F%E6%9D%A5%E4%BD%A0%E6%98%AF%E8%BF%99%E6%A0%B7%E7%9A%84%E7%88%AC%E8%99%AB%EF%BC%9A%E7%AC%AC2%E6%9C%9F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">网络爬虫进化史，原来你是这样的爬虫：第2期</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

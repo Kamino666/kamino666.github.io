@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="ngrok是一个开源的反向代理，它可以创建一个隧道（tunnel），让互联网上的用户访问你的本地资源。可以用来Minecraft等游戏的局域网联机、本地网站通过外网访问等。若用在另外一台服务器，还可以作为防火墙。（假如你要用来给游戏局域网联机，你可以把ngrok看作它打通了你和别人的局域网）">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="ngrok是一个开源的反向代理，它可以创建一个隧道（tunnel），让互联网上的用户访问你的本地资源。可以用来Minecraft等游戏的局域网联机、本地网站通过外网访问等。若用在另外一台服务器，还可以作为防火墙。（假如你要用来给游戏局域网联机，你可以把ngrok看作它打通了你和别人的局域网）">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用ngrok搭建属于自己的内网穿透教程（附错误处理）">
+<meta property="og:url" content="http://blog.kamino.link/2021/03/04/ngrok-tutorial/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="ngrok是一个开源的反向代理，它可以创建一个隧道（tunnel），让互联网上的用户访问你的本地资源。可以用来Minecraft等游戏的局域网联机、本地网站通过外网访问等。若用在另外一台服务器，还可以作为防火墙。（假如你要用来给游戏局域网联机，你可以把ngrok看作它打通了你和别人的局域网）">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210304145345.png">
+<meta property="article:published_time" content="2021-03-04T06:49:04.000Z">
+<meta property="article:modified_time" content="2021-03-04T07:01:30.357Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="ngrok">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210304145345.png">
+  
+  <title>用ngrok搭建属于自己的内网穿透教程（附错误处理） - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20210304145345.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="用ngrok搭建属于自己的内网穿透教程（附错误处理）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-03-04 14:49" pubdate>
+        2021年3月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">用ngrok搭建属于自己的内网穿透教程（附错误处理）</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年3月4日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="用ngrok搭建属于自己的内网穿透教程（附错误处理）"><a href="#用ngrok搭建属于自己的内网穿透教程（附错误处理）" class="headerlink" title="用ngrok搭建属于自己的内网穿透教程（附错误处理）"></a>用ngrok搭建属于自己的内网穿透教程（附错误处理）</h1><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210304145345.png" srcset="/img/loading.gif" lazyload alt="ngrok示意图"></p>
+<p>ngrok是一个开源的反向代理，它可以创建一个隧道（tunnel），让互联网上的用户访问你的本地资源。</p>
+<p>可以用来<strong>Minecraft等游戏的局域网联机</strong>、<strong>本地网站通过外网访问</strong>等。若用在另外一台服务器，还可以作为<strong>防火墙</strong>。（假如你要用来给游戏局域网联机，你可以把ngrok看作它打通了你和别人的局域网）</p>
+<p>ngrok用go语言编写，需要<strong>go1.1+<strong>和</strong>Mercurial SCM</strong></p>
+<p>ngrok分为两部分，<strong>ngrok</strong>和<strong>ngrokd</strong>，ngrokd是服务端，也就是代理服务器，用来接收外网的信息，然后通过隧道传到客户端的网络中；ngrok是客户端，哪台主机的局域网要暴露，就在哪台主机上运行。</p>
+<p>GitHub：<a target="_blank" rel="noopener" href="https://github.com/inconshreveable/ngrok">inconshreveable/ngrok: Introspected tunnels to localhost (github.com)</a></p>
+<blockquote>
+<p><strong>正向代理与反向代理的区别：</strong></p>
+<p>正向代理：让服务器不知道他服务的对象是谁（用户请了代理），常见的应用就是VPN，假如大家想在大学校外访问校园内网，通常要使用学校提供的VPN，让校内的服务器给代理服务，然后代理再把收到的信息转给你。</p>
+<p>反向代理：让用户不知道谁在为他服务（服务器请了代理）。以前给10086打电话，它的客服有很多，你打进来的电话会随机转接到某个客服上，这个转接过程就是反向代理，用户知道的就是10086这个“代理”，而实际给你服务的客服是不知道的。</p>
+</blockquote>
+<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><ul>
+<li>一台云主机（Linux系统为例 测试用ubuntu 18系统）</li>
+<li>一个域名（可以不用备案）（可选）</li>
+</ul>
+<h2 id="环境配置"><a href="#环境配置" class="headerlink" title="环境配置"></a>环境配置</h2><h3 id="域名解析（可选）"><a href="#域名解析（可选）" class="headerlink" title="域名解析（可选）"></a>域名解析（可选）</h3><p>打开域名管理页面，添加*.ngrok.example.com和ngrok.example.com两条记录</p>
+<p>到时候你将通过 xxx.ngrok.example.com:端口 来访问代理服务器</p>
+<h3 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h3><figure class="highlight console"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs console">apt-get update  # 更新软件列表<br>apt-get upgrade  # 更新软件<br>apt install git  # 获取git<br><br>git --version  # 检查已安装git版本<br></code></pre></td></tr></table></figure>
+
+<h3 id="安装、配置go语言环境"><a href="#安装、配置go语言环境" class="headerlink" title="安装、配置go语言环境"></a>安装、配置go语言环境</h3><p>打开<a target="_blank" rel="noopener" href="https://studygolang.com/dl">go语言中文网</a>找到最新的go版本（这里以1.14为例），然后用wget下载</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs shell">wget https://studygolang.com/dl/golang/go1.14.linux-amd64.tar.gz<br><span class="hljs-meta">#</span><span class="bash"> 默认下载到当前目录，使用 -P path 参数可以指定下载路径</span><br>tar -zxvf go1.14.linux-amd64.tar.gz<br><span class="hljs-meta">#</span><span class="bash"> 默认解压到当前目录</span><br>mv go /usr/local<br><span class="hljs-meta">#</span><span class="bash"> 将go挪到另一个目录，方便管理</span><br><br>cd ~<br><span class="hljs-meta">#</span><span class="bash"> 到主目录</span><br>vi .bashrc<br><span class="hljs-meta">#</span><span class="bash"> 打开配置文件,在末尾添加如下</span><br>export GOROOT=/usr/local/go<br><span class="hljs-meta">#</span><span class="bash"> 这个目录是go的解压目录</span><br>export GOPATH=/home/gosrc/ngrok<br><span class="hljs-meta">#</span><span class="bash"> 这个目录是go的工作目录，即等下要编译ngrok的目录</span><br>export PATH=$GOROOT/bin:$PATH:$GOPATH/bin<br><span class="hljs-meta">#</span><span class="bash"> 设置bin目录</span><br>:wq<br><span class="hljs-meta">#</span><span class="bash"> 保存并退出</span><br>source .bashrc<br><span class="hljs-meta">#</span><span class="bash"> 生效</span><br><br>go version<br><span class="hljs-meta">#</span><span class="bash"> 查看go是否成功安装</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="安装ngrok"><a href="#安装ngrok" class="headerlink" title="安装ngrok"></a>安装ngrok</h2><h3 id="下载ngrok"><a href="#下载ngrok" class="headerlink" title="下载ngrok"></a>下载ngrok</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd /home/gosrc/ngrok<br><span class="hljs-meta">#</span><span class="bash"> 进入你自己准备用来编译的ngrok工作区</span><br>git clone https://github.com/inconshreveable/ngrok.git<br><span class="hljs-meta">#</span><span class="bash"> 把库<span class="hljs-built_in">clone</span>下来</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="生成签名证书"><a href="#生成签名证书" class="headerlink" title="生成签名证书"></a>生成签名证书</h3><p>这一步很重要，也很容易错，我们要生成自己的SSL证书。</p>
+<p>由于我计划最终提供服务的地址是xxx.ngrok.example.com所以我把NGROK_DOMAIN设置如下</p>
+<p><strong>注意把域名设置成你自己的域名</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs shell">NGROK_DOMAIN=&quot;ngrok.example.com&quot;<br> <br>openssl genrsa -out rootCA.key 2048<br>openssl req -x509 -new -nodes -key rootCA.key -subj &quot;/CN=$NGROK_DOMAIN&quot; -days 5000 -out rootCA.pem<br>openssl genrsa -out server.key 2048<br>openssl req -new -key server.key -subj &quot;/CN=$NGROK_DOMAIN&quot; -out server.csr<br>openssl x509 -req -in server.csr -CA rootCA.pem -CAkey rootCA.key -CAcreateserial -out server.crt -days 5000<br> <br>cp rootCA.pem assets/client/tls/ngrokroot.crt<br>cp device.crt assets/server/tls/snakeoil.crt<br>cp device.key assets/server/tls/snakeoil.key<br></code></pre></td></tr></table></figure>
+
+<p>最后三个cp命令是将生成的证书覆盖原来ngrok的证书</p>
+<h3 id="编译ngrok"><a href="#编译ngrok" class="headerlink" title="编译ngrok"></a>编译ngrok</h3><p>最容易出问题的一步</p>
+<p><strong>编译Linux服务端（本机）</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">GOOS=linux GOARCH=386 make release-server<br><span class="hljs-meta">#</span><span class="bash"> 32位</span><br>GOOS=linux GOARCH=amd64 make release-server<br><span class="hljs-meta">#</span><span class="bash"> 64位</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>编译windows客户端</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">GOOS=windows GOARCH=amd64 make release-client<br><span class="hljs-meta">#</span><span class="bash"> 64位，没人用32了吧。。。</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>编译Linux客户端</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">GOOS=linux GOARCH=386 make release-client<br><span class="hljs-meta">#</span><span class="bash"> 32位</span><br>GOOS=linux GOARCH=amd64 make release-client<br><span class="hljs-meta">#</span><span class="bash"> 64位</span><br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p><strong>go-bindata的错误解决</strong></p>
+<p>go get github.com/go-bindata/go-bindata/…</p>
+<p>按道理会出现在GOPATH，然后把go-bindata复制到ngrok/bin下面</p>
+</blockquote>
+<blockquote>
+<p><strong>其他错误解决</strong></p>
+<p>检查你的云主机是否能正常访问网络</p>
+<p>检查GOPATH的设置，看看是否正确</p>
+<p><code>echo $GOPATH</code></p>
+</blockquote>
+<p>假如一切正常，那么在bin目录下会出现ngrokd（Linux客户端），还可能有存有exe文件的目录</p>
+<h2 id="启动服务端"><a href="#启动服务端" class="headerlink" title="启动服务端"></a>启动服务端</h2><p>在ngrok目录运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">./bin/ngrokd -tlsKey=server.key -tlsCrt=server.crt -domain=&quot;ngrok.example.com&quot; -httpAddr=&quot;:8090&quot;<br></code></pre></td></tr></table></figure>
+
+<p>前两个参数是指定证书；第三个参数是域名；第四个参数是用来转发http的端口，可以随便写；还可以写httpsAddr用来指定转发https的端口</p>
+<h2 id="启动客户端"><a href="#启动客户端" class="headerlink" title="启动客户端"></a>启动客户端</h2><p>用ftp或者其他方法，将客户端的ngrok或ngrok.exe放到要被访问的机器上</p>
+<ul>
+<li><strong>新建一个ngrok.cfg，打开写入如下内容</strong></li>
+</ul>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">server_addr:</span> <span class="hljs-string">&quot;ngrok.example.com:4443&quot;</span><br><span class="hljs-attr">trust_host_root_certs:</span> <span class="hljs-literal">false</span><br><span class="hljs-attr">tunnels:</span><br> <span class="hljs-attr">a:</span><br>  <span class="hljs-attr">remote_port:</span> <span class="hljs-number">12345</span><br>  <span class="hljs-attr">proto:</span><br>   <span class="hljs-attr">tcp:</span> <span class="hljs-string">&quot;127.0.0.1:25565&quot;</span><br>   <span class="hljs-attr">tcp:</span> <span class="hljs-string">&quot;127.0.0.1:25566&quot;</span><br> <span class="hljs-attr">b:</span><br>  <span class="hljs-attr">proto:</span><br>   <span class="hljs-attr">http:</span> <span class="hljs-string">&quot;127.0.0.1:80&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p>此文件位YAML格式，<strong>缩进用空格</strong>。</p>
+<p><code>server_addr</code>后填写你的域名，要和之前写的一模一样。</p>
+<p>4443是固定端口，一般不改，但也可以在服务端更改。</p>
+<p>tunnels允许配置文件配置多个隧道，<strong>可以同时启动多个隧道</strong>。</p>
+<p>a和b是隧道名字。</p>
+<p>a中<code>remote_port</code>是远程端口，即访问 <code>xxx.ngrok.example.com:端口</code> 时要输入的端口，假如是http协议则此项无效</p>
+<p>proto是隧道协议，在之下可以<strong>同时用不同协议暴露不同局域网ip地址和端口</strong></p>
+<ul>
+<li><strong>新建一个 启动.bat ，打开写入如下内容</strong></li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">ngrok -subdomain test -config=ngrok.cfg start a<br></code></pre></td></tr></table></figure>
+
+<p><code>-subdomain</code>是确定你要用什么三级域名来访问，就是上面xxx的内容。</p>
+<p><code>-config</code>确定配置文件。</p>
+<p><code>start</code>启动隧道，可以<code>start a b c d</code>。</p>
+<p><code>ngrok help</code>可以查看帮助</p>
+<ul>
+<li><strong>双击bat文件运行</strong></li>
+</ul>
+<p>假如出现绿色的online就开启成功。</p>
+<blockquote>
+<p>闪退错误解决</p>
+<ul>
+<li>bat和cfg是否写错</li>
+<li>云主机响应端口是否开放（阿里云服务器要在安全组中设置端口）</li>
+<li>观察服务端的ngrokd输出，假如出现bad certificate，那么就是证书错误，检查你的客户端版本以及服务端用的证书是否统一</li>
+</ul>
+</blockquote>
+<h2 id="Linux后台运行服务端"><a href="#Linux后台运行服务端" class="headerlink" title="Linux后台运行服务端"></a>Linux后台运行服务端</h2><p>由于断开ssh连接后就导致穿透关闭，所以要用<code>screen</code>来后台运行</p>
+<p><strong>安装screen</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo apt install screen<br></code></pre></td></tr></table></figure>
+
+<p><strong>screen命令</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">screen -S name<br><span class="hljs-meta">#</span><span class="bash"> 新建一个名字叫name的screen</span><br>screen<br><span class="hljs-meta">#</span><span class="bash"> 新建一个没有名字的screen</span><br>screen -ls<br><span class="hljs-meta">#</span><span class="bash"> 查看当前有多少个screen以及信息</span><br><span class="hljs-meta">#</span><span class="bash"> 结果有Dead：死了 Detached：独立的screen Attched：</span><br>screen -r name|id<br><span class="hljs-meta">#</span><span class="bash"> 通过name或者id来恢复screen</span><br>ctrl+a d<br><span class="hljs-meta">#</span><span class="bash"> 先按ctrl+a 再按d 分离screen，退出到主窗口</span><br>ctrl+a k<br><span class="hljs-meta">#</span><span class="bash"> 杀死当前screen</span><br></code></pre></td></tr></table></figure>
+
+
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/">未分类</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                      <a class="hover-with-bg" href="/tags/ngrok/">ngrok</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/04/05/%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB%E8%BF%9B%E5%8C%96%E5%8F%B2%EF%BC%8C%E5%8E%9F%E6%9D%A5%E4%BD%A0%E6%98%AF%E8%BF%99%E6%A0%B7%E7%9A%84%E7%88%AC%E8%99%AB%EF%BC%9A%E7%AC%AC3%E6%9C%9F/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">网络爬虫进化史，原来你是这样的爬虫：第3期</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/03/Python-Logging-module/">
+                        <span class="hidden-mobile">Python Logging模块</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

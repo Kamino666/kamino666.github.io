@@ -1,0 +1,633 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="记录一些基本的能用上的命令。之后假如遇到了什么新的命令会在这更新。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="记录一些基本的能用上的命令。之后假如遇到了什么新的命令会在这更新。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux基础学习笔记(随缘会更新)">
+<meta property="og:url" content="http://blog.kamino.link/2021/02/23/Linux%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(%E9%9A%8F%E7%BC%98%E4%BC%9A%E6%9B%B4%E6%96%B0)/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="记录一些基本的能用上的命令。之后假如遇到了什么新的命令会在这更新。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223234253.png">
+<meta property="article:published_time" content="2021-02-23T07:20:00.000Z">
+<meta property="article:modified_time" content="2021-09-11T15:19:07.706Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223234253.png">
+  
+  <title>Linux基础学习笔记(随缘会更新) - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/bg/2.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Linux基础学习笔记(随缘会更新)">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-02-23 15:20" pubdate>
+        2021年2月23日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Linux基础学习笔记(随缘会更新)</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年9月11日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="Linux基础学习笔记-随缘会更新"><a href="#Linux基础学习笔记-随缘会更新" class="headerlink" title="Linux基础学习笔记(随缘会更新)"></a>Linux基础学习笔记(随缘会更新)</h1><p>记录一些基本的能用上的命令。之后假如遇到了什么新的命令会在这更新。</p>
+<p>第一次更新：用学校科研平台的时候发现查看资源的几个命令能用上</p>
+<p>第二次更新：更新了一些超常用的命令速查</p>
+<h2 id="超常用命令速查！！"><a href="#超常用命令速查！！" class="headerlink" title="超常用命令速查！！"></a>超常用命令速查！！</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash">ls -alh  <span class="hljs-comment"># 人性化显示所有文件</span><br>tar -cvf xxx.tar ./data1/ ./data2/  <span class="hljs-comment"># 打包文件，不压缩！</span><br>tar -czvf xxx.tar.gz ./data1/ ./data2/  <span class="hljs-comment"># 压缩文件</span><br>tar -xvf xxx.tar -C ./data/ <span class="hljs-comment"># 解压xxx.tar</span><br>du -h /data/  <span class="hljs-comment"># 人性化显示文件占用磁盘大小</span><br>df -h  <span class="hljs-comment"># 显示磁盘分区可用空间</span><br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="文件与目录管理"><a href="#文件与目录管理" class="headerlink" title="文件与目录管理"></a>文件与目录管理</h2><h3 id="ls-：-list，列出目录"><a href="#ls-：-list，列出目录" class="headerlink" title="ls ： list，列出目录"></a>ls ： list，列出目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs shell">ls<br>-a  # all 全部的文件，包括隐藏文件<br>-l  # long 详细信息<br>-h  # 配合-l以人性化的方式显示文件大小<br>-i  # 显示inode信息<br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 可以组合使用</span></span><br>ls -lha  # 结合三个标签的效果，可以乱序<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># ls及其他命令可能使用的通配符</span></span><br>*  # 任意个数字符<br>?  # 任意一个字符，不能多也不能少<br>[]  # 匹配字符组中任意一个,比如下列<br>[abc]  # 匹配abc中任意一个<br>[a-f]  # 匹配a到f内任意一个<br>[1-9]  # 匹配1到9内任意一个<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="cd：-change-dir，改变工作目录"><a href="#cd：-change-dir，改变工作目录" class="headerlink" title="cd： change dir，改变工作目录"></a>cd： change dir，改变工作目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs shell">cd<br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># Linux所有目录和文件名大小写敏感</span></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># cd后可能用的特殊路径</span></span><br>cd ~  # 当前用户主目录<br>cd .  # 当前目录<br>cd ..  # 上级目录<br>cd -  # 最近两次工作目录间切换<br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 相对路径与绝对路径</span></span><br>cd /home/tmp  # 绝对路径，最前面是~或者/<br>cd file/src  # 相对路径，表示当前目录下的文件<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="mkdir-make-dir-创建新目录"><a href="#mkdir-make-dir-创建新目录" class="headerlink" title="mkdir: make dir, 创建新目录"></a>mkdir: make dir, 创建新目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">mkdir [目录名字]<br>-p  # 可以递归创建目录<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="rmdir：-remove-dir，删除空目录"><a href="#rmdir：-remove-dir，删除空目录" class="headerlink" title="rmdir： remove dir，删除空目录"></a>rmdir： remove dir，删除空目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">rmdir [目录名字]<br>-P  # 删除指定空目录，假如上一级也是空那也删除<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="rm-remove-删除文件或目录"><a href="#rm-remove-删除文件或目录" class="headerlink" title="rm: remove, 删除文件或目录"></a>rm: remove, 删除文件或目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">rm [文件名]<br>-f  # 强制删除，忽略不存在的文件<br>-r  # 删除目录<br>-i  # 会询问一次<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="pwd-print-working-dir，显示目前所在目录"><a href="#pwd-print-working-dir，显示目前所在目录" class="headerlink" title="pwd: print working dir，显示目前所在目录"></a>pwd: print working dir，显示目前所在目录</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">pwd<br>-P  # 显示出真实路径而非link路径<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="cp-copy，复制文件"><a href="#cp-copy，复制文件" class="headerlink" title="cp: copy，复制文件"></a>cp: copy，复制文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">cp [参数] [来源] [目标]<br>-d  # 若复制的文件是link，则复制link而非文件本身<br>-p  # 复制文件的属性，备份常用<br>-r  # 递归复制，能复制目录<br>-a  # -pdr<br><br>-f  # force，若目标已存在且无法开启，则删除后再试一次<br>-i  # 若目标已存在，会先询问再覆盖<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="mv-move，移动文件或修改名称"><a href="#mv-move，移动文件或修改名称" class="headerlink" title="mv: move，移动文件或修改名称"></a>mv: move，移动文件或修改名称</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">mv [参数] [来源] [目标]<br>-f  # force，若目标已存在且无法开启，则删除后再试一次<br>-i  # 若目标已存在，会先询问再覆盖<br>-u  # 若目标文件已存在，且来源更新，才会覆盖<br>mv file file2  # 重命名操作<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="ln-链接"><a href="#ln-链接" class="headerlink" title="ln: 链接"></a>ln: 链接</h3><blockquote>
+<h2 id="硬连接"><a href="#硬连接" class="headerlink" title="硬连接"></a><strong>硬连接</strong></h2><p>硬连接指通过索引节点来进行连接。<strong>在 Linux 的文件系统中，保存在磁盘分区中的文件不管是什么类型都给它分配一个编号</strong>，称为<strong>索引节点号(Inode Index)<strong>。在 Linux 中，多个文件名指向同一索引节点是存在的。比如：A 是 B 的硬链接（A 和 B 都是文件名），则 A 的目录项中的 inode 节点号与 B 的目录项中的 inode 节点号相同，即一个 inode 节点对应两个不同的文件名，两个文件名指向同一个文件，</strong>A 和 B 对文件系统来说是完全平等的。删除其中任何一个都不会影响另外一个的访问。</strong></p>
+<p>硬连接的作用是允许一个文件拥有多个有效路径名，这样用户就可以建立硬连接到重要文件，以防止“误删”的功能。其原因如上所述，因为对应该目录的索引节点有一个以上的连接。<strong>只删除一个连接并不影响索引节点本身和其它的连接，只有当最后一个连接被删除后，文件的数据块及目录的连接才会被释放。</strong>也就是说，文件真正删除的条件是与之相关的所有硬连接文件均被删除。</p>
+<p><em><strong>不允许给目录创建硬链接</strong></em></p>
+<h2 id="软连接"><a href="#软连接" class="headerlink" title="软连接"></a><strong>软连接</strong></h2><p>另外一种连接称之为<strong>符号连接（Symbolic Link），也叫软连接</strong>。软链接文件有类似于 Windows 的快捷方式。它实际上是一个特殊的文件。在符号连接中，文件实际上是一个文本文件，其中包含的有另一文件的位置信息。比如：A 是 B 的软链接（A 和 B 都是文件名），A 的目录项中的 inode 节点号与 B 的目录项中的 inode 节点号不相同，<strong>A 和 B 指向的是两个不同的 inode，继而指向两块不同的数据块。但是 A 的数据块中存放的只是 B 的路径名（可以根据这个找到 B 的目录项）</strong>。A 和 B 之间是“主从”关系，如果 B 被删除了，A 仍然存在（因为两个是不同的文件），但指向的是一个无效的链接。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223234253.png" srcset="/img/loading.gif" lazyload alt="1 (1)"></p>
+<p>如图，最左边一栏就是inode，a-hard是硬链接，a-light是软连接。</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs shell">ln [参数] [来源] [目标]<br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 必要参数</span></span><br>-b  # 覆盖以前建立的连接<br>-f  # 强制执行<br>-i  # 存在会询问一次<br>-s  # 软连接<br>-v  # 显示过程<br></code></pre></td></tr></table></figure>
+
+<h3 id="cat-category，由第一行开始显示文件内容"><a href="#cat-category，由第一行开始显示文件内容" class="headerlink" title="cat: category，由第一行开始显示文件内容"></a>cat: category，由第一行开始显示文件内容</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs shell">cat [参数] [目标]<br>-E  # 将结尾的断行字节用$表示<br>-v  # 列出看不出来的特殊字符<br>-T  # 列出tab键为^|<br>-A  # -vET<br><br>-b  # 列出行号，空白行不计<br>-n  # 列出行号，空白行计<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="tac-倒过来的cat，从最后一行开始显示文件内容"><a href="#tac-倒过来的cat，从最后一行开始显示文件内容" class="headerlink" title="tac: 倒过来的cat，从最后一行开始显示文件内容"></a>tac: 倒过来的cat，从最后一行开始显示文件内容</h3><h3 id="nl-显示行号"><a href="#nl-显示行号" class="headerlink" title="nl: 显示行号"></a>nl: 显示行号</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">nl [参数] [文件]<br>-b a  # 计空行<br>-b t  # 不计空行 默认<br>-w [数字]  # 行号栏所占位数<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="more-一页一页翻动"><a href="#more-一页一页翻动" class="headerlink" title="more: 一页一页翻动"></a>more: 一页一页翻动</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs shell">space  # 向下翻一页<br>enter  # 向下一行<br>/[字符]  # 向下搜索字符<br>q  # 离开<br>b  # 回翻页 <br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="head-tail：-前-后几行"><a href="#head-tail：-前-后几行" class="headerlink" title="head/tail： 前/后几行"></a>head/tail： 前/后几行</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">head -n [数字] [目标]<br>tail -n [数字] [目标]<br></code></pre></td></tr></table></figure>
+
+
+
+<h2 id="查看系统相关信息"><a href="#查看系统相关信息" class="headerlink" title="查看系统相关信息"></a>查看系统相关信息</h2><h3 id="CPU使用信息"><a href="#CPU使用信息" class="headerlink" title="CPU使用信息"></a>CPU使用信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">top  # 查看使用率等<br></code></pre></td></tr></table></figure>
+
+
+
+<h3 id="GPU使用信息"><a href="#GPU使用信息" class="headerlink" title="GPU使用信息"></a>GPU使用信息</h3><p>跑深度学习模型的时候常用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">nvidia-smi  # 查看显存、GPU使用率等<br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/">未分类</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/02/23/Python-Pathlib%E5%BA%93%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python-Pathlib库基础使用教程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/02/23/Git%E4%B8%8EGithub%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">
+                        <span class="hidden-mobile">Git与GitHub使用教程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

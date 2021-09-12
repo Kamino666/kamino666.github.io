@@ -1,0 +1,702 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。对目前基于深度学习的Video Captioning(视频描述)的论文进行调查，统计现在得到的最好结果。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。对目前基于深度学习的Video Captioning(视频描述)的论文进行调查，统计现在得到的最好结果。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Video Captioning相关论文调查">
+<meta property="og:url" content="http://blog.kamino.link/2021/03/01/Video-Caption-Related-Papers/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。对目前基于深度学习的Video Captioning(视频描述)的论文进行调查，统计现在得到的最好结果。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112335.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112655.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301113305.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301115135.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120022.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120712.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301130437.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301131059.png">
+<meta property="article:published_time" content="2021-03-01T05:16:16.000Z">
+<meta property="article:modified_time" content="2021-03-03T09:38:05.375Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="机器学习">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112335.png">
+  
+  <title>Video Captioning相关论文调查 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('/img/bg/2.jpg') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Video Captioning相关论文调查">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-03-01 13:16" pubdate>
+        2021年3月1日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Video Captioning相关论文调查</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年3月3日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="Video-Captioning相关论文调查"><a href="#Video-Captioning相关论文调查" class="headerlink" title="Video Captioning相关论文调查"></a>Video Captioning相关论文调查</h1><p>不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。</p>
+<p>对目前基于深度学习的Video Captioning(视频描述)的论文进行调查，统计现在得到的最好结果。</p>
+<h2 id="S2VT"><a href="#S2VT" class="headerlink" title="S2VT"></a>S2VT</h2><p><em>S. Venugopalan, M. Rohrbach, J. Donahue, R. J. Mooney, T. Darrell, and K. Saenko. Sequence to sequence - video to text. In ICCV, 2015</em></p>
+<p><strong>代码实现</strong>：</p>
+<ul>
+<li>官方caffe：<a target="_blank" rel="noopener" href="https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt">https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt</a></li>
+<li>复现pytorch：<a target="_blank" rel="noopener" href="https://github.com/xiadingZ/video-caption.pytorch">xiadingZ/video-caption.pytorch: pytorch implementation of video captioning (github.com)</a></li>
+<li>我的复现（pytorch）（暂未完成，最新可看readme）：<a target="_blank" rel="noopener" href="https://github.com/Kamino666/S2VT-video-caption">Kamino666/S2VT-video-caption: the recurrence of paper “Sequence to Sequence – Video to Text” (github.com)</a></li>
+</ul>
+<p><strong>论文简介</strong>：</p>
+<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112335.png" srcset="/img/loading.gif" lazyload alt="image-20210301112335348" style="zoom:50%;" />
+
+<p>大概结构如图，对于视频图像，使用预训练的CNN网络，对视频的每一帧进行特征的提取，每个视频会得到一个[len, feat_dim]的特征，其中每个视频的len不相同。视频的图像输入，可以是RGB图像也可以是光流图。论文中RGB用VGG16，光流图用AlexNet提取feature。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112655.png" srcset="/img/loading.gif" lazyload alt="红色为图像层，绿色为文字层"></p>
+<p>训练时，之前由CNN提取的不定长的feature，在编码阶段逐步送进图像层，在图像输入结束后，给文字层提供<code>&lt;BOS&gt;</code>标志开始预测文字，预测到文字层输出<code>&lt;EOS&gt;</code>结束。这样实现了输入和输出都能不定长度。文字层的输入由图像层的输出结合文字输入得到（这里的结合是在hid之前那个维度上的拼接）。</p>
+<p>由于要保持格式不变，在图像输入结束之前，给文字层提供的文字数据是<code>&lt;pad&gt;</code>，在图像输入之后，给图像层提供的图像数据是<code>&lt;pad&gt;</code>。<code>&lt;pad&gt;</code>在实现中简单填充为0.</p>
+<p>注意实现的时候这两层的输入大小不同，得分成两个CNN。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 29.8%，M-VAD数据集 METEOR 6.7%，MPII-MD数据集 METEOR 7.1%。</p>
+<h2 id="Multimodal-Memory-Modelling"><a href="#Multimodal-Memory-Modelling" class="headerlink" title="Multimodal Memory Modelling"></a>Multimodal Memory Modelling</h2><p><em>Wang J, Wang W, Huang Y, et al. M3: Multimodal memory modelling for video captioning. CVPR, IEEE 2018</em></p>
+<p><strong>论文简介</strong>：</p>
+<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301113305.png" srcset="/img/loading.gif" lazyload alt="image-20210301090931120" style="zoom: 67%;" />
+
+<p>对记忆建模（Memory Modeling），主要处理长视频，比较复杂，没深入研究。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 33.3%，MSR-VTT数据集 METEOR 26.58%。</p>
+<h2 id="MRS（Multi-Representation-Switching）"><a href="#MRS（Multi-Representation-Switching）" class="headerlink" title="MRS（Multi-Representation Switching）"></a>MRS（Multi-Representation Switching）</h2><p><em>Heechan Kim, Soowon Lee. A Video Captioning Method Based on Multi-Representation Switching for Sustainable Computing. Sustainability 2021</em></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301115135.png" srcset="/img/loading.gif" lazyload alt="image-20210301115135156"></p>
+<p>比较新的一篇论文，在Sustainability上发的，所以注重可持续计算，网络不大。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120022.png" srcset="/img/loading.gif" lazyload alt="image-20210301120022647"></p>
+<p>作者的思想就是认为在Video Caption生成的句子中，有的单词是要依靠画面来生成的，而有的单词只是语法需要，比如图中“a baby is dancing on a chair”，只有标了颜色的那几个单词是要从画面中提取的，其余都是语法上的要求。</p>
+<p>所以作者分别弄了行为特征模块和文字特征模块，通过一个switcher来学习使用哪个模块。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 34.0%。</p>
+<h2 id="RecNet"><a href="#RecNet" class="headerlink" title="RecNet"></a>RecNet</h2><p><em>Bairui Wang, Lin Ma, Wei Zhang, Wei Liu. Reconstruction Network for Video Captioning. arxiv 1803.11438</em></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/79810631">Reconstruction Network for Video Captioning - 知乎 (zhihu.com)</a></p>
+<p><strong>论文简介</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120712.png" srcset="/img/loading.gif" lazyload alt="image-20210301120712622"></p>
+<p>腾讯AI实验室的一篇论文，在解码器后面新增了一个Reconstructor。Encoder和Decoder不是重点，可以用注意力机制的模型，也可以用S2VT。</p>
+<p>重点是Reconstructor，Reconstructor是搭建在解码器之上的，旨在根据解码器的隐状态h，恢复原视频信息。但是考虑到原视频帧的多样性以及较高的维度，这种方案较为棘手。因此重建为由编码器得到的视觉特征也是个很好的选择。Reconstructor可以加强视觉序列和caption之间的关系，有望于改善video caption的质量。在具体实现上，Reconstructor是一个LSTM，文中提供两种结构的Reconstructor，分别是侧重于原始视频的全局结构和局部结构。</p>
+<p>（这一部分还待更仔细看一看论文，预计会专门写一篇感想。）</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 34.1%。</p>
+<h2 id="OA-BTG"><a href="#OA-BTG" class="headerlink" title="OA-BTG"></a>OA-BTG</h2><p><em>Junchao Zhang and Yuxin Peng, Object-aware Aggregation with Bidirectional Temporal Graph for Video Captioning, 2019 CVPR.</em> </p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73935242">使用双向时空图做视频描述(video captioning) - 知乎 (zhihu.com)</a></p>
+<p><strong>论文简介</strong>：</p>
+<p>太复杂了，不适用于我目前的研究。但是这篇论文是目前找到的效果最好的。(但是有点作弊的是它输入数据还手动分隔了对象的区域)</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 36.2%， MSR-VTT数据集 METEOR 28.2%。</p>
+<h2 id="multirate-GRU"><a href="#multirate-GRU" class="headerlink" title="multirate GRU"></a>multirate GRU</h2><p><em>Linchao Zhu, Zhongwen Xu, Yi Yang. Bidirectional Multirate Reconstruction for Temporal Modeling in Videos. 2016, arxiv 1611.09053v1.</em></p>
+<p><strong>论文简介</strong>：</p>
+<p>不是专门弄video caption的，论文中提到的很少。论文主要是用到了多速率GRU的技术，即让GRU有的一个一个读，有的隔一个读，有的隔两个，这样形成不同的速率。没有仔细读这篇论文，仅记录下效果。</p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 33.4%</p>
+<h2 id="GRU-EVE"><a href="#GRU-EVE" class="headerlink" title="GRU-EVE"></a>GRU-EVE</h2><p><em>Nayyer Aafaq, Naveed Akhtar et. Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning. 2019, arxiv 1902.10322v2.</em></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chr1991/article/details/103806439">论文介绍–Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning_信道者-CSDN博客 </a></p>
+<p><strong>论文简介</strong>：</p>
+<p>挺复杂的，结合了2D-CNN 3D-CNN和对象识别三个数据来源，还用了一个什么傅里叶变换.第一就是用层级的短时傅里叶变换对卷积网络提取出来的特征进行浓缩，把时间信息融入其中；第二就是用物体检测模型从视频中提取高层的语义信息，丰富编码器提炼的视频表示。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301130437.png" srcset="/img/loading.gif" lazyload alt="image-20210301090845060"></p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 35.0%， MSR-VTT数据集 METEOR 28.4%</p>
+<h2 id="SibNet"><a href="#SibNet" class="headerlink" title="SibNet"></a>SibNet</h2><p><em>Sheng Liu, Zhou Ren, Junsong Yuan. SibNet: Sibling Convolutional Encoder for Video Captioning. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3240508.3240667">https://doi.org/10.1145/3240508.3240667</a></em></p>
+<p><strong>论文简介</strong>：</p>
+<p>重点在于encode videos。编码分成两部分，一部分用自编码器，另一部分用一种视觉语义互相组合embed的编码（目前理解也是非监督学习）。然后这两个编码再解码生成caption，这三部分都有train_loss。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301131059.png" srcset="/img/loading.gif" lazyload alt="image-20210301090803104"></p>
+<p><strong>实验结果</strong>：</p>
+<p>MSVD数据集 METEOR 34.8%， MSR-VTT数据集 METEOR 27.5%</p>
+<h1 id="MSVD数据集汇总"><a href="#MSVD数据集汇总" class="headerlink" title="MSVD数据集汇总"></a>MSVD数据集汇总</h1><table>
+<thead>
+<tr>
+<th>模型名字</th>
+<th>METEOR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>S2VT</td>
+<td>29.8</td>
+</tr>
+<tr>
+<td>M^3^-C3D+InceptionV3</td>
+<td>33.3</td>
+</tr>
+<tr>
+<td>MRS-ew+</td>
+<td>34.0</td>
+</tr>
+<tr>
+<td>RecNet<del>local</del>(SA-LSTM)</td>
+<td>34.1</td>
+</tr>
+<tr>
+<td>OA-BTG</td>
+<td>36.2</td>
+</tr>
+<tr>
+<td>mGRU</td>
+<td>34.5</td>
+</tr>
+<tr>
+<td>GRU-EVE</td>
+<td>35.0</td>
+</tr>
+<tr>
+<td>SibNet</td>
+<td>34.8</td>
+</tr>
+</tbody></table>
+<h1 id="MSR-VTT数据集汇总"><a href="#MSR-VTT数据集汇总" class="headerlink" title="MSR-VTT数据集汇总"></a>MSR-VTT数据集汇总</h1><table>
+<thead>
+<tr>
+<th>模型名字</th>
+<th>METEOR</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>M^3^</td>
+<td>26.6</td>
+</tr>
+<tr>
+<td>OA-BTG</td>
+<td>28.2</td>
+</tr>
+<tr>
+<td>RecNet</td>
+<td>26.6</td>
+</tr>
+<tr>
+<td>GRU-EVE</td>
+<td>28.4</td>
+</tr>
+</tbody></table>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/03/01/Python-Multithreading-in-detail/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python多线程详解（真的很详细）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/02/23/Linux%E5%B8%B8%E7%94%A8%E6%89%93%E5%8C%85%E3%80%81%E5%8E%8B%E7%BC%A9%E3%80%81%E8%A7%A3%E5%8E%8B%E6%8C%87%E4%BB%A4/">
+                        <span class="hidden-mobile">Linux常用打包、压缩、解压指令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+
+
+
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
