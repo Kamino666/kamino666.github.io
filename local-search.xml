@@ -4,9 +4,59 @@
   
   
   <entry>
+    <title>Self Attention和Transformer详解</title>
+    <link href="/2021/10/04/Self%20Attention/"/>
+    <url>/2021/10/04/Self%20Attention/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Self-Attention详解"><a href="#Self-Attention详解" class="headerlink" title="Self Attention详解"></a>Self Attention详解</h1><p>对于Self-attention的原理进行充分的解释</p><blockquote><p>参考资料</p><p>Google本家论文：<strong>Attention Is All You Need</strong></p><p>Pytorch官方Transformer实现：<a href="https://pytorch.org/docs/stable/_modules/torch/nn/modules/transformer.html#Transformer">torch.nn.modules.transformer — PyTorch 1.9.1 documentation</a></p><p><a href="http://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer – Jay Alammar – Visualizing machine learning one concept at a time. (jalammar.github.io)</a></p><p><a href="https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853">Transformers Explained Visually (Part 3): Multi-head Attention, deep dive | by Ketan Doshi | Towards Data Science</a></p></blockquote><h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>这一块李宏毅老师讲的很好。<a href="https://www.bilibili.com/video/av56239558">李宏毅-Transformer_哔哩哔哩_bilibili</a></p><p>从Seq2Seq的角度来说，深度学习开始用的就是RNN类网络，但是这种做法很难并行计算，并且每个状态传递的信息用的是一个hidden向量。之后有人用CNN代替RNN，CNN的卷积操作可以实行并行计算，但是由于卷积核的大小不能太大（否则计算太复杂），感受野范围受限，要像RNN那样感受到全局信息就要多层CNN卷积，就像VGG那样不断缩小H、W维度，增厚C维度，但是这样计算量还是会提高很多。</p><p>因此，Google想弄出一个既能关照到每个输入的信息，也不需要太多计算的网络。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png" alt="image-20211004104305858"></p><h2 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h2><p>这块也借用李宏毅老师的PPT，和RNN类似，自注意力也是一个Seq2Seq的模型，输入序列，输出也是序列，可以把内部想象成一个黑箱，SA（Self Attention）的输入和输出与RNN相同。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104728.png" alt="image-20211004104728546"></p><p>论文中的公式如下，注意力由三个张量Q、K、V得到，而QKV是由输入张量X作三个相似的矩阵运算得到的。Q代表Query，K代表Key，V代表Value（其中K和V的长度一定要相同，和V可以不同），这是一个类似<strong>查询</strong>的结构：我们用<strong>Q</strong>的每一个值$Q_i$（<strong>Q</strong>是有长度的），去查询每一个$K_i$，然后通过Softmax函数得到注意概率α，再用这个α来重新分配对<strong>V</strong>的注意力。<strong>我们最终要的是（一个参考了V的）崭新的Q（或者是X）</strong><br>$$<br>Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_{model}}})V<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004105238.png" alt="QKV的由来" style="zoom:50%;" /></p><p>数学上，用Query查询Key的过程是Q、K两个矩阵的内积，内积这个操作能够计算两个张量的相似度，余弦相似度的分子就是内积。这个地方的具体解释先挖个坑，总之我们能通过这个乘法操作，把$X\times W$得到的embed维度给消掉，得到一个$S<em>T$的矩阵（如下图，假设Q的长度和KV不一样）。*<em>这个矩阵的每一行就可以看作是Query的某个元素对K的每一个元素的”注意力“。从深度学习的角度，这个注意力得到的方式是对矩阵$W^Q$$W^K$$W^V$的学习。</em></em></p><p>上一段”注意力“打引号是因为这还不是真正的注意力，<strong>注意力的特点是对于T长的张量的每个元素的注意力总和为1</strong>，就像有100块钱给T个人分，每个人分到的钱数的总和就是100，不能多也不能少，<strong>这个操作通过$Softmax$函数实现。</strong>而公式中除以$\sqrt{d_{model}}$的操作是为了归一化，用人话说就是让矩阵的值不要太大。这里的详细解释也挖个坑。假如要对自注意力层进行可视化的话，一般被可视化的就是这个α矩阵。</p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004110320.png" alt="我画的公式示意图" style="zoom: 25%;" /><p>公式最后一部分与V相乘的操作就很容易理解了，我们要的是新的tgt，所以要通过分配注意力到V上来实现。加入tgt和memory像图中一样是不同的，那么tgt的信息融入在了α矩阵，然后通过最后这个操作结合上memory的信息。</p><h2 id="更进一步-Multi-Head"><a href="#更进一步-Multi-Head" class="headerlink" title="更进一步 Multi Head"></a>更进一步 Multi Head</h2><p>多头注意力就是通过设置多个W来得到多种QKV，然后进行上面的运算，是增加模型复杂度（拟合能力）的一种手段。但是这样就会得到d_head个attention，维度是$S<em>emb</em>d_{head}$，我们可以通过一个全连接层将后两个维度$emb*d_{head}$降维回$emb$。</p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170239.png" alt="多头注意力" style="zoom: 67%;" /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170553.jpg" alt="多”头“注意力" style="zoom: 25%;" /><blockquote><p>但是多个头真的能关注到不同的信息吗？</p><p><a href="https://arxiv.org/pdf/1905.09418.pdf">Analyzing Multi-Head Self-Attention:Specialized Heads Do the Heavy Lifting, the Rest Can Be Pruned</a>写了可以把几个头斩掉，挖坑以后写。</p><p><a href="https://arxiv.org/pdf/1810.10183.pdf">Multi-Head Attention with Disagreement Regularization</a>写了可以通过正则化让多个头关注不同的地方，挖坑以后写。</p></blockquote><blockquote><h3 id="术语解释"><a href="#术语解释" class="headerlink" title="术语解释"></a>术语解释</h3><p>看文献的时候可能遇到一些术语，专门在这里解释一下</p><ul><li>SA：self attention 自注意力</li><li>MSA：multi-head self attention 多头自注意力</li><li>d_head, d_model：pytorch中分别表示头数和$W$的隐藏维度。要和后面的dim_feedforward区分开。</li><li>tgt，memory：Transformer里面Decoder的self attention层，Q和KV不一样，tgt是Q，memory是KV。</li></ul></blockquote>]]></content>
+    
+    
+    
+    <tags>
+      
+      <tag>深度学习</tag>
+      
+      <tag>Self-Attention</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>深度学习之梯度累加（Pytorch实现）</title>
+    <link href="/2021/10/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0Pytorch%E5%AE%9E%E7%8E%B0/"/>
+    <url>/2021/10/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0Pytorch%E5%AE%9E%E7%8E%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="深度学习之梯度累加（Pytorch实现）"><a href="#深度学习之梯度累加（Pytorch实现）" class="headerlink" title="深度学习之梯度累加（Pytorch实现）"></a>深度学习之梯度累加（Pytorch实现）</h1><blockquote><p>参考文献</p><p><a href="https://towardsdatascience.com/what-is-gradient-accumulation-in-deep-learning-ec034122cfa">What is Gradient Accumulation in Deep Learning? | by Raz Rotenberg | Towards Data Science</a></p><p><a href="https://www.cnblogs.com/sddai/p/14598018.html">梯度累加(Gradient Accumulation) - stardsd - 博客园 (cnblogs.com)</a></p></blockquote><h2 id="梯度累加是什么"><a href="#梯度累加是什么" class="headerlink" title="梯度累加是什么"></a>梯度累加是什么</h2><p>梯度累加就是把一个<strong>大Batch分成小mini-batch</strong>，每个mini-batch分别送模型算loss得到梯度，并进行累加，直到大Batch里所有数据计算完，再梯度下降。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211003145612.jpg" alt="梯度累加示意图"></p><p>梯度累加就是运行几个step但是不更新模型，在这几个step中，模型的参数不变，也就是假装我们在计算大Batch。</p><h2 id="Pytorch代码示例"><a href="#Pytorch代码示例" class="headerlink" title="Pytorch代码示例"></a>Pytorch代码示例</h2><p>传统训练过程</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, (inputs, labels) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(trainloader):<br>    optimizer.zero_grad()                   <span class="hljs-comment"># 梯度清零</span><br>    outputs = net(inputs)                   <span class="hljs-comment"># 正向传播</span><br>    loss = criterion(outputs, labels)       <span class="hljs-comment"># 计算损失</span><br>    loss.backward()                         <span class="hljs-comment"># 反向传播，计算梯度</span><br>    optimizer.step()                        <span class="hljs-comment"># 更新参数</span><br>    <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % evaluation_steps == <span class="hljs-number">0</span>:<br>        evaluate_model()<br></code></pre></td></tr></table></figure><p>梯度累加</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, (inputs, labels) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(trainloader):<br>    outputs = net(inputs)                   <span class="hljs-comment"># 正向传播</span><br>    loss = criterion(outputs, labels)       <span class="hljs-comment"># 计算损失函数</span><br>    loss = loss / accumulation_steps        <span class="hljs-comment"># 损失标准化</span><br>    loss.backward()                         <span class="hljs-comment"># 反向传播，计算梯度</span><br>    <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % accumulation_steps == <span class="hljs-number">0</span>:<br>        optimizer.step()                    <span class="hljs-comment"># 更新参数</span><br>        optimizer.zero_grad()               <span class="hljs-comment"># 梯度清零</span><br>        <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % evaluation_steps == <span class="hljs-number">0</span>:<br>            evaluate_model()<br></code></pre></td></tr></table></figure><p><strong>挖坑：Video Captioning通过梯度累加来加快速度</strong></p><p><strong>实验平台GPU被占了做不了实验填不了坑了哼唧</strong></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>未分类</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>深度学习</tag>
+      
+      <tag>Pytorch</tag>
+      
+      <tag>梯度累加</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Linux配置Clash</title>
-    <link href="/2021/09/30/Linux%E9%85%8D%E7%BD%AEClash/"/>
-    <url>/2021/09/30/Linux%E9%85%8D%E7%BD%AEClash/</url>
+    <link href="/2021/10/03/Linux%E9%85%8D%E7%BD%AEClash/"/>
+    <url>/2021/10/03/Linux%E9%85%8D%E7%BD%AEClash/</url>
     
     <content type="html"><![CDATA[<h1 id="Linux配置Clash"><a href="#Linux配置Clash" class="headerlink" title="Linux配置Clash"></a>Linux配置Clash</h1><p><strong>本文参考：</strong></p><p><a href="https://zhuanlan.zhihu.com/p/369344633">Linux下安装&amp;配置Clash以实现代理上网 - 知乎 (zhihu.com)</a></p><p><a href="https://lancellc.gitbook.io/clash/">Introduce - Clash (gitbook.io)</a></p><p>这篇文章用来防止忘记怎么配Clash，干货笔记。</p><h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p><strong>Github Release：</strong><a href="https://github.com/Dreamacro/clash/releases">Releases · Dreamacro/clash (github.com)</a></p><p>从Assets中找到Linux amd64的gz文件，下载下来</p><p>网盘备份：<a href="https://drive.google.com/file/d/1-F9O79RvVYu9iIdciZXAesxunKWoIVGa/view?usp=sharing">Google Drive</a> <a href="https://pan.baidu.com/s/1-GwOpETvLqGSQwg5IRs6xQ">百度网盘:ucjy</a></p><h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>不要直接复制。Clash基本就靠config.yaml运行，不用输入什么参数。</p><p>切换模式、切换节点都在config.yaml里弄。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">su  <span class="hljs-comment"># 用管理员账号</span><br>gunzip xxx.gz  <span class="hljs-comment"># gunzip解压gz文件</span><br><span class="hljs-built_in">cd</span> &lt;folder&gt;  <span class="hljs-comment"># 进入有那个可执行文件的文件夹</span><br>wget -O config.yaml [订阅链接]  <span class="hljs-comment"># 下载订阅链接，或者直接把文件重命名为config.yaml</span><br>chmod +x clash  <span class="hljs-comment"># 该权限让其可执行</span><br>./clash <span class="hljs-comment"># 运行梯子</span><br>./clash -d /etc/clash   <span class="hljs-comment"># 指定config目录</span><br>./clash -f /etc/clash/config.yaml  <span class="hljs-comment"># 指定config文件</span><br></code></pre></td></tr></table></figure><p>安装好了只是占了端口，搭好梯子，还需要配置系统把数据通过那个端口送出去。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs bash">settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks port 7891<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy ignore-hosts <span class="hljs-string">&quot;[&#x27;localhost&#x27;, &#x27;127.0.0.0/8&#x27;, &#x27;::1&#x27;]&quot;</span><br></code></pre></td></tr></table></figure><p>这里面第一行是开启的命令，剩下是配置的命令。</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span>  <span class="hljs-comment"># 开启</span><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;none&#x27;</span>    <span class="hljs-comment"># 关闭</span><br></code></pre></td></tr></table></figure><p>接下来就可以使用了</p><h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><p>用curl命令测试网站：<code>curl www.youtube.com</code></p><p>别用ping，ping不通的，ping用ICMP协议在计算机网络的网络层，socks代理在运输层。</p>]]></content>
     
@@ -311,11 +361,11 @@
     
     <tags>
       
+      <tag>Python</tag>
+      
       <tag>深度学习</tag>
       
       <tag>机器学习</tag>
-      
-      <tag>Python</tag>
       
     </tags>
     

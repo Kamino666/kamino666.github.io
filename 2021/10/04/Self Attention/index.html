@@ -13,25 +13,31 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="深度学习处理数据的时候经常使用这个Python库，Pathlib能够很方便地遍历各种样子的文件目录，性能也很好。">
+  <meta name="description" content="对于Transformer和Self-attention的原理进行充分的解释">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="深度学习处理数据的时候经常使用这个Python库，Pathlib能够很方便地遍历各种样子的文件目录，性能也很好。">
+  <meta name="description" content="对于Transformer和Self-attention的原理进行充分的解释">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Python-Pathlib库基础使用教程">
-<meta property="og:url" content="http://blog.kamino.link/2021/02/23/Python-Pathlib%E5%BA%93%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:title" content="Self Attention和Transformer详解">
+<meta property="og:url" content="http://blog.kamino.link/2021/10/04/Self%20Attention/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="深度学习处理数据的时候经常使用这个Python库，Pathlib能够很方便地遍历各种样子的文件目录，性能也很好。">
+<meta property="og:description" content="对于Transformer和Self-attention的原理进行充分的解释">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-02-23T07:30:00.000Z">
-<meta property="article:modified_time" content="2021-03-03T09:38:26.857Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104728.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004105238.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004110320.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170239.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170553.jpg">
+<meta property="article:published_time" content="2021-10-04T09:01:01.000Z">
+<meta property="article:modified_time" content="2021-10-04T09:24:59.512Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Python">
 <meta property="article:tag" content="深度学习">
-<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="Self-Attention">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png">
   
-  <title>Python-Pathlib库基础使用教程 - Kamino&#39;s Blog</title>
+  <title>Self Attention和Transformer详解 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -185,12 +191,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('/img/bg/2.jpg') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405155154.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Python-Pathlib库基础使用教程">
+            <span class="h2" id="subtitle" title="Self Attention和Transformer详解">
               
             </span>
 
@@ -200,8 +206,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-02-23 15:30" pubdate>
-        2021年2月23日 下午
+      <time datetime="2021-10-04 17:01" pubdate>
+        2021年10月4日 下午
       </time>
     </span>
   
@@ -211,7 +217,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.5k 字
+      2.1k 字
     </span>
   
 
@@ -220,7 +226,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      7 分钟
     </span>
   
 
@@ -257,56 +263,67 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Python-Pathlib库基础使用教程</h1>
+            <h1 style="display: none">Self Attention和Transformer详解</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年3月3日 下午
+                  本文最后更新于：2021年10月4日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python-Pathlib库基础使用教程"><a href="#Python-Pathlib库基础使用教程" class="headerlink" title="Python-Pathlib库基础使用教程"></a>Python-Pathlib库基础使用教程</h1><p>深度学习处理数据的时候经常使用这个Python库，Pathlib能够很方便地遍历各种样子的文件目录，性能也很好。</p>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt.txt.bk&#x27;</span>)<br>p.name                          <span class="hljs-comment"># 获取文件名</span><br><span class="hljs-comment"># tt.txt.bk</span><br>p.stem                          <span class="hljs-comment"># 获取文件名除后缀的部分</span><br><span class="hljs-comment"># tt.txt</span><br>p.suffix                        <span class="hljs-comment"># 文件后缀</span><br><span class="hljs-comment"># .bk</span><br>p.suffixs                       <span class="hljs-comment"># 文件的后缀们...</span><br><span class="hljs-comment"># [&#x27;.txt&#x27;, &#x27;.bk&#x27;]</span><br>p.parent                        <span class="hljs-comment"># 相当于dirnanme</span><br><span class="hljs-comment"># WindowsPath(&#x27;d:/test&#x27;)</span><br>p.parents                       <span class="hljs-comment"># 返回一个iterable, 包含所有父目录</span><br><span class="hljs-comment"># &lt;WindowsPath.parents&gt;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> p.parents:<br>    <span class="hljs-built_in">print</span>(i)<br><span class="hljs-comment"># d:\test</span><br><span class="hljs-comment"># d:\</span><br>a.parts                         <span class="hljs-comment"># 将路径通过分隔符分割成一个元祖</span><br><span class="hljs-comment"># (&#x27;d:\\&#x27;, &#x27;test&#x27;, &#x27;tt.txt.bk&#x27;)</span><br></code></pre></td></tr></table></figure>
+              <h1 id="Self-Attention详解"><a href="#Self-Attention详解" class="headerlink" title="Self Attention详解"></a>Self Attention详解</h1><p>对于Self-attention的原理进行充分的解释</p>
+<blockquote>
+<p>参考资料</p>
+<p>Google本家论文：<strong>Attention Is All You Need</strong></p>
+<p>Pytorch官方Transformer实现：<a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/_modules/torch/nn/modules/transformer.html#Transformer">torch.nn.modules.transformer — PyTorch 1.9.1 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="http://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer – Jay Alammar – Visualizing machine learning one concept at a time. (jalammar.github.io)</a></p>
+<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853">Transformers Explained Visually (Part 3): Multi-head Attention, deep dive | by Ketan Doshi | Towards Data Science</a></p>
+</blockquote>
+<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>这一块李宏毅老师讲的很好。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av56239558">李宏毅-Transformer_哔哩哔哩_bilibili</a></p>
+<p>从Seq2Seq的角度来说，深度学习开始用的就是RNN类网络，但是这种做法很难并行计算，并且每个状态传递的信息用的是一个hidden向量。之后有人用CNN代替RNN，CNN的卷积操作可以实行并行计算，但是由于卷积核的大小不能太大（否则计算太复杂），感受野范围受限，要像RNN那样感受到全局信息就要多层CNN卷积，就像VGG那样不断缩小H、W维度，增厚C维度，但是这样计算量还是会提高很多。</p>
+<p>因此，Google想弄出一个既能关照到每个输入的信息，也不需要太多计算的网络。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png" srcset="/img/loading.gif" lazyload alt="image-20211004104305858"></p>
+<h2 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h2><p>这块也借用李宏毅老师的PPT，和RNN类似，自注意力也是一个Seq2Seq的模型，输入序列，输出也是序列，可以把内部想象成一个黑箱，SA（Self Attention）的输入和输出与RNN相同。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104728.png" srcset="/img/loading.gif" lazyload alt="image-20211004104728546"></p>
+<p>论文中的公式如下，注意力由三个张量Q、K、V得到，而QKV是由输入张量X作三个相似的矩阵运算得到的。Q代表Query，K代表Key，V代表Value（其中K和V的长度一定要相同，和V可以不同），这是一个类似<strong>查询</strong>的结构：我们用<strong>Q</strong>的每一个值$Q_i$（<strong>Q</strong>是有长度的），去查询每一个$K_i$，然后通过Softmax函数得到注意概率α，再用这个α来重新分配对<strong>V</strong>的注意力。<strong>我们最终要的是（一个参考了V的）崭新的Q（或者是X）</strong><br>$$<br>Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_{model}}})V<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004105238.png" srcset="/img/loading.gif" lazyload alt="QKV的由来" style="zoom:50%;" /></p>
+<p>数学上，用Query查询Key的过程是Q、K两个矩阵的内积，内积这个操作能够计算两个张量的相似度，余弦相似度的分子就是内积。这个地方的具体解释先挖个坑，总之我们能通过这个乘法操作，把$X\times W$得到的embed维度给消掉，得到一个$S<em>T$的矩阵（如下图，假设Q的长度和KV不一样）。*<em>这个矩阵的每一行就可以看作是Query的某个元素对K的每一个元素的”注意力“。从深度学习的角度，这个注意力得到的方式是对矩阵$W^Q$$W^K$$W^V$的学习。</em></em></p>
+<p>上一段”注意力“打引号是因为这还不是真正的注意力，<strong>注意力的特点是对于T长的张量的每个元素的注意力总和为1</strong>，就像有100块钱给T个人分，每个人分到的钱数的总和就是100，不能多也不能少，<strong>这个操作通过$Softmax$函数实现。</strong>而公式中除以$\sqrt{d_{model}}$的操作是为了归一化，用人话说就是让矩阵的值不要太大。这里的详细解释也挖个坑。假如要对自注意力层进行可视化的话，一般被可视化的就是这个α矩阵。</p>
+<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004110320.png" srcset="/img/loading.gif" lazyload alt="我画的公式示意图" style="zoom: 25%;" />
 
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test&#x27;</span>)<br>p = Path(p, <span class="hljs-string">&#x27;tt.txt&#x27;</span>)           <span class="hljs-comment"># 字符串拼接</span><br>p.exists()                      <span class="hljs-comment"># 判断文件是否存在</span><br>p.is_file()                     <span class="hljs-comment"># 判断是否是文件</span><br>p.is_dir()                      <span class="hljs-comment"># 判断是否是目录</span><br></code></pre></td></tr></table></figure>
+<p>公式最后一部分与V相乘的操作就很容易理解了，我们要的是新的tgt，所以要通过分配注意力到V上来实现。加入tgt和memory像图中一样是不同的，那么tgt的信息融入在了α矩阵，然后通过最后这个操作结合上memory的信息。</p>
+<h2 id="更进一步-Multi-Head"><a href="#更进一步-Multi-Head" class="headerlink" title="更进一步 Multi Head"></a>更进一步 Multi Head</h2><p>多头注意力就是通过设置多个W来得到多种QKV，然后进行上面的运算，是增加模型复杂度（拟合能力）的一种手段。但是这样就会得到d_head个attention，维度是$S<em>emb</em>d_{head}$，我们可以通过一个全连接层将后两个维度$emb*d_{head}$降维回$emb$。</p>
+<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170239.png" srcset="/img/loading.gif" lazyload alt="多头注意力" style="zoom: 67%;" />
 
+<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170553.jpg" srcset="/img/loading.gif" lazyload alt="多”头“注意力" style="zoom: 25%;" />
 
-
-<h2 id="遍历❤"><a href="#遍历❤" class="headerlink" title="遍历❤"></a>遍历❤</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test&#x27;</span>)<br><span class="hljs-comment"># WindowsPath(&#x27;d:/test&#x27;)</span><br>p.iterdir()                     <span class="hljs-comment"># 相当于os.listdir 列出子目录/文件</span><br>p.glob(<span class="hljs-string">&#x27;*&#x27;</span>)                     <span class="hljs-comment"># 相当于os.listdir, 列出符合条件的子目录/文件但是可以添加匹配条件</span><br>p.rglob(<span class="hljs-string">&#x27;*&#x27;</span>)                    <span class="hljs-comment"># 相当于os.walk, 递归列出符合条件的子目录/文件也可以添加匹配条件</span><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">* # 所有<br>? # 单个字符<br>. # 当前目录<br>.. # 上一级目录<br>[0-9] [a-z] [A-Z] # 字面意思<br>[A-Za-z] # 大小写字母 windows路径不分大小写<br>[0-9A-Za-Z] # 数字和字母<br><br>**  # 表示 “此目录以及所有子目录，递归”<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="创建文件夹"><a href="#创建文件夹" class="headerlink" title="创建文件夹"></a>创建文件夹</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt\dd&#x27;</span>)<br>p.mkdir(exist_ok=<span class="hljs-literal">True</span>)          <span class="hljs-comment"># 创建文件目录(前提是tt目录存在, 否则会报错)</span><br><span class="hljs-comment"># 一般我会使用下面这种创建方法</span><br>p.mkdir((exist_ok=<span class="hljs-literal">True</span>, parents=<span class="hljs-literal">True</span>) <span class="hljs-comment"># 递归创建文件目录</span><br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="文件详细信息-size-createtime…"><a href="#文件详细信息-size-createtime…" class="headerlink" title="文件详细信息(size, createtime…)"></a>文件详细信息(size, createtime…)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt.txt&#x27;</span>)<br>p.stat()                        <span class="hljs-comment"># 获取详细信息</span><br><span class="hljs-comment"># os.stat_result(st_mode=33206, st_ino=562949953579011, st_dev=3870140380, st_nlink=1, st_uid=0, st_gid=0, st_size=0, st_atime=1525254557, st_mtime=1525254557, st_ctime=1525254557)</span><br>p.stat().st_size                <span class="hljs-comment"># 文件大小</span><br><span class="hljs-comment"># 0</span><br>p.stat().st_ctime               <span class="hljs-comment"># 创建时间</span><br><span class="hljs-comment"># 1525254557.2090347</span><br><span class="hljs-comment"># 其他的信息也可以通过相同方式获取</span><br>p.stat().st_mtime               <span class="hljs-comment"># 修改时间</span><br></code></pre></td></tr></table></figure>
-
+<blockquote>
+<p>但是多个头真的能关注到不同的信息吗？</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1905.09418.pdf">Analyzing Multi-Head Self-Attention:Specialized Heads Do the Heavy Lifting, the Rest Can Be Pruned</a>写了可以把几个头斩掉，挖坑以后写。</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1810.10183.pdf">Multi-Head Attention with Disagreement Regularization</a>写了可以通过正则化让多个头关注不同的地方，挖坑以后写。</p>
+</blockquote>
+<blockquote>
+<h3 id="术语解释"><a href="#术语解释" class="headerlink" title="术语解释"></a>术语解释</h3><p>看文献的时候可能遇到一些术语，专门在这里解释一下</p>
+<ul>
+<li>SA：self attention 自注意力</li>
+<li>MSA：multi-head self attention 多头自注意力</li>
+<li>d_head, d_model：pytorch中分别表示头数和$W$的隐藏维度。要和后面的dim_feedforward区分开。</li>
+<li>tgt，memory：Transformer里面Decoder的self attention层，Q和KV不一样，tgt是Q，memory是KV。</li>
+</ul>
+</blockquote>
 
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/">未分类</a>
-                    
-                  </div>
-                
                 
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
-                    
                       <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                      <a class="hover-with-bg" href="/tags/Self-Attention/">Self-Attention</a>
                     
                   </div>
                 
@@ -323,18 +340,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/02/23/LaTex%20Math%E8%AF%AD%E6%B3%95/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">LaTex Math语法</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/02/23/Linux%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0(%E9%9A%8F%E7%BC%98%E4%BC%9A%E6%9B%B4%E6%96%B0)/">
-                        <span class="hidden-mobile">Linux基础学习笔记(随缘会更新)</span>
+                      <a href="/2021/10/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0Pytorch%E5%AE%9E%E7%8E%B0/">
+                        <span class="hidden-mobile">深度学习之梯度累加（Pytorch实现）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
