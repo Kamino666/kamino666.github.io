@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>英语论文写作</title>
+    <link href="/2021/10/16/%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/"/>
+    <url>/2021/10/16/%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/</url>
+    
+    <content type="html"><![CDATA[<h1 id="英语论文写作"><a href="#英语论文写作" class="headerlink" title="英语论文写作"></a>英语论文写作</h1><p>[TOC]</p><h2 id="标题的方法"><a href="#标题的方法" class="headerlink" title="标题的方法"></a>标题的方法</h2><p><strong>有什么效果？、吸引读者（把有意思的放上来）、中心明确</strong></p><h2 id="摘要的写法"><a href="#摘要的写法" class="headerlink" title="摘要的写法"></a>摘要的写法</h2><blockquote><p>Attention is all you need 论文摘要</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png" alt="image-20211016161830899"></p><p><code>be based on</code>：基于    <code>propose</code>：提出    <code>achieve 28.4 BLEU</code>：取得了score</p><p><code>require less time to train</code>：需要更少的时间训练</p></blockquote><blockquote><p>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer 论文摘要</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016162734.png" alt="image-20211016162734511"></p><p><code>exploit</code>：发掘、开采    <code>generalize</code>：推广（就是瞎改人家模型）</p><p><code>capable</code>：be able to    <code>digest</code>：消化，使用特征</p></blockquote><blockquote><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016164135.png" alt="image-20211016164135568"></p></blockquote><h2 id="Introduction的写法"><a href="#Introduction的写法" class="headerlink" title="Introduction的写法"></a>Introduction的写法</h2><p>近3年文献。</p><p>娓娓道来，把读者思路带偏到自己这里</p><h2 id="i-e-e-g-etc-et-al-的用法"><a href="#i-e-e-g-etc-et-al-的用法" class="headerlink" title="i.e. e.g. etc. et al.的用法"></a>i.e. e.g. etc. et al.的用法</h2><p><code>i.e.</code>：意思是“那就是说，换句话说”，“in other words”。例子：Four phase states (i.e., 0◦, 90◦, 180◦, and 270◦) are realized through the combination of the phase shifter and the array radiation element. 在这里是解释四种状态是哪四种。<code>[ˌaɪˈiː]或者that is</code></p><p><code>e.g.</code>：意思是“举个例子”，“for example”。例子：The evaluation noted that the employee had frequently exhibited irresponsible behavior (e.g., coming to work late, failing to complete projects).在这里是举例什么是irresponsible behavior。<code> [ ,i&#39;dʒi ]或者for example</code></p><p><code>etc.</code>：意思是“等等”，“et cetera”。例子：”We could use cupcakes, cookies, etc.” 不用and，在e.g.后也不用加etc.，指人的时候也不能用etc.，假如etc.后面结束不用加句号，但是别的符号要加。<code> [ˌet ˈsetərə ]</code></p><p><code>et al.</code>：意思是“等人”，“ et alia”。同etc.用法，但是指的是人。 <code> [ˌet ˈæl ]或者and so on</code></p><h2 id="定冠词与不定冠词"><a href="#定冠词与不定冠词" class="headerlink" title="定冠词与不定冠词"></a>定冠词与不定冠词</h2><p><strong>不定冠词：a an；定冠词：the；零冠词：&lt;空&gt;</strong></p><p>参考：<a href="https://www.zhihu.com/question/46825717/answer/652234107"> 英文论文写作有哪些需要注意的细节？ - 知乎 (zhihu.com)</a></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016104857.jpeg" alt="img"></p><ol><li><p>标题加不加the、a、an都可以</p><p>A Novel Reconfigurable Miniaturized Phase Shifter for 2-D Beam Steering 2-Bit Array Applications</p><p>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</p></li><li><p>单数可数名词不能单独出现</p><p>加a an the</p></li><li><p>名词后有修饰短语（介词短语the cat on the desk，定语从句the people who is my brother，非谓语动词the man fighting the dog，同位语，形容词词组）</p></li><li><p>不能单独发音的大写缩略词（NASA，the FBI）</p></li><li><p>地理名词太难了，建议写作的时候现查</p></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>未分类</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>论文写作</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Self Attention详解</title>
     <link href="/2021/10/04/Self%20Attention/"/>
     <url>/2021/10/04/Self%20Attention/</url>

@@ -13,31 +13,28 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="对于Self-attention的原理进行充分的解释">
+  <meta name="description" content="暂略">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="对于Self-attention的原理进行充分的解释">
+  <meta name="description" content="暂略">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Self Attention详解">
-<meta property="og:url" content="http://blog.kamino.link/2021/10/04/Self%20Attention/index.html">
+<meta property="og:title" content="英语论文写作">
+<meta property="og:url" content="http://blog.kamino.link/2021/10/16/%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="对于Self-attention的原理进行充分的解释">
+<meta property="og:description" content="暂略">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104728.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205747.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205819.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205841.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205902.jpeg">
-<meta property="article:published_time" content="2021-10-04T09:01:01.000Z">
-<meta property="article:modified_time" content="2021-10-15T13:00:27.009Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016162734.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016164135.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016104857.jpeg">
+<meta property="article:published_time" content="2021-10-16T02:23:00.000Z">
+<meta property="article:modified_time" content="2021-10-16T08:41:37.318Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="深度学习">
-<meta property="article:tag" content="Self-Attention">
+<meta property="article:tag" content="论文写作">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png">
   
-  <title>Self Attention详解 - Kamino&#39;s Blog</title>
+  <title>英语论文写作 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -191,12 +188,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004170553.jpg') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016102622.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Self Attention详解">
+            <span class="h2" id="subtitle" title="英语论文写作">
               
             </span>
 
@@ -206,8 +203,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-04 17:01" pubdate>
-        2021年10月4日 下午
+      <time datetime="2021-10-16 10:23" pubdate>
+        2021年10月16日 上午
       </time>
     </span>
   
@@ -217,7 +214,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.1k 字
+      1.3k 字
     </span>
   
 
@@ -226,7 +223,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      4 分钟
     </span>
   
 
@@ -263,51 +260,56 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Self Attention详解</h1>
+            <h1 style="display: none">英语论文写作</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年10月15日 晚上
+                  本文最后更新于：2021年10月16日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Self-Attention详解"><a href="#Self-Attention详解" class="headerlink" title="Self Attention详解"></a>Self Attention详解</h1><p>对于Self-attention的原理进行充分的解释</p>
-<blockquote>
-<p>参考资料</p>
-<p>Google本家论文：<strong>Attention Is All You Need</strong></p>
-<p>Pytorch官方Transformer实现：<a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/_modules/torch/nn/modules/transformer.html#Transformer">torch.nn.modules.transformer — PyTorch 1.9.1 documentation</a></p>
-<p><a target="_blank" rel="noopener" href="http://jalammar.github.io/illustrated-transformer/">The Illustrated Transformer – Jay Alammar – Visualizing machine learning one concept at a time. (jalammar.github.io)</a></p>
-<p><a target="_blank" rel="noopener" href="https://towardsdatascience.com/transformers-explained-visually-part-3-multi-head-attention-deep-dive-1c1ff1024853">Transformers Explained Visually (Part 3): Multi-head Attention, deep dive | by Ketan Doshi | Towards Data Science</a></p>
-</blockquote>
-<h2 id="动机"><a href="#动机" class="headerlink" title="动机"></a>动机</h2><p>这一块李宏毅老师讲的很好。<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av56239558">李宏毅-Transformer_哔哩哔哩_bilibili</a></p>
-<p>从Seq2Seq的角度来说，深度学习开始用的就是RNN类网络，但是这种做法很难并行计算，并且每个状态传递的信息用的是一个hidden向量。之后有人用CNN代替RNN，CNN的卷积操作可以实行并行计算，但是由于卷积核的大小不能太大（否则计算太复杂），感受野范围受限，要像RNN那样感受到全局信息就要多层CNN卷积，就像VGG那样不断缩小H、W维度，增厚C维度，但是这样计算量还是会提高很多。</p>
-<p>因此，Google想弄出一个既能关照到每个输入的信息，也不需要太多计算的网络。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104306.png" srcset="/img/loading.gif" lazyload alt="CNN与RNN"></p>
-<h2 id="数学原理"><a href="#数学原理" class="headerlink" title="数学原理"></a>数学原理</h2><p>这块也借用李宏毅老师的PPT，和RNN类似，自注意力也是一个Seq2Seq的模型，输入序列，输出也是序列，可以把内部想象成一个黑箱，SA（Self Attention）的输入和输出与RNN相同。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211004104728.png" srcset="/img/loading.gif" lazyload alt="RNN与自注意力"></p>
-<p>论文中的公式如下，注意力由三个张量Q、K、V得到，而QKV是由输入张量X作三个相似的矩阵运算得到的。Q代表Query，K代表Key，V代表Value（其中K和V的长度一定要相同，和V可以不同），这是一个类似<strong>查询</strong>的结构：我们用<strong>Q</strong>的每一个值$Q_i$（<strong>Q</strong>是有长度的），去查询每一个$K_i$，然后通过Softmax函数得到注意概率α，再用这个α来重新分配对<strong>V</strong>的注意力。<strong>我们最终要的是（一个参考了V的）崭新的Q（或者是X）</strong><br>$$<br>Attention(Q, K, V) = softmax(\frac{QK^T}{\sqrt{d_{model}}})V<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205747.png" srcset="/img/loading.gif" lazyload alt="QKV的由来"></p>
-<p>数学上，用Query查询Key的过程是Q、K两个矩阵的内积，内积这个操作能够计算两个张量的相似度，余弦相似度的分子就是内积。这个地方的具体解释先挖个坑，总之我们能通过这个乘法操作，把$X\times W$得到的embed维度给消掉，得到一个$S<em>T$的矩阵（如下图，假设Q的长度和KV不一样）。*<em>这个矩阵的每一行就可以看作是Query的某个元素对K的每一个元素的”注意力“。从深度学习的角度，这个注意力得到的方式是对矩阵$W^Q$$W^K$$W^V$的学习。</em></em></p>
-<p>上一段”注意力“打引号是因为这还不是真正的注意力，<strong>注意力的特点是对于T长的张量的每个元素的注意力总和为1</strong>，就像有100块钱给T个人分，每个人分到的钱数的总和就是100，不能多也不能少，<strong>这个操作通过$Softmax$函数实现。</strong>而公式中除以$\sqrt{d_{model}}$的操作是为了归一化，用人话说就是让矩阵的值不要太大。这里的详细解释也挖个坑。假如要对自注意力层进行可视化的话，一般被可视化的就是这个α矩阵。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205819.png" srcset="/img/loading.gif" lazyload alt="公式示意图"></p>
-<p>公式最后一部分与V相乘的操作就很容易理解了，我们要的是新的tgt，所以要通过分配注意力到V上来实现。加入tgt和memory像图中一样是不同的，那么tgt的信息融入在了α矩阵，然后通过最后这个操作结合上memory的信息。</p>
-<h2 id="更进一步-Multi-Head"><a href="#更进一步-Multi-Head" class="headerlink" title="更进一步 Multi Head"></a>更进一步 Multi Head</h2><p>多头注意力就是通过设置多个W来得到多种QKV，然后进行上面的运算，是增加模型复杂度（拟合能力）的一种手段。但是这样就会得到d_head个attention，维度是$S<em>emb</em>d_{head}$，我们可以通过一个全连接层将后两个维度$emb*d_{head}$降维回$emb$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205841.png" srcset="/img/loading.gif" lazyload alt="多头注意力"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211015205902.jpeg" srcset="/img/loading.gif" lazyload alt="多“头”注意力"></p>
-<blockquote>
-<p>但是多个头真的能关注到不同的信息吗？</p>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1905.09418.pdf">Analyzing Multi-Head Self-Attention:Specialized Heads Do the Heavy Lifting, the Rest Can Be Pruned</a>写了可以把几个头斩掉，挖坑以后写。</p>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1810.10183.pdf">Multi-Head Attention with Disagreement Regularization</a>写了可以通过正则化让多个头关注不同的地方，挖坑以后写。</p>
+              <h1 id="英语论文写作"><a href="#英语论文写作" class="headerlink" title="英语论文写作"></a>英语论文写作</h1><p>[TOC]</p>
+<h2 id="标题的方法"><a href="#标题的方法" class="headerlink" title="标题的方法"></a>标题的方法</h2><p><strong>有什么效果？、吸引读者（把有意思的放上来）、中心明确</strong></p>
+<h2 id="摘要的写法"><a href="#摘要的写法" class="headerlink" title="摘要的写法"></a>摘要的写法</h2><blockquote>
+<p>Attention is all you need 论文摘要</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png" srcset="/img/loading.gif" lazyload alt="image-20211016161830899"></p>
+<p><code>be based on</code>：基于    <code>propose</code>：提出    <code>achieve 28.4 BLEU</code>：取得了score</p>
+<p><code>require less time to train</code>：需要更少的时间训练</p>
 </blockquote>
 <blockquote>
-<h3 id="术语解释"><a href="#术语解释" class="headerlink" title="术语解释"></a>术语解释</h3><p>看文献的时候可能遇到一些术语，专门在这里解释一下</p>
-<ul>
-<li>SA：self attention 自注意力</li>
-<li>MSA：multi-head self attention 多头自注意力</li>
-<li>d_head, d_model：pytorch中分别表示头数和$W$的隐藏维度。要和后面的dim_feedforward区分开。</li>
-<li>tgt，memory：Transformer里面Decoder的self attention层，Q和KV不一样，tgt是Q，memory是KV。</li>
-</ul>
+<p>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer 论文摘要</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016162734.png" srcset="/img/loading.gif" lazyload alt="image-20211016162734511"></p>
+<p><code>exploit</code>：发掘、开采    <code>generalize</code>：推广（就是瞎改人家模型）</p>
+<p><code>capable</code>：be able to    <code>digest</code>：消化，使用特征</p>
 </blockquote>
+<blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016164135.png" srcset="/img/loading.gif" lazyload alt="image-20211016164135568"></p>
+</blockquote>
+<h2 id="Introduction的写法"><a href="#Introduction的写法" class="headerlink" title="Introduction的写法"></a>Introduction的写法</h2><p>近3年文献。</p>
+<p>娓娓道来，把读者思路带偏到自己这里</p>
+<h2 id="i-e-e-g-etc-et-al-的用法"><a href="#i-e-e-g-etc-et-al-的用法" class="headerlink" title="i.e. e.g. etc. et al.的用法"></a>i.e. e.g. etc. et al.的用法</h2><p><code>i.e.</code>：意思是“那就是说，换句话说”，“in other words”。例子：Four phase states (i.e., 0◦, 90◦, 180◦, and 270◦) are realized through the combination of the phase shifter and the array radiation element. 在这里是解释四种状态是哪四种。<code>[ˌaɪˈiː]或者that is</code></p>
+<p><code>e.g.</code>：意思是“举个例子”，“for example”。例子：The evaluation noted that the employee had frequently exhibited irresponsible behavior (e.g., coming to work late, failing to complete projects).在这里是举例什么是irresponsible behavior。<code> [ ,i&#39;dʒi ]或者for example</code></p>
+<p><code>etc.</code>：意思是“等等”，“et cetera”。例子：”We could use cupcakes, cookies, etc.” 不用and，在e.g.后也不用加etc.，指人的时候也不能用etc.，假如etc.后面结束不用加句号，但是别的符号要加。<code> [ˌet ˈsetərə ]</code></p>
+<p><code>et al.</code>：意思是“等人”，“ et alia”。同etc.用法，但是指的是人。 <code> [ˌet ˈæl ]或者and so on</code></p>
+<h2 id="定冠词与不定冠词"><a href="#定冠词与不定冠词" class="headerlink" title="定冠词与不定冠词"></a>定冠词与不定冠词</h2><p><strong>不定冠词：a an；定冠词：the；零冠词：&lt;空&gt;</strong></p>
+<p>参考：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/46825717/answer/652234107"> 英文论文写作有哪些需要注意的细节？ - 知乎 (zhihu.com)</a></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016104857.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
+<ol>
+<li><p>标题加不加the、a、an都可以</p>
+<p>A Novel Reconfigurable Miniaturized Phase Shifter for 2-D Beam Steering 2-Bit Array Applications</p>
+<p>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</p>
+</li>
+<li><p>单数可数名词不能单独出现</p>
+<p>加a an the</p>
+</li>
+<li><p>名词后有修饰短语（介词短语the cat on the desk，定语从句the people who is my brother，非谓语动词the man fighting the dog，同位语，形容词词组）</p>
+</li>
+<li><p>不能单独发音的大写缩略词（NASA，the FBI）</p>
+</li>
+<li><p>地理名词太难了，建议写作的时候现查</p>
+</li>
+</ol>
 
             </div>
             <hr>
@@ -325,9 +327,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Self-Attention/">Self-Attention</a>
+                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
                     
                   </div>
                 
@@ -344,18 +344,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/16/%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">英语论文写作</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0Pytorch%E5%AE%9E%E7%8E%B0/">
-                        <span class="hidden-mobile">深度学习之梯度累加（Pytorch实现）</span>
+                      <a href="/2021/10/04/Self%20Attention/">
+                        <span class="hidden-mobile">Self Attention详解</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
