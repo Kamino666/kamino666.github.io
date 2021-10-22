@@ -1,0 +1,681 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="Video Swin Transformer[TOC] 简介Swin Transformer分为两篇论文，一篇是21年5月的Swin Transformer: Hierarchical Vision Transformer using Shifted Windows，另一篇是21年6月的Video Swin Transformer。其中Swin Transformer是对ViT的改进，使用分层的T">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Video Swin Transformer">
+<meta property="og:url" content="http://blog.kamino.link/2021/10/22/Video%20Swin%20Transformer/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="Video Swin Transformer[TOC] 简介Swin Transformer分为两篇论文，一篇是21年5月的Swin Transformer: Hierarchical Vision Transformer using Shifted Windows，另一篇是21年6月的Video Swin Transformer。其中Swin Transformer是对ViT的改进，使用分层的T">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806101614.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806134847.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022171846.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022171851.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022171858.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210912160410.jpeg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022172033.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911112942.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911112842.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911112942.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911173444.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022172515.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806134847.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806135138.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806135501.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806135759.png">
+<meta property="article:published_time" content="2021-10-22T09:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-22T09:25:21.282Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Transformer">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806101614.png">
+  
+  <title>Video Swin Transformer - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806134847.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Video Swin Transformer">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-10-22 17:00" pubdate>
+        2021年10月22日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      11 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Video Swin Transformer</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年10月22日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="Video-Swin-Transformer"><a href="#Video-Swin-Transformer" class="headerlink" title="Video Swin Transformer"></a>Video Swin Transformer</h1><p>[TOC]</p>
+<h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Swin Transformer分为两篇论文，一篇是21年5月的<code>Swin Transformer: Hierarchical Vision Transformer using Shifted Windows</code>，另一篇是21年6月的<code>Video Swin Transformer</code>。其中<strong>Swin Transformer</strong>是对ViT的改进，使用分层的Transformer和偏移窗（shifted window）来提升效果并节约算力。<strong>Video Swin Transformer</strong>则是像3D-CNN对于CNN的改进一样，Video Swin Transformer将这种方法拓展到了视频上，为同一个团队研究成果。</p>
+<h2 id="模型基本结构"><a href="#模型基本结构" class="headerlink" title="模型基本结构"></a>模型基本结构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806101614.png" srcset="/img/loading.gif" lazyload alt="Swin Transformer"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806134847.png" srcset="/img/loading.gif" lazyload alt="Video Swin Transformer"></p>
+<p>第一张图是处理图像的Swin Transformer，第二行图是处理视频的Video Swin Transformer，以图像为例：</p>
+<ul>
+<li>初始的$H \times W \times 3$是RGB图片三通道，经过<strong>Patch Partition</strong>之后，每16个像素合成一个<strong>Patch</strong>，此时维度变成$\frac{H}{4} \times \frac{W}{4} \times 48$，</li>
+<li>再经过一个<strong>全连（Linear Embedding）</strong>控制通道的维度为可变值C，此时维度为$\frac{H}{4} \times \frac{W}{4} \times C$。</li>
+<li>之后每个Stage还会有个<strong>Patch Merging</strong>层，将4个Patch合成一个新的Patch，所以分辨率又下降了$2\times 2$，再进行全连来控制通道维度为$2C$，此时维度变为$\frac{H}{8} \times \frac{W}{8} \times 2C$​​。</li>
+</ul>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022171846.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022171851.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+
+
+
+
+
+<blockquote>
+<p>这一步是Hierarchical的体现，模仿的是ResNet和其他CNN，不断缩小图像并加深channel。如上图，好处就是比较ViT能够对更细微的Local特征进行学习，并能减少需要的算力。</p>
+</blockquote>
+<h2 id="Swin-Transformer-block"><a href="#Swin-Transformer-block" class="headerlink" title="Swin Transformer block"></a>Swin Transformer block</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022171858.png" srcset="/img/loading.gif" lazyload alt="block"></p>
+<p>这就是一个Swin Transformer Block，由LN（Layer Normalization）、MLP（多层感知器）、MSA（多头self-attention）组成，其中MSA有window和shifted-window两种。</p>
+<p><strong>LN就是与batch无关的标准化</strong>，用均值和标准方差对数据进行标准化处理，如下图。<a target="_blank" rel="noopener" href="https://blog.csdn.net/Xidian185/article/details/105542121">Transformer代码详解与项目实战之Layer Normalization_Xidian185的专栏-CSDN博客</a></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210912160410.jpeg" srcset="/img/loading.gif" lazyload alt="标准化"></p>
+<p><strong>W-MSA</strong>是在一个window里的自注意力模块，图中每个灰色小方格都是由若干像素组成的，用来计算self-attention的最小处理单位。在W-MSA里可以通过指定window大小来在小范围进行self-attention。两个MSA的不同之处在于有没有shifted window，如图。这种shift是将整体往右下循环移动(2, 2)，左上角的4x4就到了中间，右下角的4x4就分到了四个角。虽然window的数量从4变成了9，但是作者在算法上证明了这两种需要算力相同。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022172033.png" srcset="/img/loading.gif" lazyload alt="Shifted Window"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911112942.png" srcset="/img/loading.gif" lazyload alt="Attention"></p>
+<h2 id="相对位置偏置（relative-position-bias）"><a href="#相对位置偏置（relative-position-bias）" class="headerlink" title="相对位置偏置（relative position bias）"></a>相对位置偏置（relative position bias）</h2><p>self-attention的原始公式是</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911112842.png" srcset="/img/loading.gif" lazyload alt="Attention"></p>
+<p>swin-transformer里面改成了这样</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911112942.png" srcset="/img/loading.gif" lazyload alt="Attention with bias"></p>
+<p>通过增加一个Bias来体现一个window内不同patch的相对位置（local），类似Transformer里的Positional-Encoding。</p>
+<p>对于二维的swin-transformer，$Q(<em>,dim) @ K^T(dim,</em>) = (<em>,</em>)$​​​​，即结果和dim无关，是原特征的各维度相乘，Attention张量形状为<code>(M*B, num_heads, M*M, M*M)</code>，也就是说，我们需要一个类似的矩阵B。</p>
+<p>下面结合二维Transformer源码来理解，假设$window_size=M=4$​​​。</p>
+<p>首先形成relative_position可学习参数，用0初始化。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># nn.Parameter和tensor差不多，但是会自动认为是可训练参数</span><br><span class="hljs-comment"># 2*Wh-1 * 2*Ww-1, nH 假如window是个4x4的，那么这个参数就是(7*7, nH)矩阵</span><br>self.relative_position_bias_table = nn.Parameter(<br>	torch.zeros(<br>		(<span class="hljs-number">2</span> * window_size[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>) * (<span class="hljs-number">2</span> * window_size[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span>),<br>		num_heads))  <br></code></pre></td></tr></table></figure>
+
+<p>构建每个点的坐标coords，总共16个二维坐标。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># get pair-wise relative position index for each token inside the window</span><br><span class="hljs-comment"># 构建坐标的表格 coords.shape: [2,4,4] 即以左上角为原点的二维坐标</span><br>coords_h = torch.arange(self.window_size[<span class="hljs-number">0</span>])<br>coords_w = torch.arange(self.window_size[<span class="hljs-number">1</span>])<br>coords = torch.stack(torch.meshgrid([coords_h, coords_w]))  <span class="hljs-comment"># 2, Wh, Ww</span><br>coords_flatten = torch.flatten(coords, <span class="hljs-number">1</span>)  <span class="hljs-comment"># 2, Wh*Ww 即[2,16]</span><br></code></pre></td></tr></table></figure>
+
+<p>获取relative_position_index。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># [2,16,1] - [2,1,16] = [2,16,16]</span><br>relative_coords = coords_flatten[:, :, <span class="hljs-literal">None</span>] - coords_flatten[:, <span class="hljs-literal">None</span>, :]<br><span class="hljs-comment"># 变形-&gt;[16,16,2]</span><br>relative_coords = relative_coords.permute(<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">0</span>).contiguous()<br><br><span class="hljs-comment"># 所有坐标+3，即坐标没负数</span><br>relative_coords[:, :, <span class="hljs-number">0</span>] += self.window_size[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>  <span class="hljs-comment"># shift to start from 0</span><br>relative_coords[:, :, <span class="hljs-number">1</span>] += self.window_size[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span><br><br><span class="hljs-comment"># ？不明白的乘7</span><br>relative_coords[:, :, <span class="hljs-number">0</span>] *= <span class="hljs-number">2</span> * self.window_size[<span class="hljs-number">1</span>] - <span class="hljs-number">1</span><br><span class="hljs-comment"># sum去掉最后一维，即二维坐标转一维</span><br>relative_position_index = relative_coords.<span class="hljs-built_in">sum</span>(-<span class="hljs-number">1</span>)  <span class="hljs-comment"># Wh*Ww, Wh*Ww</span><br>self.register_buffer(<span class="hljs-string">&quot;relative_position_index&quot;</span>, relative_position_index)<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210911173444.png" srcset="/img/loading.gif" lazyload alt="运行结果"></p>
+<p><code>relative_position_index</code>的范围是0~48，即49种数，对应<code>relative_position_bias_table</code>的<code>49,dH</code>。这个table就是相对位置编码，每个数就是偏移量，值为0的和值为1的相对距离就是1，对应着不同的bias。</p>
+<p>在forward中的（部分）代码如下</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">forward</span>(<span class="hljs-params">self, x, mask=<span class="hljs-literal">None</span></span>):</span><br>       <span class="hljs-comment"># 相对位置偏置 = table[index].view(M*M,M*M,nH)</span><br>       relative_position_bias = self.relative_position_bias_table[<br>		self.relative_position_index.view(-<span class="hljs-number">1</span>)]<br>               .view(<br>               self.window_size[<span class="hljs-number">0</span>] * self.window_size[<span class="hljs-number">1</span>],<br>               self.window_size[<span class="hljs-number">0</span>] * self.window_size[<span class="hljs-number">1</span>],-<span class="hljs-number">1</span>)  <span class="hljs-comment"># Wh*Ww,Wh*Ww,nH</span><br>       <span class="hljs-comment"># 变形</span><br>       relative_position_bias = relative_position_bias.permute(<span class="hljs-number">2</span>, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>).contiguous()  <span class="hljs-comment"># nH, Wh*Ww, Wh*Ww</span><br>       attn = attn + relative_position_bias.unsqueeze(<span class="hljs-number">0</span>) <span class="hljs-comment"># (1, num_heads, windowsize, windowsize)</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="预训练模型"><a href="#预训练模型" class="headerlink" title="预训练模型"></a>预训练模型</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211022172515.png" srcset="/img/loading.gif" lazyload></p>
+<p>作者调出了4种大小的模型。</p>
+<h2 id="Video-Swin-Transformer用Swin-Transformer进行初始化"><a href="#Video-Swin-Transformer用Swin-Transformer进行初始化" class="headerlink" title="Video Swin Transformer用Swin Transformer进行初始化"></a>Video Swin Transformer用Swin Transformer进行初始化</h2><p>略</p>
+<h2 id="最终能得到的"><a href="#最终能得到的" class="headerlink" title="最终能得到的"></a>最终能得到的</h2><h2 id="Video-Swin-Transformer-1"><a href="#Video-Swin-Transformer-1" class="headerlink" title="Video Swin Transformer"></a>Video Swin Transformer</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806134847.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h3><p>相比于图像的，多了T轴，Patch等元素也都变成3D的了。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806135138.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="shifted-window"><a href="#shifted-window" class="headerlink" title="shifted window"></a>shifted window</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806135501.png" srcset="/img/loading.gif" lazyload></p>
+<p>token可以看作是最基本的像素，红色透明立方体是窗，为了减少计算量，swin transformer在单独的窗内计算self-attention而不是在整张图。</p>
+<p>通过两种window来链接不同的token，这两种的计算效率经过验证是一样的。</p>
+<h3 id="模型类型"><a href="#模型类型" class="headerlink" title="模型类型"></a>模型类型</h3><p>作者train出了这么几个</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210806135759.png" srcset="/img/loading.gif" lazyload></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Transformer/">Transformer</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/10/16/%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">
+                        <span class="hidden-mobile">英语论文写作</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
