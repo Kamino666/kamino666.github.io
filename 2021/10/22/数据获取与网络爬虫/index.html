@@ -13,28 +13,35 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="当下深度学习对数据的要求越来越高，更好的数据往往就能训练出更好的模型，为了得到更好的数据，各路大佬们都绞尽脑汁，本文将介绍5种不同的构建数据集的方法。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="英语论文写作[TOC] 标题的方法有什么效果？、吸引读者（把有意思的放上来）、中心明确 摘要的写法 Attention is all you need 论文摘要  be based on：基于    propose：提出    achieve 28.4 BLEU：取得了score require less time to train：需要更少的时间训练   A Better Use of Audi">
+  <meta name="description" content="当下深度学习对数据的要求越来越高，更好的数据往往就能训练出更好的模型，为了得到更好的数据，各路大佬们都绞尽脑汁，本文将介绍5种不同的构建数据集的方法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="英语论文写作">
-<meta property="og:url" content="http://blog.kamino.link/2021/10/16/%E8%8B%B1%E6%96%87%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/index.html">
+<meta property="og:title" content="如何构建数据集？大佬们都这么干的……">
+<meta property="og:url" content="http://blog.kamino.link/2021/10/22/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E4%B8%8E%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="英语论文写作[TOC] 标题的方法有什么效果？、吸引读者（把有意思的放上来）、中心明确 摘要的写法 Attention is all you need 论文摘要  be based on：基于    propose：提出    achieve 28.4 BLEU：取得了score require less time to train：需要更少的时间训练   A Better Use of Audi">
+<meta property="og:description" content="当下深度学习对数据的要求越来越高，更好的数据往往就能训练出更好的模型，为了得到更好的数据，各路大佬们都绞尽脑汁，本文将介绍5种不同的构建数据集的方法。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016162734.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016164135.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016104857.jpeg">
-<meta property="article:published_time" content="2021-10-16T02:23:00.000Z">
-<meta property="article:modified_time" content="2021-10-22T09:51:28.572Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023091413.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023103735.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023104035.jpeg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023104725.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023105305.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023105930.jpeg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023105942.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023112740.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023112950.png">
+<meta property="article:published_time" content="2021-10-22T14:00:00.000Z">
+<meta property="article:modified_time" content="2021-10-23T04:39:01.589Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="论文写作">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="数据获取">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023091413.png">
   
-  <title>英语论文写作 - Kamino&#39;s Blog</title>
+  <title>如何构建数据集？大佬们都这么干的…… - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -188,12 +195,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016102622.png') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023123811.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="英语论文写作">
+            <span class="h2" id="subtitle" title="如何构建数据集？大佬们都这么干的……">
               
             </span>
 
@@ -203,8 +210,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-16 10:23" pubdate>
-        2021年10月16日 上午
+      <time datetime="2021-10-22 22:00" pubdate>
+        2021年10月22日 晚上
       </time>
     </span>
   
@@ -214,7 +221,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      2.8k 字
     </span>
   
 
@@ -223,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4 分钟
+      9 分钟
     </span>
   
 
@@ -260,56 +267,106 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">英语论文写作</h1>
+            <h1 style="display: none">如何构建数据集？大佬们都这么干的……</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年10月22日 下午
+                  本文最后更新于：2021年10月23日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="英语论文写作"><a href="#英语论文写作" class="headerlink" title="英语论文写作"></a>英语论文写作</h1><p>[TOC]</p>
-<h2 id="标题的方法"><a href="#标题的方法" class="headerlink" title="标题的方法"></a>标题的方法</h2><p><strong>有什么效果？、吸引读者（把有意思的放上来）、中心明确</strong></p>
-<h2 id="摘要的写法"><a href="#摘要的写法" class="headerlink" title="摘要的写法"></a>摘要的写法</h2><blockquote>
-<p>Attention is all you need 论文摘要</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016161830.png" srcset="/img/loading.gif" lazyload alt="image-20211016161830899"></p>
-<p><code>be based on</code>：基于    <code>propose</code>：提出    <code>achieve 28.4 BLEU</code>：取得了score</p>
-<p><code>require less time to train</code>：需要更少的时间训练</p>
-</blockquote>
+              <h1 id="如何构建数据集？大佬们都这么干的……"><a href="#如何构建数据集？大佬们都这么干的……" class="headerlink" title="如何构建数据集？大佬们都这么干的……"></a>如何构建数据集？大佬们都这么干的……</h1><p>当下深度学习对数据的要求越来越高，更好的数据往往就能训练出更好的模型，为了得到更好的数据，各路大佬们都绞尽脑汁，本文将介绍5种不同的构建数据集的方法。</p>
+<h2 id="从最普通的开始吧——MNIST"><a href="#从最普通的开始吧——MNIST" class="headerlink" title="从最普通的开始吧——MNIST"></a>从最普通的开始吧——MNIST</h2><p><strong>MNIST</strong>数据集由2018年图灵奖得主、CNN之父——<strong>Yann LeCun</strong>大佬收集得到，包含数万个20x20的手写数字图片组成，一般用在机器学习识别手写数字的任务上，学习卷积神经网络的人大部分都从这个数据集入门的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023091413.png" srcset="/img/loading.gif" lazyload alt="来源 Tensorflow"></p>
+<p>LeCun大佬收集数据的方式很简单，先是从500位高中生中收集到了58,527个图像，这就是SD-1数据集，但是这样数据来源不够随机，所以后面又从人口普查局的员工中抽选了250个人构建了SD-3数据集，把这两个数据集混合之后，构成了MNIST数据集。虽然没有特别说明，但是人口普查局的员工大概是分布在各个地方的，而且混合了成人和高中生的数据集也更加精确。</p>
+<div class="note note-success">
+            <p>构建数据集方法1 Get√:+1:：</p><p>找一堆工具人创造数据、标记数据。</p><p>优点：想要啥就有啥</p><p>缺点：假如要获取海量数据，成本就非常非常非常高</p>
+          </div>
+
+<h2 id="自动化获取数据——网络爬虫"><a href="#自动化获取数据——网络爬虫" class="headerlink" title="自动化获取数据——网络爬虫"></a>自动化获取数据——网络爬虫</h2><p>目前的大规模数据集基本都离不开网络爬虫，通过网络爬虫，可以自动化获取存在于互联网上的海量数据，比如用于图像识别的<strong>ImageNet</strong>数据集、用于视频描述的<strong>MSR-VTT</strong>数据集、用于动作识别的<strong>Kinetics</strong>数据集等等。</p>
+<p>包含视频文件的Kinetics和MSR-VTT数据集都是使用网络爬虫在YouTube上搜索关键字爬取到视频数据的，假如你也想用这种方式构建自己的数据集，可以使用<a target="_blank" rel="noopener" href="https://github.com/ytdl-org/youtube-dl">这个工具</a>或者<a target="_blank" rel="noopener" href="https://github.com/MrS0m30n3/youtube-dl-gui">这个带界面的工具</a>。</p>
+<div class="note note-success">
+            <p>构建数据集方法2 Get√:+1:：</p><p>用网络爬虫获取数据，但是还是得找一堆工具人标记数据。</p><p>优点：能获取到很多数据</p><p>缺点：标注成本很高</p>
+          </div>
+
+<h2 id="找不到那么多工具人——那就众包吧"><a href="#找不到那么多工具人——那就众包吧" class="headerlink" title="找不到那么多工具人——那就众包吧"></a>找不到那么多工具人——那就众包吧</h2><p>众包指的是一个公司或机构把过去由员工执行的工作任务，以自由自愿的形式外包给非特定的（而且通常是大型的）大众志愿者的做法。Amazon Mechanical Tuckers (AMT)是目前很多人使用的众包平台，发布者把任务发布在平台上，想要做这项工作的人就能接受任务并获取报酬，与外包不同，众包的特点是发布的任务可能由成百上千个来自全球各地的人完成。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023103735.png" srcset="/img/loading.gif" lazyload alt="Amazon Mechanical Turk"></p>
+<p><strong>ImageNet</strong>数据集就是由AMT平台上的来自167个国家的四万九千个人完成标注的。为了保证数据的可信度，同一张图片可能由四五个人进行标注，然后选出最多人选择的那个标签。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023104035.jpeg" srcset="/img/loading.gif" lazyload alt="CVPR 2017 李飞飞PPT"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023104725.png" srcset="/img/loading.gif" lazyload alt="AMT工作界面"></p>
+<div class="note note-success">
+            <p>构建数据集方法3 Get√:+1:：</p><p>使用“工具人“平台来对数据进行标注。</p><p>优点：Money is all you need</p><p>缺点：No money</p>
+          </div>
+
+<h2 id="我不想花那么多钱——那就白嫖！"><a href="#我不想花那么多钱——那就白嫖！" class="headerlink" title="我不想花那么多钱——那就白嫖！"></a>我不想花那么多钱——那就白嫖！</h2><p><strong>reCAPTCHA</strong>是由卡内基梅隆大学所开发的验证码系统，这个系统不仅能为网站抵挡住一部分的网络爬虫，同时也能白嫖访问用户的智力。</p>
+<p>刚开始，reCAPTCHA是这样的，用户被要求输入两个单词，其中一个单词是能被计算机识别的（即知道答案的），另一个单词是无法正确识别的（即不知道答案的），假如访客答对了已知答案的那个单词，那么就能够判断访客不是爬虫，并且也能基本判断访客对另一个单词的回答也是正确的，这样就获得了一个新图片的标注。使用这种白嫖方法，reCAPTCHA成功把《纽约时报》几十年的纸质资料数字化。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023105305.jpg" srcset="/img/loading.gif" lazyload alt="Modern-captcha"></p>
+<p>Google看到了这个方法，于是在2009年把reCAPTCHA收购了，现在大家在上网时时常能够看见下面这种验证码，这就是Google改进之后的reCAPTCHA，可以让你对图像识别、图像分割、语音识别所需要的数据进行标注，同时，改进后的评分算法也能更加精准地判断访客是爬虫还是真人，以避免爬虫带来的标注噪声。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023105930.jpeg" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023105942.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<div class="note note-success">
+            <p>构建数据集方法4 Get√:+1:：</p><p>用验证码白嫖标注，不用花钱。</p><p>优点：成本极低，并且会有很多很多人来标注。</p><p>缺点：只有用户流量大的公司才能使用这种方法，并且始终存在噪声。</p>
+          </div>
+
+<h2 id="我甚至都不想写爬虫——自动生成数据集"><a href="#我甚至都不想写爬虫——自动生成数据集" class="headerlink" title="我甚至都不想写爬虫——自动生成数据集"></a>我甚至都不想写爬虫——自动生成数据集</h2><p>现在出现了一种”合成数据集“，这种数据集里面的数据是通过计算机程序生成的，生成方式可以是3D建模、图片拼凑，还可以使用已有的深度学习网络生成新的数据集图片。</p>
+<p><strong>MPI-Sintel</strong>数据集是由华盛顿大学和佐治亚理工学院的研究人员通过截取3D动画电影<strong>《寻龙记》（Sintel）</strong>不同场景而制作的数据集，相比较爬虫爬取到的数据，这种计算机创作出来的视频数据能够具有更清晰的画面（YouTube上用户上传的视频质量不一），并且标注也非常容易获得，通过不同的3D渲染还能增加/去除一些Shader上的噪声。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023112740.png" srcset="/img/loading.gif" lazyload alt="Sintel数据集"></p>
+<p>而<strong>FlyingChairs</strong>数据集更进一步，它在一些背景图上加入几张奇奇怪怪的运动3D椅子，并以此来得到视频—光流图数据，用来训练一些预测光流的神经网络，后面他们还让加入的东西不局限于椅子，构建了一个FlyingThings3D数据集。这种生成数据的方式基本没有版权或者隐私上的问题，但是由于生成的数据与实际数据是有差别的，所以依此训练出的模型也有可能是过拟合的，需要研究人员进行优化或者调整。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211023112950.png" srcset="/img/loading.gif" lazyload alt="FlyingChairs"></p>
+<div class="note note-success">
+            <p>构建数据集方法5 Get√:+1:：</p><p>直接建模生成数据集和标注。</p><p>优点：避免了数据的隐私问题和版权问题，数据集规模可以随意调整，并且想要什么就能做什么，对于比较难获取的数据也可以直接生成，噪声方差也能调整。</p><p>缺点：生成数据集与真实情况可能存在差异，导致模型学习到偏差（bias），</p>
+          </div>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><table>
+<thead>
+<tr>
+<th>方法</th>
+<th>举例</th>
+<th>优点</th>
+<th>不足</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>用工具人创造数据、标记数据。</td>
+<td>MNIST</td>
+<td>想要啥就有啥</td>
+<td>假如要获取海量数据，成本就非常非常非常高</td>
+</tr>
+<tr>
+<td>用网络爬虫获取数据</td>
+<td>ImageNet MSR-VTT</td>
+<td>能获取到很多数据</td>
+<td>还是得找一堆工具人标记数据，标注成本高</td>
+</tr>
+<tr>
+<td>使用众包平台来对数据进行标注。</td>
+<td>ImageNet MSR-VTT</td>
+<td>Money is all you need</td>
+<td>No money</td>
+</tr>
+<tr>
+<td>用验证码白嫖标注</td>
+<td>reCAPTCHA</td>
+<td>成本极低，并且会有很多很多人来标注。</td>
+<td>只有用户流量大的公司才能使用这种方法，存在噪声。</td>
+</tr>
+<tr>
+<td>直接建模生成数据集和标注</td>
+<td>MPI-Sintel FlyingChairs</td>
+<td>避免了数据的隐私问题和版权问题，数据集规模可以随意调整，对于比较难获取的数据也可以直接生成，噪声方差也能调整。</td>
+<td>生成数据集与真实情况可能存在差异</td>
+</tr>
+</tbody></table>
 <blockquote>
-<p>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer 论文摘要</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016162734.png" srcset="/img/loading.gif" lazyload alt="image-20211016162734511"></p>
-<p><code>exploit</code>：发掘、开采    <code>generalize</code>：推广（就是瞎改人家模型）</p>
-<p><code>capable</code>：be able to    <code>digest</code>：消化，使用特征</p>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="http://yann.lecun.com/exdb/mnist/">MNIST handwritten digit database, Yann LeCun, Corinna Cortes and Chris Burges</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/ReCAPTCHA">reCAPTCHA - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/248351130">什么是合成数据？ - 知乎 (zhihu.com)</a></p>
+<p>FlowNet: Learning Optical Flow with Convolutional Networks</p>
+<p>A Naturalistic Open Source Movie for Optical Flow Evaluation</p>
+<p><a target="_blank" rel="noopener" href="https://lmb.informatik.uni-freiburg.de/resources/datasets/FlyingChairs.en.html">Computer Vision Group, Freiburg (uni-freiburg.de)</a></p>
 </blockquote>
-<blockquote>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016164135.png" srcset="/img/loading.gif" lazyload alt="image-20211016164135568"></p>
-</blockquote>
-<h2 id="Introduction的写法"><a href="#Introduction的写法" class="headerlink" title="Introduction的写法"></a>Introduction的写法</h2><p>近3年文献。</p>
-<p>娓娓道来，把读者思路带偏到自己这里</p>
-<h2 id="i-e-e-g-etc-et-al-的用法"><a href="#i-e-e-g-etc-et-al-的用法" class="headerlink" title="i.e. e.g. etc. et al.的用法"></a>i.e. e.g. etc. et al.的用法</h2><p><code>i.e.</code>：意思是“那就是说，换句话说”，“in other words”。例子：Four phase states (i.e., 0◦, 90◦, 180◦, and 270◦) are realized through the combination of the phase shifter and the array radiation element. 在这里是解释四种状态是哪四种。<code>[ˌaɪˈiː]或者that is</code></p>
-<p><code>e.g.</code>：意思是“举个例子”，“for example”。例子：The evaluation noted that the employee had frequently exhibited irresponsible behavior (e.g., coming to work late, failing to complete projects).在这里是举例什么是irresponsible behavior。<code> [ ,i&#39;dʒi ]或者for example</code></p>
-<p><code>etc.</code>：意思是“等等”，“et cetera”。例子：”We could use cupcakes, cookies, etc.” 不用and，在e.g.后也不用加etc.，指人的时候也不能用etc.，假如etc.后面结束不用加句号，但是别的符号要加。<code> [ˌet ˈsetərə ]</code></p>
-<p><code>et al.</code>：意思是“等人”，“ et alia”。同etc.用法，但是指的是人。 <code> [ˌet ˈæl ]或者and so on</code></p>
-<h2 id="定冠词与不定冠词"><a href="#定冠词与不定冠词" class="headerlink" title="定冠词与不定冠词"></a>定冠词与不定冠词</h2><p><strong>不定冠词：a an；定冠词：the；零冠词：&lt;空&gt;</strong></p>
-<p>参考：<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/46825717/answer/652234107"> 英文论文写作有哪些需要注意的细节？ - 知乎 (zhihu.com)</a></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211016104857.jpeg" srcset="/img/loading.gif" lazyload alt="img"></p>
-<ol>
-<li><p>标题加不加the、a、an都可以</p>
-<p>A Novel Reconfigurable Miniaturized Phase Shifter for 2-D Beam Steering 2-Bit Array Applications</p>
-<p>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</p>
-</li>
-<li><p>单数可数名词不能单独出现</p>
-<p>加a an the</p>
-</li>
-<li><p>名词后有修饰短语（介词短语the cat on the desk，定语从句the people who is my brother，非谓语动词the man fighting the dog，同位语，形容词词组）</p>
-</li>
-<li><p>不能单独发音的大写缩略词（NASA，the FBI）</p>
-</li>
-<li><p>地理名词太难了，建议写作的时候现查</p>
-</li>
-</ol>
 
             </div>
             <hr>
@@ -319,7 +376,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
                     
                   </div>
                 
@@ -327,7 +384,11 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96/">数据获取</a>
                     
                   </div>
                 
@@ -344,18 +405,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/22/Video%20Swin%20Transformer/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Video Swin Transformer</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/04/Self%20Attention/">
-                        <span class="hidden-mobile">Self Attention详解</span>
+                      <a href="/2021/10/22/Video%20Swin%20Transformer/">
+                        <span class="hidden-mobile">Video Swin Transformer</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
