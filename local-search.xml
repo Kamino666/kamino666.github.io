@@ -4,6 +4,35 @@
   
   
   <entry>
+    <title>Python Type Hints</title>
+    <link href="/2021/10/24/Python%20type%20hint/"/>
+    <url>/2021/10/24/Python%20type%20hint/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Python-Type-Hints"><a href="#Python-Type-Hints" class="headerlink" title="Python Type Hints"></a>Python Type Hints</h1><p>Python是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。</p><p>Type Hints指的是在Python中显式提示某个变量的类型，可以翻译为<strong>类型提示</strong>，假如用错了类型，IDE就会有提示，能够让开发者更加方便地找到错误。</p><p>Type Hints的写法如下：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">变量名: 类型  <span class="hljs-comment"># 1</span><br>变量名: 类型 = 值  <span class="hljs-comment"># 2</span><br><span class="hljs-comment"># 例子：</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">f</span>(<span class="hljs-params">x: <span class="hljs-built_in">int</span> = <span class="hljs-number">1</span>, y: <span class="hljs-built_in">str</span> = <span class="hljs-number">2</span></span>):</span><br>    <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure><p>对于类型，可以是基本类型、自定义类型、容器类型、可选……，可见下表</p><table><thead><tr><th>类型</th><th>说明</th><th>备注</th></tr></thead><tbody><tr><td><code>int</code>,<code>str</code>,<code>list</code>,<code>dict</code></td><td>可以直接使用的基本类型</td><td></td></tr><tr><td><code>List[int]</code>,<code>Tuple[str]</code></td><td>指定列表内元素的类型</td><td>要from typing import</td></tr><tr><td><code>Dict[str, ...]</code></td><td>指定字典键值对的类型</td><td>要from typing import</td></tr><tr><td><code>*args: str</code>,<code>**kwargs: str</code></td><td>规定可变参数是固定类型</td><td></td></tr><tr><td><code>Union[int, str, bool]</code></td><td>接受某几种类型</td><td>要from typing import</td></tr><tr><td><code>Optional[int]</code></td><td>接受某种类型或者None</td><td>要from typing import</td></tr><tr><td><code>Any</code></td><td>接受所有类型</td><td>要from typing import</td></tr><tr><td><code>Callable[[参数类型], 返回类型]</code></td><td>接受可调用类型</td><td>要from typing import</td></tr></tbody></table><p>假如类型太长了，可以使用别名</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">config: <span class="hljs-type">List</span>[<span class="hljs-type">Tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">int</span>], <span class="hljs-type">Dict</span>[<span class="hljs-built_in">int</span>, <span class="hljs-built_in">int</span>]] = [...]<br><span class="hljs-comment"># 上面这条语句和下面这条等价</span><br>Config = <span class="hljs-type">List</span>[<span class="hljs-type">Tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">int</span>], <span class="hljs-type">Dict</span>[<span class="hljs-built_in">int</span>, <span class="hljs-built_in">int</span>]]<br>config: Config = [...]<br></code></pre></td></tr></table></figure><blockquote><p>参考文献</p><p><a href="https://mp.weixin.qq.com/s/CbZYOkaY0z1Brw4W5coG3w">Python Type Hints 从入门到实践 (qq.com)</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>常用易忘</category>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>Type Hints</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>如何构建数据集？大佬们都这么干的……</title>
     <link href="/2021/10/22/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E4%B8%8E%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/"/>
     <url>/2021/10/22/%E6%95%B0%E6%8D%AE%E8%8E%B7%E5%8F%96%E4%B8%8E%E7%BD%91%E7%BB%9C%E7%88%AC%E8%99%AB/</url>
