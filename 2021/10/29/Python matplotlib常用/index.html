@@ -13,34 +13,24 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="对于Video Captioning任务，对基于Transformer的论文进行小综述">
+  <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="对于Video Captioning任务，对基于Transformer的论文进行小综述">
+  <meta name="description" content="Python Matplotlibfigure是作图的画布，axes是一个坐标图（最小单位） 子图subplot 123plt.subplot(2,3,1)  # 生成2行3列排布，现在绘制第1个图plt.plot(...)plt.show()  subplots 1234figure,ax&#x3D;plt.subplots(2,2)  # 生成2行2列排布ax[0][0].plot(...)  # 用索">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Video Captioning任务 Transformer方向小综述">
-<meta property="og:url" content="http://blog.kamino.link/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/index.html">
+<meta property="og:title" content="Python Matplotlib">
+<meta property="og:url" content="http://blog.kamino.link/2021/10/29/Python%20matplotlib%E5%B8%B8%E7%94%A8/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="对于Video Captioning任务，对基于Transformer的论文进行小综述">
+<meta property="og:description" content="Python Matplotlibfigure是作图的画布，axes是一个坐标图（最小单位） 子图subplot 123plt.subplot(2,3,1)  # 生成2行3列排布，现在绘制第1个图plt.plot(...)plt.show()  subplots 1234figure,ax&#x3D;plt.subplots(2,2)  # 生成2行2列排布ax[0][0].plot(...)  # 用索">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026140703.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141348.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141541.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141723.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142223.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142656.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026155723.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026160854.png">
-<meta property="article:published_time" content="2021-10-25T05:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-04T11:36:52.327Z">
+<meta property="article:published_time" content="2021-10-29T05:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-04T14:50:31.426Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Transformer">
-<meta property="article:tag" content="Video Captioning">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Matplotlib">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png">
   
-  <title>Video Captioning任务 Transformer方向小综述 - Kamino&#39;s Blog</title>
+  <title>Python Matplotlib - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -194,12 +184,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211104225008.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Video Captioning任务 Transformer方向小综述">
+            <span class="h2" id="subtitle" title="Python Matplotlib">
               
             </span>
 
@@ -209,8 +199,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-25 13:00" pubdate>
-        2021年10月25日 下午
+      <time datetime="2021-10-29 13:00" pubdate>
+        2021年10月29日 下午
       </time>
     </span>
   
@@ -220,7 +210,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.3k 字
+      221 字
     </span>
   
 
@@ -229,7 +219,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      1 分钟
     </span>
   
 
@@ -266,7 +256,7 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Video Captioning任务 Transformer方向小综述</h1>
+            <h1 style="display: none">Python Matplotlib</h1>
             
               <p class="note note-info">
                 
@@ -275,106 +265,14 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Video-Captioning任务-Transformer方向小综述"><a href="#Video-Captioning任务-Transformer方向小综述" class="headerlink" title="Video Captioning任务 Transformer方向小综述"></a>Video Captioning任务 Transformer方向小综述</h1><p>[TOC]</p>
-<h2 id="涉及的论文"><a href="#涉及的论文" class="headerlink" title="涉及的论文"></a>涉及的论文</h2><ol>
-<li><code>TVT: Two-View Transformer Network for Video Captioning</code></li>
-<li><code>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</code></li>
-<li><code>SBAT: Video Captioning with Sparse Boundary-Aware Transformer</code></li>
-<li><code>Multi-modal Dense Video Captioning</code></li>
-<li><code>iPerceive: Applying Common-Sense Reasoning to Multi-Modal Dense Video Captioning and Video Question Answering</code></li>
-<li><code>ActBERT: Learning Global-Local Video-Text Representations</code></li>
-<li><code>Multi-modal Transformer for Video Retrieval</code></li>
-<li><code>Reconstruction network for video captioning</code></li>
-<li><code>Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning</code></li>
-<li><code>CLIP4Caption: CLIP for Video Caption</code></li>
-</ol>
-<h2 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h2><p>图来自文献1，基于Transformer的Video Captioning任务基本都是这种模式，可以叫做<code>Vanilla Transformer</code>、<code>Base Model architecture</code>。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png" srcset="/img/loading.gif" lazyload alt="Baseline"></p>
-<h2 id="多模态特征融合"><a href="#多模态特征融合" class="headerlink" title="多模态特征融合"></a>多模态特征融合</h2><p>本任务使用的多模态特征包括rgb(image, frame, 不含时序信息)、motion(动作)、object(目标检测)、voice(音频)、speech(音频中人说的话)。其中RGB必备，还有很多选择motion和voice的。</p>
-<p>文献1，2，3都使用了多种模态的特征，本节对于特征的融合进行归纳总结。</p>
-<h3 id="文献1-TVT-Attentive-fusion-block"><a href="#文献1-TVT-Attentive-fusion-block" class="headerlink" title="文献1 TVT Attentive-fusion block"></a>文献1 TVT Attentive-fusion block</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026140703.png" srcset="/img/loading.gif" lazyload alt="Attentive-fusion block"></p>
-<p>文献1对多种特征进行独立的Transformer encode，得到的输出是图中红色的frame encoder output和motion encoder output，它对Transformer decoder的中间那个SA层进行了改进。</p>
-<p>图中3个SA层的<strong>Q</strong>都是和Baseline的Caption那一路的特征，先分配好frame的注意力，同时分配好motion的注意力，之后在时间轴堆叠，再分配好堆叠后的注意力。</p>
-<h3 id="文献2-Bi-modal-Transformer"><a href="#文献2-Bi-modal-Transformer" class="headerlink" title="文献2 Bi-modal Transformer"></a>文献2 Bi-modal Transformer</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141348.png" srcset="/img/loading.gif" lazyload alt="Bi-modal Transformer"></p>
-<p>这篇论文任务其实是Dense Video Captioning，但是去掉Proposal Generator也是一个Video Captioning的模型。它不仅在Decoder进行了特征融合，还在Encoder进行特类似的特征融合。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141541.png" srcset="/img/loading.gif" lazyload alt="Encoder"></p>
-<p>编码阶段如上图，每一个Encoder层进行完Baseline的SA层后，再进行一个交叉的Bi-Modal Attention，然后Feed forward。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141723.png" srcset="/img/loading.gif" lazyload alt="Decoder"></p>
-<p>解码阶段如上图，Baseline的中间SA层也改成类似的Bi-Modal Attention，然后Bridge是直接用全连接层把concat起来的特征降维。</p>
-<p><strong>解码阶段模态融合方法和文献1的区别就是concat后的张量用SA还是用全连来降维</strong></p>
-<h3 id="文献3-SBAT-Cross-Modal"><a href="#文献3-SBAT-Cross-Modal" class="headerlink" title="文献3 SBAT Cross-Modal"></a>文献3 SBAT Cross-Modal</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142223.png" srcset="/img/loading.gif" lazyload alt="SBAT"></p>
-<p>这篇论文是只在Encoder上做了特征融合，用的类似文献2的方法，但是在一个Encoder层的第一个SA层后又加了个Feed forward，参数更多了。</p>
-<h3 id="文献4-MDVC-amp-文献5-iPerceive"><a href="#文献4-MDVC-amp-文献5-iPerceive" class="headerlink" title="文献4 MDVC &amp; 文献5 iPerceive"></a>文献4 MDVC &amp; 文献5 iPerceive</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142656.png" srcset="/img/loading.gif" lazyload alt="MDVC"></p>
-<p>和文献2是同一个作者，这是更早的文章。算是直接train出3个Transformer，然后在最后全连决策的时候进行特征融合。文献5的方法和这个几乎一模一样。</p>
-<h3 id="文献6-ActBERT"><a href="#文献6-ActBERT" class="headerlink" title="文献6 ActBERT"></a>文献6 ActBERT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026155723.png" srcset="/img/loading.gif" lazyload alt="ActBERT"></p>
-<p>这种特征融合就很迷惑了……还没看懂。</p>
-<p>文章说这种方法对于$\omega$、$\alpha$和$r$三种模态是不相等的。$\omega$的KV一部分来源于本身，另一部分来源于用$\alpha$和$r$进行SA的结果，两部分特征用全连降维。$r$的KV和$\omega$一样。但是$\alpha$的就很奇怪了，只融合了$\omega$的特征？</p>
-<h3 id="文献7-MMT"><a href="#文献7-MMT" class="headerlink" title="文献7 MMT"></a>文献7 MMT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026160854.png" srcset="/img/loading.gif" lazyload alt="MMT"></p>
-<p>这种特征融合方法解决了文献2、3中方法不能拓展到三个及以上特征的问题，但是会导致时间维度较大。</p>
-<p>这里就是先把多种特征先弄成同一特征维（时间维可不同），然后加上时序信息的Temporal embeddings和区分不同特征的expert embeddings，文章还给每一种特征增加了一个agg特征，这是对每一种特征的时序进行pooling得到的Global信息。</p>
-<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Encoder的特征融合中，文献2、3都没有做到融合第三种特征，因为使用三种特征后会出现六路encoder输出。</p>
-<p>在Decoder的特征融合中，方法都类似，区别是用全连或者SA降维。</p>
-<h1 id="榜单"><a href="#榜单" class="headerlink" title="榜单"></a>榜单</h1><h2 id="MSR-VTT"><a href="#MSR-VTT" class="headerlink" title="MSR-VTT"></a>MSR-VTT</h2><table>
-<thead>
-<tr>
-<th>方法</th>
-<th>METEOR</th>
-<th>ROUGH</th>
-<th>CIDEr</th>
-<th>Bleu@4</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>SBAT(3)</td>
-<td>28.9</td>
-<td>61.5</td>
-<td>51.6</td>
-<td>42.9</td>
-</tr>
-<tr>
-<td>att-TVT(N+I+V)(1)</td>
-<td>28.2</td>
-<td>61.1</td>
-<td>48.5</td>
-<td>42.5</td>
-</tr>
-<tr>
-<td>att-TVT(N+I)(1)</td>
-<td>27.9</td>
-<td>59.6</td>
-<td>47.7</td>
-<td>40.1</td>
-</tr>
-<tr>
-<td>RecNet(8)</td>
-<td>26.6</td>
-<td>59.3</td>
-<td>42.7</td>
-<td>39.1</td>
-</tr>
-<tr>
-<td>GRU-EVE(9)</td>
-<td>28.4</td>
-<td>60.7</td>
-<td>48.1</td>
-<td>38.3</td>
-</tr>
-<tr>
-<td>CLIP4Caption(10)</td>
-<td>30.7</td>
-<td>63.7</td>
-<td>57.7</td>
-<td>46.1</td>
-</tr>
-<tr>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-<td></td>
-</tr>
-</tbody></table>
-<h2 id="VATEX"><a href="#VATEX" class="headerlink" title="VATEX"></a>VATEX</h2>
+              <h1 id="Python-Matplotlib"><a href="#Python-Matplotlib" class="headerlink" title="Python Matplotlib"></a>Python Matplotlib</h1><p>figure是作图的画布，axes是一个坐标图（最小单位）</p>
+<h2 id="子图"><a href="#子图" class="headerlink" title="子图"></a>子图</h2><p><strong>subplot</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">plt.subplot(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>)  <span class="hljs-comment"># 生成2行3列排布，现在绘制第1个图</span><br>plt.plot(...)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+<p><strong>subplots</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">figure,ax=plt.subplots(<span class="hljs-number">2</span>,<span class="hljs-number">2</span>)  <span class="hljs-comment"># 生成2行2列排布</span><br>ax[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>].plot(...)  <span class="hljs-comment"># 用索引直接访问</span><br>ax[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>].plot(...)<br>figure.show()<br></code></pre></td></tr></table></figure>
+
+
             </div>
             <hr>
             <div>
@@ -383,7 +281,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                      <a class="hover-with-bg" href="/categories/%E5%B8%B8%E7%94%A8%E6%98%93%E5%BF%98/">常用易忘</a>
+                    
+                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
                     
                   </div>
                 
@@ -391,9 +291,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Transformer/">Transformer</a>
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
                     
-                      <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
+                      <a class="hover-with-bg" href="/tags/Matplotlib/">Matplotlib</a>
                     
                   </div>
                 
@@ -410,9 +310,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/28/Python%20argparse/">
+                      <a href="/2021/11/02/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%B0%8F%E7%BB%BC%E8%BF%B0/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python Argparse</span>
+                        <span class="hidden-mobile">文本生成预训练模型方向小综述</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -420,8 +320,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/25/Pytorch%20DDP/">
-                        <span class="hidden-mobile">Pytorch DDP多卡训练</span>
+                      <a href="/2021/10/28/Python%20argparse/">
+                        <span class="hidden-mobile">Python Argparse</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

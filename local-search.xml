@@ -4,11 +4,154 @@
   
   
   <entry>
+    <title>CLIP4Caption++论文笔记</title>
+    <link href="/2021/11/04/CLIP4Caption++%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <url>/2021/11/04/CLIP4Caption++%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="CLIP4Caption-论文笔记"><a href="#CLIP4Caption-论文笔记" class="headerlink" title="CLIP4Caption++论文笔记"></a>CLIP4Caption++论文笔记</h1><p>[TOC]</p><p>论文：<code>CLIP4Caption: CLIP for Video Caption</code></p><p>网址：<a href="https://dl.acm.org/doi/pdf/10.1145/3474085.3479207">CLIP4Caption: CLIP for Video Caption (acm.org)</a>、<a href="https://doi.org/10.1145/3474085.3479207">https://doi.org/10.1145/3474085.3479207</a></p><p>代码：无</p><p>这篇2021年10月发布在MM’21的论文提出了一个基于CLIP、CLIP4CLIP(1)和Uni-VL的模型，用来做视频描述任务（Video Captioning），效果拔群，METEOR和CIDEr指标都是SOTA。文章主要想利用已有的vision-language预训练模型来帮助下游任务。同时文章还提出了一种集成学习方法，效果也有提升。作者还发了一篇<code>CLIP4Caption++: Multi-CLIP for Video Caption</code>主要在VATEX数据集上实验，并且添加了subtitle的多模态，放在另一篇文章中讲吧.。</p><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211104200652.png" alt="image-20211104200652687"></p><blockquote><p>参考文献</p><ol><li></li></ol></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Video Captioning</tag>
+      
+      <tag>CLIP4Caption</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>CLIP4Caption论文笔记</title>
+    <link href="/2021/11/02/CLIP4Caption%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <url>/2021/11/02/CLIP4Caption%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="CLIP4Caption论文笔记"><a href="#CLIP4Caption论文笔记" class="headerlink" title="CLIP4Caption论文笔记"></a>CLIP4Caption论文笔记</h1><p>[TOC]</p><p>论文：<code>CLIP4Caption: CLIP for Video Caption</code></p><p>网址：<a href="https://dl.acm.org/doi/pdf/10.1145/3474085.3479207">CLIP4Caption: CLIP for Video Caption (acm.org)</a>、<a href="https://doi.org/10.1145/3474085.3479207">https://doi.org/10.1145/3474085.3479207</a></p><p>代码：无</p><p>这篇2021年10月发布在MM’21的论文提出了一个基于CLIP、CLIP4CLIP(1)和Uni-VL的模型，用来做视频描述任务（Video Captioning），效果拔群，METEOR和CIDEr指标都是SOTA。文章主要想利用已有的vision-language预训练模型来帮助下游任务。同时文章还提出了一种集成学习方法，效果也有提升。作者还发了一篇<code>CLIP4Caption++: Multi-CLIP for Video Caption</code>主要在VATEX数据集上实验，并且添加了subtitle的多模态，放在另一篇文章中讲吧.。</p><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211102131519.png" alt="CLIP4Caption整体架构"></p><p>模型分成两部分——预训练阶段和微调阶段，预训练阶段就是用CLIP4clip的方式在MSR-VTT数据集上进行视频检索任务的学习，这一部分要非常多的算力资源，目的是训练出一个更强大的CLIP Video Encoder。微调阶段就是用Transformer的Seq2seq架构，以CLIP video特征作为输入来训练，其中Decoder用Uni-VL(2)的Caption Generation任务的Decoder的权重进行初始化。</p><h2 id="Video-Text匹配预训练"><a href="#Video-Text匹配预训练" class="headerlink" title="Video-Text匹配预训练"></a>Video-Text匹配预训练</h2><p>这一部分被作者叫做video-text matching network (VTM)，本文使用了TSN的帧取样方法，K是超参数，作者在之后有对比实验，并且分成K份后从每份里只抽1帧。</p><blockquote><p><strong>TSN sampling</strong> (3)</p><p>假设原视频是<strong>V</strong>，现在把V分成K份（原文K=3）得到{S<del>1</del> ，S<del>2</del>，S<del>3</del>}，然后又从S<del>k</del>中随机采样n帧(令n=1)，得到snippets：{T<del>1</del> ，T<del>2</del>，T<del>3</del>}。</p></blockquote><p>训练完全仿照CLIP4Clip，Loss使用<strong>symmetric cross entropy loss</strong></p><p>训练方式是在一个Batch内进行匹配，一个text对所有video进行相似度计算，然后能得出匹配的概率分布，同时也有真实分布，即输入的pair是1，batch内构成的其他pair是0，t2v同理。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211102140700.png" alt="symmetric cross entropy loss"></p><p><strong>注意这个loss和<code>Symmetric Cross Entropy for Robust Learning with Noisy Labels, ICCV2019</code>提出的loss同名，但不是同一个loss！</strong></p><h2 id="Video-Captioning训练"><a href="#Video-Captioning训练" class="headerlink" title="Video Captioning训练"></a>Video Captioning训练</h2><p>文章使用了Uni-VL的部分权重，本文使用的是1层的Transformer Encoder和3层12头768的Transformer Decoder。（Decoder还好，但是暂时没懂这篇论文加载的是Uni-VL哪里的Encoder）</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211102144107.png" alt="UNI-VL"></p><h2 id="Ensemble-strategy"><a href="#Ensemble-strategy" class="headerlink" title="Ensemble strategy"></a>Ensemble strategy</h2><p>文章训练出了多个模型来集成学习，多个模型之间通过voting来决定最终输出，而每个模型的权重由一个综合的metric来决定。将METEOR、BLEU等metric归一化后取平均就是综合metric。通过统计哪个模型更接近真实值，哪个模型更不接近可以得出importance score，就是每个模型的权重。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211102190016.png" alt="METRIC overall"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211102190205.png" alt="importance score"></p><h2 id="结果分析"><a href="#结果分析" class="headerlink" title="结果分析"></a>结果分析</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211102190435.png" alt="结果"></p><p>在MSR-VTT上的效果绝对SOTA了，之前没有论文METEOR超过30，去掉Ensemble也有31.2了，而且这还只是单模态的使用。</p><blockquote><p>参考文献</p><ol><li><code>Clip4clip: An empirical study of clip for end to end video clip retrieval</code></li><li><code>Univl: A unified video and language pre-training model for multimodal understanding and generation</code></li><li><code>Temporal Segment Networks: Towards Good Practices for Deep Action Recognition</code></li></ol></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Video Captioning</tag>
+      
+      <tag>CLIP4Caption</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>文本生成预训练模型方向小综述</title>
+    <link href="/2021/11/02/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%B0%8F%E7%BB%BC%E8%BF%B0/"/>
+    <url>/2021/11/02/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%B0%8F%E7%BB%BC%E8%BF%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="文本生成预训练模型方向小综述"><a href="#文本生成预训练模型方向小综述" class="headerlink" title="文本生成预训练模型方向小综述"></a>文本生成预训练模型方向小综述</h1><p>[TOC]</p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol><li><code>BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension</code></li><li><code>UniVL: A Unified Video and Language Pre-Training Model for Multimodal Understanding and Generation</code></li><li></li></ol><h2 id="BART"><a href="#BART" class="headerlink" title="BART"></a>BART</h2>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Caption Generation</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Python Matplotlib</title>
+    <link href="/2021/10/29/Python%20matplotlib%E5%B8%B8%E7%94%A8/"/>
+    <url>/2021/10/29/Python%20matplotlib%E5%B8%B8%E7%94%A8/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Python-Matplotlib"><a href="#Python-Matplotlib" class="headerlink" title="Python Matplotlib"></a>Python Matplotlib</h1><p>figure是作图的画布，axes是一个坐标图（最小单位）</p><h2 id="子图"><a href="#子图" class="headerlink" title="子图"></a>子图</h2><p><strong>subplot</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">plt.subplot(<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">1</span>)  <span class="hljs-comment"># 生成2行3列排布，现在绘制第1个图</span><br>plt.plot(...)<br>plt.show()<br></code></pre></td></tr></table></figure><p><strong>subplots</strong></p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">figure,ax=plt.subplots(<span class="hljs-number">2</span>,<span class="hljs-number">2</span>)  <span class="hljs-comment"># 生成2行2列排布</span><br>ax[<span class="hljs-number">0</span>][<span class="hljs-number">0</span>].plot(...)  <span class="hljs-comment"># 用索引直接访问</span><br>ax[<span class="hljs-number">1</span>][<span class="hljs-number">0</span>].plot(...)<br>figure.show()<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>常用易忘</category>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>Matplotlib</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Python Argparse</title>
+    <link href="/2021/10/28/Python%20argparse/"/>
+    <url>/2021/10/28/Python%20argparse/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Python-Argparse"><a href="#Python-Argparse" class="headerlink" title="Python Argparse"></a>Python Argparse</h1><p>Python的Argparse库是一个内置的用来获取<strong>命令行输入参数</strong>的库。简单来说就是解析下面这条语句中python main.py后面这些参数的。</p><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">python main.py  -v xxxx -m<br></code></pre></td></tr></table></figure><h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>首先初始化实例，然后对实例添加参数选项，最后解析成对象。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">parser = argparse.ArgumentParser()<br>parser.add_argument(...)<br>args = parser.parse_args()<br><br><span class="hljs-comment"># 获取参数</span><br>args.参数名<br></code></pre></td></tr></table></figure><h3 id="添加普通参数"><a href="#添加普通参数" class="headerlink" title="添加普通参数"></a>添加普通参数</h3><p>普通参数就是一个key一个value，最普通的参数类型</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&quot;-v&quot;</span>, <span class="hljs-string">&quot;--video&quot;</span>,          <span class="hljs-comment"># 一个参数key可以有两个名字</span><br>                    <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>,                 <span class="hljs-comment"># 类型可以是int或者str</span><br>                    required=<span class="hljs-literal">True</span>,            <span class="hljs-comment"># 是否为必选参数</span><br>                    default=<span class="hljs-string">&quot;./video1.npy&quot;</span>,   <span class="hljs-comment"># 假如非必选，默认值是</span><br>                    <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;帮助文本&quot;</span>)<br></code></pre></td></tr></table></figure><h3 id="无值参数"><a href="#无值参数" class="headerlink" title="无值参数"></a>无值参数</h3><p>可以没有value的参数</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&quot;-m&quot;</span>, action=<span class="hljs-string">&quot;store_true&quot;</span>)<br><span class="hljs-comment"># 假如输入有参数则会被解析为True，否则False</span><br>args.m == <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure><h3 id="固定值范围参数"><a href="#固定值范围参数" class="headerlink" title="固定值范围参数"></a>固定值范围参数</h3><p>就是value必须从几个选项中选择一个</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&quot;--feat&quot;</span>, choices=[<span class="hljs-string">&quot;resnet&quot;</span>, <span class="hljs-string">&quot;vgg&quot;</span>])<br><span class="hljs-comment"># 只能 --feat resnet 或者 --feat vgg</span><br></code></pre></td></tr></table></figure><h3 id="多值参数"><a href="#多值参数" class="headerlink" title="多值参数"></a>多值参数</h3><p>value可以是多个值，解析结果为列表</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&#x27;--foo&#x27;</span>, nargs=<span class="hljs-string">&#x27;*&#x27;</span>)  <span class="hljs-comment"># 传递多个参数，可为0</span><br>parser.add_argument(<span class="hljs-string">&#x27;--foo&#x27;</span>, nargs=<span class="hljs-string">&#x27;+&#x27;</span>)  <span class="hljs-comment"># 至少给这个key传递一个参数</span><br></code></pre></td></tr></table></figure><h3 id="互斥参数"><a href="#互斥参数" class="headerlink" title="互斥参数"></a>互斥参数</h3><p>就是在某个组内的参数不允许同时出现两个及以上</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">group = parser.add_mutually_exclusive_group()<br>group.add_argument(<span class="hljs-string">&quot;-a&quot;</span>)<br>group.add_argument(<span class="hljs-string">&quot;-b&quot;</span>)<br></code></pre></td></tr></table></figure><blockquote><p>参考文献</p><p><a href="https://docs.python.org/3/library/argparse.html">argparse — Parser for command-line options, arguments and sub-commands — Python 3.10.0 documentation</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>常用易忘</category>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>argparse</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Video Captioning任务 Transformer方向小综述</title>
     <link href="/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/"/>
     <url>/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/</url>
     
-    <content type="html"><![CDATA[<h1 id="Video-Captioning任务-Transformer方向小综述"><a href="#Video-Captioning任务-Transformer方向小综述" class="headerlink" title="Video Captioning任务 Transformer方向小综述"></a>Video Captioning任务 Transformer方向小综述</h1><p>[TOC]</p><h2 id="涉及的论文"><a href="#涉及的论文" class="headerlink" title="涉及的论文"></a>涉及的论文</h2><ol><li><code>TVT: Two-View Transformer Network for Video Captioning</code></li><li><code>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</code></li><li><code>SBAT: Video Captioning with Sparse Boundary-Aware Transformer</code></li><li><code>Multi-modal Dense Video Captioning</code></li><li><code>iPerceive: Applying Common-Sense Reasoning to Multi-Modal Dense Video Captioning and Video Question Answering</code></li><li><code>ActBERT: Learning Global-Local Video-Text Representations</code></li><li><code>Multi-modal Transformer for Video Retrieval</code></li><li><code>Reconstruction network for video captioning</code></li><li><code>Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning</code></li></ol><h2 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h2><p>图来自文献1，基于Transformer的Video Captioning任务基本都是这种模式，可以叫做<code>Vanilla Transformer</code>、<code>Base Model architecture</code>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png" alt="Baseline"></p><h2 id="多模态特征融合"><a href="#多模态特征融合" class="headerlink" title="多模态特征融合"></a>多模态特征融合</h2><p>本任务使用的多模态特征包括rgb(image, frame, 不含时序信息)、motion(动作)、object(目标检测)、voice(音频)、speech(音频中人说的话)。其中RGB必备，还有很多选择motion和voice的。</p><p>文献1，2，3都使用了多种模态的特征，本节对于特征的融合进行归纳总结。</p><h3 id="文献1-TVT-Attentive-fusion-block"><a href="#文献1-TVT-Attentive-fusion-block" class="headerlink" title="文献1 TVT Attentive-fusion block"></a>文献1 TVT Attentive-fusion block</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026140703.png" alt="Attentive-fusion block"></p><p>文献1对多种特征进行独立的Transformer encode，得到的输出是图中红色的frame encoder output和motion encoder output，它对Transformer decoder的中间那个SA层进行了改进。</p><p>图中3个SA层的<strong>Q</strong>都是和Baseline的Caption那一路的特征，先分配好frame的注意力，同时分配好motion的注意力，之后在时间轴堆叠，再分配好堆叠后的注意力。</p><h3 id="文献2-Bi-modal-Transformer"><a href="#文献2-Bi-modal-Transformer" class="headerlink" title="文献2 Bi-modal Transformer"></a>文献2 Bi-modal Transformer</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141348.png" alt="Bi-modal Transformer"></p><p>这篇论文任务其实是Dense Video Captioning，但是去掉Proposal Generator也是一个Video Captioning的模型。它不仅在Decoder进行了特征融合，还在Encoder进行特类似的特征融合。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141541.png" alt="Encoder"></p><p>编码阶段如上图，每一个Encoder层进行完Baseline的SA层后，再进行一个交叉的Bi-Modal Attention，然后Feed forward。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141723.png" alt="Decoder"></p><p>解码阶段如上图，Baseline的中间SA层也改成类似的Bi-Modal Attention，然后Bridge是直接用全连接层把concat起来的特征降维。</p><p><strong>解码阶段模态融合方法和文献1的区别就是concat后的张量用SA还是用全连来降维</strong></p><h3 id="文献3-SBAT-Cross-Modal"><a href="#文献3-SBAT-Cross-Modal" class="headerlink" title="文献3 SBAT Cross-Modal"></a>文献3 SBAT Cross-Modal</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142223.png" alt="SBAT"></p><p>这篇论文是只在Encoder上做了特征融合，用的类似文献2的方法，但是在一个Encoder层的第一个SA层后又加了个Feed forward，参数更多了。</p><h3 id="文献4-MDVC-amp-文献5-iPerceive"><a href="#文献4-MDVC-amp-文献5-iPerceive" class="headerlink" title="文献4 MDVC &amp; 文献5 iPerceive"></a>文献4 MDVC &amp; 文献5 iPerceive</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142656.png" alt="MDVC"></p><p>和文献2是同一个作者，这是更早的文章。算是直接train出3个Transformer，然后在最后全连决策的时候进行特征融合。文献5的方法和这个几乎一模一样。</p><h3 id="文献6-ActBERT"><a href="#文献6-ActBERT" class="headerlink" title="文献6 ActBERT"></a>文献6 ActBERT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026155723.png" alt="ActBERT"></p><p>这种特征融合就很迷惑了……还没看懂。</p><p>文章说这种方法对于$\omega$、$\alpha$和$r$三种模态是不相等的。$\omega$的KV一部分来源于本身，另一部分来源于用$\alpha$和$r$进行SA的结果，两部分特征用全连降维。$r$的KV和$\omega$一样。但是$\alpha$的就很奇怪了，只融合了$\omega$的特征？</p><h3 id="文献7-MMT"><a href="#文献7-MMT" class="headerlink" title="文献7 MMT"></a>文献7 MMT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026160854.png" alt="MMT"></p><p>这种特征融合方法解决了文献2、3中方法不能拓展到三个及以上特征的问题，但是会导致时间维度较大。</p><p>这里就是先把多种特征先弄成同一特征维（时间维可不同），然后加上时序信息的Temporal embeddings和区分不同特征的expert embeddings，文章还给每一种特征增加了一个agg特征，这是对每一种特征的时序进行pooling得到的Global信息。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Encoder的特征融合中，文献2、3都没有做到融合第三种特征，因为使用三种特征后会出现六路encoder输出。</p><p>在Decoder的特征融合中，方法都类似，区别是用全连或者SA降维。</p><h1 id="榜单"><a href="#榜单" class="headerlink" title="榜单"></a>榜单</h1><h2 id="MSR-VTT"><a href="#MSR-VTT" class="headerlink" title="MSR-VTT"></a>MSR-VTT</h2><table><thead><tr><th>方法</th><th>METEOR</th><th>ROUGH</th><th>CIDEr</th><th>Bleu@4</th></tr></thead><tbody><tr><td>SBAT(3)</td><td>28.9</td><td>61.5</td><td>51.6</td><td>42.9</td></tr><tr><td>att-TVT(N+I+V)(1)</td><td>28.2</td><td>61.1</td><td>48.5</td><td>42.5</td></tr><tr><td>att-TVT(N+I)(1)</td><td>27.9</td><td>59.6</td><td>47.7</td><td>40.1</td></tr><tr><td>RecNet(8)</td><td>26.6</td><td>59.3</td><td>42.7</td><td>39.1</td></tr><tr><td>GRU-EVE(9)</td><td>28.4</td><td>60.7</td><td>48.1</td><td>38.3</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table><h2 id="VATEX"><a href="#VATEX" class="headerlink" title="VATEX"></a>VATEX</h2>]]></content>
+    <content type="html"><![CDATA[<h1 id="Video-Captioning任务-Transformer方向小综述"><a href="#Video-Captioning任务-Transformer方向小综述" class="headerlink" title="Video Captioning任务 Transformer方向小综述"></a>Video Captioning任务 Transformer方向小综述</h1><p>[TOC]</p><h2 id="涉及的论文"><a href="#涉及的论文" class="headerlink" title="涉及的论文"></a>涉及的论文</h2><ol><li><code>TVT: Two-View Transformer Network for Video Captioning</code></li><li><code>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</code></li><li><code>SBAT: Video Captioning with Sparse Boundary-Aware Transformer</code></li><li><code>Multi-modal Dense Video Captioning</code></li><li><code>iPerceive: Applying Common-Sense Reasoning to Multi-Modal Dense Video Captioning and Video Question Answering</code></li><li><code>ActBERT: Learning Global-Local Video-Text Representations</code></li><li><code>Multi-modal Transformer for Video Retrieval</code></li><li><code>Reconstruction network for video captioning</code></li><li><code>Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning</code></li><li><code>CLIP4Caption: CLIP for Video Caption</code></li></ol><h2 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h2><p>图来自文献1，基于Transformer的Video Captioning任务基本都是这种模式，可以叫做<code>Vanilla Transformer</code>、<code>Base Model architecture</code>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png" alt="Baseline"></p><h2 id="多模态特征融合"><a href="#多模态特征融合" class="headerlink" title="多模态特征融合"></a>多模态特征融合</h2><p>本任务使用的多模态特征包括rgb(image, frame, 不含时序信息)、motion(动作)、object(目标检测)、voice(音频)、speech(音频中人说的话)。其中RGB必备，还有很多选择motion和voice的。</p><p>文献1，2，3都使用了多种模态的特征，本节对于特征的融合进行归纳总结。</p><h3 id="文献1-TVT-Attentive-fusion-block"><a href="#文献1-TVT-Attentive-fusion-block" class="headerlink" title="文献1 TVT Attentive-fusion block"></a>文献1 TVT Attentive-fusion block</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026140703.png" alt="Attentive-fusion block"></p><p>文献1对多种特征进行独立的Transformer encode，得到的输出是图中红色的frame encoder output和motion encoder output，它对Transformer decoder的中间那个SA层进行了改进。</p><p>图中3个SA层的<strong>Q</strong>都是和Baseline的Caption那一路的特征，先分配好frame的注意力，同时分配好motion的注意力，之后在时间轴堆叠，再分配好堆叠后的注意力。</p><h3 id="文献2-Bi-modal-Transformer"><a href="#文献2-Bi-modal-Transformer" class="headerlink" title="文献2 Bi-modal Transformer"></a>文献2 Bi-modal Transformer</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141348.png" alt="Bi-modal Transformer"></p><p>这篇论文任务其实是Dense Video Captioning，但是去掉Proposal Generator也是一个Video Captioning的模型。它不仅在Decoder进行了特征融合，还在Encoder进行特类似的特征融合。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141541.png" alt="Encoder"></p><p>编码阶段如上图，每一个Encoder层进行完Baseline的SA层后，再进行一个交叉的Bi-Modal Attention，然后Feed forward。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141723.png" alt="Decoder"></p><p>解码阶段如上图，Baseline的中间SA层也改成类似的Bi-Modal Attention，然后Bridge是直接用全连接层把concat起来的特征降维。</p><p><strong>解码阶段模态融合方法和文献1的区别就是concat后的张量用SA还是用全连来降维</strong></p><h3 id="文献3-SBAT-Cross-Modal"><a href="#文献3-SBAT-Cross-Modal" class="headerlink" title="文献3 SBAT Cross-Modal"></a>文献3 SBAT Cross-Modal</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142223.png" alt="SBAT"></p><p>这篇论文是只在Encoder上做了特征融合，用的类似文献2的方法，但是在一个Encoder层的第一个SA层后又加了个Feed forward，参数更多了。</p><h3 id="文献4-MDVC-amp-文献5-iPerceive"><a href="#文献4-MDVC-amp-文献5-iPerceive" class="headerlink" title="文献4 MDVC &amp; 文献5 iPerceive"></a>文献4 MDVC &amp; 文献5 iPerceive</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142656.png" alt="MDVC"></p><p>和文献2是同一个作者，这是更早的文章。算是直接train出3个Transformer，然后在最后全连决策的时候进行特征融合。文献5的方法和这个几乎一模一样。</p><h3 id="文献6-ActBERT"><a href="#文献6-ActBERT" class="headerlink" title="文献6 ActBERT"></a>文献6 ActBERT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026155723.png" alt="ActBERT"></p><p>这种特征融合就很迷惑了……还没看懂。</p><p>文章说这种方法对于$\omega$、$\alpha$和$r$三种模态是不相等的。$\omega$的KV一部分来源于本身，另一部分来源于用$\alpha$和$r$进行SA的结果，两部分特征用全连降维。$r$的KV和$\omega$一样。但是$\alpha$的就很奇怪了，只融合了$\omega$的特征？</p><h3 id="文献7-MMT"><a href="#文献7-MMT" class="headerlink" title="文献7 MMT"></a>文献7 MMT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026160854.png" alt="MMT"></p><p>这种特征融合方法解决了文献2、3中方法不能拓展到三个及以上特征的问题，但是会导致时间维度较大。</p><p>这里就是先把多种特征先弄成同一特征维（时间维可不同），然后加上时序信息的Temporal embeddings和区分不同特征的expert embeddings，文章还给每一种特征增加了一个agg特征，这是对每一种特征的时序进行pooling得到的Global信息。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Encoder的特征融合中，文献2、3都没有做到融合第三种特征，因为使用三种特征后会出现六路encoder输出。</p><p>在Decoder的特征融合中，方法都类似，区别是用全连或者SA降维。</p><h1 id="榜单"><a href="#榜单" class="headerlink" title="榜单"></a>榜单</h1><h2 id="MSR-VTT"><a href="#MSR-VTT" class="headerlink" title="MSR-VTT"></a>MSR-VTT</h2><table><thead><tr><th>方法</th><th>METEOR</th><th>ROUGH</th><th>CIDEr</th><th>Bleu@4</th></tr></thead><tbody><tr><td>SBAT(3)</td><td>28.9</td><td>61.5</td><td>51.6</td><td>42.9</td></tr><tr><td>att-TVT(N+I+V)(1)</td><td>28.2</td><td>61.1</td><td>48.5</td><td>42.5</td></tr><tr><td>att-TVT(N+I)(1)</td><td>27.9</td><td>59.6</td><td>47.7</td><td>40.1</td></tr><tr><td>RecNet(8)</td><td>26.6</td><td>59.3</td><td>42.7</td><td>39.1</td></tr><tr><td>GRU-EVE(9)</td><td>28.4</td><td>60.7</td><td>48.1</td><td>38.3</td></tr><tr><td>CLIP4Caption(10)</td><td>30.7</td><td>63.7</td><td>57.7</td><td>46.1</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table><h2 id="VATEX"><a href="#VATEX" class="headerlink" title="VATEX"></a>VATEX</h2>]]></content>
     
     
     <categories>
