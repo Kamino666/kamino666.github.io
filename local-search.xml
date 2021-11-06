@@ -29,35 +29,6 @@
   
   
   <entry>
-    <title>CLIP4Caption++论文笔记</title>
-    <link href="/2021/11/04/CLIP4Caption++%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
-    <url>/2021/11/04/CLIP4Caption++%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
-    
-    <content type="html"><![CDATA[<h1 id="CLIP4Caption-论文笔记"><a href="#CLIP4Caption-论文笔记" class="headerlink" title="CLIP4Caption++论文笔记"></a>CLIP4Caption++论文笔记</h1><p>[TOC]</p><p>论文：<code>CLIP4Caption: CLIP for Video Caption</code></p><p>网址：<a href="https://dl.acm.org/doi/pdf/10.1145/3474085.3479207">CLIP4Caption: CLIP for Video Caption (acm.org)</a>、<a href="https://doi.org/10.1145/3474085.3479207">https://doi.org/10.1145/3474085.3479207</a></p><p>代码：无</p><p>这篇2021年10月发布在MM’21的论文提出了一个基于CLIP、CLIP4CLIP(1)和Uni-VL的模型，用来做视频描述任务（Video Captioning），效果拔群，METEOR和CIDEr指标都是SOTA。文章主要想利用已有的vision-language预训练模型来帮助下游任务。同时文章还提出了一种集成学习方法，效果也有提升。作者还发了一篇<code>CLIP4Caption++: Multi-CLIP for Video Caption</code>主要在VATEX数据集上实验，并且添加了subtitle的多模态，放在另一篇文章中讲吧.。</p><h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211104200652.png" alt="image-20211104200652687"></p><blockquote><p>参考文献</p><ol><li></li></ol></blockquote>]]></content>
-    
-    
-    <categories>
-      
-      <category>论文</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Transformer</tag>
-      
-      <tag>Video Captioning</tag>
-      
-      <tag>CLIP4Caption</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>CLIP4Caption论文笔记</title>
     <link href="/2021/11/02/CLIP4Caption%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     <url>/2021/11/02/CLIP4Caption%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
@@ -79,33 +50,6 @@
       <tag>Video Captioning</tag>
       
       <tag>CLIP4Caption</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
-    <title>文本生成预训练模型方向小综述</title>
-    <link href="/2021/11/02/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%B0%8F%E7%BB%BC%E8%BF%B0/"/>
-    <url>/2021/11/02/%E6%96%87%E6%9C%AC%E7%94%9F%E6%88%90%E9%A2%84%E8%AE%AD%E7%BB%83%E6%A8%A1%E5%9E%8B%E5%B0%8F%E7%BB%BC%E8%BF%B0/</url>
-    
-    <content type="html"><![CDATA[<h1 id="文本生成预训练模型方向小综述"><a href="#文本生成预训练模型方向小综述" class="headerlink" title="文本生成预训练模型方向小综述"></a>文本生成预训练模型方向小综述</h1><p>[TOC]</p><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ol><li><code>BART: Denoising Sequence-to-Sequence Pre-training for Natural Language Generation, Translation, and Comprehension</code></li><li><code>UniVL: A Unified Video and Language Pre-Training Model for Multimodal Understanding and Generation</code></li><li></li></ol><h2 id="BART"><a href="#BART" class="headerlink" title="BART"></a>BART</h2>]]></content>
-    
-    
-    <categories>
-      
-      <category>论文</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Transformer</tag>
-      
-      <tag>Caption Generation</tag>
       
     </tags>
     
