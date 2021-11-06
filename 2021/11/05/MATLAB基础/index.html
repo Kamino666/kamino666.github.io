@@ -16,24 +16,20 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="CLIP4Caption++论文笔记[TOC] 论文：CLIP4Caption: CLIP for Video Caption 网址：CLIP4Caption: CLIP for Video Caption (acm.org)、https:&#x2F;&#x2F;doi.org&#x2F;10.1145&#x2F;3474085.3479207 代码：无 这篇2021年10月发布在MM’21的论文提出了一个基于CLIP、CLIP4CLI">
+  <meta name="description" content="MATLAB基础笔记基本参考MATLAB是什么？ (biancheng.net)、文档主页 - MathWorks 中国 变量、类型、关键字变量 变量和Python一样不用声明，变量名别奇奇怪怪的就行。    特殊变量 意义    pi 圆周率   ans 默认变量   i或者j 复数   eps 最小数   inf 无穷大   NaN not a number   创建矩阵的时候，用,隔开一行中">
 <meta property="og:type" content="article">
-<meta property="og:title" content="CLIP4Caption++论文笔记">
-<meta property="og:url" content="http://blog.kamino.link/2021/11/04/CLIP4Caption++%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="MATLAB基础笔记">
+<meta property="og:url" content="http://blog.kamino.link/2021/11/05/MATLAB%E5%9F%BA%E7%A1%80/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="CLIP4Caption++论文笔记[TOC] 论文：CLIP4Caption: CLIP for Video Caption 网址：CLIP4Caption: CLIP for Video Caption (acm.org)、https:&#x2F;&#x2F;doi.org&#x2F;10.1145&#x2F;3474085.3479207 代码：无 这篇2021年10月发布在MM’21的论文提出了一个基于CLIP、CLIP4CLI">
+<meta property="og:description" content="MATLAB基础笔记基本参考MATLAB是什么？ (biancheng.net)、文档主页 - MathWorks 中国 变量、类型、关键字变量 变量和Python一样不用声明，变量名别奇奇怪怪的就行。    特殊变量 意义    pi 圆周率   ans 默认变量   i或者j 复数   eps 最小数   inf 无穷大   NaN not a number   创建矩阵的时候，用,隔开一行中">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211104200652.png">
-<meta property="article:published_time" content="2021-11-04T12:00:00.000Z">
-<meta property="article:modified_time" content="2021-11-04T14:56:12.685Z">
+<meta property="article:published_time" content="2021-11-05T08:45:00.000Z">
+<meta property="article:modified_time" content="2021-11-06T03:06:23.480Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Transformer">
-<meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="CLIP4Caption">
+<meta property="article:tag" content="MATLAB">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211104200652.png">
   
-  <title>CLIP4Caption++论文笔记 - Kamino&#39;s Blog</title>
+  <title>MATLAB基础笔记 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -187,12 +183,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106110612.jpg') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="CLIP4Caption++论文笔记">
+            <span class="h2" id="subtitle" title="MATLAB基础笔记">
               
             </span>
 
@@ -202,8 +198,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-11-04 20:00" pubdate>
-        2021年11月4日 晚上
+      <time datetime="2021-11-05 16:45" pubdate>
+        2021年11月5日 下午
       </time>
     </span>
   
@@ -213,7 +209,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      417 字
+      1.3k 字
     </span>
   
 
@@ -222,7 +218,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1 分钟
+      4 分钟
     </span>
   
 
@@ -259,27 +255,90 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">CLIP4Caption++论文笔记</h1>
+            <h1 style="display: none">MATLAB基础笔记</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年11月4日 晚上
+                  本文最后更新于：2021年11月6日 上午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="CLIP4Caption-论文笔记"><a href="#CLIP4Caption-论文笔记" class="headerlink" title="CLIP4Caption++论文笔记"></a>CLIP4Caption++论文笔记</h1><p>[TOC]</p>
-<p>论文：<code>CLIP4Caption: CLIP for Video Caption</code></p>
-<p>网址：<a target="_blank" rel="noopener" href="https://dl.acm.org/doi/pdf/10.1145/3474085.3479207">CLIP4Caption: CLIP for Video Caption (acm.org)</a>、<a target="_blank" rel="noopener" href="https://doi.org/10.1145/3474085.3479207">https://doi.org/10.1145/3474085.3479207</a></p>
-<p>代码：无</p>
-<p>这篇2021年10月发布在MM’21的论文提出了一个基于CLIP、CLIP4CLIP(1)和Uni-VL的模型，用来做视频描述任务（Video Captioning），效果拔群，METEOR和CIDEr指标都是SOTA。文章主要想利用已有的vision-language预训练模型来帮助下游任务。同时文章还提出了一种集成学习方法，效果也有提升。作者还发了一篇<code>CLIP4Caption++: Multi-CLIP for Video Caption</code>主要在VATEX数据集上实验，并且添加了subtitle的多模态，放在另一篇文章中讲吧.。</p>
-<h2 id="整体架构"><a href="#整体架构" class="headerlink" title="整体架构"></a>整体架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211104200652.png" srcset="/img/loading.gif" lazyload alt="image-20211104200652687"></p>
-<blockquote>
-<p>参考文献</p>
-<ol>
-<li></li>
-</ol>
-</blockquote>
+              <h1 id="MATLAB基础笔记"><a href="#MATLAB基础笔记" class="headerlink" title="MATLAB基础笔记"></a>MATLAB基础笔记</h1><p>基本参考<a target="_blank" rel="noopener" href="http://c.biancheng.net/view/6595.html">MATLAB是什么？ (biancheng.net)</a>、<a target="_blank" rel="noopener" href="https://ww2.mathworks.cn/help/index.html?s_tid=CRUX_lftnav">文档主页 - MathWorks 中国</a></p>
+<h2 id="变量、类型、关键字"><a href="#变量、类型、关键字" class="headerlink" title="变量、类型、关键字"></a>变量、类型、关键字</h2><p><strong>变量</strong></p>
+<p>变量和Python一样不用声明，变量名别奇奇怪怪的就行。</p>
+<table>
+<thead>
+<tr>
+<th>特殊变量</th>
+<th>意义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>pi</td>
+<td>圆周率</td>
+</tr>
+<tr>
+<td>ans</td>
+<td>默认变量</td>
+</tr>
+<tr>
+<td>i或者j</td>
+<td>复数</td>
+</tr>
+<tr>
+<td>eps</td>
+<td>最小数</td>
+</tr>
+<tr>
+<td>inf</td>
+<td>无穷大</td>
+</tr>
+<tr>
+<td>NaN</td>
+<td>not a number</td>
+</tr>
+</tbody></table>
+<p><strong>创建矩阵</strong>的时候，用<code>,</code>隔开一行中的元素，用<code>;</code>分隔列。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs matlab">x = [<span class="hljs-number">1</span>,<span class="hljs-number">2</span>;<span class="hljs-number">3</span>,<span class="hljs-number">4</span>]<br><br><span class="hljs-built_in">ans</span> =<br><br>     <span class="hljs-number">1</span>     <span class="hljs-number">2</span><br>     <span class="hljs-number">3</span>     <span class="hljs-number">4</span><br></code></pre></td></tr></table></figure>
+
+<p>通常创建矩阵的方式：</p>
+<ul>
+<li><code>a:b:c</code>：生成整数序列，即从a开始步长为b，一直到不小于c的数</li>
+<li><code>linspace(start, end, n)</code>：包括start和end，生成线性的n个数据。</li>
+<li><code>ones()</code>,<code>zeros()</code>,<code>eye()</code>：全1，全0，对角矩阵</li>
+<li><code>rand()</code>,<code>randn()</code>：均匀分布、正态分布</li>
+</ul>
+<p><strong>类型</strong></p>
+<p>查看类型可以用<code>class</code>，查看维度等详细信息可以用<code>whos()</code>、</p>
+<p>NaN类型可以用<code>isnan()</code>找出矩阵中的NaN，有NaN的地方是1。找出之后可以用<code>find()</code>继续找到索引位置。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs matlab">$ 把数组中NaN类型变成<span class="hljs-number">0</span>的代码<br><span class="hljs-built_in">i</span> = <span class="hljs-built_in">find</span>(<span class="hljs-built_in">isnan</span>(a))<br>a(<span class="hljs-built_in">i</span>) = <span class="hljs-built_in">zeros</span>(<span class="hljs-built_in">size</span>(<span class="hljs-built_in">i</span>))<br></code></pre></td></tr></table></figure>
+
+<p><strong>空数组</strong></p>
+<p>就是没有元素的数组，假如<code>find()</code>不到东西，可能就会返回这个。空数组用<code>x = []</code>创建。判断空数组用<code>isempty(x)</code>。</p>
+<h2 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h2><p>MATLAB里等于是==，但是不等于是~=。</p>
+<p><code>&amp;</code>表示与，<code>|</code>表示或，<code>~</code>表示取反，<code>any(x)</code>表示x里any not 0 in x，<code>all(x)</code>表示all not 0 in x。</p>
+<h2 id="数学运算符"><a href="#数学运算符" class="headerlink" title="数学运算符"></a>数学运算符</h2><p><code>&#39;</code>、<code>transpose(x)</code>：转置</p>
+<p><code>+、-</code>：加减法     <code>sum()</code>：求和</p>
+<p><code>.*</code>：按元素乘法    <code>*</code>：矩阵乘法</p>
+<p><code>.^</code>：按元素求幂    <code>^</code>：矩阵幂</p>
+<p><code>mod()</code>：模</p>
+<p><code>round()</code>、<code>floor()</code>、<code>ceil()</code>：四舍五入、往下、往上</p>
+<h2 id="下标-索引"><a href="#下标-索引" class="headerlink" title="下标/索引"></a>下标/索引</h2><p><strong>下标从1开始！！！！</strong></p>
+<p><strong>下标从1开始！！！！</strong></p>
+<p><strong>下标从1开始！！！！</strong></p>
+<p>下标用<code>()</code>表示，先行再列，不能用负数下标但是可以用end表示最后一行（用end-1访问倒数第2个元素），其它和python差不多。</p>
+<p>下标内容可以是一维数组，也就是说可以用<code>x([1,5,6])</code>这种方法。</p>
+<p>而索引指的是把矩阵拍扁之后的序号，对于矩阵，下标可以是一个二维坐标，而索引是一个数字。</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs MATLAB">A=<br>    <span class="hljs-number">8</span>    <span class="hljs-number">1</span>    <span class="hljs-number">6</span><br>    <span class="hljs-number">3</span>    <span class="hljs-number">5</span>    <span class="hljs-number">7</span><br>    <span class="hljs-number">4</span>    <span class="hljs-number">9</span>    <span class="hljs-number">2</span><br>元素  索引  下标<br> <span class="hljs-number">8</span>     <span class="hljs-number">1</span>    (<span class="hljs-number">1</span>,<span class="hljs-number">1</span>)<br> <span class="hljs-number">3</span>     <span class="hljs-number">2</span>    (<span class="hljs-number">2</span>,<span class="hljs-number">1</span>)<br> <span class="hljs-number">4</span>     <span class="hljs-number">3</span>    (<span class="hljs-number">3</span>,<span class="hljs-number">1</span>)<br> <span class="hljs-number">1</span>     <span class="hljs-number">4</span>    (<span class="hljs-number">1</span>,<span class="hljs-number">2</span>)<br> <span class="hljs-number">5</span>     <span class="hljs-number">5</span>    (<span class="hljs-number">2</span>,<span class="hljs-number">2</span>)<br> <span class="hljs-number">9</span>     <span class="hljs-number">6</span>    (<span class="hljs-number">3</span>,<span class="hljs-number">2</span>)<br> <span class="hljs-number">6</span>     <span class="hljs-number">7</span>    (<span class="hljs-number">1</span>,<span class="hljs-number">3</span>)<br> <span class="hljs-number">7</span>     <span class="hljs-number">8</span>    (<span class="hljs-number">2</span>,<span class="hljs-number">3</span>)<br> <span class="hljs-number">2</span>     <span class="hljs-number">9</span>    (<span class="hljs-number">3</span>,<span class="hljs-number">3</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="循环、条件"><a href="#循环、条件" class="headerlink" title="循环、条件"></a>循环、条件</h2><p>条件语法如下，不用冒号不用括号，按照缩进分隔，用end结尾</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs matlab"><span class="hljs-keyword">if</span> expression<br>    statements<br><span class="hljs-keyword">elseif</span> expression<br>    statements<br><span class="hljs-keyword">else</span><br>    statements<br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<p>循环语法如下，用end结尾，可以用break和continue，values可以是次数也可以是可遍历的结构</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs matlab"><span class="hljs-keyword">for</span> index = values<br>   statements<br><span class="hljs-keyword">end</span><br><br><span class="hljs-keyword">while</span> expression<br>   statements<br><span class="hljs-keyword">end</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h2><p>需要在文件中创建，文件名是函数名，<code>function [y1,...,yN] = myfun(x1,...,xM)</code>：声明名为 <code>myfun</code> 的函数，该函数接受输入 <code>x1,...,xM</code> 并返回输出 <code>y1,...,yN</code>。</p>
 
             </div>
             <hr>
@@ -289,7 +348,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                      <a class="hover-with-bg" href="/categories/%E5%B8%B8%E7%94%A8%E6%98%93%E5%BF%98/">常用易忘</a>
                     
                   </div>
                 
@@ -297,11 +356,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Transformer/">Transformer</a>
-                    
-                      <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
-                    
-                      <a class="hover-with-bg" href="/tags/CLIP4Caption/">CLIP4Caption</a>
+                      <a class="hover-with-bg" href="/tags/MATLAB/">MATLAB</a>
                     
                   </div>
                 
@@ -318,18 +373,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/11/05/MATLAB%E5%9F%BA%E7%A1%80/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">MATLAB基础笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/11/02/CLIP4Caption%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
-                        <span class="hidden-mobile">CLIP4Caption论文笔记</span>
+                      <a href="/2021/11/04/CLIP4Caption++%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">CLIP4Caption++论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
