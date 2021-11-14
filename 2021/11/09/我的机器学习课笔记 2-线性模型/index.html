@@ -13,24 +13,33 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="线性模型就是一个通过属性的线性组合来进行预测的函数，线性模型的优点是可解释性强，缺点是拟合能力比较弱，这一章使用线性模型进行回归和分类任务，本文是学习这一章所做的笔记。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Pytorch DDP多卡训练DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于torch.distributed中。 本文简单介绍使用DDP进行单机多卡训练的步骤。 1. 开头导入库、获取local_rank、初始化backend123456789import torchimport torch.distributed as distfrom">
+  <meta name="description" content="线性模型就是一个通过属性的线性组合来进行预测的函数，线性模型的优点是可解释性强，缺点是拟合能力比较弱，这一章使用线性模型进行回归和分类任务，本文是学习这一章所做的笔记。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pytorch DDP多卡训练">
-<meta property="og:url" content="http://blog.kamino.link/2021/10/25/Pytorch%20DDP/index.html">
+<meta property="og:title" content="我的机器学习课笔记 #2-线性模型">
+<meta property="og:url" content="http://blog.kamino.link/2021/11/09/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%202-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Pytorch DDP多卡训练DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于torch.distributed中。 本文简单介绍使用DDP进行单机多卡训练的步骤。 1. 开头导入库、获取local_rank、初始化backend123456789import torchimport torch.distributed as distfrom">
+<meta property="og:description" content="线性模型就是一个通过属性的线性组合来进行预测的函数，线性模型的优点是可解释性强，缺点是拟合能力比较弱，这一章使用线性模型进行回归和分类任务，本文是学习这一章所做的笔记。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-10-25T05:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-25T10:13:28.140Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109155712.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111154323.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109161859.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109162548.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109163052.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111194901.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112151336.svg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112151208.svg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111213436.jpg">
+<meta property="article:published_time" content="2021-11-09T05:31:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T09:45:45.218Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Pytorch">
-<meta property="article:tag" content="DDP">
+<meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109155712.png">
   
-  <title>Pytorch DDP多卡训练 - Kamino&#39;s Blog</title>
+  <title>我的机器学习课笔记 #2-线性模型 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -184,12 +193,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211025131422.png') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Pytorch DDP多卡训练">
+            <span class="h2" id="subtitle" title="我的机器学习课笔记 #2-线性模型">
               
             </span>
 
@@ -199,8 +208,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-25 13:00" pubdate>
-        2021年10月25日 下午
+      <time datetime="2021-11-09 13:31" pubdate>
+        2021年11月9日 下午
       </time>
     </span>
   
@@ -210,7 +219,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      2.2k 字
     </span>
   
 
@@ -219,7 +228,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      7 分钟
     </span>
   
 
@@ -256,36 +265,66 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Pytorch DDP多卡训练</h1>
+            <h1 style="display: none">我的机器学习课笔记 #2-线性模型</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年10月25日 晚上
+                  本文最后更新于：2021年11月14日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Pytorch-DDP多卡训练"><a href="#Pytorch-DDP多卡训练" class="headerlink" title="Pytorch DDP多卡训练"></a>Pytorch DDP多卡训练</h1><p>DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于<code>torch.distributed</code>中。</p>
-<p>本文简单介绍使用DDP进行<strong>单机多卡</strong>训练的步骤。</p>
-<h2 id="1-开头导入库、获取local-rank、初始化backend"><a href="#1-开头导入库、获取local-rank、初始化backend" class="headerlink" title="1. 开头导入库、获取local_rank、初始化backend"></a>1. 开头导入库、获取local_rank、初始化backend</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.distributed <span class="hljs-keyword">as</span> dist<br><span class="hljs-keyword">from</span> torch.nn.parallel <span class="hljs-keyword">import</span> DistributedDataParallel <span class="hljs-keyword">as</span> DDP<br><br><span class="hljs-comment"># 有的用parser获取LOCAL_RANK的已经过时了</span><br>local_rank = <span class="hljs-built_in">int</span>(os.environ[<span class="hljs-string">&quot;LOCAL_RANK&quot;</span>]) <br>torch.cuda.set_device(local_rank)<br>dist.init_process_group(backend=<span class="hljs-string">&#x27;nccl&#x27;</span>)  <span class="hljs-comment"># 一般使用的后端为nccl</span><br>device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span>, local_rank)<br></code></pre></td></tr></table></figure>
+              <h1 id="我的机器学习课笔记-2-线性模型"><a href="#我的机器学习课笔记-2-线性模型" class="headerlink" title="我的机器学习课笔记 #2-线性模型"></a>我的机器学习课笔记 #2-线性模型</h1><p>[TOC]</p>
+<p>线性模型就是一个通过<strong>属性的线性组合</strong>来进行预测的函数。下式中(1)(2)(3)都是线性的，而(4)不是线性的，因为看中的是学习参数$w$的线性，而不是属性本身的变化是不是线性。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109155712.png" srcset="/img/loading.gif" lazyload></p>
+<p>线性模型的优点是可解释性强，缺点是拟合能力比较弱，这一章使用线性模型进行回归和分类任务。</p>
+<h2 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h2><p>线性回归的目标如下，最小化所有样本的<strong>预测结果与真实结果之间的欧几里得距离</strong>，即最小化均方误差（MSE）。<br>$$<br>f(x_i)=wx_i+b，f(x)\approx y_i<br>$$</p>
+<p>$$<br>argmin(\sum_{i=1}^{m}(f(x_i)-y_i)^2)<br>$$</p>
+<p>求解w、b有两种方法，一是通过<strong>最小二乘法</strong>可以得到w和b的最优解，二是通过<strong>梯度下降法</strong>迭代求导较优解。最小二乘法虽然能够一次求解，但是适用范围窄、当特征维度大时计算量比较大；梯度下降法是深度学习中最普遍的方法，面对成千上万的特征维度仍然能够很好求解。</p>
+<blockquote>
+<p><strong>最小二乘法</strong></p>
+<p>最小二乘法要求损失函数是凸函数，当损失函数的导数为0的时候认为达到了最优点，通过这个方程解出w和b的值。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111154323.png" srcset="/img/loading.gif" lazyload alt="image-20211111154323303"></p>
+</blockquote>
+<blockquote>
+<p><strong>对数线性回归</strong></p>
+<p>有时逼近的不是y而是y的衍生物，比如逼近y的对数：$\ln y=wx_i+b$</p>
+<p>这种严格来说不是线性回归，而是广义线性模型的一种，广义线性模型需要一个单调可微函数$g(·)$<br>$$<br>广义线性模型： y=g^{-1}(w^Tx+b)<br>$$</p>
+</blockquote>
+<h2 id="线性回归改进——正则化"><a href="#线性回归改进——正则化" class="headerlink" title="线性回归改进——正则化"></a>线性回归改进——正则化</h2><p>为了抑制线性模型的过拟合，可以通过在损失函数中添加L1范数或者L2范数来进行正则化，对应<strong>LASSO回归</strong>和<strong>Ridge岭回归</strong>。</p>
+<p>L1范数就是$||w||<em>1=\sum^{d}</em>{i=1}|w_i|$，即向量w所有元素的绝对值的和</p>
+<p>L2范数就是$||w||<em>2=\sum^{d}</em>{i=1}w_i^2$，即向量w所有元素的平方的和</p>
+<p>如图，使用时通过超参数$\lambda$与原来的损失函数相加构成新的损失函数</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109161859.png" srcset="/img/loading.gif" lazyload alt="Ridge_Regression"></p>
+<p>正则化抑制过拟合的原理是惩罚过大的w项，w太大会导致那么拟合曲线斜率就会更大、更不平滑，在损失函数中加上正则化项后w变大会导致损失函数变大，而我们的算法会让损失函数尽量小，从而得到更小的w，进而抑制了过拟合。两种正则化的对比如图，椭圆中心是原来loss的最低处，现在会往原点靠，得到的拟合效果如图，能较好的抑制曲线一上一下的过拟合情况。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109162548.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109163052.png" srcset="/img/loading.gif" lazyload></div></div></div>
 
-<h2 id="2-初始化DDP模型"><a href="#2-初始化DDP模型" class="headerlink" title="2. 初始化DDP模型"></a>2. 初始化DDP模型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">model = YourModel().to(device)  <span class="hljs-comment"># 要在把模型放进GPU之后再DDP</span><br>model = DDP(model, device_ids=[local_rank], output_device=local_rank)<br></code></pre></td></tr></table></figure>
-
-<h2 id="3-数据处理"><a href="#3-数据处理" class="headerlink" title="3. 数据处理"></a>3. 数据处理</h2><p>使用DDP的batchsize是单张卡上的batchsize，假如你用一张卡训练的batchsize是64，然后想分散在四张卡上，那么batchsize应该设置成16</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">train_iter = torchvision.datasets.CIFAR10(root=<span class="hljs-string">&#x27;./data&#x27;</span>, train=<span class="hljs-literal">True</span>)<br>train_sampler = torch.utils.data.distributed.DistributedSampler(train_iter)<br>train_loader = torch.utils.data.DataLoader(train_iter, batch_size=batch_size, sampler=train_sampler)  <span class="hljs-comment"># 注意sampler！</span><br><br><span class="hljs-comment"># 在epoch中</span><br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(xx):<br>    trainloader.sampler.set_epoch(epoch)  <span class="hljs-comment"># 注意set_epoch</span><br>    <span class="hljs-keyword">for</span> xxx <span class="hljs-keyword">in</span> train_loader:<br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="4-模型保存"><a href="#4-模型保存" class="headerlink" title="4. 模型保存"></a>4. 模型保存</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> dist.get_rank() == <span class="hljs-number">0</span>:  <span class="hljs-comment"># 先判断是主卡，免得所有卡都保存一次</span><br>    torch.save(model.module, <span class="hljs-string">&quot;saved_model.pth&quot;</span>)  <span class="hljs-comment"># 保存的是DDP.module</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="5-程序运行"><a href="#5-程序运行" class="headerlink" title="5. 程序运行"></a>5. 程序运行</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> nproc_per_node就是使用多少张卡</span><br><span class="hljs-meta">#</span><span class="bash"> 可使用来选择多卡机器上的某几张卡CUDA_VISIBLE_DEVICES=4,5,6,7</span><br>python -m torch.distributed.launch --nproc_per_node 8 main.py<br></code></pre></td></tr></table></figure>
-
-<h2 id="6-使用Pytorch推荐的spawn方式"><a href="#6-使用Pytorch推荐的spawn方式" class="headerlink" title="*6. 使用Pytorch推荐的spawn方式"></a>*6. 使用Pytorch推荐的spawn方式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">demo_fn</span>(<span class="hljs-params">rank, world_size</span>):</span>  <span class="hljs-comment"># 两个参数，第一个参数一定是rank</span><br>    dist.init_process_group(<span class="hljs-string">&quot;nccl&quot;</span>, rank=rank, world_size=world_size)<br>    <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">import</span> torch.multiprocessing <span class="hljs-keyword">as</span> mp<br>mp.spawn(demo_fn,<br>         args=(world_size,), <span class="hljs-comment"># 传参给demo_fn，调用demo_fn的时候还会有一个参数表示rank</span><br>         nprocs=world_size,  <span class="hljs-comment"># 用多少卡</span><br>         join=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
-
-
-
+<h2 id="线性分类（对数几率回归、逻辑回归）"><a href="#线性分类（对数几率回归、逻辑回归）" class="headerlink" title="线性分类（对数几率回归、逻辑回归）"></a>线性分类（对数几率回归、逻辑回归）</h2><p>假如做的是二分类任务，那么要输出的就不是一个值而是0/1了，即 $y\in {0,1}$。要把$wx_i+b$的回归值转换成0/1，理想使用阶跃函数，但是因为不连续而不利于计算。所以需要找到一个决策函数 $g(·)$来近似，要求<strong>单调可微分</strong>，发现<strong>sigmoid</strong>函数（也叫对数几率函数 logistic function）符合条件。这个函数满足单调可微，而且形式简单，值位于0到1之间，预测时大于0.5的判为正例，小于0.5的判为负例。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111194901.png" srcset="/img/loading.gif" lazyload alt="Sigmoid函数"></p>
+<p>为什么叫他对数几率回归呢，因为把函数形式变换一下就可以看做 $\ln{\frac{y}{1-y}}=w^Tx+b$，近似 $\frac{y}{1-y}$这个“几率”的对数。此处“几率”是 $\frac{发生概率}{不发生概率}$。</p>
+<p>机器学习三要素的“模型”已经有了，接下来是损失函数，<strong>二分类问题的损失函数不使用MSE而使用对数似然函数</strong>。为什么不使用MSE呢？<strong>一是因为用MSE计算sigmoid出来的概率和标签时，MSE不是凸函数（这个想证明但是不会证）；二是会出现梯度消失</strong>，证明如下。</p>
+<blockquote>
+<p>MSEloss的值用E表示，用标签 $y_i$减去$\sigma$出来的概率，再求平方，然后对loss求偏导如公式所示，当$\sigma$接近$y_i$时，$\sigma$和$1-\sigma$总有一个趋近于0，此时梯度消失。举个例子：当y=1时，预测出来σ=0.00001，此时距离真实值很远，应该梯度很大，然而梯度接近0。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112151336.svg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112151208.svg" srcset="/img/loading.gif" lazyload></p>
+</blockquote>
+<p>我们模型目前的输出是一个0~1的数，可以看作是预测正类出现的概率，而似然函数就是概率的对数。<br>$$<br>p(y=1|x)=sigmoid(w^Tx+b)<br>$$<br>$$<br>p(y=0|x)=1-sigmoid(w^Tx+b)<br>$$<br>$$<br>Loss(w,b)=\sum^m_{i=1}{\ln{p(y_i|x_i;w, b)}} 其中x_i,y_i是一对数据集标注<br>$$</p>
+<p>数据集三要素还差一个优化算法，我们使用极大似然法+梯度下降解决，目的是最大化上面这个loss，数学推导如下：</p>
+<blockquote>
+<p><strong>极大似然法 maximum likelihood method</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111213436.jpg" srcset="/img/loading.gif" lazyload></p>
+</blockquote>
+<h2 id="多分类学习"><a href="#多分类学习" class="headerlink" title="多分类学习"></a>多分类学习</h2><p>之前提到的分类学习只是在二分类，<strong>若要进行多分类的学习任务，可以使用ovo（one vs one）、ovr（one vs rest）、mvm（many vs many）</strong>三种策略。</p>
+<ul>
+<li>ovo，就是把N个类别两两配对，训练 $\frac{N(N-1)}{2}$个二分类器，然后通过这些二分类器的结果进行投票得出最终预测值</li>
+<li>ovr，就是训练N个二分类器，每次都选取一个类别作为正例，其余为负例，这样只用训练N个但是数据不均衡</li>
+<li>mvm，每次选择若干个类作为正例，若干个类作为负例。这种选取有很多种方式，在这里不详细介绍。</li>
+</ul>
 <blockquote>
 <p>参考文献</p>
-<p>[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/178402798">原创][深度][PyTorch] DDP系列第一篇：入门教程 - 知乎 (zhihu.com)</a></p>
-<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/multiprocessing.html#torch.multiprocessing.spawn">Multiprocessing package - torch.multiprocessing — PyTorch 1.10.0 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://chrisalbon.com/code/machine_learning/linear_regression/ridge_regression/">Ridge Regression (chrisalbon.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://jishuin.proginn.com/p/763bfbd2bbb3">AI 面试高频问题: 为什么二分类不用 MSE 损失函数？-技术圈 (proginn.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.pianshen.com/article/48901189766/">梯度下降数学推导</a></p>
 </blockquote>
 
             </div>
@@ -296,7 +335,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%B8%B8%E7%94%A8%E6%98%93%E5%BF%98/">常用易忘</a>
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
                     
                   </div>
                 
@@ -304,9 +345,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Pytorch/">Pytorch</a>
-                    
-                      <a class="hover-with-bg" href="/tags/DDP/">DDP</a>
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
                     
                   </div>
                 
@@ -323,9 +362,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/28/Python%20argparse/">
+                      <a href="/2021/11/10/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%204-SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python Argparse</span>
+                        <span class="hidden-mobile">我的机器学习课笔记 #4-SVM支持向量机</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -333,8 +372,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/">
-                        <span class="hidden-mobile">Video Captioning任务 Transformer方向小综述</span>
+                      <a href="/2021/11/06/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%201-%E7%BB%AA%E8%AE%BA%E4%B8%8E%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/">
+                        <span class="hidden-mobile">我的机器学习课笔记 #1-绪论与模型评估</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

@@ -13,24 +13,30 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="学习机器学习课程第一章的绪论时制作的笔记">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Pytorch DDP多卡训练DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于torch.distributed中。 本文简单介绍使用DDP进行单机多卡训练的步骤。 1. 开头导入库、获取local_rank、初始化backend123456789import torchimport torch.distributed as distfrom">
+  <meta name="description" content="学习机器学习课程第一章的绪论时制作的笔记">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pytorch DDP多卡训练">
-<meta property="og:url" content="http://blog.kamino.link/2021/10/25/Pytorch%20DDP/index.html">
+<meta property="og:title" content="我的机器学习课笔记 #1-绪论与模型评估">
+<meta property="og:url" content="http://blog.kamino.link/2021/11/06/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%201-%E7%BB%AA%E8%AE%BA%E4%B8%8E%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Pytorch DDP多卡训练DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于torch.distributed中。 本文简单介绍使用DDP进行单机多卡训练的步骤。 1. 开头导入库、获取local_rank、初始化backend123456789import torchimport torch.distributed as distfrom">
+<meta property="og:description" content="学习机器学习课程第一章的绪论时制作的笔记">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-10-25T05:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-25T10:13:28.140Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106173104.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106171336.jpeg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106174253.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107165119.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107170803.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107181343.png">
+<meta property="article:published_time" content="2021-11-06T08:50:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T09:46:23.237Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Pytorch">
-<meta property="article:tag" content="DDP">
+<meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106173104.jpg">
   
-  <title>Pytorch DDP多卡训练 - Kamino&#39;s Blog</title>
+  <title>我的机器学习课笔记 #1-绪论与模型评估 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -184,12 +190,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211025131422.png') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107185141.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Pytorch DDP多卡训练">
+            <span class="h2" id="subtitle" title="我的机器学习课笔记 #1-绪论与模型评估">
               
             </span>
 
@@ -199,8 +205,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-25 13:00" pubdate>
-        2021年10月25日 下午
+      <time datetime="2021-11-06 16:50" pubdate>
+        2021年11月6日 下午
       </time>
     </span>
   
@@ -210,7 +216,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      2.8k 字
     </span>
   
 
@@ -219,7 +225,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      9 分钟
     </span>
   
 
@@ -256,36 +262,92 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Pytorch DDP多卡训练</h1>
+            <h1 style="display: none">我的机器学习课笔记 #1-绪论与模型评估</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年10月25日 晚上
+                  本文最后更新于：2021年11月14日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Pytorch-DDP多卡训练"><a href="#Pytorch-DDP多卡训练" class="headerlink" title="Pytorch DDP多卡训练"></a>Pytorch DDP多卡训练</h1><p>DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于<code>torch.distributed</code>中。</p>
-<p>本文简单介绍使用DDP进行<strong>单机多卡</strong>训练的步骤。</p>
-<h2 id="1-开头导入库、获取local-rank、初始化backend"><a href="#1-开头导入库、获取local-rank、初始化backend" class="headerlink" title="1. 开头导入库、获取local_rank、初始化backend"></a>1. 开头导入库、获取local_rank、初始化backend</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.distributed <span class="hljs-keyword">as</span> dist<br><span class="hljs-keyword">from</span> torch.nn.parallel <span class="hljs-keyword">import</span> DistributedDataParallel <span class="hljs-keyword">as</span> DDP<br><br><span class="hljs-comment"># 有的用parser获取LOCAL_RANK的已经过时了</span><br>local_rank = <span class="hljs-built_in">int</span>(os.environ[<span class="hljs-string">&quot;LOCAL_RANK&quot;</span>]) <br>torch.cuda.set_device(local_rank)<br>dist.init_process_group(backend=<span class="hljs-string">&#x27;nccl&#x27;</span>)  <span class="hljs-comment"># 一般使用的后端为nccl</span><br>device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span>, local_rank)<br></code></pre></td></tr></table></figure>
-
-<h2 id="2-初始化DDP模型"><a href="#2-初始化DDP模型" class="headerlink" title="2. 初始化DDP模型"></a>2. 初始化DDP模型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">model = YourModel().to(device)  <span class="hljs-comment"># 要在把模型放进GPU之后再DDP</span><br>model = DDP(model, device_ids=[local_rank], output_device=local_rank)<br></code></pre></td></tr></table></figure>
-
-<h2 id="3-数据处理"><a href="#3-数据处理" class="headerlink" title="3. 数据处理"></a>3. 数据处理</h2><p>使用DDP的batchsize是单张卡上的batchsize，假如你用一张卡训练的batchsize是64，然后想分散在四张卡上，那么batchsize应该设置成16</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">train_iter = torchvision.datasets.CIFAR10(root=<span class="hljs-string">&#x27;./data&#x27;</span>, train=<span class="hljs-literal">True</span>)<br>train_sampler = torch.utils.data.distributed.DistributedSampler(train_iter)<br>train_loader = torch.utils.data.DataLoader(train_iter, batch_size=batch_size, sampler=train_sampler)  <span class="hljs-comment"># 注意sampler！</span><br><br><span class="hljs-comment"># 在epoch中</span><br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(xx):<br>    trainloader.sampler.set_epoch(epoch)  <span class="hljs-comment"># 注意set_epoch</span><br>    <span class="hljs-keyword">for</span> xxx <span class="hljs-keyword">in</span> train_loader:<br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="4-模型保存"><a href="#4-模型保存" class="headerlink" title="4. 模型保存"></a>4. 模型保存</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> dist.get_rank() == <span class="hljs-number">0</span>:  <span class="hljs-comment"># 先判断是主卡，免得所有卡都保存一次</span><br>    torch.save(model.module, <span class="hljs-string">&quot;saved_model.pth&quot;</span>)  <span class="hljs-comment"># 保存的是DDP.module</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="5-程序运行"><a href="#5-程序运行" class="headerlink" title="5. 程序运行"></a>5. 程序运行</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> nproc_per_node就是使用多少张卡</span><br><span class="hljs-meta">#</span><span class="bash"> 可使用来选择多卡机器上的某几张卡CUDA_VISIBLE_DEVICES=4,5,6,7</span><br>python -m torch.distributed.launch --nproc_per_node 8 main.py<br></code></pre></td></tr></table></figure>
-
-<h2 id="6-使用Pytorch推荐的spawn方式"><a href="#6-使用Pytorch推荐的spawn方式" class="headerlink" title="*6. 使用Pytorch推荐的spawn方式"></a>*6. 使用Pytorch推荐的spawn方式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">demo_fn</span>(<span class="hljs-params">rank, world_size</span>):</span>  <span class="hljs-comment"># 两个参数，第一个参数一定是rank</span><br>    dist.init_process_group(<span class="hljs-string">&quot;nccl&quot;</span>, rank=rank, world_size=world_size)<br>    <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">import</span> torch.multiprocessing <span class="hljs-keyword">as</span> mp<br>mp.spawn(demo_fn,<br>         args=(world_size,), <span class="hljs-comment"># 传参给demo_fn，调用demo_fn的时候还会有一个参数表示rank</span><br>         nprocs=world_size,  <span class="hljs-comment"># 用多少卡</span><br>         join=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
-
-
-
+              <h1 id="我的机器学习课笔记-1-绪论与模型评估"><a href="#我的机器学习课笔记-1-绪论与模型评估" class="headerlink" title="我的机器学习课笔记 #1-绪论与模型评估"></a>我的机器学习课笔记 #1-绪论与模型评估</h1><p>[TOC]</p>
+<h2 id="没有免费午餐定理（no-free-lunch-theorem-or-NFL）"><a href="#没有免费午餐定理（no-free-lunch-theorem-or-NFL）" class="headerlink" title="没有免费午餐定理（no free lunch theorem, or NFL）"></a>没有免费午餐定理（no free lunch theorem, or NFL）</h2><p>人们使用机器学习是期望机器学习到的算法有用，但是NFL定理却证明，对于任意两个学习算法，它们的期望性能都一样。但是别灰心，NFL定理的前提是“所有情况下”，所以NFL说的是“<strong>一个算法不可能在任何情况下都取得最好的性能</strong>”。</p>
+<p>但是我们并不需要一个算法在任何情况下性能都最好，甚至，我们经常只关注一个算法在一个方面的性能，比如使用鸢尾花数据集进行分类预测时，我们假设<strong>数据集中的4个属性足够让我们将鸢尾花进行分类</strong>，但是实际上鸢尾花有许多许多许多的属性，要将这些属性都综合考虑在内才能在所有情况下正确预测，所以用这个数据集训练出来的模型在其他鸢尾花数据集上可能就不工作了。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106173104.jpg" srcset="/img/loading.gif" lazyload alt="NFL 图源知乎"></p>
+<p>或者NFL定理也可以理解为“<strong>你不可能在没有假设的情况下从数据中学习</strong>”，如下图，我们的机器学习模型在学习过程中对于输入和输出作出了假设，这种假设可能在某些数据集上适用，但是换成别的数据集就不适用了。比如我有一个处理视频的模型，它假设视频中有物体运动的时序信息，但是视频中也可能没有运动，也可能是个意义不明的所有帧像ppt那样排布的视频，在这些情况下假设失效。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106171336.jpeg" srcset="/img/loading.gif" lazyload alt="no free lunch theorems"></p>
+<h2 id="模型评估"><a href="#模型评估" class="headerlink" title="模型评估"></a>模型评估</h2><p>对一个模型的评估会分成两类，一类是训练误差，另一类是泛化误差。前者是在训练样本上进行评估得到的误差，后者是在新样本上进行评估得到的误差。</p>
+<p>这两类误差的大小能导致过拟合和欠拟合现象，如下表和下图，</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>泛化误差大</th>
+<th>泛化误差小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>训练误差大</td>
+<td>欠拟合</td>
+<td>不可能</td>
+</tr>
+<tr>
+<td>训练误差小</td>
+<td>过拟合</td>
+<td>模型的目标</td>
+</tr>
+</tbody></table>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106174253.png" srcset="/img/loading.gif" lazyload alt="欠拟合与过拟合 图源geeksforgeeks"></p>
+<p>如何得到训练误差和泛化误差呢？可以分为<strong>得到训练集和测试集的方法</strong>和<strong>使用哪种误差函数</strong>这两个问题。</p>
+<h3 id="如何得到训练集和测试集？"><a href="#如何得到训练集和测试集？" class="headerlink" title="如何得到训练集和测试集？"></a>如何得到训练集和测试集？</h3><ul>
+<li><p>留出法</p>
+<p>最常用，就是把数据集的划分成两个互斥的集合，一个训练一个预测。</p>
+</li>
+<li><p>交叉验证法</p>
+<p>小样本适用，因为会带来更大的计算开销。K折交叉验证指的是将数据集随机分成K份，进行K次训练和预测，每次训练选取K-1份作为训练集，每次预测选取剩下那1份作为测试集。</p>
+</li>
+<li><p>自助法</p>
+<p>适用于集成学习，不会减少训练集的数据数量，但会改变数据集的分布。就是将一个拥有m个数据的数据集进行放回抽样，抽m次出来得到的就是训练集，用所有数据去掉训练集就是测试集，易知训练集的数量是m，但里面会有重复的数据。</p>
+</li>
+</ul>
+<h3 id="使用哪种误差函数？"><a href="#使用哪种误差函数？" class="headerlink" title="使用哪种误差函数？"></a>使用哪种误差函数？</h3><p>误差函数有很多很多种，作用就是告诉你模型的性能。西瓜书上主要介绍的是分类任务的性能度量。</p>
+<h4 id="错误率和精度"><a href="#错误率和精度" class="headerlink" title="错误率和精度"></a>错误率和精度</h4><p>错误率就是分类错误样本占总数的比例，精度又叫做正确率、准确率（accuracy）。</p>
+<h4 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h4><p>对于二分类结果，通常列出下面这种混淆矩阵，注意这个表的纵轴是真实情况，横轴是预测结果，有的图可能会把横纵轴对换，但是字母是不变的。</p>
+<p>结果中的<code>T/P</code>指的是预测是否正确，而<code>P/N</code>指的是预测的是正例还是反例。FP就是预测是正例，但是预测错了，实际是反例，以此类推。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107165119.png" srcset="/img/loading.gif" lazyload> </p>
+<h4 id="查准率、查全率、P-R曲线、F1"><a href="#查准率、查全率、P-R曲线、F1" class="headerlink" title="查准率、查全率、P-R曲线、F1"></a>查准率、查全率、P-R曲线、F1</h4><p>查准率查全率可以用搜索引擎的角度来解释，<strong>查准率就是搜索出来的数据有多少是对的，查全率就是有多少对的数据被查出来了</strong>，两者分母不同。也可以把查准率叫做精确率（和acc准确率区分开），把查全率叫做召回率。<br>$$<br>查准率、精确率：Precise=\frac{TP}{TP+FP}<br>$$</p>
+<p>$$<br>查全率、召回率：Recall=\frac{TP}{TP+FN}<br>$$</p>
+<p>P-R曲线就是纵轴P，横轴R的曲线。分类问题一般会对测试数据得出一个预测概率，从高到低排序，可以手动选择最高的k个作为预测正例，在k不确定的时候，查准率和查全率就会呈现P-R曲线。<strong>假如k很大，那么查全率就会高，查准率就会低，因为把很多低概率的结果都判成正例。</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107170803.png" srcset="/img/loading.gif" lazyload alt="P-R和ROC曲线"></p>
+<p>查准率和查全率是对于模型两方面的评估，但是我们想要一个综合的评价指标，于是<strong>使用调和平均得到F1这个指标。</strong><br>$$<br>\frac{1}{F1} = \frac{1}{2} (\frac{1}{P}+\frac{1}{R})<br>$$<br>若对于查准率和查全率需要偏好，则可以使用<strong>加权调和平均</strong>。<br>$$<br>\frac{1}{F_\beta} = \frac{1}{1+\beta^2} (\frac{1}{P}+\frac{\beta^2}{R})<br>$$</p>
 <blockquote>
-<p>参考文献</p>
-<p>[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/178402798">原创][深度][PyTorch] DDP系列第一篇：入门教程 - 知乎 (zhihu.com)</a></p>
-<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/multiprocessing.html#torch.multiprocessing.spawn">Multiprocessing package - torch.multiprocessing — PyTorch 1.10.0 documentation</a></p>
+<p>调和平均：参考<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23096098">如何理解与应用调和平均数？ - 知乎 (zhihu.com)</a></p>
+<p>考虑一次去便利店并返回的行程：</p>
+<ul>
+<li><strong>去程</strong>速度为<code>30 mph</code></li>
+<li><strong>返程</strong>时交通有一些拥堵，所以速度为<code>10 mph</code></li>
+<li>去程和返程走的是同一路线，也就是说距离一样（5英里）</li>
+</ul>
+<p>整个行程的平均速度是多少？如果不假思索地应用算术平均数的话，结果是20 mph（(30+10)/2）。</p>
+<p>但是这么算不对。因为去程速度更快，所以你更快地完成了去程的5英里，整个行程中以30 mph的速度行驶的时间更少，以10 mph的速度行驶的时间更多，所以整个行程期间你的平均速度不会是<code>30 mph</code>和<code>10 mph</code>的中点，而应该更接近<code>10 mph</code>。</p>
+<p>用调和平均数呢？2 / (1/30 + 1/10) = 15 mph 一下子得到了真正的行程平均速度，<strong>自动</strong>根据在每个方向上使用的时间进行调整。</p>
+</blockquote>
+<h4 id="ROC和AUC"><a href="#ROC和AUC" class="headerlink" title="ROC和AUC"></a>ROC和AUC</h4><p>用查准率查全率得到的P-R曲线和F1指标有一个缺点，那就是<strong>都没用上混淆矩阵中的TN——也就是“真反例”——也就是预测是反例，真实是反例的结果</strong>。所以定义FPR为“假正例率”，<strong>ROC就是以FPR为横轴，召回率为纵轴的曲线。</strong><br>$$<br>FPR=\frac{FP}{TN+FP}<br>$$<br>对于ROC曲线，越往左上角凸的模型越好，理解为“<strong>所有负例中被判错的少，且所有正例中被判对的多。</strong>”</p>
+<p>然而P-R曲线和ROC曲线都有一个问题，那就是曲线之间不好准确比较，对于交叉的曲线无法判断孰优孰劣。所以将ROC曲线下的面积AUC作为单个数字的指标。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107181343.png" srcset="/img/loading.gif" lazyload alt="ROC曲线"></p>
+<h2 id="模型性能分析"><a href="#模型性能分析" class="headerlink" title="模型性能分析"></a>模型性能分析</h2><p>得到模型的泛化误差后，我们仍然想知道如何模型为什么会得到这样的性能，于是我们对模型的泛化误差进行分析，可得：<br>$$<br>泛化误差=偏差(bias)+方差(var)+噪声(noise)<br>$$</p>
+<ul>
+<li>偏差指的是模型算法本身的拟合能力，是预测结果与真实结果的偏离程度</li>
+<li>方差指的是模型对于相同大小的<strong>训练集</strong>的学习结果的抖动。</li>
+<li>噪声是和数据集本身有关的泛化误差的下界，即学习本身的难度。</li>
+</ul>
+<p>假如是图片识别猫狗的二分类问题，在模型还没训练的时候，模型瞎猜能得到50%的正确率，无论训练集测试集怎么划分肯定都大概是这个结果，此时正确率低反映偏差高、数据划分不带来结果变化反映方差低；在模型训练很久之后，模型会对训练集拟合得越来越好，此时正确率上升，偏差也随之下降，但是也可能学习到训练集中的特殊信息，导致过拟合，此时方差高。</p>
+<blockquote>
+<p>参考文献：</p>
+<p>周志华的西瓜书</p>
+<p><a target="_blank" rel="noopener" href="https://analyticsindiamag.com/what-are-the-no-free-lunch-theorems-in-data-science/">Machine Learning’s No Free Lunch Theorem Explained (analyticsindiamag.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/138019862">No free lunch theorem-没有免费的午餐 - 知乎 (zhihu.com)</a></p>
 </blockquote>
 
             </div>
@@ -296,7 +358,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%B8%B8%E7%94%A8%E6%98%93%E5%BF%98/">常用易忘</a>
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
                     
                   </div>
                 
@@ -304,9 +368,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Pytorch/">Pytorch</a>
-                    
-                      <a class="hover-with-bg" href="/tags/DDP/">DDP</a>
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
                     
                   </div>
                 
@@ -323,9 +385,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/28/Python%20argparse/">
+                      <a href="/2021/11/09/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%202-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python Argparse</span>
+                        <span class="hidden-mobile">我的机器学习课笔记 #2-线性模型</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -333,8 +395,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/">
-                        <span class="hidden-mobile">Video Captioning任务 Transformer方向小综述</span>
+                      <a href="/2021/11/05/MATLAB%E5%9F%BA%E7%A1%80/">
+                        <span class="hidden-mobile">MATLAB基础笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

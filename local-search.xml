@@ -4,6 +4,89 @@
   
   
   <entry>
+    <title>我的机器学习课笔记 #4-SVM支持向量机</title>
+    <link href="/2021/11/10/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%204-SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/"/>
+    <url>/2021/11/10/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%204-SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/</url>
+    
+    <content type="html"><![CDATA[<h1 id="我的机器学习课笔记-4-SVM支持向量机"><a href="#我的机器学习课笔记-4-SVM支持向量机" class="headerlink" title="我的机器学习课笔记 #4-SVM支持向量机"></a>我的机器学习课笔记 #4-SVM支持向量机</h1><p>[TOC]</p><p><strong>SVM，全称Support Vector Machine，即支持向量机，是一种监督学习算法</strong>，基础的SVM是二分类线性模型，但可通过核函数拓展至非线性分类或者用其他方法拓展至多分类模型。本文是学习SVM基础模型、软间隔与正则项、核函数以及数学上的求解方法时所做的笔记。</p><h2 id="SVM基础模型"><a href="#SVM基础模型" class="headerlink" title="SVM基础模型"></a>SVM基础模型</h2><p>SVM算法的动机就是想画一条线，能<strong>最好地</strong>分开训练样本中的两个类别。如何判断“最好”呢？判断离这条线最近的几个点与线的距离，这个距离越大，效果就越好。判断距离时选中的那几个点被叫做<strong>支持向量</strong>，SVM的训练结果直接由这几个支持向量决定，这叫做SVM的<strong>稀疏性</strong>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211110112521.png"></p><h2 id="理论求解"><a href="#理论求解" class="headerlink" title="理论求解"></a>理论求解</h2><p>要画的那一条“线”其实是一个超平面，数学上用 $\boldsymbol{w^Tx}+b=0$这个方程表示<em>（几何中一条线的方程是Ax+By+C=0，一个面的方程是Ax+By+Cz+D=0，以此类推到多维空间的超平面数学方程）</em></p><p>而点到超平面的距离公式是$ d=\frac{|\boldsymbol{w^Tx}+b|}{||w||}$<em>（几何中一个三维空间的点到平面距离公式是 $d=\frac{|Ax+By+Cz+D|}{\sqrt{A^2+B^2+C^2}}$，以此类推）</em></p><p>此时新假设两个平行于$\boldsymbol{w^Tx}+b=0$的超平面，一个是$\boldsymbol{w^Tx}+b=1$，另一个是$\boldsymbol{w^Tx}+b=-1$，需要找到的 $\boldsymbol{w^T}$需要满足以下条件，而通过平面间距的公式得到新假设的这两个超平面<strong>间隔</strong>为 $\gamma=\frac{2}{||w||}$。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112161002.svg"></p><p>所以我们需要优化的问题是：<br>$$<br>argmin_{w,b}(\frac{||w||}{2}) \quad s.t. y_i(\boldsymbol{w^Tx_i}+b) \ge 1<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112155619.jpg" alt="西瓜书配图"></p><blockquote><p>利用<strong>对偶问题</strong>求解（参考西瓜书附录）</p><p><strong>拉格朗日乘子法的解释</strong>：拉格朗日乘子法是一种寻找<strong>多元函数在一组约束下的极值</strong>的方法。通过引入拉格朗日乘子，可将有d个变量、k个约束的最优化问题转换为d+k个变量、无约束的最优化问题。</p><p>如图，假如函数是 $f(x,y)$，约束是 $g(x,y)=C$，那么在最优点（图中等高线交点）函数梯度和约束梯度方向相同或相反，即 $\nabla f(x_i,y_i) + \lambda \nabla g(x_i,y_i) = 0$。此时定义另一个函数 $L(x,y,\lambda)=f(x,y)+\lambda g(x,y)$，则 $\frac{\partial L}{\partial x,y} = \nabla f(x_i,y_i) + \lambda \nabla g(x_i,y_i)$。所以原问题就转换成了最后这个方程的最优化问题。</p><p>假如约束不是个等式，而是不等式，也可以使用这种方法。假设函数是 $f(x,y)$，约束是 $g(x,y) \le 0$。假如最优点$(x_i,y_i)$满足$g(x_i,y_i)&lt;0$，那约束就不起作用，直接对原始做无约束最优化；假如最优点$(x_i,y_i)$满足$g(x_i,y_i)=0$，那就和等式约束的情况一样了，但是此时函数梯度和约束梯度方向<strong>必然**相反，所以此时 $\lambda&gt;0$。结合两种情况，归纳成</strong>KKT条件**：<br>$$<br>g(x,y) \le 0 \quad \lambda \ge 0 \quad \lambda g(x)=0<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211113141611.jpeg"></p><p>使用<strong>拉格朗日乘子法</strong>求SVM的最优化问题：</p><p>将$argmin_{w,b}(\frac{||w||}{2}) \quad s.t. y_i(\boldsymbol{w^Tx_i}+b) \ge 1$转换成拉格朗日函数即<br>$$<br>L(\boldsymbol w, b, \boldsymbol \alpha)= \frac{||w||^2}{2} + \sum^m_{i=1} \alpha_i (1-y_i(\boldsymbol{w^Tx_i}+b))<br>$$<br>满足KKT条件：<br>$$<br>1-y_i(\boldsymbol{w^Tx_i}+b) \le 0 \quad \alpha_i \ge 0 \quad \alpha_i (1-y_i(\boldsymbol{w^Tx_i}+b))=0<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211113153507.jpg"></p><p>现在问题就只剩下解出$L(\boldsymbol \alpha)$的最大值（此处留坑）</p></blockquote><h2 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h2><p>核函数，或者叫做核技巧，是在SVM中用来将线性拓展到非线性的工具。对于图中左边这种无法用一根直线划分的数据分布，使用某种映射函数 $\phi(x)$映射到高维空间后，就能用一个平面划分。<strong>但是</strong>$\phi(x)$ <strong>有很多种，而且映射之后也无法保证是线性可分的。只能保证假如原始空间是有限维度的，那么一定会有一个高维特征空间使样本线性可分。</strong></p><p>在使用映射函数提升维度后，对偶问题变成了 $最大化 -\frac{1}{2}\sum^m_{i=1}\sum^m_{j=1} \alpha_i \alpha_j y_i y_j \phi(\boldsymbol{x_i})^T\phi(\boldsymbol{x_j}) + \sum^m_{i=1}\alpha_i$，但是求 $\phi(\boldsymbol{x_i})^T\phi(\boldsymbol{x_j})$是在是太麻烦了，需要升维之后再求内积，所以我们<strong>使用核技巧，用核函数代替内积</strong>，即 $k(\boldsymbol{x_i, x_j}) = \phi(\boldsymbol{x_i})^T\phi(\boldsymbol{x_j})$。从这个角度来看，核函数就是计算样本映射到高维空间的内积。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114151644.png"></p><p>核函数对应着一个核矩阵，对于任意对称函数，只要这个矩阵是<strong>半正定</strong>的，那这个函数就能当做核函数，一个半正定矩阵就暗中对应着一个高维空间。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114164932.jpeg"></p><p>对于这个核函数的选择，西瓜书上列了这些。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114165616.jpg"></p><blockquote><p>对称函数：$f(x, y) = f(y,x)$</p><p>半正定矩阵：<strong>给定一个</strong>$n\times n$<strong>的实数对称矩阵</strong>$A$，<strong>若对于任意长度</strong>$n$<strong>的向量</strong>$\boldsymbol{x}$，有$\boldsymbol{x^TAx} \ge 0$<strong>恒成立，则为半正定矩阵</strong>。$y=\boldsymbol{x^TAx}$就和$y=ax^2$差不多，要它$\ge 0$恒成立，就是要$A$满足一个从另一个角度$\ge 0$的条件。</p><p>证明：$K(x^{(i)},x^{(j)})$是$K$矩阵$i$行$j$列的值，又可以看作是某两个向量特征映射之后的内积，对于高维向量的单独一个值，就是向量通过$\phi_k$函数（k是高维的维度）的出来的单个值。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114163738.png"></p></blockquote><h2 id="软间隔"><a href="#软间隔" class="headerlink" title="软间隔"></a>软间隔</h2><p>前面提到就算用了核函数也不能保证数据在高维空间是线性可分的，于是我们可以考虑保留少部分点是错误分类的。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114165853.jpg"></p><p>此时需要优化的问题变成了<br>$$<br>argmin_{w,b}(\frac{||w||}{2} + C\sum^m_{i=1}\ell_{0/1}(y_i(\boldsymbol{w^Tx_i}+b) - 1))<br>$$<br>其中$\ell_{0/1}(z)$是当$z&lt;0$时为1，$z\ge0$时为0的函数。</p><p>$y_i(\boldsymbol{w^Tx_i}+b) &lt; 1$时，点不位于超平面正确的那一侧，此时$\ell_{0/1}(z)=1$，第二项开始起作用，而作用就是作为一个正数，让loss的值变大，<strong>从而让优化算法使不符合要求的点尽量少</strong>。</p><p>说到优化算法，上面说的$\ell_{0/1}(z)$明显是没有导数还不连续的，所以一般使用别的函数来替代它。如下图，有三种损失，分别是hinge损失、指数损失和对率损失，其中hinge损失用的最多。</p><p>下图$z&lt;0$时即点在超平面（上图虚线）的另一侧，此时$\ell(z) \ge 1$；下图$0&lt;z$时即点在超平面（上图虚线）的正确侧，但会根据点与分割线的距离给予不同的损失，此时$0 \le \ell(z) \le 1$。这样的话两个额外的超平面（上图虚线）就不是强行划分的界限了，而是形成了和距离有关的<strong>软间隔</strong>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114171204.jpg"></p><h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>定义$\xi = \ell(y_i(\boldsymbol{w^Tx_i}+b) - 1)$，要优化的那一部分可以简写成下面这样：<br>$$<br>argmin_{w,b}(\frac{||w||^2}{2} + C\sum^m_{i=1} \xi_i)<br>$$<br>我们换个形式，也可以是这样：<br>$$<br>argmin_{w,b}(\sum^m_{i=1} \xi_i + \lambda ||w||^2)<br>$$<br>这样的话就很像逻辑回归添加了L2正则化的损失函数：$argmin_{w,b}(\sum^m_{i=1} (y-\hat{y})^2 + \lambda ||w||^2)$。两者的第一项被叫做<strong>经验风险</strong>，指模型在训练集学习到的经验；第二项被叫做<strong>结构风险</strong>，描述模型的某些性质，这一项又可以被叫做<strong>正则化项</strong>，而$\lambda$叫做正则化常数，用来获取结构上复杂度较小的模型。</p><blockquote><p>参考文献</p><p><a href="https://www.zhihu.com/question/38586401">如何理解拉格朗日乘子法？ - 知乎 (zhihu.com)</a></p><p><a href="https://medium.com/analytics-vidhya/how-to-classify-non-linear-data-to-linear-data-bb2df1a6b781">Kernel Trick in SVM. Kernel Trick can solve this issue using… | by Siddhartha Sharma | Analytics Vidhya | Medium</a></p><p><a href="https://zhuanlan.zhihu.com/p/44860862">浅谈「正定矩阵」和「半正定矩阵」 - 知乎 (zhihu.com)</a></p><p><a href="https://www.zhihu.com/question/289165454">SVM的核函数中为什么要求核矩阵是半正定的？ - 知乎 (zhihu.com)</a></p><p><a href="http://www.adeveloperdiary.com/data-science/machine-learning/support-vector-machines-for-beginners-linear-svm/">Support Vector Machines for Beginners - Linear SVM - A Developer Diary</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>机器学习</category>
+      
+      <category>课程笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>机器学习</tag>
+      
+      <tag>SVM</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>我的机器学习课笔记 #2-线性模型</title>
+    <link href="/2021/11/09/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%202-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/"/>
+    <url>/2021/11/09/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%202-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/</url>
+    
+    <content type="html"><![CDATA[<h1 id="我的机器学习课笔记-2-线性模型"><a href="#我的机器学习课笔记-2-线性模型" class="headerlink" title="我的机器学习课笔记 #2-线性模型"></a>我的机器学习课笔记 #2-线性模型</h1><p>[TOC]</p><p>线性模型就是一个通过<strong>属性的线性组合</strong>来进行预测的函数。下式中(1)(2)(3)都是线性的，而(4)不是线性的，因为看中的是学习参数$w$的线性，而不是属性本身的变化是不是线性。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109155712.png"></p><p>线性模型的优点是可解释性强，缺点是拟合能力比较弱，这一章使用线性模型进行回归和分类任务。</p><h2 id="线性回归"><a href="#线性回归" class="headerlink" title="线性回归"></a>线性回归</h2><p>线性回归的目标如下，最小化所有样本的<strong>预测结果与真实结果之间的欧几里得距离</strong>，即最小化均方误差（MSE）。<br>$$<br>f(x_i)=wx_i+b，f(x)\approx y_i<br>$$</p><p>$$<br>argmin(\sum_{i=1}^{m}(f(x_i)-y_i)^2)<br>$$</p><p>求解w、b有两种方法，一是通过<strong>最小二乘法</strong>可以得到w和b的最优解，二是通过<strong>梯度下降法</strong>迭代求导较优解。最小二乘法虽然能够一次求解，但是适用范围窄、当特征维度大时计算量比较大；梯度下降法是深度学习中最普遍的方法，面对成千上万的特征维度仍然能够很好求解。</p><blockquote><p><strong>最小二乘法</strong></p><p>最小二乘法要求损失函数是凸函数，当损失函数的导数为0的时候认为达到了最优点，通过这个方程解出w和b的值。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111154323.png" alt="image-20211111154323303"></p></blockquote><blockquote><p><strong>对数线性回归</strong></p><p>有时逼近的不是y而是y的衍生物，比如逼近y的对数：$\ln y=wx_i+b$</p><p>这种严格来说不是线性回归，而是广义线性模型的一种，广义线性模型需要一个单调可微函数$g(·)$<br>$$<br>广义线性模型： y=g^{-1}(w^Tx+b)<br>$$</p></blockquote><h2 id="线性回归改进——正则化"><a href="#线性回归改进——正则化" class="headerlink" title="线性回归改进——正则化"></a>线性回归改进——正则化</h2><p>为了抑制线性模型的过拟合，可以通过在损失函数中添加L1范数或者L2范数来进行正则化，对应<strong>LASSO回归</strong>和<strong>Ridge岭回归</strong>。</p><p>L1范数就是$||w||<em>1=\sum^{d}</em>{i=1}|w_i|$，即向量w所有元素的绝对值的和</p><p>L2范数就是$||w||<em>2=\sum^{d}</em>{i=1}w_i^2$，即向量w所有元素的平方的和</p><p>如图，使用时通过超参数$\lambda$与原来的损失函数相加构成新的损失函数</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109161859.png" alt="Ridge_Regression"></p><p>正则化抑制过拟合的原理是惩罚过大的w项，w太大会导致那么拟合曲线斜率就会更大、更不平滑，在损失函数中加上正则化项后w变大会导致损失函数变大，而我们的算法会让损失函数尽量小，从而得到更小的w，进而抑制了过拟合。两种正则化的对比如图，椭圆中心是原来loss的最低处，现在会往原点靠，得到的拟合效果如图，能较好的抑制曲线一上一下的过拟合情况。</p><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109162548.png"></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211109163052.png"></div></div></div><h2 id="线性分类（对数几率回归、逻辑回归）"><a href="#线性分类（对数几率回归、逻辑回归）" class="headerlink" title="线性分类（对数几率回归、逻辑回归）"></a>线性分类（对数几率回归、逻辑回归）</h2><p>假如做的是二分类任务，那么要输出的就不是一个值而是0/1了，即 $y\in {0,1}$。要把$wx_i+b$的回归值转换成0/1，理想使用阶跃函数，但是因为不连续而不利于计算。所以需要找到一个决策函数 $g(·)$来近似，要求<strong>单调可微分</strong>，发现<strong>sigmoid</strong>函数（也叫对数几率函数 logistic function）符合条件。这个函数满足单调可微，而且形式简单，值位于0到1之间，预测时大于0.5的判为正例，小于0.5的判为负例。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111194901.png" alt="Sigmoid函数"></p><p>为什么叫他对数几率回归呢，因为把函数形式变换一下就可以看做 $\ln{\frac{y}{1-y}}=w^Tx+b$，近似 $\frac{y}{1-y}$这个“几率”的对数。此处“几率”是 $\frac{发生概率}{不发生概率}$。</p><p>机器学习三要素的“模型”已经有了，接下来是损失函数，<strong>二分类问题的损失函数不使用MSE而使用对数似然函数</strong>。为什么不使用MSE呢？<strong>一是因为用MSE计算sigmoid出来的概率和标签时，MSE不是凸函数（这个想证明但是不会证）；二是会出现梯度消失</strong>，证明如下。</p><blockquote><p>MSEloss的值用E表示，用标签 $y_i$减去$\sigma$出来的概率，再求平方，然后对loss求偏导如公式所示，当$\sigma$接近$y_i$时，$\sigma$和$1-\sigma$总有一个趋近于0，此时梯度消失。举个例子：当y=1时，预测出来σ=0.00001，此时距离真实值很远，应该梯度很大，然而梯度接近0。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112151336.svg"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112151208.svg"></p></blockquote><p>我们模型目前的输出是一个0~1的数，可以看作是预测正类出现的概率，而似然函数就是概率的对数。<br>$$<br>p(y=1|x)=sigmoid(w^Tx+b)<br>$$<br>$$<br>p(y=0|x)=1-sigmoid(w^Tx+b)<br>$$<br>$$<br>Loss(w,b)=\sum^m_{i=1}{\ln{p(y_i|x_i;w, b)}} 其中x_i,y_i是一对数据集标注<br>$$</p><p>数据集三要素还差一个优化算法，我们使用极大似然法+梯度下降解决，目的是最大化上面这个loss，数学推导如下：</p><blockquote><p><strong>极大似然法 maximum likelihood method</strong></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211111213436.jpg"></p></blockquote><h2 id="多分类学习"><a href="#多分类学习" class="headerlink" title="多分类学习"></a>多分类学习</h2><p>之前提到的分类学习只是在二分类，<strong>若要进行多分类的学习任务，可以使用ovo（one vs one）、ovr（one vs rest）、mvm（many vs many）</strong>三种策略。</p><ul><li>ovo，就是把N个类别两两配对，训练 $\frac{N(N-1)}{2}$个二分类器，然后通过这些二分类器的结果进行投票得出最终预测值</li><li>ovr，就是训练N个二分类器，每次都选取一个类别作为正例，其余为负例，这样只用训练N个但是数据不均衡</li><li>mvm，每次选择若干个类作为正例，若干个类作为负例。这种选取有很多种方式，在这里不详细介绍。</li></ul><blockquote><p>参考文献</p><p><a href="https://chrisalbon.com/code/machine_learning/linear_regression/ridge_regression/">Ridge Regression (chrisalbon.com)</a></p><p><a href="https://jishuin.proginn.com/p/763bfbd2bbb3">AI 面试高频问题: 为什么二分类不用 MSE 损失函数？-技术圈 (proginn.com)</a></p><p><a href="https://www.pianshen.com/article/48901189766/">梯度下降数学推导</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>机器学习</category>
+      
+      <category>课程笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>机器学习</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>我的机器学习课笔记 #1-绪论与模型评估</title>
+    <link href="/2021/11/06/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%201-%E7%BB%AA%E8%AE%BA%E4%B8%8E%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/"/>
+    <url>/2021/11/06/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%201-%E7%BB%AA%E8%AE%BA%E4%B8%8E%E6%A8%A1%E5%9E%8B%E8%AF%84%E4%BC%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="我的机器学习课笔记-1-绪论与模型评估"><a href="#我的机器学习课笔记-1-绪论与模型评估" class="headerlink" title="我的机器学习课笔记 #1-绪论与模型评估"></a>我的机器学习课笔记 #1-绪论与模型评估</h1><p>[TOC]</p><h2 id="没有免费午餐定理（no-free-lunch-theorem-or-NFL）"><a href="#没有免费午餐定理（no-free-lunch-theorem-or-NFL）" class="headerlink" title="没有免费午餐定理（no free lunch theorem, or NFL）"></a>没有免费午餐定理（no free lunch theorem, or NFL）</h2><p>人们使用机器学习是期望机器学习到的算法有用，但是NFL定理却证明，对于任意两个学习算法，它们的期望性能都一样。但是别灰心，NFL定理的前提是“所有情况下”，所以NFL说的是“<strong>一个算法不可能在任何情况下都取得最好的性能</strong>”。</p><p>但是我们并不需要一个算法在任何情况下性能都最好，甚至，我们经常只关注一个算法在一个方面的性能，比如使用鸢尾花数据集进行分类预测时，我们假设<strong>数据集中的4个属性足够让我们将鸢尾花进行分类</strong>，但是实际上鸢尾花有许多许多许多的属性，要将这些属性都综合考虑在内才能在所有情况下正确预测，所以用这个数据集训练出来的模型在其他鸢尾花数据集上可能就不工作了。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106173104.jpg" alt="NFL 图源知乎"></p><p>或者NFL定理也可以理解为“<strong>你不可能在没有假设的情况下从数据中学习</strong>”，如下图，我们的机器学习模型在学习过程中对于输入和输出作出了假设，这种假设可能在某些数据集上适用，但是换成别的数据集就不适用了。比如我有一个处理视频的模型，它假设视频中有物体运动的时序信息，但是视频中也可能没有运动，也可能是个意义不明的所有帧像ppt那样排布的视频，在这些情况下假设失效。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106171336.jpeg" alt="no free lunch theorems"></p><h2 id="模型评估"><a href="#模型评估" class="headerlink" title="模型评估"></a>模型评估</h2><p>对一个模型的评估会分成两类，一类是训练误差，另一类是泛化误差。前者是在训练样本上进行评估得到的误差，后者是在新样本上进行评估得到的误差。</p><p>这两类误差的大小能导致过拟合和欠拟合现象，如下表和下图，</p><table><thead><tr><th></th><th>泛化误差大</th><th>泛化误差小</th></tr></thead><tbody><tr><td>训练误差大</td><td>欠拟合</td><td>不可能</td></tr><tr><td>训练误差小</td><td>过拟合</td><td>模型的目标</td></tr></tbody></table><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106174253.png" alt="欠拟合与过拟合 图源geeksforgeeks"></p><p>如何得到训练误差和泛化误差呢？可以分为<strong>得到训练集和测试集的方法</strong>和<strong>使用哪种误差函数</strong>这两个问题。</p><h3 id="如何得到训练集和测试集？"><a href="#如何得到训练集和测试集？" class="headerlink" title="如何得到训练集和测试集？"></a>如何得到训练集和测试集？</h3><ul><li><p>留出法</p><p>最常用，就是把数据集的划分成两个互斥的集合，一个训练一个预测。</p></li><li><p>交叉验证法</p><p>小样本适用，因为会带来更大的计算开销。K折交叉验证指的是将数据集随机分成K份，进行K次训练和预测，每次训练选取K-1份作为训练集，每次预测选取剩下那1份作为测试集。</p></li><li><p>自助法</p><p>适用于集成学习，不会减少训练集的数据数量，但会改变数据集的分布。就是将一个拥有m个数据的数据集进行放回抽样，抽m次出来得到的就是训练集，用所有数据去掉训练集就是测试集，易知训练集的数量是m，但里面会有重复的数据。</p></li></ul><h3 id="使用哪种误差函数？"><a href="#使用哪种误差函数？" class="headerlink" title="使用哪种误差函数？"></a>使用哪种误差函数？</h3><p>误差函数有很多很多种，作用就是告诉你模型的性能。西瓜书上主要介绍的是分类任务的性能度量。</p><h4 id="错误率和精度"><a href="#错误率和精度" class="headerlink" title="错误率和精度"></a>错误率和精度</h4><p>错误率就是分类错误样本占总数的比例，精度又叫做正确率、准确率（accuracy）。</p><h4 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h4><p>对于二分类结果，通常列出下面这种混淆矩阵，注意这个表的纵轴是真实情况，横轴是预测结果，有的图可能会把横纵轴对换，但是字母是不变的。</p><p>结果中的<code>T/P</code>指的是预测是否正确，而<code>P/N</code>指的是预测的是正例还是反例。FP就是预测是正例，但是预测错了，实际是反例，以此类推。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107165119.png"> </p><h4 id="查准率、查全率、P-R曲线、F1"><a href="#查准率、查全率、P-R曲线、F1" class="headerlink" title="查准率、查全率、P-R曲线、F1"></a>查准率、查全率、P-R曲线、F1</h4><p>查准率查全率可以用搜索引擎的角度来解释，<strong>查准率就是搜索出来的数据有多少是对的，查全率就是有多少对的数据被查出来了</strong>，两者分母不同。也可以把查准率叫做精确率（和acc准确率区分开），把查全率叫做召回率。<br>$$<br>查准率、精确率：Precise=\frac{TP}{TP+FP}<br>$$</p><p>$$<br>查全率、召回率：Recall=\frac{TP}{TP+FN}<br>$$</p><p>P-R曲线就是纵轴P，横轴R的曲线。分类问题一般会对测试数据得出一个预测概率，从高到低排序，可以手动选择最高的k个作为预测正例，在k不确定的时候，查准率和查全率就会呈现P-R曲线。<strong>假如k很大，那么查全率就会高，查准率就会低，因为把很多低概率的结果都判成正例。</strong></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107170803.png" alt="P-R和ROC曲线"></p><p>查准率和查全率是对于模型两方面的评估，但是我们想要一个综合的评价指标，于是<strong>使用调和平均得到F1这个指标。</strong><br>$$<br>\frac{1}{F1} = \frac{1}{2} (\frac{1}{P}+\frac{1}{R})<br>$$<br>若对于查准率和查全率需要偏好，则可以使用<strong>加权调和平均</strong>。<br>$$<br>\frac{1}{F_\beta} = \frac{1}{1+\beta^2} (\frac{1}{P}+\frac{\beta^2}{R})<br>$$</p><blockquote><p>调和平均：参考<a href="https://www.zhihu.com/question/23096098">如何理解与应用调和平均数？ - 知乎 (zhihu.com)</a></p><p>考虑一次去便利店并返回的行程：</p><ul><li><strong>去程</strong>速度为<code>30 mph</code></li><li><strong>返程</strong>时交通有一些拥堵，所以速度为<code>10 mph</code></li><li>去程和返程走的是同一路线，也就是说距离一样（5英里）</li></ul><p>整个行程的平均速度是多少？如果不假思索地应用算术平均数的话，结果是20 mph（(30+10)/2）。</p><p>但是这么算不对。因为去程速度更快，所以你更快地完成了去程的5英里，整个行程中以30 mph的速度行驶的时间更少，以10 mph的速度行驶的时间更多，所以整个行程期间你的平均速度不会是<code>30 mph</code>和<code>10 mph</code>的中点，而应该更接近<code>10 mph</code>。</p><p>用调和平均数呢？2 / (1/30 + 1/10) = 15 mph 一下子得到了真正的行程平均速度，<strong>自动</strong>根据在每个方向上使用的时间进行调整。</p></blockquote><h4 id="ROC和AUC"><a href="#ROC和AUC" class="headerlink" title="ROC和AUC"></a>ROC和AUC</h4><p>用查准率查全率得到的P-R曲线和F1指标有一个缺点，那就是<strong>都没用上混淆矩阵中的TN——也就是“真反例”——也就是预测是反例，真实是反例的结果</strong>。所以定义FPR为“假正例率”，<strong>ROC就是以FPR为横轴，召回率为纵轴的曲线。</strong><br>$$<br>FPR=\frac{FP}{TN+FP}<br>$$<br>对于ROC曲线，越往左上角凸的模型越好，理解为“<strong>所有负例中被判错的少，且所有正例中被判对的多。</strong>”</p><p>然而P-R曲线和ROC曲线都有一个问题，那就是曲线之间不好准确比较，对于交叉的曲线无法判断孰优孰劣。所以将ROC曲线下的面积AUC作为单个数字的指标。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107181343.png" alt="ROC曲线"></p><h2 id="模型性能分析"><a href="#模型性能分析" class="headerlink" title="模型性能分析"></a>模型性能分析</h2><p>得到模型的泛化误差后，我们仍然想知道如何模型为什么会得到这样的性能，于是我们对模型的泛化误差进行分析，可得：<br>$$<br>泛化误差=偏差(bias)+方差(var)+噪声(noise)<br>$$</p><ul><li>偏差指的是模型算法本身的拟合能力，是预测结果与真实结果的偏离程度</li><li>方差指的是模型对于相同大小的<strong>训练集</strong>的学习结果的抖动。</li><li>噪声是和数据集本身有关的泛化误差的下界，即学习本身的难度。</li></ul><p>假如是图片识别猫狗的二分类问题，在模型还没训练的时候，模型瞎猜能得到50%的正确率，无论训练集测试集怎么划分肯定都大概是这个结果，此时正确率低反映偏差高、数据划分不带来结果变化反映方差低；在模型训练很久之后，模型会对训练集拟合得越来越好，此时正确率上升，偏差也随之下降，但是也可能学习到训练集中的特殊信息，导致过拟合，此时方差高。</p><blockquote><p>参考文献：</p><p>周志华的西瓜书</p><p><a href="https://analyticsindiamag.com/what-are-the-no-free-lunch-theorems-in-data-science/">Machine Learning’s No Free Lunch Theorem Explained (analyticsindiamag.com)</a></p><p><a href="https://zhuanlan.zhihu.com/p/138019862">No free lunch theorem-没有免费的午餐 - 知乎 (zhihu.com)</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>机器学习</category>
+      
+      <category>课程笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>机器学习</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>MATLAB基础笔记</title>
     <link href="/2021/11/05/MATLAB%E5%9F%BA%E7%A1%80/"/>
     <url>/2021/11/05/MATLAB%E5%9F%BA%E7%A1%80/</url>
@@ -47,9 +130,9 @@
       
       <tag>Transformer</tag>
       
-      <tag>Video Captioning</tag>
-      
       <tag>CLIP4Caption</tag>
+      
+      <tag>Video Captioning</tag>
       
     </tags>
     
@@ -116,33 +199,6 @@
   
   
   <entry>
-    <title>Video Captioning任务 Transformer方向小综述</title>
-    <link href="/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/"/>
-    <url>/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/</url>
-    
-    <content type="html"><![CDATA[<h1 id="Video-Captioning任务-Transformer方向小综述"><a href="#Video-Captioning任务-Transformer方向小综述" class="headerlink" title="Video Captioning任务 Transformer方向小综述"></a>Video Captioning任务 Transformer方向小综述</h1><p>[TOC]</p><h2 id="涉及的论文"><a href="#涉及的论文" class="headerlink" title="涉及的论文"></a>涉及的论文</h2><ol><li><code>TVT: Two-View Transformer Network for Video Captioning</code></li><li><code>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</code></li><li><code>SBAT: Video Captioning with Sparse Boundary-Aware Transformer</code></li><li><code>Multi-modal Dense Video Captioning</code></li><li><code>iPerceive: Applying Common-Sense Reasoning to Multi-Modal Dense Video Captioning and Video Question Answering</code></li><li><code>ActBERT: Learning Global-Local Video-Text Representations</code></li><li><code>Multi-modal Transformer for Video Retrieval</code></li><li><code>Reconstruction network for video captioning</code></li><li><code>Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning</code></li><li><code>CLIP4Caption: CLIP for Video Caption</code></li></ol><h2 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h2><p>图来自文献1，基于Transformer的Video Captioning任务基本都是这种模式，可以叫做<code>Vanilla Transformer</code>、<code>Base Model architecture</code>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png" alt="Baseline"></p><h2 id="多模态特征融合"><a href="#多模态特征融合" class="headerlink" title="多模态特征融合"></a>多模态特征融合</h2><p>本任务使用的多模态特征包括rgb(image, frame, 不含时序信息)、motion(动作)、object(目标检测)、voice(音频)、speech(音频中人说的话)。其中RGB必备，还有很多选择motion和voice的。</p><p>文献1，2，3都使用了多种模态的特征，本节对于特征的融合进行归纳总结。</p><h3 id="文献1-TVT-Attentive-fusion-block"><a href="#文献1-TVT-Attentive-fusion-block" class="headerlink" title="文献1 TVT Attentive-fusion block"></a>文献1 TVT Attentive-fusion block</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026140703.png" alt="Attentive-fusion block"></p><p>文献1对多种特征进行独立的Transformer encode，得到的输出是图中红色的frame encoder output和motion encoder output，它对Transformer decoder的中间那个SA层进行了改进。</p><p>图中3个SA层的<strong>Q</strong>都是和Baseline的Caption那一路的特征，先分配好frame的注意力，同时分配好motion的注意力，之后在时间轴堆叠，再分配好堆叠后的注意力。</p><h3 id="文献2-Bi-modal-Transformer"><a href="#文献2-Bi-modal-Transformer" class="headerlink" title="文献2 Bi-modal Transformer"></a>文献2 Bi-modal Transformer</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141348.png" alt="Bi-modal Transformer"></p><p>这篇论文任务其实是Dense Video Captioning，但是去掉Proposal Generator也是一个Video Captioning的模型。它不仅在Decoder进行了特征融合，还在Encoder进行特类似的特征融合。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141541.png" alt="Encoder"></p><p>编码阶段如上图，每一个Encoder层进行完Baseline的SA层后，再进行一个交叉的Bi-Modal Attention，然后Feed forward。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141723.png" alt="Decoder"></p><p>解码阶段如上图，Baseline的中间SA层也改成类似的Bi-Modal Attention，然后Bridge是直接用全连接层把concat起来的特征降维。</p><p><strong>解码阶段模态融合方法和文献1的区别就是concat后的张量用SA还是用全连来降维</strong></p><h3 id="文献3-SBAT-Cross-Modal"><a href="#文献3-SBAT-Cross-Modal" class="headerlink" title="文献3 SBAT Cross-Modal"></a>文献3 SBAT Cross-Modal</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142223.png" alt="SBAT"></p><p>这篇论文是只在Encoder上做了特征融合，用的类似文献2的方法，但是在一个Encoder层的第一个SA层后又加了个Feed forward，参数更多了。</p><h3 id="文献4-MDVC-amp-文献5-iPerceive"><a href="#文献4-MDVC-amp-文献5-iPerceive" class="headerlink" title="文献4 MDVC &amp; 文献5 iPerceive"></a>文献4 MDVC &amp; 文献5 iPerceive</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142656.png" alt="MDVC"></p><p>和文献2是同一个作者，这是更早的文章。算是直接train出3个Transformer，然后在最后全连决策的时候进行特征融合。文献5的方法和这个几乎一模一样。</p><h3 id="文献6-ActBERT"><a href="#文献6-ActBERT" class="headerlink" title="文献6 ActBERT"></a>文献6 ActBERT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026155723.png" alt="ActBERT"></p><p>这种特征融合就很迷惑了……还没看懂。</p><p>文章说这种方法对于$\omega$、$\alpha$和$r$三种模态是不相等的。$\omega$的KV一部分来源于本身，另一部分来源于用$\alpha$和$r$进行SA的结果，两部分特征用全连降维。$r$的KV和$\omega$一样。但是$\alpha$的就很奇怪了，只融合了$\omega$的特征？</p><h3 id="文献7-MMT"><a href="#文献7-MMT" class="headerlink" title="文献7 MMT"></a>文献7 MMT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026160854.png" alt="MMT"></p><p>这种特征融合方法解决了文献2、3中方法不能拓展到三个及以上特征的问题，但是会导致时间维度较大。</p><p>这里就是先把多种特征先弄成同一特征维（时间维可不同），然后加上时序信息的Temporal embeddings和区分不同特征的expert embeddings，文章还给每一种特征增加了一个agg特征，这是对每一种特征的时序进行pooling得到的Global信息。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Encoder的特征融合中，文献2、3都没有做到融合第三种特征，因为使用三种特征后会出现六路encoder输出。</p><p>在Decoder的特征融合中，方法都类似，区别是用全连或者SA降维。</p><h1 id="榜单"><a href="#榜单" class="headerlink" title="榜单"></a>榜单</h1><h2 id="MSR-VTT"><a href="#MSR-VTT" class="headerlink" title="MSR-VTT"></a>MSR-VTT</h2><table><thead><tr><th>方法</th><th>METEOR</th><th>ROUGH</th><th>CIDEr</th><th>Bleu@4</th></tr></thead><tbody><tr><td>SBAT(3)</td><td>28.9</td><td>61.5</td><td>51.6</td><td>42.9</td></tr><tr><td>att-TVT(N+I+V)(1)</td><td>28.2</td><td>61.1</td><td>48.5</td><td>42.5</td></tr><tr><td>att-TVT(N+I)(1)</td><td>27.9</td><td>59.6</td><td>47.7</td><td>40.1</td></tr><tr><td>RecNet(8)</td><td>26.6</td><td>59.3</td><td>42.7</td><td>39.1</td></tr><tr><td>GRU-EVE(9)</td><td>28.4</td><td>60.7</td><td>48.1</td><td>38.3</td></tr><tr><td>CLIP4Caption(10)</td><td>30.7</td><td>63.7</td><td>57.7</td><td>46.1</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table><h2 id="VATEX"><a href="#VATEX" class="headerlink" title="VATEX"></a>VATEX</h2>]]></content>
-    
-    
-    <categories>
-      
-      <category>论文</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Transformer</tag>
-      
-      <tag>Video Captioning</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Pytorch DDP多卡训练</title>
     <link href="/2021/10/25/Pytorch%20DDP/"/>
     <url>/2021/10/25/Pytorch%20DDP/</url>
@@ -162,6 +218,33 @@
       <tag>Pytorch</tag>
       
       <tag>DDP</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Video Captioning任务 Transformer方向小综述</title>
+    <link href="/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/"/>
+    <url>/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Video-Captioning任务-Transformer方向小综述"><a href="#Video-Captioning任务-Transformer方向小综述" class="headerlink" title="Video Captioning任务 Transformer方向小综述"></a>Video Captioning任务 Transformer方向小综述</h1><p>[TOC]</p><h2 id="涉及的论文"><a href="#涉及的论文" class="headerlink" title="涉及的论文"></a>涉及的论文</h2><ol><li><code>TVT: Two-View Transformer Network for Video Captioning</code></li><li><code>A Better Use of Audio-Visual Cues: Dense Video Captioning with Bi-modal Transformer</code></li><li><code>SBAT: Video Captioning with Sparse Boundary-Aware Transformer</code></li><li><code>Multi-modal Dense Video Captioning</code></li><li><code>iPerceive: Applying Common-Sense Reasoning to Multi-Modal Dense Video Captioning and Video Question Answering</code></li><li><code>ActBERT: Learning Global-Local Video-Text Representations</code></li><li><code>Multi-modal Transformer for Video Retrieval</code></li><li><code>Reconstruction network for video captioning</code></li><li><code>Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning</code></li><li><code>CLIP4Caption: CLIP for Video Caption</code></li></ol><h2 id="Baseline"><a href="#Baseline" class="headerlink" title="Baseline"></a>Baseline</h2><p>图来自文献1，基于Transformer的Video Captioning任务基本都是这种模式，可以叫做<code>Vanilla Transformer</code>、<code>Base Model architecture</code>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026135703.png" alt="Baseline"></p><h2 id="多模态特征融合"><a href="#多模态特征融合" class="headerlink" title="多模态特征融合"></a>多模态特征融合</h2><p>本任务使用的多模态特征包括rgb(image, frame, 不含时序信息)、motion(动作)、object(目标检测)、voice(音频)、speech(音频中人说的话)。其中RGB必备，还有很多选择motion和voice的。</p><p>文献1，2，3都使用了多种模态的特征，本节对于特征的融合进行归纳总结。</p><h3 id="文献1-TVT-Attentive-fusion-block"><a href="#文献1-TVT-Attentive-fusion-block" class="headerlink" title="文献1 TVT Attentive-fusion block"></a>文献1 TVT Attentive-fusion block</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026140703.png" alt="Attentive-fusion block"></p><p>文献1对多种特征进行独立的Transformer encode，得到的输出是图中红色的frame encoder output和motion encoder output，它对Transformer decoder的中间那个SA层进行了改进。</p><p>图中3个SA层的<strong>Q</strong>都是和Baseline的Caption那一路的特征，先分配好frame的注意力，同时分配好motion的注意力，之后在时间轴堆叠，再分配好堆叠后的注意力。</p><h3 id="文献2-Bi-modal-Transformer"><a href="#文献2-Bi-modal-Transformer" class="headerlink" title="文献2 Bi-modal Transformer"></a>文献2 Bi-modal Transformer</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141348.png" alt="Bi-modal Transformer"></p><p>这篇论文任务其实是Dense Video Captioning，但是去掉Proposal Generator也是一个Video Captioning的模型。它不仅在Decoder进行了特征融合，还在Encoder进行特类似的特征融合。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141541.png" alt="Encoder"></p><p>编码阶段如上图，每一个Encoder层进行完Baseline的SA层后，再进行一个交叉的Bi-Modal Attention，然后Feed forward。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026141723.png" alt="Decoder"></p><p>解码阶段如上图，Baseline的中间SA层也改成类似的Bi-Modal Attention，然后Bridge是直接用全连接层把concat起来的特征降维。</p><p><strong>解码阶段模态融合方法和文献1的区别就是concat后的张量用SA还是用全连来降维</strong></p><h3 id="文献3-SBAT-Cross-Modal"><a href="#文献3-SBAT-Cross-Modal" class="headerlink" title="文献3 SBAT Cross-Modal"></a>文献3 SBAT Cross-Modal</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142223.png" alt="SBAT"></p><p>这篇论文是只在Encoder上做了特征融合，用的类似文献2的方法，但是在一个Encoder层的第一个SA层后又加了个Feed forward，参数更多了。</p><h3 id="文献4-MDVC-amp-文献5-iPerceive"><a href="#文献4-MDVC-amp-文献5-iPerceive" class="headerlink" title="文献4 MDVC &amp; 文献5 iPerceive"></a>文献4 MDVC &amp; 文献5 iPerceive</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026142656.png" alt="MDVC"></p><p>和文献2是同一个作者，这是更早的文章。算是直接train出3个Transformer，然后在最后全连决策的时候进行特征融合。文献5的方法和这个几乎一模一样。</p><h3 id="文献6-ActBERT"><a href="#文献6-ActBERT" class="headerlink" title="文献6 ActBERT"></a>文献6 ActBERT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026155723.png" alt="ActBERT"></p><p>这种特征融合就很迷惑了……还没看懂。</p><p>文章说这种方法对于$\omega$、$\alpha$和$r$三种模态是不相等的。$\omega$的KV一部分来源于本身，另一部分来源于用$\alpha$和$r$进行SA的结果，两部分特征用全连降维。$r$的KV和$\omega$一样。但是$\alpha$的就很奇怪了，只融合了$\omega$的特征？</p><h3 id="文献7-MMT"><a href="#文献7-MMT" class="headerlink" title="文献7 MMT"></a>文献7 MMT</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211026160854.png" alt="MMT"></p><p>这种特征融合方法解决了文献2、3中方法不能拓展到三个及以上特征的问题，但是会导致时间维度较大。</p><p>这里就是先把多种特征先弄成同一特征维（时间维可不同），然后加上时序信息的Temporal embeddings和区分不同特征的expert embeddings，文章还给每一种特征增加了一个agg特征，这是对每一种特征的时序进行pooling得到的Global信息。</p><h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>在Encoder的特征融合中，文献2、3都没有做到融合第三种特征，因为使用三种特征后会出现六路encoder输出。</p><p>在Decoder的特征融合中，方法都类似，区别是用全连或者SA降维。</p><h1 id="榜单"><a href="#榜单" class="headerlink" title="榜单"></a>榜单</h1><h2 id="MSR-VTT"><a href="#MSR-VTT" class="headerlink" title="MSR-VTT"></a>MSR-VTT</h2><table><thead><tr><th>方法</th><th>METEOR</th><th>ROUGH</th><th>CIDEr</th><th>Bleu@4</th></tr></thead><tbody><tr><td>SBAT(3)</td><td>28.9</td><td>61.5</td><td>51.6</td><td>42.9</td></tr><tr><td>att-TVT(N+I+V)(1)</td><td>28.2</td><td>61.1</td><td>48.5</td><td>42.5</td></tr><tr><td>att-TVT(N+I)(1)</td><td>27.9</td><td>59.6</td><td>47.7</td><td>40.1</td></tr><tr><td>RecNet(8)</td><td>26.6</td><td>59.3</td><td>42.7</td><td>39.1</td></tr><tr><td>GRU-EVE(9)</td><td>28.4</td><td>60.7</td><td>48.1</td><td>38.3</td></tr><tr><td>CLIP4Caption(10)</td><td>30.7</td><td>63.7</td><td>57.7</td><td>46.1</td></tr><tr><td></td><td></td><td></td><td></td><td></td></tr></tbody></table><h2 id="VATEX"><a href="#VATEX" class="headerlink" title="VATEX"></a>VATEX</h2>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Transformer</tag>
+      
+      <tag>Video Captioning</tag>
       
     </tags>
     
@@ -215,9 +298,9 @@
     
     <tags>
       
-      <tag>深度学习</tag>
-      
       <tag>机器学习</tag>
+      
+      <tag>深度学习</tag>
       
       <tag>数据获取</tag>
       
@@ -244,9 +327,9 @@
     
     <tags>
       
-      <tag>深度学习</tag>
-      
       <tag>Transformer</tag>
+      
+      <tag>深度学习</tag>
       
     </tags>
     
@@ -374,9 +457,9 @@
     
     <categories>
       
-      <category>常用易忘</category>
-      
       <category>Git</category>
+      
+      <category>常用易忘</category>
       
     </categories>
     
@@ -408,11 +491,11 @@
     
     <tags>
       
-      <tag>深度学习</tag>
+      <tag>Transformer</tag>
       
       <tag>机器学习</tag>
       
-      <tag>Transformer</tag>
+      <tag>深度学习</tag>
       
     </tags>
     
@@ -574,9 +657,9 @@
     
     <tags>
       
-      <tag>深度学习</tag>
-      
       <tag>机器学习</tag>
+      
+      <tag>深度学习</tag>
       
     </tags>
     
@@ -594,9 +677,9 @@
     
     <categories>
       
-      <category>Linux</category>
-      
       <category>常用易忘</category>
+      
+      <category>Linux</category>
       
     </categories>
     
@@ -657,9 +740,9 @@
       
       <tag>Python</tag>
       
-      <tag>深度学习</tag>
-      
       <tag>机器学习</tag>
+      
+      <tag>深度学习</tag>
       
     </tags>
     
@@ -677,9 +760,9 @@
     
     <categories>
       
-      <category>Linux</category>
-      
       <category>常用易忘</category>
+      
+      <category>Linux</category>
       
     </categories>
     
@@ -711,9 +794,9 @@
     
     <tags>
       
-      <tag>GitHub</tag>
-      
       <tag>Git</tag>
+      
+      <tag>GitHub</tag>
       
     </tags>
     

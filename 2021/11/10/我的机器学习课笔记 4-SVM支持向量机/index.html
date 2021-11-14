@@ -13,24 +13,36 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="SVM，全称Support Vector Machine，即支持向量机，是一种监督学习算法，基础的SVM是二分类线性模型，但可通过核函数拓展至非线性分类或者用其他方法拓展至多分类模型。本文是学习SVM基础模型、软间隔与正则项、核函数以及数学上的求解方法时所做的笔记。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Pytorch DDP多卡训练DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于torch.distributed中。 本文简单介绍使用DDP进行单机多卡训练的步骤。 1. 开头导入库、获取local_rank、初始化backend123456789import torchimport torch.distributed as distfrom">
+  <meta name="description" content="SVM，全称Support Vector Machine，即支持向量机，是一种监督学习算法，基础的SVM是二分类线性模型，但可通过核函数拓展至非线性分类或者用其他方法拓展至多分类模型。本文是学习SVM基础模型、软间隔与正则项、核函数以及数学上的求解方法时所做的笔记。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Pytorch DDP多卡训练">
-<meta property="og:url" content="http://blog.kamino.link/2021/10/25/Pytorch%20DDP/index.html">
+<meta property="og:title" content="我的机器学习课笔记 #4-SVM支持向量机">
+<meta property="og:url" content="http://blog.kamino.link/2021/11/10/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%204-SVM%E6%94%AF%E6%8C%81%E5%90%91%E9%87%8F%E6%9C%BA/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Pytorch DDP多卡训练DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于torch.distributed中。 本文简单介绍使用DDP进行单机多卡训练的步骤。 1. 开头导入库、获取local_rank、初始化backend123456789import torchimport torch.distributed as distfrom">
+<meta property="og:description" content="SVM，全称Support Vector Machine，即支持向量机，是一种监督学习算法，基础的SVM是二分类线性模型，但可通过核函数拓展至非线性分类或者用其他方法拓展至多分类模型。本文是学习SVM基础模型、软间隔与正则项、核函数以及数学上的求解方法时所做的笔记。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2021-10-25T05:00:00.000Z">
-<meta property="article:modified_time" content="2021-10-25T10:13:28.140Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211110112521.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112161002.svg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112155619.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211113141611.jpeg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211113153507.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114151644.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114164932.jpeg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114165616.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114163738.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114165853.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114171204.jpg">
+<meta property="article:published_time" content="2021-11-10T02:22:00.000Z">
+<meta property="article:modified_time" content="2021-11-14T09:42:41.061Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Pytorch">
-<meta property="article:tag" content="DDP">
+<meta property="article:tag" content="机器学习">
+<meta property="article:tag" content="SVM">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211110112521.png">
   
-  <title>Pytorch DDP多卡训练 - Kamino&#39;s Blog</title>
+  <title>我的机器学习课笔记 #4-SVM支持向量机 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -184,12 +196,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211025131422.png') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Pytorch DDP多卡训练">
+            <span class="h2" id="subtitle" title="我的机器学习课笔记 #4-SVM支持向量机">
               
             </span>
 
@@ -199,8 +211,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-10-25 13:00" pubdate>
-        2021年10月25日 下午
+      <time datetime="2021-11-10 10:22" pubdate>
+        2021年11月10日 上午
       </time>
     </span>
   
@@ -210,7 +222,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      3.8k 字
     </span>
   
 
@@ -219,7 +231,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      12 分钟
     </span>
   
 
@@ -256,36 +268,61 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Pytorch DDP多卡训练</h1>
+            <h1 style="display: none">我的机器学习课笔记 #4-SVM支持向量机</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年10月25日 晚上
+                  本文最后更新于：2021年11月14日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Pytorch-DDP多卡训练"><a href="#Pytorch-DDP多卡训练" class="headerlink" title="Pytorch DDP多卡训练"></a>Pytorch DDP多卡训练</h1><p>DDP指的是DistributedDataParallel，即支持多机多卡的Pytorch官方库，位于<code>torch.distributed</code>中。</p>
-<p>本文简单介绍使用DDP进行<strong>单机多卡</strong>训练的步骤。</p>
-<h2 id="1-开头导入库、获取local-rank、初始化backend"><a href="#1-开头导入库、获取local-rank、初始化backend" class="headerlink" title="1. 开头导入库、获取local_rank、初始化backend"></a>1. 开头导入库、获取local_rank、初始化backend</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> torch<br><span class="hljs-keyword">import</span> torch.distributed <span class="hljs-keyword">as</span> dist<br><span class="hljs-keyword">from</span> torch.nn.parallel <span class="hljs-keyword">import</span> DistributedDataParallel <span class="hljs-keyword">as</span> DDP<br><br><span class="hljs-comment"># 有的用parser获取LOCAL_RANK的已经过时了</span><br>local_rank = <span class="hljs-built_in">int</span>(os.environ[<span class="hljs-string">&quot;LOCAL_RANK&quot;</span>]) <br>torch.cuda.set_device(local_rank)<br>dist.init_process_group(backend=<span class="hljs-string">&#x27;nccl&#x27;</span>)  <span class="hljs-comment"># 一般使用的后端为nccl</span><br>device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span>, local_rank)<br></code></pre></td></tr></table></figure>
-
-<h2 id="2-初始化DDP模型"><a href="#2-初始化DDP模型" class="headerlink" title="2. 初始化DDP模型"></a>2. 初始化DDP模型</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">model = YourModel().to(device)  <span class="hljs-comment"># 要在把模型放进GPU之后再DDP</span><br>model = DDP(model, device_ids=[local_rank], output_device=local_rank)<br></code></pre></td></tr></table></figure>
-
-<h2 id="3-数据处理"><a href="#3-数据处理" class="headerlink" title="3. 数据处理"></a>3. 数据处理</h2><p>使用DDP的batchsize是单张卡上的batchsize，假如你用一张卡训练的batchsize是64，然后想分散在四张卡上，那么batchsize应该设置成16</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">train_iter = torchvision.datasets.CIFAR10(root=<span class="hljs-string">&#x27;./data&#x27;</span>, train=<span class="hljs-literal">True</span>)<br>train_sampler = torch.utils.data.distributed.DistributedSampler(train_iter)<br>train_loader = torch.utils.data.DataLoader(train_iter, batch_size=batch_size, sampler=train_sampler)  <span class="hljs-comment"># 注意sampler！</span><br><br><span class="hljs-comment"># 在epoch中</span><br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(xx):<br>    trainloader.sampler.set_epoch(epoch)  <span class="hljs-comment"># 注意set_epoch</span><br>    <span class="hljs-keyword">for</span> xxx <span class="hljs-keyword">in</span> train_loader:<br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="4-模型保存"><a href="#4-模型保存" class="headerlink" title="4. 模型保存"></a>4. 模型保存</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">if</span> dist.get_rank() == <span class="hljs-number">0</span>:  <span class="hljs-comment"># 先判断是主卡，免得所有卡都保存一次</span><br>    torch.save(model.module, <span class="hljs-string">&quot;saved_model.pth&quot;</span>)  <span class="hljs-comment"># 保存的是DDP.module</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="5-程序运行"><a href="#5-程序运行" class="headerlink" title="5. 程序运行"></a>5. 程序运行</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> nproc_per_node就是使用多少张卡</span><br><span class="hljs-meta">#</span><span class="bash"> 可使用来选择多卡机器上的某几张卡CUDA_VISIBLE_DEVICES=4,5,6,7</span><br>python -m torch.distributed.launch --nproc_per_node 8 main.py<br></code></pre></td></tr></table></figure>
-
-<h2 id="6-使用Pytorch推荐的spawn方式"><a href="#6-使用Pytorch推荐的spawn方式" class="headerlink" title="*6. 使用Pytorch推荐的spawn方式"></a>*6. 使用Pytorch推荐的spawn方式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">demo_fn</span>(<span class="hljs-params">rank, world_size</span>):</span>  <span class="hljs-comment"># 两个参数，第一个参数一定是rank</span><br>    dist.init_process_group(<span class="hljs-string">&quot;nccl&quot;</span>, rank=rank, world_size=world_size)<br>    <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">import</span> torch.multiprocessing <span class="hljs-keyword">as</span> mp<br>mp.spawn(demo_fn,<br>         args=(world_size,), <span class="hljs-comment"># 传参给demo_fn，调用demo_fn的时候还会有一个参数表示rank</span><br>         nprocs=world_size,  <span class="hljs-comment"># 用多少卡</span><br>         join=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
-
-
-
+              <h1 id="我的机器学习课笔记-4-SVM支持向量机"><a href="#我的机器学习课笔记-4-SVM支持向量机" class="headerlink" title="我的机器学习课笔记 #4-SVM支持向量机"></a>我的机器学习课笔记 #4-SVM支持向量机</h1><p>[TOC]</p>
+<p><strong>SVM，全称Support Vector Machine，即支持向量机，是一种监督学习算法</strong>，基础的SVM是二分类线性模型，但可通过核函数拓展至非线性分类或者用其他方法拓展至多分类模型。本文是学习SVM基础模型、软间隔与正则项、核函数以及数学上的求解方法时所做的笔记。</p>
+<h2 id="SVM基础模型"><a href="#SVM基础模型" class="headerlink" title="SVM基础模型"></a>SVM基础模型</h2><p>SVM算法的动机就是想画一条线，能<strong>最好地</strong>分开训练样本中的两个类别。如何判断“最好”呢？判断离这条线最近的几个点与线的距离，这个距离越大，效果就越好。判断距离时选中的那几个点被叫做<strong>支持向量</strong>，SVM的训练结果直接由这几个支持向量决定，这叫做SVM的<strong>稀疏性</strong>。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211110112521.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="理论求解"><a href="#理论求解" class="headerlink" title="理论求解"></a>理论求解</h2><p>要画的那一条“线”其实是一个超平面，数学上用 $\boldsymbol{w^Tx}+b=0$这个方程表示<em>（几何中一条线的方程是Ax+By+C=0，一个面的方程是Ax+By+Cz+D=0，以此类推到多维空间的超平面数学方程）</em></p>
+<p>而点到超平面的距离公式是$ d=\frac{|\boldsymbol{w^Tx}+b|}{||w||}$<em>（几何中一个三维空间的点到平面距离公式是 $d=\frac{|Ax+By+Cz+D|}{\sqrt{A^2+B^2+C^2}}$，以此类推）</em></p>
+<p>此时新假设两个平行于$\boldsymbol{w^Tx}+b=0$的超平面，一个是$\boldsymbol{w^Tx}+b=1$，另一个是$\boldsymbol{w^Tx}+b=-1$，需要找到的 $\boldsymbol{w^T}$需要满足以下条件，而通过平面间距的公式得到新假设的这两个超平面<strong>间隔</strong>为 $\gamma=\frac{2}{||w||}$。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112161002.svg" srcset="/img/loading.gif" lazyload></p>
+<p>所以我们需要优化的问题是：<br>$$<br>argmin_{w,b}(\frac{||w||}{2}) \quad s.t. y_i(\boldsymbol{w^Tx_i}+b) \ge 1<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211112155619.jpg" srcset="/img/loading.gif" lazyload alt="西瓜书配图"></p>
+<blockquote>
+<p>利用<strong>对偶问题</strong>求解（参考西瓜书附录）</p>
+<p><strong>拉格朗日乘子法的解释</strong>：拉格朗日乘子法是一种寻找<strong>多元函数在一组约束下的极值</strong>的方法。通过引入拉格朗日乘子，可将有d个变量、k个约束的最优化问题转换为d+k个变量、无约束的最优化问题。</p>
+<p>如图，假如函数是 $f(x,y)$，约束是 $g(x,y)=C$，那么在最优点（图中等高线交点）函数梯度和约束梯度方向相同或相反，即 $\nabla f(x_i,y_i) + \lambda \nabla g(x_i,y_i) = 0$。此时定义另一个函数 $L(x,y,\lambda)=f(x,y)+\lambda g(x,y)$，则 $\frac{\partial L}{\partial x,y} = \nabla f(x_i,y_i) + \lambda \nabla g(x_i,y_i)$。所以原问题就转换成了最后这个方程的最优化问题。</p>
+<p>假如约束不是个等式，而是不等式，也可以使用这种方法。假设函数是 $f(x,y)$，约束是 $g(x,y) \le 0$。假如最优点$(x_i,y_i)$满足$g(x_i,y_i)&lt;0$，那约束就不起作用，直接对原始做无约束最优化；假如最优点$(x_i,y_i)$满足$g(x_i,y_i)=0$，那就和等式约束的情况一样了，但是此时函数梯度和约束梯度方向<strong>必然**相反，所以此时 $\lambda&gt;0$。结合两种情况，归纳成</strong>KKT条件**：<br>$$<br>g(x,y) \le 0 \quad \lambda \ge 0 \quad \lambda g(x)=0<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211113141611.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>使用<strong>拉格朗日乘子法</strong>求SVM的最优化问题：</p>
+<p>将$argmin_{w,b}(\frac{||w||}{2}) \quad s.t. y_i(\boldsymbol{w^Tx_i}+b) \ge 1$转换成拉格朗日函数即<br>$$<br>L(\boldsymbol w, b, \boldsymbol \alpha)= \frac{||w||^2}{2} + \sum^m_{i=1} \alpha_i (1-y_i(\boldsymbol{w^Tx_i}+b))<br>$$<br>满足KKT条件：<br>$$<br>1-y_i(\boldsymbol{w^Tx_i}+b) \le 0 \quad \alpha_i \ge 0 \quad \alpha_i (1-y_i(\boldsymbol{w^Tx_i}+b))=0<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211113153507.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>现在问题就只剩下解出$L(\boldsymbol \alpha)$的最大值（此处留坑）</p>
+</blockquote>
+<h2 id="核函数"><a href="#核函数" class="headerlink" title="核函数"></a>核函数</h2><p>核函数，或者叫做核技巧，是在SVM中用来将线性拓展到非线性的工具。对于图中左边这种无法用一根直线划分的数据分布，使用某种映射函数 $\phi(x)$映射到高维空间后，就能用一个平面划分。<strong>但是</strong>$\phi(x)$ <strong>有很多种，而且映射之后也无法保证是线性可分的。只能保证假如原始空间是有限维度的，那么一定会有一个高维特征空间使样本线性可分。</strong></p>
+<p>在使用映射函数提升维度后，对偶问题变成了 $最大化 -\frac{1}{2}\sum^m_{i=1}\sum^m_{j=1} \alpha_i \alpha_j y_i y_j \phi(\boldsymbol{x_i})^T\phi(\boldsymbol{x_j}) + \sum^m_{i=1}\alpha_i$，但是求 $\phi(\boldsymbol{x_i})^T\phi(\boldsymbol{x_j})$是在是太麻烦了，需要升维之后再求内积，所以我们<strong>使用核技巧，用核函数代替内积</strong>，即 $k(\boldsymbol{x_i, x_j}) = \phi(\boldsymbol{x_i})^T\phi(\boldsymbol{x_j})$。从这个角度来看，核函数就是计算样本映射到高维空间的内积。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114151644.png" srcset="/img/loading.gif" lazyload></p>
+<p>核函数对应着一个核矩阵，对于任意对称函数，只要这个矩阵是<strong>半正定</strong>的，那这个函数就能当做核函数，一个半正定矩阵就暗中对应着一个高维空间。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114164932.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>对于这个核函数的选择，西瓜书上列了这些。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114165616.jpg" srcset="/img/loading.gif" lazyload></p>
+<blockquote>
+<p>对称函数：$f(x, y) = f(y,x)$</p>
+<p>半正定矩阵：<strong>给定一个</strong>$n\times n$<strong>的实数对称矩阵</strong>$A$，<strong>若对于任意长度</strong>$n$<strong>的向量</strong>$\boldsymbol{x}$，有$\boldsymbol{x^TAx} \ge 0$<strong>恒成立，则为半正定矩阵</strong>。$y=\boldsymbol{x^TAx}$就和$y=ax^2$差不多，要它$\ge 0$恒成立，就是要$A$满足一个从另一个角度$\ge 0$的条件。</p>
+<p>证明：$K(x^{(i)},x^{(j)})$是$K$矩阵$i$行$j$列的值，又可以看作是某两个向量特征映射之后的内积，对于高维向量的单独一个值，就是向量通过$\phi_k$函数（k是高维的维度）的出来的单个值。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114163738.png" srcset="/img/loading.gif" lazyload></p>
+</blockquote>
+<h2 id="软间隔"><a href="#软间隔" class="headerlink" title="软间隔"></a>软间隔</h2><p>前面提到就算用了核函数也不能保证数据在高维空间是线性可分的，于是我们可以考虑保留少部分点是错误分类的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114165853.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>此时需要优化的问题变成了<br>$$<br>argmin_{w,b}(\frac{||w||}{2} + C\sum^m_{i=1}\ell_{0/1}(y_i(\boldsymbol{w^Tx_i}+b) - 1))<br>$$<br>其中$\ell_{0/1}(z)$是当$z&lt;0$时为1，$z\ge0$时为0的函数。</p>
+<p>$y_i(\boldsymbol{w^Tx_i}+b) &lt; 1$时，点不位于超平面正确的那一侧，此时$\ell_{0/1}(z)=1$，第二项开始起作用，而作用就是作为一个正数，让loss的值变大，<strong>从而让优化算法使不符合要求的点尽量少</strong>。</p>
+<p>说到优化算法，上面说的$\ell_{0/1}(z)$明显是没有导数还不连续的，所以一般使用别的函数来替代它。如下图，有三种损失，分别是hinge损失、指数损失和对率损失，其中hinge损失用的最多。</p>
+<p>下图$z&lt;0$时即点在超平面（上图虚线）的另一侧，此时$\ell(z) \ge 1$；下图$0&lt;z$时即点在超平面（上图虚线）的正确侧，但会根据点与分割线的距离给予不同的损失，此时$0 \le \ell(z) \le 1$。这样的话两个额外的超平面（上图虚线）就不是强行划分的界限了，而是形成了和距离有关的<strong>软间隔</strong>。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211114171204.jpg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="正则化"><a href="#正则化" class="headerlink" title="正则化"></a>正则化</h2><p>定义$\xi = \ell(y_i(\boldsymbol{w^Tx_i}+b) - 1)$，要优化的那一部分可以简写成下面这样：<br>$$<br>argmin_{w,b}(\frac{||w||^2}{2} + C\sum^m_{i=1} \xi_i)<br>$$<br>我们换个形式，也可以是这样：<br>$$<br>argmin_{w,b}(\sum^m_{i=1} \xi_i + \lambda ||w||^2)<br>$$<br>这样的话就很像逻辑回归添加了L2正则化的损失函数：$argmin_{w,b}(\sum^m_{i=1} (y-\hat{y})^2 + \lambda ||w||^2)$。两者的第一项被叫做<strong>经验风险</strong>，指模型在训练集学习到的经验；第二项被叫做<strong>结构风险</strong>，描述模型的某些性质，这一项又可以被叫做<strong>正则化项</strong>，而$\lambda$叫做正则化常数，用来获取结构上复杂度较小的模型。</p>
 <blockquote>
 <p>参考文献</p>
-<p>[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/178402798">原创][深度][PyTorch] DDP系列第一篇：入门教程 - 知乎 (zhihu.com)</a></p>
-<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/multiprocessing.html#torch.multiprocessing.spawn">Multiprocessing package - torch.multiprocessing — PyTorch 1.10.0 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/38586401">如何理解拉格朗日乘子法？ - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://medium.com/analytics-vidhya/how-to-classify-non-linear-data-to-linear-data-bb2df1a6b781">Kernel Trick in SVM. Kernel Trick can solve this issue using… | by Siddhartha Sharma | Analytics Vidhya | Medium</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/44860862">浅谈「正定矩阵」和「半正定矩阵」 - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/289165454">SVM的核函数中为什么要求核矩阵是半正定的？ - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="http://www.adeveloperdiary.com/data-science/machine-learning/support-vector-machines-for-beginners-linear-svm/">Support Vector Machines for Beginners - Linear SVM - A Developer Diary</a></p>
 </blockquote>
 
             </div>
@@ -296,7 +333,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%B8%B8%E7%94%A8%E6%98%93%E5%BF%98/">常用易忘</a>
+                      <a class="hover-with-bg" href="/categories/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
                     
                   </div>
                 
@@ -304,9 +343,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Pytorch/">Pytorch</a>
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
                     
-                      <a class="hover-with-bg" href="/tags/DDP/">DDP</a>
+                      <a class="hover-with-bg" href="/tags/SVM/">SVM</a>
                     
                   </div>
                 
@@ -323,18 +362,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/10/28/Python%20argparse/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Python Argparse</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/10/25/Video%20Captioning%E4%BB%BB%E5%8A%A1%20Transformer%E6%96%B9%E5%90%91%E5%B0%8F%E7%BB%BC%E8%BF%B0/">
-                        <span class="hidden-mobile">Video Captioning任务 Transformer方向小综述</span>
+                      <a href="/2021/11/09/%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E8%AF%BE%E7%AC%94%E8%AE%B0%202-%E7%BA%BF%E6%80%A7%E6%A8%A1%E5%9E%8B/">
+                        <span class="hidden-mobile">我的机器学习课笔记 #2-线性模型</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
