@@ -1,0 +1,709 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="对于密码学的简介，从古典密码学到现代密码学，从对称密码学到非对称密码学">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="对于密码学的简介，从古典密码学到现代密码学，从对称密码学到非对称密码学">
+<meta property="og:type" content="article">
+<meta property="og:title" content="对称密码学和非对称密码学简介">
+<meta property="og:url" content="http://blog.kamino.link/2021/11/18/%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E5%AD%A6%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E5%AD%A6%E7%AE%80%E4%BB%8B/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="对于密码学的简介，从古典密码学到现代密码学，从对称密码学到非对称密码学">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118173239.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118185815.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118191204.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118195058.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118195321.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118203903.gif">
+<meta property="article:published_time" content="2021-11-18T07:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-21T11:05:36.387Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="密码学">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118173239.png">
+  
+  <title>对称密码学和非对称密码学简介 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211121185942.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="对称密码学和非对称密码学简介">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2021-11-18 15:00" pubdate>
+        2021年11月18日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">对称密码学和非对称密码学简介</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2021年11月21日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="对称密码学和非对称密码学简介"><a href="#对称密码学和非对称密码学简介" class="headerlink" title="对称密码学和非对称密码学简介"></a>对称密码学和非对称密码学简介</h1><p>[TOC]</p>
+<h2 id="密码学历史"><a href="#密码学历史" class="headerlink" title="密码学历史"></a>密码学历史</h2><p>要了解现代的对称密码学和非对称密码学，可以先简单了解下密码学的历史，这一节摘取一些维基百科“密码学”词条来进行介绍。</p>
+<p><strong>密码学(cryptology)<strong>分成</strong>密码使用学(cryptography)<strong>和</strong>密码分析学</strong>，前者顾名思义是从使用者的角度对使用密码进行加密解密，而后者是从破解者的角度，对密码进行分析破译。<strong>密码学</strong>也可以分成<strong>古典密码学</strong>和<strong>现代密码学</strong>，古典密码学主要关注信息的保密书写和传递，以及与其相对应的破译方法。而现代密码学不只关注信息保密问题，还同时涉及信息完整性验证、信息发布的不可抵赖性、以及在分布式计算中产生的来源于内部和外部的攻击的所有信息安全问题。</p>
+<p>密码学是数学和计算机科学的分支，同时其原理大量涉及信息论（但是在国内学科中“密码学”学科是军事学门类一级学科“军队指挥学”下的二级学科）。同时，我们生活中常用的密码(password)虽然也是密码学研究的对象，但是和密码学中更常见的秘钥(key)、密码算法(cipher, cypher, encode, code)是不一样的。</p>
+<p>古代中国就记录了密码学的使用，周朝兵书《六韬．龙韬》中写姜子牙征战时与主将通信的方式使用阴符和阴书，阴符是以八等长度的符来表达不同的消息和指令，至于阴书则运用了移位法，把书一分为三，分三人传递，要把三份书重新拼合才能获得还原的信息。</p>
+<p>古时西方由于字母少，发展出了接近现代密码学的密码，比如<strong>转置密码</strong>：将字母顺序重新排列，例如<code>help me</code>变成<code>ehpl em</code>；<strong>凯撒密码</strong>：每个字母被往后位移三格字母所取代；<strong>映射密码</strong>：凯撒密码的升级版，把字母随意一一配对互换。</p>
+<p>到了中世纪，西方发明出了多字符加密法，最典型的例子是维吉尼亚加密法：加密重复使用到一个关键字，用哪个字母取代端视轮替到关键字的哪个字母而定。这个关键字可以看作是秘钥，假如用秘钥<code>ABC</code>加密<code>apple</code>，那先重复秘钥到等长<code>ABCAB</code>，然后对应着移位，a移位A对应的量，p移位B对应的量…e移位B对应的量。</p>
+<p>在一战时期，西方打仗时使用的就是类似上面这样的加密方式，用人手+密码本进行加密，而二战时，德国就发明了密码机，用机械代替人手。</p>
+<blockquote>
+<p>德国雪毕伍斯发明了恩尼格码密码机（ENIGMA，直译为“谜”），下面这个视频介绍了这个密码机。</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=G2_Q9FoD-oQ">158,962,555,217,826,360,000 (Enigma Machine) - Numberphile - YouTube</a></p>
+<p>下面这个C站的纪录片介绍了当时的密码战</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1HW411N7hd?from=search&seid=224138967020097063&spm_id_from=333.337.0.0">【央视】丘吉尔智斗希特勒，英国如何用密码战抗击德国？智破密码 密码风云（三）_哔哩哔哩_bilibili</a></p>
+</blockquote>
+<p><strong>第二次世界大战后计算机与电子学的发展促成了更复杂的密码</strong>，而且计算机可以加密任何二进制形式的资料，不再限于书写的文字，以语言学为基础的破密术因此失效。多数计算机加密的特色是在二进制字符串上操作，而不像经典密码学那样直接地作用在传统字母数字上。<strong>然而，计算机同时也促进了破密分析的发展，抵消了某些加密法的优势。</strong></p>
+<p>现代密码学的一个特点是，即使敌人知道了使用何种算法。对好的加密法来说，密钥的秘密性理应足以保障资料的机密性，这被叫做柯克霍夫原则。现代密码学还分成了对称密码学和非对称密码学，1976年以前的加密算法都基于对称算法，之后，非对称算法（公钥算法）被Diffie和Hellman发明了。如今，对称算法（DES、AES）和非对称算法（RSA）都广泛应用于各方面。</p>
+<h2 id="对称密码学"><a href="#对称密码学" class="headerlink" title="对称密码学"></a>对称密码学</h2><p>如图，<strong>对称密码学</strong>说的就是编码和解码使用同一个秘钥的加密算法，加密算法可以被公开，发送和接收双方要事先得到同一个秘钥。常见的对称加密算法有AES、ChaCha20、3DES、Salsa20、DES、Blowfish、IDEA、RC5、RC6、Camellia以及我国的SM1。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118173239.png" srcset="/img/loading.gif" lazyload alt="Symmetric-Encryption"></p>
+<h3 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h3><p>DES是一种对称密钥加密块密码算法，使用56位秘钥对64位明文块进行加密。对于已经转换成二进制的明文，需要将其分解成以64为单位的分组，然后每组都使用秘钥进行加密。<strong>DES作为强加密，拥有混淆(Confusion)和扩散(Diffusion)特征</strong>，混淆指的是秘钥和密文之间关系尽可能模糊，扩散指的是一个明文符号的影响能波及到多位密文（即改动一个位就会导致密文发生较大变化）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118185815.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>如图，DES加密过程主要阶段为：</p>
+<pre><code class=" mermaid">graph LR
+A(64bit明文) --&gt; B[初始置换IP]
+B --&gt; C[16轮加密变换]
+C --&gt; D[逆初始置换IP]
+D --&gt; E(64bit密文)
+</code></pre>
+
+<p><strong>初始置换IP</strong>就是简单的把明文按照某种规则替换，比如把第1位替换成58位、第2位替换成50位……</p>
+<p>16轮加密变换每一轮都需要一个48bit的轮秘钥$K_i$，由那个56bit的秘钥经过置换和移位算法产生。</p>
+<p>每一轮的变换如下图，64bit的输入分成左半边和右半边，每次只变换一半，输出的左半总是输入的右半，输出的右半是$左半 \oplus f(右半)$。这个f分成E盒、S盒和置换P。E盒把32位的输入拓展成48位的输出，这增加了DES的扩散特性。然后48位的秘钥和这个48位的输出进行XOR，结果送进S盒生成32位输出，S盒是DES的核心，是算法中唯一的非线性元素，提供了DES的混淆特性（非线性：$S(a) \oplus S(b) \neg S(a+b)$）。之后输入进P盒置换得到$f(右半)$。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118191204.png" srcset="/img/loading.gif" lazyload></p>
+<p>进行16轮次这样的加密后，再逆置换IP就能得到最终的密文</p>
+<p>DES的解密十分简单，和加密过程几乎一样，改变的只有轮秘钥$K_i$的顺序，将$K_i$反向就是解密过程。</p>
+<blockquote>
+<p>目前DES已经不再安全，56bit的秘钥太短了，破解DES的方式主要是暴力攻击，2008年有人就在一天以内暴力破解出了DES。</p>
+<p>DES有10个不那么安全的秘钥，很容易被破解，但是这数量很少，可以忽略。</p>
+</blockquote>
+<h3 id="AES"><a href="#AES" class="headerlink" title="AES"></a>AES</h3><p>AES是用来替换DES的高级加密标准，分别有AES-128、AES-192和AES-256三种方案，里面的数字就是秘钥的位数。AES还有五种加密模式，即CBC、ECB、CTR、OCF、CFB，使用时要注意秘钥长度和加密模式的选择。</p>
+<p>AES和DES很像，都是分组加密的算法，AES加密的是128bit的明文块，同时AES的解密也很简单，就是把加密流程倒置。加密的流程如下图：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118195058.png" srcset="/img/loading.gif" lazyload alt="Advanced-Encryption-Standard"></p>
+<p>AES和DES都是照顾了硬件的加密算法，能够高效安全地加密，现在AES仍然是最流行的加密算法之一。截至2006年，针对AES唯一的成功攻击是旁道攻击或社会工程学攻击。</p>
+<h2 id="非对称密码学"><a href="#非对称密码学" class="headerlink" title="非对称密码学"></a>非对称密码学</h2><p>如图，<strong>非对称密码学</strong>使用两个秘钥，一个是公开秘钥(public key)，一个是私有秘钥(private key)；公钥用来加密，私钥用来解密；公钥可以公开，而私钥不能公开。直观来看，这种加密方式就像邮箱（不是电子邮箱！！），邮差可以随意将信从小缝投入你的信箱，但是他无法拿出来，只有你用钥匙才能打开信箱取出信件。</p>
+<p>目前常用的非对称密码有RSA、DH、DSA、ECDH、ECDSA。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118195321.png" srcset="/img/loading.gif" lazyload alt="Asymmetric-Encryption"></p>
+<h3 id="非对称密码学的特点"><a href="#非对称密码学的特点" class="headerlink" title="非对称密码学的特点"></a>非对称密码学的特点</h3><p>非对称密码解决了对称密码的三个问题：<strong>秘钥分配</strong>、<strong>秘钥数量</strong>、<strong>用户欺骗</strong>。</p>
+<p>秘钥分配指的是虽然用秘钥传输密文是安全的，但是秘钥本身还得保密，假如你想要和地球另一边的人使用对称加密方式进行通信，你得先找到方法把通信的秘钥安全送到他那。而非对称密码可以安全地公布公钥。</p>
+<p>秘钥数量问题指的是n个用户假如要互相通信，那就需要$\frac{n(n-1)}{2}$个秘钥，每个人都要保存$n-1$个秘钥，这样太麻烦了。</p>
+<p>用户欺骗则是一种更巧妙的问题，在对称通信中，AB双方都有相同的秘钥，假如A是用户，B是淘宝，A向B发送了购买一件商品的加密信息，但是A后来又后悔了，于是A欺骗说：“我没有发送这条信息，既然B也有秘钥，那么B可以伪造这份信息。”</p>
+<p>根据<code>Understanding Cryptography: A Textbook for Students and Practitioners</code>这本书，非对称密码学的主要功能如下：</p>
+<ol>
+<li>秘钥建立：在不安全信道上建立秘钥</li>
+<li>不可否认性：A发送了消息给B，不能否认</li>
+<li>身份标识：可确信是谁发送了加密消息</li>
+<li>加密：加密 XD</li>
+</ol>
+<p>同时，非对称密码学也有缺点，那就是耗时长，比对称密码学的方法能慢上一百倍甚至一千倍。所以实践中经常混合使用这两种方法进行通信。</p>
+<h3 id="非对称密码学的根基"><a href="#非对称密码学的根基" class="headerlink" title="非对称密码学的根基"></a>非对称密码学的根基</h3><p>目前非对称密码学主要建立在三种计算问题上，</p>
+<ol>
+<li><p>整数分解：素数相乘得到的因式很难分解回来</p>
+</li>
+<li><p>离散对数：假设在整数范围内，对数$x=log_b(a)$，已知$x,b$，计算$a$容易；但是已知$a,b$，计算$x$就很麻烦。</p>
+</li>
+<li><p>椭圆曲线：椭圆曲线通用方程为$y^2=x^3+ax+b$，任何一条不垂直的直线与曲线的交点不超过3个。定义一种运算，曲线上两个点为AB，AB连直线得到C’，C’关于x轴有对称点C，称作$A \ dot \ B=C$。给定一个初始点A，一个动点B，经过n次dot运算之后得出Z，从A Z求出n比较困难。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211118203903.gif" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+<h3 id="数字签名和数字证书"><a href="#数字签名和数字证书" class="headerlink" title="数字签名和数字证书"></a>数字签名和数字证书</h3><p><strong>数字签名（英语：Digital Signature，又称公钥数字签名）</strong>是一种功能类似写在纸上的普通签名、但是使用了公钥加密领域的技术，以用于鉴别数字信息的方法。<strong>解决的问题是：确认收到的文件没有被改动。</strong></p>
+<p>数字签名将非对称密码反过来使用，加密的秘钥当作私钥，解密的秘钥当作公钥，对一份文件进行签名的过程就是用Hash函数得到文件的摘要，然后用私钥对其进行加密，得到摘要的密文，即数字签名。接收者收到消息后用同一种Hash函数计算出摘要，然后用被公钥解密的数字签名来比对，假如有变动则说明消息收到篡改。</p>
+<p>由于非对称密码的性质，公钥不能计算出私钥，所以接收者可以知道发送者是谁、消息是否被改动过，并且可以确信发送者发送了消息。</p>
+<blockquote>
+<p><strong>Hash函数：</strong></p>
+<p>又叫做单向散列函数，能够根据任意长度的消息快速生成固定长度的一个值，<strong>不同的消息生成的值不同</strong>。假如两个不同的消息生成出了同一个散列值，那就叫做碰撞，Hash具有抗碰撞性。Hash生成的值无法推算回原来的值。目前的具体Hash算法有MD4、MD5、SHA-1、SHA-256、SHA-384、SHA-512等。</p>
+<p>Hash函数可以用作密码管理，密码明文存放在数据库不安全，所以一般存的是Hash之后的密文，用户输入密码后，服务器Hash得到的值和数据库中的密文进行比对来认证。</p>
+<p>Hash函数还可以用来快速检索，假如要从许多文件中检索一个文件，那就可以直接用文件的Hash值来比较。</p>
+<p>Hash最后的一个常用功能就是这里说的数字签名啦~</p>
+</blockquote>
+<p>然而，假如一开始发送者就是别人假装的，那么接收者收到的数字签名就是坏人伪造的、收到的公钥也是坏人的，<strong>要确信公钥来自发送者，还需要数字证书技术。</strong></p>
+<p><strong>数字证书（digital certificate）或身份证书（identity certificate）</strong>是用于公开密钥基础建设的电子文件，用来证明公开密钥拥有者的身份。此文件包含了公钥信息、拥有者身份信息（主体）、以及数字证书认证机构（发行者）对这份文件的数字签名，以保证这个文件的整体内容正确无误。</p>
+<p>发送者发送自己的数字签名公钥时，发送一个由权威认证中心（CA）认证过的证书，这个证书由CA的私钥加密，你可以用CA的公钥解密出证书内容，然后向CA求证是否正确。这个过程相当于接收者和发送者完全信任一个第三方，而第三方能证明某个公钥属于某个发送者。</p>
+<p>实际应用中，由于需要CA的企业太多了，所以采用分级管理，假如你不信任B，那么查看C给B的证书；假如不信任C，那么查看D给C的证书……直到最后就是Google、政府机构这些最权威的CA了。</p>
+<p>你也可以自己给自己证明颁发证书，但是并没有什么用，浏览器或者别的电脑软件会发出警告。</p>
+<blockquote>
+<p>参考文献：</p>
+<p>深入浅出密码学 清华大学出版社</p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%AF%86%E7%A0%81%E5%AD%A6">密码学 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%B0%8D%E7%A8%B1%E5%AF%86%E9%91%B0%E5%8A%A0%E5%AF%86">对称密钥加密 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.ssl2buy.com/wiki/symmetric-vs-asymmetric-encryption-what-are-differences">Symmetric vs. Asymmetric Encryption - What are differences? (ssl2buy.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zxh2075/article/details/80620570">DES加密教程详细解读_zxh2075的专栏-CSDN博客</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Y61qn_SQl40">Data Encryption Standard - YouTube</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/RSA%E5%8A%A0%E5%AF%86%E6%BC%94%E7%AE%97%E6%B3%95">RSA加密算法 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p><a target="_blank" rel="noopener" href="http://blog.hubwiz.com/2020/06/16/elliptic-curve-intro/">椭圆曲线密码学【科普】 | 学习软件编程 (hubwiz.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%85%AC%E9%96%8B%E9%87%91%E9%91%B0%E8%AA%8D%E8%AD%89#%E4%B8%AD%E5%9C%8B%E4%BA%92%E8%81%AF%E7%B6%B2%E7%B5%A1%E4%BF%A1%E6%81%AF%E4%B8%AD%E5%BF%83%E7%99%BC%E8%A1%8C%E5%81%87%E6%86%91%E8%AD%89%E4%BA%8B%E4%BB%B6">公开密钥认证 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/11/19/HTTPS/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Https协议的安全性原理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/11/16/SSL%20TLS%E5%8D%8F%E8%AE%AE%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">SSL/TLS协议原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
