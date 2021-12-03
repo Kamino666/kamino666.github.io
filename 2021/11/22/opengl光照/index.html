@@ -13,28 +13,29 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="超文本传输安全协议（常称为HTTP over SSL/TLS）是一种通过计算机网络进行安全通信的传输协议。https经由http进行通信，但利用SSL/TLS来加密数据包。https使用端口443，URL以https://开头，使用https的网站需要从CA那里获得证书。HTTP的数据使用TCP在互联网上明文传输，很容易被黑客截获、篡改或者冒充，而HTTPS除了ip和端口都进行了加密，并且使用了S">
+  <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="超文本传输安全协议（常称为HTTP over SSL&#x2F;TLS）是一种通过计算机网络进行安全通信的传输协议。https经由http进行通信，但利用SSL&#x2F;TLS来加密数据包。https使用端口443，URL以https:&#x2F;&#x2F;开头，使用https的网站需要从CA那里获得证书。HTTP的数据使用TCP在互联网上明文传输，很容易被黑客截获、篡改或者冒充，而HTTPS除了ip和端口都进行了加密，并且使用了S">
+  <meta name="description" content="OpenGL光照模型[TOC] 自己整理的笔记便于理解，建议看原文哦。 Phong Lighting Model物体的光由三部分组成：环境光(ambient)、漫反射(diffuse)、镜面光照(specular) 下面的计算都基于世界坐标系，并且实现于片段着色器。实现Phong光照明模型，需要顶点着色器提供顶点法向量，然后OpenGL会自动差值得到片段的法向量。  环境光环境光是均匀的照在所有方">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Https协议的安全性原理">
-<meta property="og:url" content="http://blog.kamino.link/2021/11/19/HTTPS/index.html">
+<meta property="og:title" content="OpenGl光照模型">
+<meta property="og:url" content="http://blog.kamino.link/2021/11/22/opengl%E5%85%89%E7%85%A7/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="超文本传输安全协议（常称为HTTP over SSL&#x2F;TLS）是一种通过计算机网络进行安全通信的传输协议。https经由http进行通信，但利用SSL&#x2F;TLS来加密数据包。https使用端口443，URL以https:&#x2F;&#x2F;开头，使用https的网站需要从CA那里获得证书。HTTP的数据使用TCP在互联网上明文传输，很容易被黑客截获、篡改或者冒充，而HTTPS除了ip和端口都进行了加密，并且使用了S">
+<meta property="og:description" content="OpenGL光照模型[TOC] 自己整理的笔记便于理解，建议看原文哦。 Phong Lighting Model物体的光由三部分组成：环境光(ambient)、漫反射(diffuse)、镜面光照(specular) 下面的计算都基于世界坐标系，并且实现于片段着色器。实现Phong光照明模型，需要顶点着色器提供顶点法向量，然后OpenGL会自动差值得到片段的法向量。  环境光环境光是均匀的照在所有方">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119145805.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119151139.jpg">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119152734.png">
-<meta property="article:published_time" content="2021-11-19T04:40:00.000Z">
-<meta property="article:modified_time" content="2021-12-01T11:34:36.474Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122195358.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122200729.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122201954.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122205140.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122210323.png">
+<meta property="article:published_time" content="2021-11-22T11:50:00.000Z">
+<meta property="article:modified_time" content="2021-11-22T13:07:47.641Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="密码学">
-<meta property="article:tag" content="https">
+<meta property="article:tag" content="Kamino">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119145805.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122195358.png">
   
-  <title>Https协议的安全性原理 - Kamino&#39;s Blog</title>
+  <title>OpenGl光照模型 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -188,12 +189,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211121190039.jpg') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Https协议的安全性原理">
+            <span class="h2" id="subtitle" title="OpenGl光照模型">
               
             </span>
 
@@ -203,8 +204,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-11-19 12:40" pubdate>
-        2021年11月19日 下午
+      <time datetime="2021-11-22 19:50" pubdate>
+        2021年11月22日 晚上
       </time>
     </span>
   
@@ -214,7 +215,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.3k 字
+      1.5k 字
     </span>
   
 
@@ -223,7 +224,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4 分钟
+      5 分钟
     </span>
   
 
@@ -260,36 +261,52 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Https协议的安全性原理</h1>
+            <h1 style="display: none">OpenGl光照模型</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年12月1日 晚上
+                  本文最后更新于：2021年11月22日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Https协议的安全性原理"><a href="#Https协议的安全性原理" class="headerlink" title="Https协议的安全性原理"></a>Https协议的安全性原理</h1><p>[TOC]</p>
-<p>超文本传输安全协议（常称为HTTP over SSL/TLS）是一种通过计算机网络进行安全通信的传输协议。https经由http进行通信，但利用SSL/TLS来加密数据包。https使用端口443，URL以<code>https://</code>开头，使用https的网站需要从CA那里获得证书。</p>
-<p>HTTP的数据使用TCP在互联网上明文传输，很容易被黑客截获、篡改或者冒充，而HTTPS除了ip和端口都进行了加密，并且使用了SSL/TLS的安全通信方式，所以相对来说安全。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119145805.png" srcset="/img/loading.gif" lazyload alt="what-is-https"></p>
+              <h1 id="OpenGL光照模型"><a href="#OpenGL光照模型" class="headerlink" title="OpenGL光照模型"></a>OpenGL光照模型</h1><p>[TOC]</p>
+<p>自己整理的笔记便于理解，建议看原文哦。</p>
+<h2 id="Phong-Lighting-Model"><a href="#Phong-Lighting-Model" class="headerlink" title="Phong Lighting Model"></a>Phong Lighting Model</h2><p>物体的光由三部分组成：<strong>环境光(ambient)、漫反射(diffuse)、镜面光照(specular)</strong></p>
+<p>下面的计算都基于世界坐标系，并且实现于片段着色器。实现Phong光照明模型，需要顶点着色器提供顶点法向量，然后OpenGL会自动差值得到片段的法向量。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122195358.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="环境光"><a href="#环境光" class="headerlink" title="环境光"></a>环境光</h3><p>环境光是均匀的照在所有方向的光，实现方式就是用光源的颜色乘一个很小的数</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">vec3 ambient = ambientStrength * lightColor;<br></code></pre></td></tr></table></figure>
+
+<h3 id="漫反射"><a href="#漫反射" class="headerlink" title="漫反射"></a>漫反射</h3><p>漫反射能产生自身阴影的效果，即有的面亮、有的面暗。漫反射与观察的角度无关，与光照射的角度有关，光照射的角度和面的法向量夹角越大，那漫反射就会越小。这个夹角是下图中的$\theta$。</p>
+<p>公式可能像这样：$漫反射=\frac{法向量 \cdot 光向量}{|法||光|}*光颜色$</p>
+<p>但是在计算的时候有几个注意点：</p>
+<ol>
+<li>由于都是方向向量，我们将它们归一化之后计算，算余弦可以直接计算点积</li>
+<li>计算点积的时候可能会得到负数，此时光照向这个面的背面，所以实际上不贡献任何亮度，此时点积的结果应该是0</li>
+</ol>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c++">vec3 diffuse = <span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(norm, lightDir), <span class="hljs-number">0.0f</span>) * lightColor<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122200729.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="镜面光照"><a href="#镜面光照" class="headerlink" title="镜面光照"></a>镜面光照</h3><p>镜面光照和漫反射一样需要光的角度和法向量，除此以外，观察向量也很重要。如图，入射光光$\vec{L}$被反射为$\vec R$，而观察角度$\vec V$离$\vec R$还有一个夹角$\theta$，$\theta$越小，受光影响越大。</p>
+<p>公式像这样：$镜面分量=反射颜色强度*({\vec V \cdot \vec R})^{反光度}*光颜色$。其中，反射颜色强度指的是高光的颜色，而反光度指的是高光扩散度，反光能力越强，高光扩散就越少。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122201954.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122205140.png" srcset="/img/loading.gif" lazyload alt="不同反光度"></p>
+<p>用代码实现如下：</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">vec3 viewDir = <span class="hljs-built_in">normalize</span>(viewPos - FragPos);<br>vec3 reflectDir = <span class="hljs-built_in">reflect</span>(-lightDir, norm);<br>vec3 specular = 反射颜色强度 * <span class="hljs-built_in">pow</span>(<span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(viewDir, reflectDir), <span class="hljs-number">0.0f</span>), 反光度)<br></code></pre></td></tr></table></figure>
+
+<h2 id="Blinn-Phong"><a href="#Blinn-Phong" class="headerlink" title="Blinn-Phong"></a>Blinn-Phong</h2><p>Phong固然好，然而，当观察角度$\vec V$离$\vec R$的夹角$\theta$大于90°时，Phong直接置0，在反光度低的时候会出现高光断层，而且要得到反射向量$\vec R$的计算量很大，Blinn-Phong改进了Phong的镜面光照。</p>
+<p>Blinn使用半程向量$\vec H$和法向量$\vec N$的夹角来代替原来$\vec V$和$\vec R$的夹角，首先，这种算法不会出现$\theta$大于90°的情况，其次，$\vec H = normalize(\vec L + \vec V)$很简单就能得到。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211122210323.png" srcset="/img/loading.gif" lazyload></p>
+<p>用代码实现如下</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs c++">vec3 viewDir = <span class="hljs-built_in">normalize</span>(viewPos - FragPos);<br>vec3 halfDir = <span class="hljs-built_in">normalize</span>(lightDir + viewDir);<br>vec3 specular = 反射颜色强度 * <span class="hljs-built_in">pow</span>(<span class="hljs-built_in">max</span>(<span class="hljs-built_in">dot</span>(norm, halfDir), <span class="hljs-number">0.0f</span>), 反光度)<br></code></pre></td></tr></table></figure>
+
+
+
 <blockquote>
-<p>关于SSL/TLS见我另一个博客。</p>
-</blockquote>
-<h2 id="https无法逃脱GFW监管"><a href="#https无法逃脱GFW监管" class="headerlink" title="https无法逃脱GFW监管"></a>https无法逃脱GFW监管</h2><p>这个是显而易见的hhh，毕竟现在打开浏览器输入<code>https://www.google.com</code>也上不了，因为https对对ip和端口是不加密的，而且注意是<strong>源ip、目标ip、源端口、目标端口</strong>都不加密。所以很容易就能封禁某网站的ip。</p>
-<h2 id="https中间人劫持"><a href="#https中间人劫持" class="headerlink" title="https中间人劫持"></a>https中间人劫持</h2><p>首先说明，正常情况下https是不会遭遇中间人攻击的，因为HTTPS基于的TLS协议考虑到了这种情况。</p>
-<p>中间人攻击(Man in the middle attack, or MITM)指的是在密码学和计算机安全领域中是指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119151139.jpg" srcset="/img/loading.gif" lazyload></p>
-<p>TLS通过数字证书来防御这种攻击，即User在访问某Web Applicaiton的时候，会先明文建立TCP连接，然后发送明文证书请求，然后某Web App会把CA认证的证书发给User，这个证书使用了CA的私钥进行加密非常安全，User收到证书之后用公钥解密验证证书的有效性，然后就会把本次TLS通讯的秘钥通过证书里的公钥加密发送给Web App。</p>
-<p>假如黑客出现，在User收到Web App发来的正确证书的时候，就已经无计可施了，所以黑客要作为一个中间人，把Web App发来的正确证书进行掉包，生成一个包含自己公钥的假证书发给用户，<strong>假如用户傻傻地不验证证书的正确性，那就会使用中间人的公钥对TLS秘钥进行加密传输，而中间人拥有私钥，于是就能得到会话的TLS秘钥，从而获取信息</strong>。问题在于，用户遇到报错会不会点下图这种“继续浏览此网站”，不点就没事！</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119152734.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="安装根证书"><a href="#安装根证书" class="headerlink" title="安装根证书"></a>安装根证书</h2><p>根证书是证明证书有效的证书。这听上去可能有点绕口，这是一种信任链，假如你信任国家这种最权威的机构，那国家授权的企业你也信任，而企业授权的证书颁发机构你也信任，证书颁发机构信任的网站你也信任，根证书就是信任的源头，它说啥就是啥。</p>
-<p>在操作系统内部会内置很多根证书，同时用户也可以手动安装新的根证书，这就是万恶之源，安装了不可信的根证书之后，中间人颁发的假证书就可以说是假根证书所信任的，那么你的秘钥就泄露出去了。</p>
-<p><strong>所以不要随随便便安装根证书</strong>。但是类似fiddle这样的抓包软件会让你安装根证书，因为它抓包https的技术就是作为一个可信的中间人。或者公司的防火墙也会要求安装根证书，安装之后防火墙就能监控所有的https流量内容（而不只是端口和ip）。</p>
-<blockquote>
-<p>参考文献</p>
-<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E8%B6%85%E6%96%87%E6%9C%AC%E4%BC%A0%E8%BE%93%E5%AE%89%E5%85%A8%E5%8D%8F%E8%AE%AE">超文本传输安全协议 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
-<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%94%BB%E5%87%BB">中间人攻击 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p>参考文献：</p>
+<p>[基础光照 - LearnOpenGL CN (learnopengl-cn.github.io)](<a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/02">https://learnopengl-cn.github.io/02</a> Lighting/02 Basic Lighting/)</p>
+<p>[高级光照 - LearnOpenGL CN (learnopengl-cn.github.io)](<a target="_blank" rel="noopener" href="https://learnopengl-cn.github.io/05">https://learnopengl-cn.github.io/05</a> Advanced Lighting/01 Advanced Lighting/)</p>
 </blockquote>
 
             </div>
@@ -297,24 +314,6 @@
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
-                    
-                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">计算机网络</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
-                    
-                      <a class="hover-with-bg" href="/tags/https/">https</a>
-                    
-                  </div>
                 
               </div>
               
@@ -324,29 +323,6 @@
                   
                 </p>
               
-              
-                <div class="post-prevnext">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2021/12/02/Hierarchical%20Modular%20Network%20for%20Video%20Captioning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Hierarchical Modular Network for Video Captioning论文笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2021/11/18/%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E5%AD%A6%E5%92%8C%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81%E5%AD%A6%E7%AE%80%E4%BB%8B/">
-                        <span class="hidden-mobile">对称密码学和非对称密码学简介</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 
