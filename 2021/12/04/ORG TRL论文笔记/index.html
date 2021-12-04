@@ -13,34 +13,36 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="论文于2021年11月24日发表在了ArXiv上，提出了一个用来进行Video Captioning任务的分层网络，从实体(Entitiy)、动词(Predicate)、句子(Sentence)三个层次来进行建模。其中作者在Entity的部分贡献更大，提出了一个仿照DETR的模块。结果在MSVD和MSR-VTT上SOTA了。但是模型极其复杂，并且没放代码。">
+  <meta name="description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="论文于2021年11月24日发表在了ArXiv上，提出了一个用来进行Video Captioning任务的分层网络，从实体(Entitiy)、动词(Predicate)、句子(Sentence)三个层次来进行建模。其中作者在Entity的部分贡献更大，提出了一个仿照DETR的模块。结果在MSVD和MSR-VTT上SOTA了。但是模型极其复杂，并且没放代码。">
+  <meta name="description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Hierarchical Modular Network for Video Captioning论文笔记">
-<meta property="og:url" content="http://blog.kamino.link/2021/12/02/Hierarchical%20Modular%20Network%20for%20Video%20Captioning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记">
+<meta property="og:url" content="http://blog.kamino.link/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="论文于2021年11月24日发表在了ArXiv上，提出了一个用来进行Video Captioning任务的分层网络，从实体(Entitiy)、动词(Predicate)、句子(Sentence)三个层次来进行建模。其中作者在Entity的部分贡献更大，提出了一个仿照DETR的模块。结果在MSVD和MSR-VTT上SOTA了。但是模型极其复杂，并且没放代码。">
+<meta property="og:description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211202191334.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203150527.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203152845.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203154538.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203154933.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203202513.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203155243.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203203040.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203202704.png">
-<meta property="article:published_time" content="2021-12-02T10:30:00.000Z">
-<meta property="article:modified_time" content="2021-12-04T10:25:44.752Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120043.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120539.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172011.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172927.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204173007.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204174938.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175208.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175041.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204181656.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175317.png">
+<meta property="article:published_time" content="2021-12-04T03:32:00.000Z">
+<meta property="article:modified_time" content="2021-12-04T10:49:48.017Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="Hierarchical Modular Network">
+<meta property="article:tag" content="ORG-TRL">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211202191334.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png">
   
-  <title>Hierarchical Modular Network for Video Captioning论文笔记 - Kamino&#39;s Blog</title>
+  <title>Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -199,7 +201,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Hierarchical Modular Network for Video Captioning论文笔记">
+            <span class="h2" id="subtitle" title="Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记">
               
             </span>
 
@@ -209,8 +211,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-12-02 18:30" pubdate>
-        2021年12月2日 晚上
+      <time datetime="2021-12-04 11:32" pubdate>
+        2021年12月4日 中午
       </time>
     </span>
   
@@ -220,7 +222,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.2k 字
+      1.7k 字
     </span>
   
 
@@ -229,7 +231,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      5 分钟
     </span>
   
 
@@ -266,7 +268,7 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Hierarchical Modular Network for Video Captioning论文笔记</h1>
+            <h1 style="display: none">Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</h1>
             
               <p class="note note-info">
                 
@@ -275,33 +277,36 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Hierarchical-Modular-Network-for-Video-Captioning论文笔记"><a href="#Hierarchical-Modular-Network-for-Video-Captioning论文笔记" class="headerlink" title="Hierarchical Modular Network for Video Captioning论文笔记"></a>Hierarchical Modular Network for Video Captioning论文笔记</h1><p>[TOC]</p>
-<p>论文于2021年11月24日发表在了ArXiv上，提出了一个用来进行Video Captioning任务的<strong>分层网络</strong>，从<strong>实体(Entitiy)、动词(Predicate)、句子(Sentence)三个层次来进行建模</strong>。其中作者在Entity的部分贡献更大，提出了一个仿照DETR的模块。结果在MSVD和MSR-VTT上SOTA了。</p>
-<p><strong>没有放出代码</strong></p>
-<h2 id="总体框架"><a href="#总体框架" class="headerlink" title="总体框架"></a>总体框架</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211202191334.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="实体模块（Entity）"><a href="#实体模块（Entity）" class="headerlink" title="实体模块（Entity）"></a>实体模块（Entity）</h2><p>这个模块的输入特征由三部分组成，第一部分是Object feature，第二部分是2D-CNN feature，第三部分是3D-CNN feature。</p>
-<p>其中Object使用Fast RCNN提取，先从视频中选择$T$个关键帧(keyframe)，从中总共检测出$L$个objects，每个object的特征维度为$d_0$。在作者的实现中，视频被分成了15个clip，每个clip有16帧，每个clip选出一帧作为关键帧，检测10个objects，并且预训练模型在Visual Genome数据集上训练。而2D-CNN使用InceptionResNetV2提取特征，3D-CNN使用C3D提取特征。以上特征都被全连映射到$d_{model}=512$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203150527.png" srcset="/img/loading.gif" lazyload></p>
-<p>如图，object特征$O$先送入Transformer的编码器得到特征$O’$（不做position encoding）。而2D-CNN和3D-CNN的特征$\mathcal{C},\mathcal{M}$在特征轴拼接之后送入双向LSTM网络再最大池化得到代表整个视频的特征$v$。仿照DETR，论文还加上了长度为$N$的随机初始化参数$Q$，$Q+v$作为解码器的target输入。解码器输出$\mathcal{E}$，再通过全连得到$\overline {\mathcal{E}}$，$\overline {\mathcal{E}}$的维度是SBERT模型的维度$d_s$。</p>
-<p>为了监督学习，论文用SBERT提取caption中的名词的特征$\mathcal{N}$​（去掉无意义的），然后用DETR中的<code>Hungarian algorithm</code>匹配名词特征与object特征，计算余弦相似度作为loss：$\mathcal{L}_e$。</p>
-<h2 id="动词模块（Predicate）"><a href="#动词模块（Predicate）" class="headerlink" title="动词模块（Predicate）"></a>动词模块（Predicate）</h2><p>这个模块就是一个添加Attention的BiLSTM，运动特征$\mathcal{M}$和目标特征$\epsilon$作为输入，通过注意力机制得到运动关联的目标特征$\mathcal{M}^e$，然后拼接$\mathcal{M}$和$\mathcal{M}^e$送入LSTM得到动作特征$\mathcal{A}$，然后对它最大池化消除时间轴维度，再送入全连把特征维度改成$d_s$，得到$\overline a$。</p>
-<p>为了监督学习，论文用SBERT提取caption中的动词的特征$\mathcal{P}$（去掉无意义的），计算余弦相似度作为loss：$\mathcal{L}_p$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203152845.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="句子模块（Sentence）"><a href="#句子模块（Sentence）" class="headerlink" title="句子模块（Sentence）"></a>句子模块（Sentence）</h2><p>这个模块是学习视频整体特征和句子语言特征的。输入2D-CNN特征$\mathcal{C}$、内容关联的动作特征$\mathcal{C}^a$和内容关联的目标特征$\mathcal{C}^e$。（<code>xx关联</code>指的是对xx使用注意力机制）</p>
-<p>上面三者在特征维度拼接，送入双向LSTM得到全局视频特征$\mathcal{G}$。同样，最大池化消除时间轴，再送入全连转换成$\overline g$，特征维度为$d_s$。然后用SBERT提取整个句子的特征，计算余弦相似度作为loss：$\mathcal{L}_s$。</p>
-<h2 id="句子生成模块（Description-Generation）"><a href="#句子生成模块（Description-Generation）" class="headerlink" title="句子生成模块（Description Generation）"></a>句子生成模块（Description Generation）</h2><p>这一部分就是使用LSTM进行句子的生成，输入比较多，如下：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203154538.png" srcset="/img/loading.gif" lazyload></p>
-<p>这里面$\bold E$是前一个预测单词的embedding，$h_{t-1}^{lang}$是隐藏，重点在于前面三个$\boldsymbol{g,a,e}$。三者分别代表整个<strong>视频的特征、运动特征和目标特征</strong>。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203154933.png" srcset="/img/loading.gif" lazyload></p>
-<p>三个$\boldsymbol{g,a,e}$如上是拼接而来的，$\boldsymbol{\overline g, \overline a}$是之前获得过的<strong>视频总特征</strong>和运动总特征，而$\boldsymbol{?^l_t}$的变量都是用注意力机制得来的，从左到右分别是对$\mathcal{G},\mathcal{A},\mathcal{E},\overline {\mathcal{E}}$的加权求和，权由$\boldsymbol{h^{lang}_{t-1}}$和他们自己得到，如下图。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203202513.png" srcset="/img/loading.gif" lazyload></p>
-<p><strong>Loss使用了带ELM的交叉熵</strong>，ELM在论文<code>Object Relational Graph with Teacher-Recommended Learning for Video Captioning</code>中提到，引入外部语言模型来解决long-tail问题。（就是改变了一下分布）</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203155243.png" srcset="/img/loading.gif" lazyload alt="本图来自ORG-TRL论文"></p>
-<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203203040.png" srcset="/img/loading.gif" lazyload></p>
-<p>比ORG-TRL高了一点点。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211203202704.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这玩意太不优雅了，注意力机制可算是给他弄明白了hhhh。</p>
-<p>而且没有做关于引入外部语言模型的消融实验，在<code>Object Relational Graph with Teacher-Recommended Learning for Video Captioning</code>中TRL加上已经能达到Meteor28.6的程度了。</p>
+              <h1 id="Object-Relational-Graph-with-Teacher-Recommended-Learning-for-Video-Captioning论文笔记"><a href="#Object-Relational-Graph-with-Teacher-Recommended-Learning-for-Video-Captioning论文笔记" class="headerlink" title="Object Relational Graph with Teacher-Recommended Learning for Video Captioning论文笔记"></a>Object Relational Graph with Teacher-Recommended Learning for Video Captioning论文笔记</h1><p>[TOC]</p>
+<p>占据<code>paperswithcode.com</code>MSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。</p>
+<h2 id="整体框架"><a href="#整体框架" class="headerlink" title="整体框架"></a>整体框架</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png" srcset="/img/loading.gif" lazyload></p>
+<p>这篇论文使用了2D-CNN 3D-CNN和Object三种特征，其中Object特征通过图神经网络ORG学习到特征，然后Description Generator通过对三种特征的注意力机制，通过TRL生成句子。</p>
+<h2 id="Object-Relational-Graph编码器"><a href="#Object-Relational-Graph编码器" class="headerlink" title="Object Relational Graph编码器"></a>Object Relational Graph编码器</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120043.png" srcset="/img/loading.gif" lazyload></p>
+<p>对于视频，提取$L$个关键帧，通过2D-CNN和3D-CNN得到特征$\mathcal F, \mathcal M$，通过预训练的object-detector得到特征$\mathcal {R} = {r^i_k}$，表示第$i$帧第$k$个object的特征，最多$N$个特征，object层面的特征相互是独立的。</p>
+<p>对于d维的Object特征，K个特征可以表示为$K\times d$的矩阵，定义$A=\phi(R) \cdot \psi(R)^T$为关系矩阵，其中$\phi,\psi$是两个可学习的线性层，将$A$归一化之后可以得到$\hat A=softmax(A, dim=1)$，类似注意力矩阵，表示每一个object对于其它object有多少的注意力。之后乘上参数和原本的特征得到加强特征$\hat R=\hat A\cdot R\cdot W_r$。</p>
+<p>对于关系矩阵的获取，这篇文章用了两种方法，一种是帧内的(P-ORG)，另一种是全局的(C-ORG)P-ORG选择帧内的$N$个object，编码他们之间的关系，不同帧的参数是共享的；C-ORG选择全部的$N\times L$个object，但是会筛选出top-k个object来减少复杂度。</p>
+<h2 id="Description-Generation解码器"><a href="#Description-Generation解码器" class="headerlink" title="Description Generation解码器"></a>Description Generation解码器</h2><p>解码器部分由attn解码器和language解码器组成：</p>
+<p>attn解码器使用LSTM网络，$\overline v$是降维掉时间轴的全局视频特征，$w_{t-1}$是前一个生成的单词，$h^{lang}_{t-1}$是language解码器的上一步hidden变量。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120539.png" srcset="/img/loading.gif" lazyload></p>
+<p>然后通过输入$v_i$和$h^{attn}_{t-1}$得到施加注意力之后的整个视频的特征$c^g_t$。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172011.png" srcset="/img/loading.gif" lazyload></p>
+<p>对于Object层面的特征，也使用注意力机制得到local特征$c^l_t$。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172927.png" srcset="/img/loading.gif" lazyload></p>
+<p>最后送入language解码器，得到输出。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204173007.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="Teacher-Recommend-Learning（TRL）"><a href="#Teacher-Recommend-Learning（TRL）" class="headerlink" title="Teacher Recommend Learning（TRL）"></a>Teacher Recommend Learning（TRL）</h2><p>其他的方法在生成句子的时候是期望生成Ground Truth的句子，而Ground Truth是固定的${x^{hard}_t}$。</p>
+<p>$$<br>P_t=CAP(w_{&lt;t}|\theta_{CAP}) \ \mathcal L_{CE} = -\sum^{T}_{t=1}\delta(x^h_t)^T \cdot logP_t<br>$$</p>
+<p>而TRL借助外部知识源ELM（Bert或者GPT）得到一个新的概率分布$Q_t$，这里有一个temperature来平滑这个概率分布。</p>
+<p>$$<br>Q_t=ELM(w_{&lt;t},T_e|\theta_{ELM})<br>$$</p>
+<p>因为$Q_t$中有的单词概率实在是太小，所以不管那些单词，计算KL-loss。</p>
+<p>$$<br>\mathcal L_{KL} = -\sum^{T}<em>{t=1} \sum</em>{d} Q^d_t \cdot log P^d_t<br>$$<br>最终loss是两个值相加。</p>
+<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204174938.png" srcset="/img/loading.gif" lazyload alt="SOTA"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175208.png" srcset="/img/loading.gif" lazyload alt="Table 3"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175041.png" srcset="/img/loading.gif" lazyload alt="Table 4"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204181656.png" srcset="/img/loading.gif" lazyload alt="Figure 6"></p>
+<p>Table3和Table4可以看出TRL贡献了非常多，超过了ORG部分的贡献量。Figure 6也很直观让人感受到TRL的厉害hh。TRL算是在最后的决策部分结合大规模预训练语言模型，效果显著。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175317.png" srcset="/img/loading.gif" lazyload alt="Table 5"></p>
+<p>仅使用帧内Object和跨帧Object的差距并不是很大。</p>
 
             </div>
             <hr>
@@ -321,7 +326,7 @@
                     
                       <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
                     
-                      <a class="hover-with-bg" href="/tags/Hierarchical-Modular-Network/">Hierarchical Modular Network</a>
+                      <a class="hover-with-bg" href="/tags/ORG-TRL/">ORG-TRL</a>
                     
                   </div>
                 
@@ -338,18 +343,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/11/19/HTTPS/">
-                        <span class="hidden-mobile">Https协议的安全性原理</span>
+                      <a href="/2021/12/02/Hierarchical%20Modular%20Network%20for%20Video%20Captioning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">Hierarchical Modular Network for Video Captioning论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
