@@ -13,36 +13,32 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
+  <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
+  <meta name="description" content="数字图像处理复习笔记[TOC] 第一章 绪论数字图像是一个被采样和量化后的二维函数$\bold{f(x,y)}$，其中，$x,y,f$都是有限的和离散的。 数字图像也可看做是一个二维矩阵，行列划分后，每个小块区域叫做像素，每个像素一般由一个0到255的数值表示（灰度图）或者由多个0到255的数值表示（彩色图像）。  为什么是0~255？因为$(255)_{10}&#x3D;(1111\ 1111)_2$">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记">
-<meta property="og:url" content="http://blog.kamino.link/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="数字图像处理复习笔记">
+<meta property="og:url" content="http://blog.kamino.link/2021/12/07/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E5%A4%8D%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
+<meta property="og:description" content="数字图像处理复习笔记[TOC] 第一章 绪论数字图像是一个被采样和量化后的二维函数$\bold{f(x,y)}$，其中，$x,y,f$都是有限的和离散的。 数字图像也可看做是一个二维矩阵，行列划分后，每个小块区域叫做像素，每个像素一般由一个0到255的数值表示（灰度图）或者由多个0到255的数值表示（彩色图像）。  为什么是0~255？因为$(255)_{10}&#x3D;(1111\ 1111)_2$">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120043.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120539.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172011.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172927.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204173007.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204174938.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175208.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175041.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204181656.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175317.png">
-<meta property="article:published_time" content="2021-12-04T03:32:00.000Z">
-<meta property="article:modified_time" content="2021-12-04T10:49:48.017Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207102623.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207112130.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207112720.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114034.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114753.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114856.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200638.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200926.jpg">
+<meta property="article:published_time" content="2021-12-07T02:03:37.273Z">
+<meta property="article:modified_time" content="2021-12-07T12:39:06.876Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="ORG-TRL">
+<meta property="article:tag" content="Kamino">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207102623.png">
   
-  <title>Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记 - Kamino&#39;s Blog</title>
+  <title>数字图像处理复习笔记 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -201,7 +197,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记">
+            <span class="h2" id="subtitle" title="数字图像处理复习笔记">
               
             </span>
 
@@ -211,8 +207,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-12-04 11:32" pubdate>
-        2021年12月4日 中午
+      <time datetime="2021-12-07 10:03" pubdate>
+        2021年12月7日 上午
       </time>
     </span>
   
@@ -268,67 +264,120 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</h1>
+            <h1 style="display: none">数字图像处理复习笔记</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年12月4日 晚上
+                  本文最后更新于：2021年12月7日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Object-Relational-Graph-with-Teacher-Recommended-Learning-for-Video-Captioning论文笔记"><a href="#Object-Relational-Graph-with-Teacher-Recommended-Learning-for-Video-Captioning论文笔记" class="headerlink" title="Object Relational Graph with Teacher-Recommended Learning for Video Captioning论文笔记"></a>Object Relational Graph with Teacher-Recommended Learning for Video Captioning论文笔记</h1><p>[TOC]</p>
-<p>占据<code>paperswithcode.com</code>MSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。</p>
-<h2 id="整体框架"><a href="#整体框架" class="headerlink" title="整体框架"></a>整体框架</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png" srcset="/img/loading.gif" lazyload></p>
-<p>这篇论文使用了2D-CNN 3D-CNN和Object三种特征，其中Object特征通过图神经网络ORG学习到特征，然后Description Generator通过对三种特征的注意力机制，通过TRL生成句子。</p>
-<h2 id="Object-Relational-Graph编码器"><a href="#Object-Relational-Graph编码器" class="headerlink" title="Object Relational Graph编码器"></a>Object Relational Graph编码器</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120043.png" srcset="/img/loading.gif" lazyload></p>
-<p>对于视频，提取$L$个关键帧，通过2D-CNN和3D-CNN得到特征$\mathcal F, \mathcal M$，通过预训练的object-detector得到特征$\mathcal {R} = {r^i_k}$，表示第$i$帧第$k$个object的特征，最多$N$个特征，object层面的特征相互是独立的。</p>
-<p>对于d维的Object特征，K个特征可以表示为$K\times d$的矩阵，定义$A=\phi(R) \cdot \psi(R)^T$为关系矩阵，其中$\phi,\psi$是两个可学习的线性层，将$A$归一化之后可以得到$\hat A=softmax(A, dim=1)$，类似注意力矩阵，表示每一个object对于其它object有多少的注意力。之后乘上参数和原本的特征得到加强特征$\hat R=\hat A\cdot R\cdot W_r$。</p>
-<p>对于关系矩阵的获取，这篇文章用了两种方法，一种是帧内的(P-ORG)，另一种是全局的(C-ORG)P-ORG选择帧内的$N$个object，编码他们之间的关系，不同帧的参数是共享的；C-ORG选择全部的$N\times L$个object，但是会筛选出top-k个object来减少复杂度。</p>
-<h2 id="Description-Generation解码器"><a href="#Description-Generation解码器" class="headerlink" title="Description Generation解码器"></a>Description Generation解码器</h2><p>解码器部分由attn解码器和language解码器组成：</p>
-<p>attn解码器使用LSTM网络，$\overline v$是降维掉时间轴的全局视频特征，$w_{t-1}$是前一个生成的单词，$h^{lang}_{t-1}$是language解码器的上一步hidden变量。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120539.png" srcset="/img/loading.gif" lazyload></p>
-<p>然后通过输入$v_i$和$h^{attn}_{t-1}$得到施加注意力之后的整个视频的特征$c^g_t$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172011.png" srcset="/img/loading.gif" lazyload></p>
-<p>对于Object层面的特征，也使用注意力机制得到local特征$c^l_t$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172927.png" srcset="/img/loading.gif" lazyload></p>
-<p>最后送入language解码器，得到输出。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204173007.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="Teacher-Recommend-Learning（TRL）"><a href="#Teacher-Recommend-Learning（TRL）" class="headerlink" title="Teacher Recommend Learning（TRL）"></a>Teacher Recommend Learning（TRL）</h2><p>其他的方法在生成句子的时候是期望生成Ground Truth的句子，而Ground Truth是固定的${x^{hard}_t}$。</p>
-<p>$$<br>P_t=CAP(w_{&lt;t}|\theta_{CAP}) \ \mathcal L_{CE} = -\sum^{T}_{t=1}\delta(x^h_t)^T \cdot logP_t<br>$$</p>
-<p>而TRL借助外部知识源ELM（Bert或者GPT）得到一个新的概率分布$Q_t$，这里有一个temperature来平滑这个概率分布。</p>
-<p>$$<br>Q_t=ELM(w_{&lt;t},T_e|\theta_{ELM})<br>$$</p>
-<p>因为$Q_t$中有的单词概率实在是太小，所以不管那些单词，计算KL-loss。</p>
-<p>$$<br>\mathcal L_{KL} = -\sum^{T}<em>{t=1} \sum</em>{d} Q^d_t \cdot log P^d_t<br>$$<br>最终loss是两个值相加。</p>
-<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204174938.png" srcset="/img/loading.gif" lazyload alt="SOTA"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175208.png" srcset="/img/loading.gif" lazyload alt="Table 3"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175041.png" srcset="/img/loading.gif" lazyload alt="Table 4"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204181656.png" srcset="/img/loading.gif" lazyload alt="Figure 6"></p>
-<p>Table3和Table4可以看出TRL贡献了非常多，超过了ORG部分的贡献量。Figure 6也很直观让人感受到TRL的厉害hh。TRL算是在最后的决策部分结合大规模预训练语言模型，效果显著。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175317.png" srcset="/img/loading.gif" lazyload alt="Table 5"></p>
-<p>仅使用帧内Object和跨帧Object的差距并不是很大。</p>
+              <h1 id="数字图像处理复习笔记"><a href="#数字图像处理复习笔记" class="headerlink" title="数字图像处理复习笔记"></a>数字图像处理复习笔记</h1><p>[TOC]</p>
+<h2 id="第一章-绪论"><a href="#第一章-绪论" class="headerlink" title="第一章 绪论"></a>第一章 绪论</h2><p><strong>数字图像是一个被采样和量化后的二维函数</strong>$\bold{f(x,y)}$，其中，$x,y,f$都是有限的和离散的。</p>
+<p>数字图像也可看做是一个二维矩阵，行列划分后，每个小块区域叫做<strong>像素</strong>，每个像素一般由一个<strong>0到255</strong>的数值表示（灰度图）或者由多个0到255的数值表示（彩色图像）。</p>
+<blockquote>
+<p>为什么是0~255？因为$(255)_{10}=(1111\ 1111)_2$</p>
+</blockquote>
+<h3 id="数字图像的来源"><a href="#数字图像的来源" class="headerlink" title="数字图像的来源"></a>数字图像的来源</h3><ol>
+<li>伽马射线成像：用于核医学和天文观测</li>
+<li>X射线成像：用于医学、工业、天文</li>
+<li>紫外波段成像：荧光显微法</li>
+<li>可见光成像：最常见的</li>
+<li>红外波段成像：用于海岸线测绘、矿物测绘、土壤温度测绘、土壤含水量测绘</li>
+<li>微波波段成像：雷达图像，可以不被云层阻挡</li>
+<li>无线电波段成像：核磁共振成像MRI</li>
+<li>声波成像：医学超声波</li>
+<li>计算机生成图像</li>
+</ol>
+<h3 id="数字图像的特点是什么？"><a href="#数字图像的特点是什么？" class="headerlink" title="数字图像的特点是什么？"></a>数字图像的特点是什么？</h3><ol>
+<li>信息量大</li>
+<li>像素之间相关性较大、冗余较多</li>
+<li>对三维景物的理解，使用单个视角二维图像不够</li>
+<li>二维图像的观察受人的主观因素较大</li>
+</ol>
+<h3 id="数字图像处理是什么？"><a href="#数字图像处理是什么？" class="headerlink" title="数字图像处理是什么？"></a>数字图像处理是什么？</h3><ul>
+<li>狭义上指<strong>图像-&gt;图像</strong>，即通过处理把一副图像变为修改后的另一幅图像。</li>
+<li>广义上也指<strong>图像-&gt;非图像</strong>，即理解分析一副数字图像。</li>
+</ul>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207102623.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="第二章-数字图像基础"><a href="#第二章-数字图像基础" class="headerlink" title="第二章 数字图像基础"></a>第二章 数字图像基础</h2><h3 id="人类视觉感知"><a href="#人类视觉感知" class="headerlink" title="人类视觉感知"></a>人类视觉感知</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207112130.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p>虹膜：类似光圈，控制进光亮</p>
+</li>
+<li><p>晶状体：改变焦距、聚焦图像</p>
+</li>
+<li><p>视网膜：感受图像。有锥状体和杆状体两种光感受器。</p>
+<ul>
+<li>锥状体：数量较少，中间凹的中间部分，颜色敏感，<strong>亮视觉</strong></li>
+<li>杆状体：数量较多，分布面积大，颜色不敏感，对低照明度敏感，分辨率低，负责察觉运动，<strong>暗视觉</strong></li>
+</ul>
+</li>
+<li><p>中间凹：成像芯片</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207112720.png" srcset="/img/loading.gif" lazyload alt="image-20211207112703026"></p>
+</li>
+</ul>
+<pre><code class=" mermaid">graph LR
+	A[光信号] --&gt; B[晶状体透镜]
+	B --&gt; C[中间凹区域]
+	C --&gt; D[光接收器]
+	D --&gt; E[电脉冲信号]
+	E --&gt; F[大脑解码]
+</code></pre>
 
+<h3 id="视觉特性"><a href="#视觉特性" class="headerlink" title="视觉特性"></a>视觉特性</h3><ul>
+<li><p>亮度适应</p>
+<p>人能感受到的光亮度最大值与最小值之比为$10^{10}$，随着光线亮度增加，人眼感受到的主观亮度对数增加。</p>
+</li>
+</ul>
+<p>$$<br>主观亮度=K\cdot ln(客观亮度) + k_0<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114034.png" srcset="/img/loading.gif" lazyload></p>
+<p>图中Scotopic和Photopic两条曲线代表杆状体和锥状体的亮度感知曲线，而<strong>红点处是指在某一个亮度下人眼能够同时分辨的亮度范围（人眼动态范围）</strong></p>
+<ul>
+<li><p>马赫带现象：边界处，主观亮度对比强。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114753.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>同时对比现象：对于相同的亮度，背景变化时主观亮度会变化。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114856.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ul>
+<h3 id="图像采样与量化"><a href="#图像采样与量化" class="headerlink" title="图像采样与量化"></a>图像采样与量化</h3><p>图像的数字化就是图像的采样和量化，<strong>采样</strong>是把空间坐标离散化，<strong>量化</strong>是把灰度离散化。</p>
+<p>采样值决定<strong>空间分辨率</strong>（1920*1080 etc），量化值决定<strong>灰度分辨率</strong>（L级 etc）。</p>
+<p>细节丰富的图像应该<strong>细采样、粗量化</strong>，避免模糊；缓变的图像应该<strong>细量化、粗采样</strong>，避免假轮廓。</p>
+<h3 id="图像内插"><a href="#图像内插" class="headerlink" title="图像内插"></a>图像内插</h3><ul>
+<li>最近邻插值：选择最近邻点的灰度值</li>
+<li>双线性插值：找到最近的4个点，进行加权平均，$v(x,y)=ax+by+cxy+d$</li>
+<li>双三次内插：找到最近的16个点$\sum^3_i\sum^3_j a_{ij}x^iy^j$</li>
+</ul>
+<h3 id="像素空间基本关系"><a href="#像素空间基本关系" class="headerlink" title="像素空间基本关系"></a>像素空间基本关系</h3><p><strong>邻域：</strong></p>
+<ul>
+<li>4邻域：$N_4(p)$上下左右</li>
+<li>4对角邻域：$N_D{(p)}$左上 左下 右上 右下</li>
+<li>8邻域：$N_8(p)$周围一圈</li>
+</ul>
+<p><strong>邻接性：</strong>若两个像素邻接，那么空间上满足4、8或D邻域；灰度上应该属于同一个灰度值集合。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200638.jpg" srcset="/img/loading.gif" lazyload style="zoom: 25%;" /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200926.jpg" srcset="/img/loading.gif" lazyload style="zoom: 67%;" /></p>
+<ul>
+<li>4邻接：若p、q位置如图且灰度相似</li>
+<li>8邻接：若p、r位置如图且灰度相似</li>
+<li>m邻接：若q在$N_4(p)$中或者q在$N_d(p)$中，且绿色部分（4邻域）没有灰度相似的像素。</li>
+</ul>
+<p><strong>通路：</strong>从p到q的像素序列依次邻接，根据邻接类型定义4、8或m通路。</p>
+<p><strong>连通：</strong>定义一个集合S，若S中的p、q存在完全由S中的像素组成的通路，则p和q在S中连通。</p>
+<p><strong>连通分量：</strong>对于S中任意像素p，S中连通到p的像素集合叫做连通分量。</p>
+<p><strong>连通集：</strong>若S中仅有一个连通分量，则S叫做连通集。</p>
+<p><strong>距离：</strong>满足$D(p,q)\ge0,D(p,q)=D(q,p),D(p,z)\le D(p,q)+D(q,z)$的函数。</p>
+<ol>
+<li>欧氏距离，圆形</li>
+<li>$D_4$距离，$D_4(p,q)=|x-s|+|y-t|$，菱形，城市街区距离</li>
+<li>$D_8$距离，$D_8(p,q)=max(|x-s|,|y-t|)$，方形，棋盘距离</li>
+</ol>
+<h2 id="第三章-灰度变换-空间滤波"><a href="#第三章-灰度变换-空间滤波" class="headerlink" title="第三章 灰度变换 空间滤波"></a>第三章 灰度变换 空间滤波</h2><p> 空间域处理基本公式如下：<br>$$<br>g(x,y)=T[f(x,y)]<br>$$<br>常用的空间滤波指的是使用算子$T$进行卷积操作，算子$T$也可以叫做空间滤波器、核、模板、窗口。</p>
+<h3 id="图像反转"><a href="#图像反转" class="headerlink" title="图像反转"></a>图像反转</h3>
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
-                    
-                  </div>
-                
-                
-                  <div class="post-meta">
-                    <i class="iconfont icon-tags"></i>
-                    
-                      <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
-                    
-                      <a class="hover-with-bg" href="/tags/ORG-TRL/">ORG-TRL</a>
-                    
-                  </div>
                 
               </div>
               
@@ -338,29 +387,6 @@
                   
                 </p>
               
-              
-                <div class="post-prevnext">
-                  <article class="post-prev col-6">
-                    
-                    
-                      <a href="/2021/12/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84Normalization/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">深度学习中的Normalization</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
-                  </article>
-                  <article class="post-next col-6">
-                    
-                    
-                      <a href="/2021/12/02/Hierarchical%20Modular%20Network%20for%20Video%20Captioning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
-                        <span class="hidden-mobile">Hierarchical Modular Network for Video Captioning论文笔记</span>
-                        <span class="visible-mobile">下一篇</span>
-                        <i class="iconfont icon-arrowright"></i>
-                      </a>
-                    
-                  </article>
-                </div>
               
             </div>
 

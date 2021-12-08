@@ -13,36 +13,24 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
+  <meta name="description" content="Normalization翻译为规范化或者归一化，深度学习模型喜欢独立同分布的数据，在深度学习网络中，因为网络很深，如果数据在某一层开始有偏移，则网络加深会导致其加剧，而Normalization能够减缓这个问题。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
+  <meta name="description" content="Normalization翻译为规范化或者归一化，深度学习模型喜欢独立同分布的数据，在深度学习网络中，因为网络很深，如果数据在某一层开始有偏移，则网络加深会导致其加剧，而Normalization能够减缓这个问题。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记">
-<meta property="og:url" content="http://blog.kamino.link/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="深度学习中的Normalization">
+<meta property="og:url" content="http://blog.kamino.link/2021/12/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84Normalization/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="占据paperswithcode.comMSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。">
+<meta property="og:description" content="Normalization翻译为规范化或者归一化，深度学习模型喜欢独立同分布的数据，在深度学习网络中，因为网络很深，如果数据在某一层开始有偏移，则网络加深会导致其加剧，而Normalization能够减缓这个问题。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120043.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120539.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172011.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172927.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204173007.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204174938.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175208.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175041.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204181656.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175317.png">
-<meta property="article:published_time" content="2021-12-04T03:32:00.000Z">
-<meta property="article:modified_time" content="2021-12-04T10:49:48.017Z">
+<meta property="article:published_time" content="2021-12-08T05:00:00.000Z">
+<meta property="article:modified_time" content="2021-12-08T07:37:52.479Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="ORG-TRL">
+<meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="Normalization">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png">
   
-  <title>Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记 - Kamino&#39;s Blog</title>
+  <title>深度学习中的Normalization - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -201,7 +189,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记">
+            <span class="h2" id="subtitle" title="深度学习中的Normalization">
               
             </span>
 
@@ -211,8 +199,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2021-12-04 11:32" pubdate>
-        2021年12月4日 中午
+      <time datetime="2021-12-08 13:00" pubdate>
+        2021年12月8日 下午
       </time>
     </span>
   
@@ -222,7 +210,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      719 字
     </span>
   
 
@@ -231,7 +219,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      2 分钟
     </span>
   
 
@@ -268,45 +256,28 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</h1>
+            <h1 style="display: none">深度学习中的Normalization</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年12月4日 晚上
+                  本文最后更新于：2021年12月8日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Object-Relational-Graph-with-Teacher-Recommended-Learning-for-Video-Captioning论文笔记"><a href="#Object-Relational-Graph-with-Teacher-Recommended-Learning-for-Video-Captioning论文笔记" class="headerlink" title="Object Relational Graph with Teacher-Recommended Learning for Video Captioning论文笔记"></a>Object Relational Graph with Teacher-Recommended Learning for Video Captioning论文笔记</h1><p>[TOC]</p>
-<p>占据<code>paperswithcode.com</code>MSRVTT数据集VideoCaption任务榜一的文章，发表在CVPR2020上。论文主要贡献是一个Object Relational Graph(ORG)编码器和一种Teacher Recommended Learning(TRL)训练方式。</p>
-<h2 id="整体框架"><a href="#整体框架" class="headerlink" title="整体框架"></a>整体框架</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204113740.png" srcset="/img/loading.gif" lazyload></p>
-<p>这篇论文使用了2D-CNN 3D-CNN和Object三种特征，其中Object特征通过图神经网络ORG学习到特征，然后Description Generator通过对三种特征的注意力机制，通过TRL生成句子。</p>
-<h2 id="Object-Relational-Graph编码器"><a href="#Object-Relational-Graph编码器" class="headerlink" title="Object Relational Graph编码器"></a>Object Relational Graph编码器</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120043.png" srcset="/img/loading.gif" lazyload></p>
-<p>对于视频，提取$L$个关键帧，通过2D-CNN和3D-CNN得到特征$\mathcal F, \mathcal M$，通过预训练的object-detector得到特征$\mathcal {R} = {r^i_k}$，表示第$i$帧第$k$个object的特征，最多$N$个特征，object层面的特征相互是独立的。</p>
-<p>对于d维的Object特征，K个特征可以表示为$K\times d$的矩阵，定义$A=\phi(R) \cdot \psi(R)^T$为关系矩阵，其中$\phi,\psi$是两个可学习的线性层，将$A$归一化之后可以得到$\hat A=softmax(A, dim=1)$，类似注意力矩阵，表示每一个object对于其它object有多少的注意力。之后乘上参数和原本的特征得到加强特征$\hat R=\hat A\cdot R\cdot W_r$。</p>
-<p>对于关系矩阵的获取，这篇文章用了两种方法，一种是帧内的(P-ORG)，另一种是全局的(C-ORG)P-ORG选择帧内的$N$个object，编码他们之间的关系，不同帧的参数是共享的；C-ORG选择全部的$N\times L$个object，但是会筛选出top-k个object来减少复杂度。</p>
-<h2 id="Description-Generation解码器"><a href="#Description-Generation解码器" class="headerlink" title="Description Generation解码器"></a>Description Generation解码器</h2><p>解码器部分由attn解码器和language解码器组成：</p>
-<p>attn解码器使用LSTM网络，$\overline v$是降维掉时间轴的全局视频特征，$w_{t-1}$是前一个生成的单词，$h^{lang}_{t-1}$是language解码器的上一步hidden变量。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204120539.png" srcset="/img/loading.gif" lazyload></p>
-<p>然后通过输入$v_i$和$h^{attn}_{t-1}$得到施加注意力之后的整个视频的特征$c^g_t$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172011.png" srcset="/img/loading.gif" lazyload></p>
-<p>对于Object层面的特征，也使用注意力机制得到local特征$c^l_t$。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204172927.png" srcset="/img/loading.gif" lazyload></p>
-<p>最后送入language解码器，得到输出。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204173007.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="Teacher-Recommend-Learning（TRL）"><a href="#Teacher-Recommend-Learning（TRL）" class="headerlink" title="Teacher Recommend Learning（TRL）"></a>Teacher Recommend Learning（TRL）</h2><p>其他的方法在生成句子的时候是期望生成Ground Truth的句子，而Ground Truth是固定的${x^{hard}_t}$。</p>
-<p>$$<br>P_t=CAP(w_{&lt;t}|\theta_{CAP}) \ \mathcal L_{CE} = -\sum^{T}_{t=1}\delta(x^h_t)^T \cdot logP_t<br>$$</p>
-<p>而TRL借助外部知识源ELM（Bert或者GPT）得到一个新的概率分布$Q_t$，这里有一个temperature来平滑这个概率分布。</p>
-<p>$$<br>Q_t=ELM(w_{&lt;t},T_e|\theta_{ELM})<br>$$</p>
-<p>因为$Q_t$中有的单词概率实在是太小，所以不管那些单词，计算KL-loss。</p>
-<p>$$<br>\mathcal L_{KL} = -\sum^{T}<em>{t=1} \sum</em>{d} Q^d_t \cdot log P^d_t<br>$$<br>最终loss是两个值相加。</p>
-<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204174938.png" srcset="/img/loading.gif" lazyload alt="SOTA"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175208.png" srcset="/img/loading.gif" lazyload alt="Table 3"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175041.png" srcset="/img/loading.gif" lazyload alt="Table 4"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204181656.png" srcset="/img/loading.gif" lazyload alt="Figure 6"></p>
-<p>Table3和Table4可以看出TRL贡献了非常多，超过了ORG部分的贡献量。Figure 6也很直观让人感受到TRL的厉害hh。TRL算是在最后的决策部分结合大规模预训练语言模型，效果显著。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211204175317.png" srcset="/img/loading.gif" lazyload alt="Table 5"></p>
-<p>仅使用帧内Object和跨帧Object的差距并不是很大。</p>
+              <h1 id="深度学习中的Normalization"><a href="#深度学习中的Normalization" class="headerlink" title="深度学习中的Normalization"></a>深度学习中的Normalization</h1><p>[TOC]</p>
+<p>Normalization翻译为<code>规范化</code>或者<code>归一化</code>，不是标准化。</p>
+<p>深度学习模型喜欢<strong>独立同分布</strong>的数据，<strong>独立</strong>即<strong>n维特征中每一维之间都没有相关性</strong>，同分布即<strong>特征的每一维都具有相同的均值和方差</strong>。在深度学习网络中，因为网络很深，如果数据在某一层开始有偏移，则网络加深会导致其加剧（Internal Covariate Shift, or ICS），而Normalization能够减缓这个问题。</p>
+<h2 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h2><p>BN就是将一个batch内的数据进行归一化，先求得均值$\mu_B$和方差$\sigma_B^2$，然后对每个元素进行归一化：$x’_i=\frac{x_i-\mu_B}{\sqrt{\sigma^2_B+\epsilon}}$，下面那个$\epsilon$是防止除以0。</p>
+<p>之后，使用可学习参数$\gamma_i,\beta_i$变换为原始的分布：$y_i=\gamma_i\cdot x’_i + \beta_i$。<strong>这一步是为了保证模型表达能力不因为Normalization而下降</strong>，变化后数据均值为$\beta$，方差为$\gamma^2$。</p>
+<p>使用BN时，得注意batch小时这个方法效果可能不佳。</p>
+<p>对于图片<code>N C H W</code>的维度，BN统计的是<code>N H W</code>的均值和方差，对于每一个通道分开计算。</p>
+<h2 id="Layer-Normalization"><a href="#Layer-Normalization" class="headerlink" title="Layer Normalization"></a>Layer Normalization</h2><p>对于图片<code>N C H W</code>的维度，LN统计的是<code>C H W</code>的均值和方差，和batch size就没有关系了。</p>
+<blockquote>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/33173246">详解深度学习中的Normalization，BN/LN/WN - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/38102762">深度学习中 Batch Normalization为什么效果好？ - 知乎 (zhihu.com)</a></p>
+</blockquote>
 
             </div>
             <hr>
@@ -316,7 +287,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                      <a class="hover-with-bg" href="/categories/%E6%9C%AA%E5%88%86%E7%B1%BB/">未分类</a>
                     
                   </div>
                 
@@ -324,9 +295,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
                     
-                      <a class="hover-with-bg" href="/tags/ORG-TRL/">ORG-TRL</a>
+                      <a class="hover-with-bg" href="/tags/Normalization/">Normalization</a>
                     
                   </div>
                 
@@ -343,18 +314,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2021/12/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84Normalization/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">深度学习中的Normalization</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2021/12/02/Hierarchical%20Modular%20Network%20for%20Video%20Captioning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
-                        <span class="hidden-mobile">Hierarchical Modular Network for Video Captioning论文笔记</span>
+                      <a href="/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

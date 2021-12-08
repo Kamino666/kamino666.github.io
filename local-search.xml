@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>深度学习中的Normalization</title>
+    <link href="/2021/12/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84Normalization/"/>
+    <url>/2021/12/08/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B8%AD%E7%9A%84Normalization/</url>
+    
+    <content type="html"><![CDATA[<h1 id="深度学习中的Normalization"><a href="#深度学习中的Normalization" class="headerlink" title="深度学习中的Normalization"></a>深度学习中的Normalization</h1><p>[TOC]</p><p>Normalization翻译为<code>规范化</code>或者<code>归一化</code>，不是标准化。</p><p>深度学习模型喜欢<strong>独立同分布</strong>的数据，<strong>独立</strong>即<strong>n维特征中每一维之间都没有相关性</strong>，同分布即<strong>特征的每一维都具有相同的均值和方差</strong>。在深度学习网络中，因为网络很深，如果数据在某一层开始有偏移，则网络加深会导致其加剧（Internal Covariate Shift, or ICS），而Normalization能够减缓这个问题。</p><h2 id="Batch-Normalization"><a href="#Batch-Normalization" class="headerlink" title="Batch Normalization"></a>Batch Normalization</h2><p>BN就是将一个batch内的数据进行归一化，先求得均值$\mu_B$和方差$\sigma_B^2$，然后对每个元素进行归一化：$x’_i=\frac{x_i-\mu_B}{\sqrt{\sigma^2_B+\epsilon}}$，下面那个$\epsilon$是防止除以0。</p><p>之后，使用可学习参数$\gamma_i,\beta_i$变换为原始的分布：$y_i=\gamma_i\cdot x’_i + \beta_i$。<strong>这一步是为了保证模型表达能力不因为Normalization而下降</strong>，变化后数据均值为$\beta$，方差为$\gamma^2$。</p><p>使用BN时，得注意batch小时这个方法效果可能不佳。</p><p>对于图片<code>N C H W</code>的维度，BN统计的是<code>N H W</code>的均值和方差，对于每一个通道分开计算。</p><h2 id="Layer-Normalization"><a href="#Layer-Normalization" class="headerlink" title="Layer Normalization"></a>Layer Normalization</h2><p>对于图片<code>N C H W</code>的维度，LN统计的是<code>C H W</code>的均值和方差，和batch size就没有关系了。</p><blockquote><p>参考文献：</p><p><a href="https://zhuanlan.zhihu.com/p/33173246">详解深度学习中的Normalization，BN/LN/WN - 知乎 (zhihu.com)</a></p><p><a href="https://www.zhihu.com/question/38102762">深度学习中 Batch Normalization为什么效果好？ - 知乎 (zhihu.com)</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>未分类</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>深度学习</tag>
+      
+      <tag>Normalization</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</title>
     <link href="/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     <url>/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
