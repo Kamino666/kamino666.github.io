@@ -31,8 +31,16 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114856.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200638.jpg">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200926.jpg">
+<meta property="og:image" content="d:/Download/xdXTn.gif">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105105.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105316.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105617.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213111302.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213113914.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211223201116.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211223201156.png">
 <meta property="article:published_time" content="2021-12-07T02:03:37.273Z">
-<meta property="article:modified_time" content="2021-12-07T12:39:06.876Z">
+<meta property="article:modified_time" content="2021-12-23T12:13:46.864Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Kamino">
 <meta name="twitter:card" content="summary_large_image">
@@ -218,7 +226,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      5.2k 字
     </span>
   
 
@@ -227,7 +235,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      16 分钟
     </span>
   
 
@@ -268,7 +276,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年12月7日 晚上
+                  本文最后更新于：2021年12月23日 晚上
                 
               </p>
             
@@ -371,8 +379,221 @@
 <li>$D_4$距离，$D_4(p,q)=|x-s|+|y-t|$，菱形，城市街区距离</li>
 <li>$D_8$距离，$D_8(p,q)=max(|x-s|,|y-t|)$，方形，棋盘距离</li>
 </ol>
-<h2 id="第三章-灰度变换-空间滤波"><a href="#第三章-灰度变换-空间滤波" class="headerlink" title="第三章 灰度变换 空间滤波"></a>第三章 灰度变换 空间滤波</h2><p> 空间域处理基本公式如下：<br>$$<br>g(x,y)=T[f(x,y)]<br>$$<br>常用的空间滤波指的是使用算子$T$进行卷积操作，算子$T$也可以叫做空间滤波器、核、模板、窗口。</p>
-<h3 id="图像反转"><a href="#图像反转" class="headerlink" title="图像反转"></a>图像反转</h3>
+<h2 id="第三章-灰度变换-空间滤波"><a href="#第三章-灰度变换-空间滤波" class="headerlink" title="第三章 灰度变换 空间滤波"></a>第三章 灰度变换 空间滤波</h2><p>这一章主要针对图像空间域进行操作，灰度变换就是对单个像素进行操作，而空间滤波就是针对一个邻域（常见方形）使用算子$T$进行卷积操作，算子$T$也可以叫做空间滤波器、核、模板、窗口。<br>$$<br>g(x,y)=T[f(x,y)]<br>$$<br><img src="D:\Download\xdXTn.gif" srcset="/img/loading.gif" lazyload alt="图像卷积运算"></p>
+<h3 id="灰度变换"><a href="#灰度变换" class="headerlink" title="灰度变换"></a>灰度变换</h3><p>用$s=T(r)$表示用$T$处理原始像素$r$得到处理后像素$s$。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>公式</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>图像反转</td>
+<td>$s=L-1-r$</td>
+<td>黑白反转</td>
+</tr>
+<tr>
+<td>对数变换</td>
+<td>$s=c\ log(1+r)$</td>
+<td>拓展暗像素值，压缩亮像素值。常用来可视化傅里叶频谱。</td>
+</tr>
+<tr>
+<td>伽马变换</td>
+<td>$s=cr^\gamma$</td>
+<td>拓展暗像素值，压缩亮像素值。用于伽马校正，增强对比度、处理“冲淡”了的图像。</td>
+</tr>
+<tr>
+<td>对比度拉伸</td>
+<td>分段函数</td>
+<td>手动指定曲线形状</td>
+</tr>
+<tr>
+<td>灰度级分层</td>
+<td>分段函数</td>
+<td>手动指定某一范围灰度进行调整</td>
+</tr>
+<tr>
+<td>比特平面分层</td>
+<td>分段函数</td>
+<td>把256级图像看做由8个1bit平面组成的图像。然后针对每个比特平面进行处理。低阶比特平面存储细节，而高阶存储整体。</td>
+</tr>
+<tr>
+<td>直方图均衡、直方图匹配（规定化）</td>
+<td>分段函数</td>
+<td>在直方图的角度，均衡就是把直方图处理成近似横线，匹配就是把直方图处理成想要的形状。</td>
+</tr>
+</tbody></table>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105105.png" srcset="/img/loading.gif" lazyload alt="反转变换与恒等变换与对数变换" style="zoom: 67%;" /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105316.png" srcset="/img/loading.gif" lazyload alt="伽马变换" style="zoom: 67%;" /></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105617.png" srcset="/img/loading.gif" lazyload alt="对比度拉伸"  /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213111302.png" srcset="/img/loading.gif" lazyload alt="灰度级分层" style="zoom: 67%;" /></p>
+<h4 id="直方图均衡"><a href="#直方图均衡" class="headerlink" title="直方图均衡"></a>直方图均衡</h4><p>针对比较难的直方图均衡进行计算方法介绍（不涉及原理公式推导）</p>
+<ol>
+<li>计算直方图$f(n_k)$</li>
+<li>计算灰度分布频率$p_r(k)=f(n_k)/N$。</li>
+<li>计算累计灰度分布频率$g_k=\sum p_r(k_i)$。</li>
+<li>计算均衡后图像直方图$round(g_k\cdot (L-1))$。四舍五入累计概率×灰度最大值。</li>
+<li>根据计算出的均衡直方图，将原图灰度映射到新图</li>
+</ol>
+<h3 id="空间滤波"><a href="#空间滤波" class="headerlink" title="空间滤波"></a>空间滤波</h3><p>卷积操作$g(x,y)=\sum^a_{s=-a}\sum^b_{s=-b}w(s,t)f(x+s,y+t)$。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>模版</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>平滑线性</td>
+<td>$\frac{1}{9} \cdot \ \begin{matrix} 1&amp;1&amp;1\1&amp;1&amp;1\1&amp;1&amp;1\ \end{matrix}$</td>
+<td>平滑</td>
+</tr>
+<tr>
+<td>高斯线性</td>
+<td>$\frac{1}{9} \cdot \ \begin{matrix} 1&amp;2&amp;1\2&amp;4&amp;2\1&amp;2&amp;1\ \end{matrix}$</td>
+<td>加权平均，平滑</td>
+</tr>
+<tr>
+<td>统计排序（非线性）</td>
+<td>取中值</td>
+<td>去掉椒盐噪声效果好</td>
+</tr>
+<tr>
+<td>拉普拉斯锐化</td>
+<td>$\begin{matrix} 0&amp;1&amp;0\1&amp;-4&amp;1\0&amp;1&amp;0\ \end{matrix}$ 或者 $\begin{matrix} 1&amp;1&amp;1\1&amp;-8&amp;1\1&amp;1&amp;1\ \end{matrix}$</td>
+<td>微分算子，锐化边缘</td>
+</tr>
+<tr>
+<td>非锐化掩蔽、高提升滤波</td>
+<td>无</td>
+<td>印刷和出版业常用</td>
+</tr>
+<tr>
+<td>Sobel锐化</td>
+<td>$\begin{matrix} 1&amp;-2&amp;1\0&amp;0&amp;0\1&amp;2&amp;1\ \end{matrix}$ 或者 $\begin{matrix} -1&amp;0&amp;1\-2&amp;0&amp;2\-1&amp;0&amp;1\ \end{matrix}$</td>
+<td>x方向和y方向的一阶微分</td>
+</tr>
+</tbody></table>
+<h4 id="拉普拉斯锐化"><a href="#拉普拉斯锐化" class="headerlink" title="拉普拉斯锐化"></a>拉普拉斯锐化</h4><p>特点是模板所有数字和是0，这样是为了在平滑区域不改变。假如某个3x3区域全是1，那么计算之后的微分就是0。</p>
+<p>拉普拉斯锐化后的结果是微分，需要和原图像相加或者相减（取决于中心是正数还是负数）。</p>
+<p>拉普拉斯加上对角线是为了保证旋转不变性。</p>
+<h4 id="Sobel锐化"><a href="#Sobel锐化" class="headerlink" title="Sobel锐化"></a>Sobel锐化</h4><p>同样，所有数字和是0，使用的是一阶微分。0线的方向就是锐化的方向。</p>
+<h4 id="非锐化屏蔽"><a href="#非锐化屏蔽" class="headerlink" title="非锐化屏蔽"></a>非锐化屏蔽</h4><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213113914.jpg" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+
+<p>如图，原始信号模糊之后，再减去模糊信号能获得钝化模板。就是原始图像减去模糊图像得到被模糊掉的信号，然后把这个信号乘常数加回到原信号。</p>
+<h2 id="第四章-频率域滤波"><a href="#第四章-频率域滤波" class="headerlink" title="第四章 频率域滤波"></a>第四章 频率域滤波</h2><p>就是通过傅里叶变换把图像从空域变换到频域进行处理。<br>$$<br>\bold{IDFT}(H(u,v) \cdot \bold{DFT}(f(x,y)))<br>$$<br>频域和时域通过<strong>卷积</strong>操作相通，但是根据信号与系统的规律，我们之前用的有限的时域卷积核对应着无限大的频域，而这一章从频域的角度使用有限的频域卷积核，对应着无限大的时域卷积核。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>公式（$D_0$是截止频率）</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>理想低通滤波  ILPF</td>
+<td>$H(u,v)=\begin{cases}1, D(u,v)\le D_0 \ 0, D(u,v)&gt; D_0 \end{cases}$</td>
+<td>强行截断频域的高频信号，会产生<code>振铃</code>效应</td>
+</tr>
+<tr>
+<td>布特沃斯低通BLPF</td>
+<td>$H(u,v)=\frac{1}{1+[D(u,v)/D_0]^{2n}}$</td>
+<td>n是阶数，越高越快从1到0</td>
+</tr>
+<tr>
+<td>高斯低通滤波GLPF</td>
+<td>$H(u,v)=exp(-\frac{D^2(u,v)}{2D_0^2})$</td>
+<td></td>
+</tr>
+<tr>
+<td>理想高通滤波 IHPF</td>
+<td>$H(u,v)=\begin{cases}0, D(u,v)\le D_0 \ 1, D(u,v)&gt; D_0 \end{cases}$</td>
+<td><code>振铃</code>效应</td>
+</tr>
+<tr>
+<td>布特沃斯高通BHPF</td>
+<td>$H(u,v)=\frac{1}{1+[D_0/D(u,v)]^{2n}}$</td>
+<td>分母改变了一点点</td>
+</tr>
+<tr>
+<td>高斯高通滤波GHPF</td>
+<td>$H(u,v)=1 - exp(-\frac{D^2(u,v)}{2D_0^2})$</td>
+<td>$1-低通$</td>
+</tr>
+<tr>
+<td>同态滤波</td>
+<td>$H(u,v)=(\gamma_H-\gamma_L)[1 - exp(-c\frac{D^2(u,v)}{2D_0^2})]+\gamma_L$</td>
+<td>本来GHPF是0-&gt;1，然后压缩到$\gamma_H-\gamma_L$然后再上移。通过c来控制锐利程度。</td>
+</tr>
+<tr>
+<td>带阻滤波器</td>
+<td>用$\frac{DW}{D^2-D_0^2}$代替$\frac{D_0}{D}$，高斯exp括号内的2忽略。</td>
+<td>能够有效去除周期噪声</td>
+</tr>
+<tr>
+<td>带通滤波器</td>
+<td>1-带阻滤波器</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="同态滤波"><a href="#同态滤波" class="headerlink" title="同态滤波"></a>同态滤波</h3><p>同态滤波的思想就是把图像的<strong>照射分量</strong>和<strong>反射分量</strong>分开处理。照射分量就是光照在某个物体上的强度，而反射分量更接近与反射系数，值域为$[0,1]$，表示光在某个物体上的反射强度。</p>
+<p>“同态”指的是特殊的映射，比如$f(x)=e^x$，有$f(a+b)=f(a)\times f(b)$，把原本的加法映射成乘法。</p>
+<p>图像建模为$f(x,y)=i_{照射}(x,y)r_{反射}(x,y)$，使用对数操作转换成相加$ln\ f(x,y)=ln\ i(x,y)+ln\ r(x,y)$，这一步就是“同态”的关键。</p>
+<p>然后就可以用傅里叶变换了$\bold{FT}[ln\ f(x,y)]=\bold{FT}[ln\ i(x,y)]+\bold{FT}[ln\ r(x,y)]$。把上式记作$Z(u,v)=F_i(u,v)+F_r(u,v)$，则用可以用滤波器进行处理$H(u,v)Z(u,v)=H(u,v)F_i(u,v)+H(u,v)F_r(u,v)$。</p>
+<p>对于$F_i(u,v)$和$F_r(u,v)$，低频成分通常与照射光有关，而高频成分与反射相联系，所以使用修改过后的高斯高通滤波器作为$H(u,v)$。之后就傅里叶反变换回去$\bold{IFT}[H\cdot Z]=\bold{IFT}[H\cdot F_i]+\bold{IFT}[H\cdot F_r]$。再通过取指数把加法转换回乘法。</p>
+<h2 id="第五章-图像复原与重建"><a href="#第五章-图像复原与重建" class="headerlink" title="第五章 图像复原与重建"></a>第五章 图像复原与重建</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211223201116.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211223201156.png" srcset="/img/loading.gif" lazyload></p>
+<p>图像复原是客观过程，识图恢复图像原来的面貌，有客观的测量方法；而图像增强使从主观视觉角度改善图像质量，为了人类视觉而进行优化。</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>模版 / 公式</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>算术均值滤波器</td>
+<td>$\frac{1}{9} \cdot \ \begin{matrix} 1&amp;1&amp;1\1&amp;1&amp;1\1&amp;1&amp;1\ \end{matrix}$</td>
+<td>平滑图像来降低噪声，但是不抗椒盐噪声</td>
+</tr>
+<tr>
+<td>几何均值滤波器</td>
+<td>$[\prod f(x,y)]^{\frac{1}{mn}}$或者$exp(\frac{1}{9}log\ a + \frac{1}{9}log\ b + …)$</td>
+<td>丢失的细节更少，但是不抗椒盐噪声</td>
+</tr>
+<tr>
+<td>中值滤波器</td>
+<td>找中值</td>
+<td>抗椒盐噪声</td>
+</tr>
+<tr>
+<td>最大值/最小值/中点滤波器</td>
+<td>找最大值、最小值、最大值与最小值的平均</td>
+<td>前两者只抗椒盐噪声中的一种，而后者处理高斯和均匀</td>
+</tr>
+<tr>
+<td>修正后阿尔法均值滤波器</td>
+<td>把最大最小值去掉再求平均，去掉的值数量为$d$</td>
+<td>使用高斯噪声和椒盐噪声混合</td>
+</tr>
+<tr>
+<td>自适应局部降低噪声滤波器</td>
+<td>$g(x,y)-\frac{\sigma^2_\eta}{\sigma^2_L}[g(x,y)-m_L]$</td>
+<td>$\sigma^2_\eta$是噪声方差，需要估计。剩下两个是局部的方差和均值。</td>
+</tr>
+<tr>
+<td>自适应中值滤波器</td>
+<td>见下</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="自适应中值滤波器"><a href="#自适应中值滤波器" class="headerlink" title="自适应中值滤波器"></a>自适应中值滤波器</h3><ol>
+<li>选择窗口$S_{xy}$，找到中值$z_{med}$，假如中值不符合$z_{min}&lt;z_{med}&lt;z_{max}$，则扩大窗口再选中值，直到窗口大小到达规定的$S_{max}$。</li>
+<li>找到中值之后，判断窗口中心点符不符合$z_{min}&lt;z_{xy}&lt;z_{max}$，假如符合就不变，不符合就改成之前找到的中值。</li>
+</ol>
+
             </div>
             <hr>
             <div>
