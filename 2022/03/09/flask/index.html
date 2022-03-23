@@ -1,0 +1,691 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="Flask开发学习笔记[TOC]  照着这个学的： 2021年史上最强Flask框架 Flask6天速成从入门到精通（无偿分享附赠课件资料）_哔哩哔哩_bilibili Flask的g对象和钩子函数 - 知乎 (zhihu.com) Flask教程(十六)RESTful-API - 迷途小书童的Note迷途小书童的Note (xugaoxiang.com)  Hello world12345678">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Flask开发学习笔记">
+<meta property="og:url" content="http://blog.kamino.link/2022/03/09/flask/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="Flask开发学习笔记[TOC]  照着这个学的： 2021年史上最强Flask框架 Flask6天速成从入门到精通（无偿分享附赠课件资料）_哔哩哔哩_bilibili Flask的g对象和钩子函数 - 知乎 (zhihu.com) Flask教程(十六)RESTful-API - 迷途小书童的Note迷途小书童的Note (xugaoxiang.com)  Hello world12345678">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2022-03-09T07:00:00.000Z">
+<meta property="article:modified_time" content="2022-03-13T04:08:58.662Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Flask">
+<meta name="twitter:card" content="summary_large_image">
+  
+  <title>Flask开发学习笔记 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Flask开发学习笔记">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-09 15:00" pubdate>
+        2022年3月9日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Flask开发学习笔记</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年3月13日 中午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="Flask开发学习笔记"><a href="#Flask开发学习笔记" class="headerlink" title="Flask开发学习笔记"></a>Flask开发学习笔记</h1><p>[TOC]</p>
+<blockquote>
+<p>照着这个学的：</p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1w64y1d7ZE?p=32&spm_id_from=pageDriver">2021年史上最强Flask框架 Flask6天速成从入门到精通（无偿分享附赠课件资料）_哔哩哔哩_bilibili</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/48141683">Flask的g对象和钩子函数 - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://xugaoxiang.com/2020/08/26/flask-16-restful-api/">Flask教程(十六)RESTful-API - 迷途小书童的Note迷途小书童的Note (xugaoxiang.com)</a></p>
+</blockquote>
+<h2 id="Hello-world"><a href="#Hello-world" class="headerlink" title="Hello world"></a>Hello world</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 导入Flask库</span><br><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask<br><span class="hljs-comment"># Flask对象初始化</span><br><span class="hljs-comment"># 第一个参数指定为：__name__ 表示工程目录</span><br><span class="hljs-comment"># 可选参数 还可以设置静态文件和模板的文件夹</span><br>app = Flask(__name__)<br><br><span class="hljs-comment"># 配置应用程序</span><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">DefaultSettings</span>:</span><br>    SECRET_KEY = <span class="hljs-string">&quot;ASFG$$#%SDG!GHAxa@%gASD&quot;</span><br>    DEBUG = <span class="hljs-literal">True</span>  <span class="hljs-comment"># 开发阶段开启DEBUG模式，部署别开</span><br><span class="hljs-comment"># 直接给这个类作为参数</span><br>app.config.from_object(DefaultSettings)<br><span class="hljs-comment"># 参数也可以从文件中读取</span><br><span class="hljs-comment"># app.config.from_pyfile(&#x27;setting.py&#x27;)</span><br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hello_world</span>():</span>  <span class="hljs-comment"># put application&#x27;s code here</span><br>    <span class="hljs-comment"># 读取配置信息</span><br>    <span class="hljs-built_in">print</span>(app.config[<span class="hljs-string">&quot;SECRET_KEY&quot;</span>])<br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;Hello World!&#x27;</span><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    <span class="hljs-comment"># run()参数：</span><br>    <span class="hljs-comment"># 主机IP地址、端口</span><br>    app.run()<br></code></pre></td></tr></table></figure>
+
+<h2 id="查询路由"><a href="#查询路由" class="headerlink" title="查询路由"></a>查询路由</h2><p>路由就是<code>@app.route(&#39;\&#39;)</code>这样的路径，不同页面可以分散在不同的文件。</p>
+<ol>
+<li>可以使用命令<code>flask routes</code>快速查询。</li>
+<li><code>app.url_map</code>也包含了所有的路由信息。</li>
+<li><code>app.url_map.iter_rules()</code>也可以用来遍历。</li>
+</ol>
+<h2 id="CORS-跨域资源共享"><a href="#CORS-跨域资源共享" class="headerlink" title="CORS 跨域资源共享"></a>CORS 跨域资源共享</h2><p>浏览器A从服务器$B_1$中获取了一个网页，这个网页需要显示存放于服务器$B_2$中的广告，这个时候就形成了跨域获取资源，浏览器A出于安全性考虑要对关于进行限制，所以需要使用CORS技术来解决这个问题。解决方法如下：</p>
+<ol>
+<li>浏览器A先向$B_2$发送<code>OPTIONS</code>请求，询问其是否接受来自$B_1$的跨域请求。</li>
+<li>$B_2$返回头中包含<code>allow-origin &#39;www.b1.com&#39;</code>，允许跨域访问。</li>
+<li>浏览器A向$B_2$发送正式<code>GET</code>请求。</li>
+</ol>
+<h2 id="请求与响应"><a href="#请求与响应" class="headerlink" title="请求与响应"></a>请求与响应</h2><h3 id="指定请求方式"><a href="#指定请求方式" class="headerlink" title="指定请求方式"></a>指定请求方式</h3><p>在页面路由中可以指定页面的访问方式，若错误方式访问会<code>405</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/test1&quot;</span>, methods=[<span class="hljs-string">&quot;GET&quot;</span>, <span class="hljs-string">&quot;POST&quot;</span>]</span>)</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="获取URL路径参数"><a href="#获取URL路径参数" class="headerlink" title="获取URL路径参数"></a>获取URL路径参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用转换器语法，&lt;&gt;是转换器，要和函数参数同名</span><br><span class="hljs-comment"># 假如有格式要求：</span><br><span class="hljs-comment"># &lt;int:user_id&gt; 指定是int类型</span><br><span class="hljs-comment"># &lt;int(min=1):user_id&gt;</span><br><span class="hljs-comment"># 也可以使用进阶的自定义转换器</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/users/&lt;user_id&gt;&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">user_info</span>(<span class="hljs-params">user_id</span>):</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-built_in">type</span>(user_id), user_id)<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">str</span>(user_id)<br></code></pre></td></tr></table></figure>
+
+<h3 id="获取URL请求参数"><a href="#获取URL请求参数" class="headerlink" title="获取URL请求参数"></a>获取URL请求参数</h3><p>即获取URL中<code>?</code>后面的参数</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 获取URL参数，需要导入flask.request对象</span><br><span class="hljs-comment"># /param?id=123</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/param&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">param</span>():</span><br>    req_id = request.args.get(<span class="hljs-string">&#x27;id&#x27;</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">str</span>(req_id)<br></code></pre></td></tr></table></figure>
+
+<h3 id="获取POST请求参数"><a href="#获取POST请求参数" class="headerlink" title="获取POST请求参数"></a>获取POST请求参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 获取POST参数</span><br><span class="hljs-comment"># 文件通过files来获得流</span><br><span class="hljs-comment"># 文本参数通过form表单 ImmutableMultiDict([(&#x27;abc&#x27;, &#x27;1234456&#x27;)])</span><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/upload&#x27;</span>, methods=[<span class="hljs-string">&#x27;POST&#x27;</span>]</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">upload</span>():</span><br>    f = request.files[<span class="hljs-string">&#x27;pic&#x27;</span>]<br>    <span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(<span class="hljs-string">&quot;./demo.png&quot;</span>, <span class="hljs-string">&#x27;wb&#x27;</span>) <span class="hljs-keyword">as</span> new_file:<br>        new_file.write(f.read())<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">str</span>(request.form)<br></code></pre></td></tr></table></figure>
+
+<h3 id="响应模板"><a href="#响应模板" class="headerlink" title="响应模板"></a>响应模板</h3><p>用<code>flask.render_template</code>，估计用不着，先不学。</p>
+<h3 id="重定向响应"><a href="#重定向响应" class="headerlink" title="重定向响应"></a>重定向响应</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> redirect<br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/redirect&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">redirect_func</span>():</span><br>    <span class="hljs-keyword">return</span> redirect(<span class="hljs-string">&#x27;http://www.xxx.com&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="返回JSON响应"><a href="#返回JSON响应" class="headerlink" title="返回JSON响应"></a>返回JSON响应</h3><p>用jsonify返回可以自动设置响应头的格式。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> jsonify<br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&#x27;/json&#x27;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">json</span>():</span><br>    some_dict = &#123;&#125;<br>    <span class="hljs-keyword">return</span> jsonify(some_dict)<br></code></pre></td></tr></table></figure>
+
+<h3 id="自定义响应"><a href="#自定义响应" class="headerlink" title="自定义响应"></a>自定义响应</h3><p>页面函数返回一个元组<code>(response, status, headers)</code>，如<code>(&quot;返回文本&quot;, 404, &#123;&#39;id_cache&#39;: &#39;asdf31S#$13A&#39;&#125;)</code>。</p>
+<p>也可以使用<code>make_response</code>方式：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">rsp = make_response(<span class="hljs-string">&#x27;返回文本&#x27;</span>)<br>rsp.headers[<span class="hljs-string">&#x27;id_cache&#x27;</span>] = <span class="hljs-string">&quot;asdf31S#$13A&quot;</span><br>rsp.status = <span class="hljs-string">&quot;404 not found&quot;</span><br><span class="hljs-keyword">return</span> rsp<br></code></pre></td></tr></table></figure>
+
+<h2 id="Cookies"><a href="#Cookies" class="headerlink" title="Cookies"></a>Cookies</h2><p>必须使用<code>make_response</code>方式响应：</p>
+<ul>
+<li>设置：<code>rsp.set_cookie(&#39;key&#39;, &#39;value&#39;, max_age=7200)</code>（age单位秒）</li>
+<li>删除：<code>rsp.delete_cookie(&#39;key&#39;)</code></li>
+<li>获取：<code>rsp.cookies.get(&#39;key&#39;)</code></li>
+</ul>
+<h2 id="Session"><a href="#Session" class="headerlink" title="Session"></a>Session</h2><p>必须先设置<code>SECRET_KEY</code>，导入<code>flask.session</code>。</p>
+<p>session可以当做字典使用：<code>session[&#39;username&#39;] = &#39;alex&#39;</code>，<code>session.get(&#39;username&#39;)</code></p>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><h3 id="正常向用户抛出异常"><a href="#正常向用户抛出异常" class="headerlink" title="正常向用户抛出异常"></a>正常向用户抛出异常</h3><p>需要导入<code>flask.abort</code>，使用方法：<code>abort(状态码)</code>。</p>
+<h3 id="程序错误捕捉"><a href="#程序错误捕捉" class="headerlink" title="程序错误捕捉"></a>程序错误捕捉</h3><p>使用<code>@app.errorhandler</code>。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 假如服务器要返回500错误代码，则会使用下面这个函数的返回。</span><br><span class="hljs-comment"># 即自定义错误页面</span><br><span class="hljs-meta">@app.errorhandler(<span class="hljs-params"><span class="hljs-number">500</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">internal_server_error</span>(<span class="hljs-params">e</span>):</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;服务器搬家了&quot;</span><br><span class="hljs-comment"># 也可以捕获指定代码异常</span><br><span class="hljs-meta">@app.errorhandler(<span class="hljs-params">ZeroDivisionError</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">zero_error</span>(<span class="hljs-params">e</span>):</span><br>	<span class="hljs-keyword">return</span> <span class="hljs-string">&quot;0不能做除数&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Flask-蓝图"><a href="#Flask-蓝图" class="headerlink" title="Flask 蓝图"></a>Flask 蓝图</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 1. 创建蓝图对象 </span><br>user_blueprint = Blueprint(<span class="hljs-string">&#x27;user&#x27;</span>, __name__)<br><span class="hljs-comment"># 2. 蓝图对象上注册路由</span><br><span class="hljs-meta">@user_blueprint.route(<span class="hljs-params"><span class="hljs-string">&quot;/test1&quot;</span>, methods=[<span class="hljs-string">&quot;GET&quot;</span>, <span class="hljs-string">&quot;POST&quot;</span>]</span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">func</span>():</span><br>    <span class="hljs-keyword">pass</span><br><span class="hljs-comment"># 3. 应用对象上注册蓝图对象</span><br>app.register_blueprint(user_blueprint)<br><span class="hljs-comment"># 之后可以访问网站/user/test1</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Flask-current-app"><a href="#Flask-current-app" class="headerlink" title="Flask current_app"></a>Flask current_app</h2><p>在别的地方假如要获取某个app实例的属性（比如redis或者mysql的相关信息在app的配置中，需要在其他文件中获取），不需要导入main.py，只需要导入<code>flask.current_app</code>。</p>
+<p>假如有多个app实例，那在函数中也用<code>flask.current_app</code>。</p>
+<h2 id="Flask-g对象"><a href="#Flask-g对象" class="headerlink" title="Flask g对象"></a>Flask g对象</h2><p>g对象是程序全局的一个临时变量，需要导入<code>flask.g</code>。就是给了你一个类似request的变量，在本次请求内各个函数都可以用。（为啥不直接传参？）</p>
+<h2 id="Flask-钩子"><a href="#Flask-钩子" class="headerlink" title="Flask 钩子"></a>Flask 钩子</h2><p><code>@app.before_request</code>：每次请求都会执行的函数，无参数，不需要返回值！否则会直接作为返回值而不管页面返回。</p>
+<p><code>@app.before_first_request</code>：在第一次请求之前执行的函数，无参数，不需要返回值。</p>
+<p><code>@app.after_request</code>：每次请求结束后运行，有一个参数用来接收response_class，一般返回这个response。</p>
+<p><code>@app.teardown_request</code>：每次请求结束后运行，比after_request更后，需要一个参数来接收异常（没有则为None）。假如前面有未经处理的异常，就不会调用after_request，但是仍然会调用这个。一般用来释放数据库连接。</p>
+<pre><code class=" mermaid">graph LR
+A[before_first_request] --&gt; B[before_request]
+B --&gt; C[page]
+C --&gt; D[after_request]
+D --&gt; E[teardown_request]
+C -.-&gt; E
+
+</code></pre>
+
+<h2 id="一个判断登陆实例"><a href="#一个判断登陆实例" class="headerlink" title="一个判断登陆实例"></a>一个判断登陆实例</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">login_required</span>(<span class="hljs-params">func</span>):</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">wrapper</span>(<span class="hljs-params">*args, **kwargs</span>):</span><br>        <span class="hljs-keyword">if</span> g.user_id <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            abort(<span class="hljs-number">401</span>)<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">return</span> func(*args, **kwargs)<br>    <span class="hljs-keyword">return</span> wrapper<br><br><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/profile&quot;</span></span>)</span><br><span class="hljs-meta">@login_required  </span><span class="hljs-comment"># 先加app.route，再加别的</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">profile</span>():</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&quot;hello world.&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="Flask-RESTful"><a href="#Flask-RESTful" class="headerlink" title="Flask RESTful"></a>Flask RESTful</h2><p>是flask的一个扩展库：<code>pip install flask-restful</code>。</p>
+<p>下面先来一个实例：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> flask <span class="hljs-keyword">import</span> Flask, jsonify<br><span class="hljs-keyword">from</span> flask_restful <span class="hljs-keyword">import</span> Api, Resource, reqparse<br><br>USERS = [<br>    &#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;zhangsan&quot;</span>&#125;,<br>    &#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;lisi&quot;</span>&#125;,<br>    &#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;wangwu&quot;</span>&#125;,<br>    &#123;<span class="hljs-string">&quot;name&quot;</span>: <span class="hljs-string">&quot;zhaoliu&quot;</span>&#125;<br>]<br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Users</span>(<span class="hljs-params">Resource</span>):</span>  <span class="hljs-comment"># 继承Resource</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get</span>(<span class="hljs-params">self</span>):</span>  <span class="hljs-comment"># 处理GET请求</span><br>        <span class="hljs-keyword">return</span> jsonify(USERS)<br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">post</span>(<span class="hljs-params">self</span>):</span>  <span class="hljs-comment"># 处理POST请求</span><br>        <span class="hljs-comment"># 有点像argparse的reqparse</span><br>        args = reqparse.RequestParser()<br>        args.add_argument(<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>, location=<span class="hljs-string">&#x27;json&#x27;</span>, <br>                          required=<span class="hljs-literal">True</span>, <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;名字不能为空&quot;</span>)<br>        args.parse_args()<br>        <span class="hljs-keyword">if</span> args[<span class="hljs-string">&#x27;name&#x27;</span>] <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> USERS:<br>            USERS.append(&#123;<span class="hljs-string">&quot;name&quot;</span>: args[<span class="hljs-string">&#x27;name&#x27;</span>]&#125;)<br>        <span class="hljs-keyword">return</span> jsonify(USERS)<br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">delete</span>(<span class="hljs-params">self</span>):</span>  <span class="hljs-comment"># 处理DELETE请求</span><br>        USERS = []<br>        <span class="hljs-keyword">return</span> jsonify(USERS)<br><br>app = Flask(__name__)  <span class="hljs-comment"># 先实例Falsk对象</span><br>api = Api(app, default_mediatype=<span class="hljs-string">&quot;application/json&quot;</span>)  <span class="hljs-comment"># 再实例RESTful对象</span><br><br>api.add_resource(Users, <span class="hljs-string">&#x27;/users&#x27;</span>)  <span class="hljs-comment"># 添加资源到users</span><br><br>app.run(host=<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>, port=<span class="hljs-number">5001</span>, use_reloader=<span class="hljs-literal">True</span>)  <span class="hljs-comment"># 运行app</span><br></code></pre></td></tr></table></figure>
+
+<p>稍微修改一下，让GET方法能获取到某个单个用户的信息：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">get</span>(<span class="hljs-params">self, userid</span>):</span><br>    <span class="hljs-keyword">return</span> jsonify(&#123; <span class="hljs-string">&#x27;name&#x27;</span>: USERS[<span class="hljs-built_in">int</span>(userid)].get(<span class="hljs-string">&quot;name&quot;</span>) &#125;)<br>api.add_resource(UserId, <span class="hljs-string">&#x27;/user/&lt;userid&gt;&#x27;</span>)  <span class="hljs-comment"># 转换器语法</span><br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Flask/">Flask</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/09/CRT/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">中国剩余定理学习笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/08/%E9%9F%B3%E9%A2%91%E7%89%B9%E5%BE%81%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">音频特征笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

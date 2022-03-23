@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="初见自监督学习 自监督学习就是把数据集中的数据，一部分作为$x’$来输入，另一部分作为$x’’$来与输出$y$比较。我理解就是找个方法无中生有$\hat y$来进行监督学习。 BERT用Bert来举例子，在预训练阶段，Bert同时进行Masking Input和Next Sentence Prediction两个任务。前者就是把随机输入的一部分mask掉，然后让模型预测mask位置的字；后者就是用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="初见自监督学习">
+<meta property="og:url" content="http://blog.kamino.link/2022/03/04/%E5%88%9D%E8%A7%81%E8%87%AA%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="初见自监督学习 自监督学习就是把数据集中的数据，一部分作为$x’$来输入，另一部分作为$x’’$来与输出$y$比较。我理解就是找个方法无中生有$\hat y$来进行监督学习。 BERT用Bert来举例子，在预训练阶段，Bert同时进行Masking Input和Next Sentence Prediction两个任务。前者就是把随机输入的一部分mask掉，然后让模型预测mask位置的字；后者就是用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304150442.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304151237.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304151705.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304152113.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304160225.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304163653.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304165657.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220305184939.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220305185209.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220305192834.png">
+<meta property="article:published_time" content="2022-03-04T02:23:00.000Z">
+<meta property="article:modified_time" content="2022-03-05T11:36:35.608Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="self_supervised">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304150442.png">
+  
+  <title>初见自监督学习 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304093708.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="初见自监督学习">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-04 10:23" pubdate>
+        2022年3月4日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">初见自监督学习</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年3月5日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="初见自监督学习"><a href="#初见自监督学习" class="headerlink" title="初见自监督学习"></a>初见自监督学习</h1><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304150442.png" srcset="/img/loading.gif" lazyload alt="李宏毅ppt"></p>
+<p>自监督学习就是把数据集中的数据，一部分作为$x’$来输入，另一部分作为$x’’$来与输出$y$比较。我理解就是找个方法无中生有$\hat y$来进行监督学习。</p>
+<h2 id="BERT"><a href="#BERT" class="headerlink" title="BERT"></a>BERT</h2><p>用Bert来举例子，在预训练阶段，Bert同时进行<strong>Masking Input</strong>和<strong>Next Sentence Prediction</strong>两个任务。前者就是把随机输入的一部分mask掉，然后让模型预测mask位置的字；后者就是用<code>[SEP]</code>分隔两句话，然后让模型判断两句话是不是连续的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304151237.png" srcset="/img/loading.gif" lazyload alt="BERT"></p>
+<p>之后，预训练好的BERT就可以进行Sentiment Analysis（语义情感分析）、POS tagging（词性判断）、Natural Language Inference（自然语言推理）、Extraction-based Question Answering（基于提取的问题回复，见下图）。QA任务比较特殊，输入文档和问题，然后输出$s,e$两个数字，然后答案就是第s个单词到第e个单词。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304151705.png" srcset="/img/loading.gif" lazyload alt="QA"></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304152113.png" srcset="/img/loading.gif" lazyload alt="QA"></div></div></div>
+
+<h2 id="GPT"><a href="#GPT" class="headerlink" title="GPT"></a>GPT</h2><p>GPT进行的预训练任务是Predict Next Token（类似seq2seq），拥有Generation（生成）能力。<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304160225.png" srcset="/img/loading.gif" lazyload alt="下游任务"></p>
+<p>要用GPT进行下游任务，甚至不用fine tune，只用给出如上图这样的输入就行……但是正确率不太行。</p>
+<h2 id="LeCun的文章：Self-supervised-learning-The-dark-matter-of-intelligence-阅读笔记"><a href="#LeCun的文章：Self-supervised-learning-The-dark-matter-of-intelligence-阅读笔记" class="headerlink" title="LeCun的文章：Self-supervised learning: The dark matter of intelligence 阅读笔记"></a>LeCun的文章：Self-supervised learning: The dark matter of intelligence 阅读笔记</h2><p>只靠监督学习，人工智能领域有局限，我们想要构建更智能的通用模型（generalist models）。通用模型指的是在多个任务上都能表现出色的模型，但是这不能通过标注数据来进行监督学习来实现，因为我们不能标注整个世界。</p>
+<p>人通过之前对世界认知得到的<strong>常识</strong>来进行之后的各类任务（比如识别图片等），并且，面对一个崭新的任务，可能只需要很少的知识就能学会。但在目前人工智能还远远不能达到这个地步，常识（Common sense）就像人工智能的暗物质。</p>
+<p>为了构建这种能学会<strong>常识</strong>的人工智能系统，LeCun相信自监督学习 (Self-Supervised Learning, or SSL) 是一种非常重要的方式。自监督学习不被叫做无监督学习 (unsupervised)，因为自监督学习的label是从数据中诞生的。</p>
+<blockquote>
+<p>We believe that self-supervised learning (SSL) is one of the most promising ways to build such background knowledge and approximate a form of common sense in AI systems.</p>
+<p>Self-supervised learning obtains supervisory signals from the data itself.</p>
+</blockquote>
+<p>而人在人工智能中起的作用从<strong>简单的标记数据</strong>转移到<strong>如何从数据中创造标签</strong>。 </p>
+<p>而一个很常用的方法就是，隐藏数据中的一部分，然后让模型预测你隐藏的部分（就像Bert的Masking Input一样）。下面这张图展示了这种方法，有颜色的是输入给模型的部分，而透明的是被隐藏起来需要模型预测的部分。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304163653.png" srcset="/img/loading.gif" lazyload></p>
+<p>目前SSL已经在NLP领域取得了成功，然而这要延伸到CV领域就比较难了，因为图像的不确定性更大。让模型做自然语言的填空题比较简单，因为有一个限定大小的词表，模型能够给出词表中所有单词在某个位置的可能性。但是在CV领域，预测missing frame、patch或者segment是要预测一个高维连续的东西，它可能有无数种情况。</p>
+<p>Energy-Based Model (EBM) 是指给两个输入$x$和$y$，通过一个能量函数 (Energy Function)来计算两者之间的能量，这代表了$x$和$y$之间的匹配程度（类似距离？）。训练EBM有两部分：1. $x$和$y$相近的时候energy小 2. $x$和$y$不相近的时候能量大。其中，后者难度更高。</p>
+<p>实现这个的一种经典方式叫做Siamese network，他包含了两个(几乎)一样的网络（共享参数），$x$和$y$分别经过网络获得embedding，然后通过一个函数来比较两个embedding。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220304165657.jpg" srcset="/img/loading.gif" lazyload alt="149794655_780907256142255_4794526832594825319_n"></p>
+<p>那么如何获取$x$和$y$呢？一种方式是对比学习 (Contrastive)，另一种方式是非对比式。</p>
+<ul>
+<li><p>Contrastive energy-based SSL</p>
+<p>这种方式指的是构建不匹配的$xy$对。在NLP中，就是mask掉一些单词。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220305184939.png" srcset="/img/loading.gif" lazyload></p>
+<p>然而在CV中这种方式不太适用，但是另一种隐变量预测架构 (latent-variable predictive architectures)效果不错。隐变量预测模型包含了一个额外的输入变量$z$，它的值不需要被观察，所以叫做隐变量。 隐变量来自于某个空间，通过$z$值的变换，$\overline y$的值也会发生一些变化。用著名的GAN来距离的话，GAN没有图中$x$到Dec这一路，而是完全用随机数$z$来作为输入，而图中的Dec对应GAN中的generator，C对应GAN中的discriminator。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220305185209.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>Contrastive的模型的缺点就是训练难度太大了。</p>
+</li>
+<li><p>Non-contrastive energy-based SSL</p>
+<p>这种模型没有用对比学习那样的负样本，例子是MoCo、VAE。（不太理解）</p>
+<blockquote>
+<p> <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1312.6114">Variational Auto-Encoder</a> (VAE)：</p>
+<p>VAE就是把一个数据集中的图片经过Encoder进行编码，进入到一个低维的隐空间 (Latent Space)，然后通过Decoder进行重建得到输出$x’$，然后这两者计算Loss。在inference过程中，图中绿色的部分被去掉，只需要从隐空间中随机选择一个点，就可以得到输出。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220305192834.png" srcset="/img/loading.gif" lazyload></p>
+</blockquote>
+<p>文章中说VAE的隐变量空间被限制了，所以这种结构可能发挥作用，但是目前用的是Decoder，而我们想要Encoder。</p>
+</li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%AF%8F%E6%97%A5%E8%AE%BA%E6%96%87/">每日论文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/self-supervised/">self_supervised</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/03/07/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">微信小程序开发学习笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/03/norm_transformer/">
+                        <span class="hidden-mobile">Transformer中的Layer Normalization</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
