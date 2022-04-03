@@ -28,7 +28,7 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210922143448.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210922144606.png">
 <meta property="article:published_time" content="2021-09-22T02:39:00.000Z">
-<meta property="article:modified_time" content="2021-10-22T11:12:55.720Z">
+<meta property="article:modified_time" content="2022-03-26T13:35:34.111Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Git">
 <meta name="twitter:card" content="summary_large_image">
@@ -264,7 +264,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2021年10月22日 晚上
+                  本文最后更新于：2022年3月26日 晚上
                 
               </p>
             
@@ -282,6 +282,8 @@
 <p>commit的消息也可以选择性地遵守一定的规则</p>
 <p>feat: 新功能<br>change：需求变更<br>fix：缺陷修复<br>test：修改测试代码<br>docs：文档变更<br>style：代码格式调整<br>refactor：代码重构</p>
 </blockquote>
+<h2 id="查看本地文件改动"><a href="#查看本地文件改动" class="headerlink" title="查看本地文件改动"></a>查看本地文件改动</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git diff  <span class="hljs-comment"># 查看所有改动</span><br>git diff 文件名  <span class="hljs-comment"># 查看单个文件的改动</span><br>git status  <span class="hljs-comment"># 查看整体情况</span><br></code></pre></td></tr></table></figure>
+
 <h2 id="版本回退"><a href="#版本回退" class="headerlink" title="版本回退"></a>版本回退</h2><p>Git最重要的特点就是能够版本回退，回退的单位是commit。要回退到某个commit，需要先知道对应的<code>commit id</code>，这个id是用SHA1算出来的随机字符串。</p>
 <p>回退的时候使用的是<code>git reset</code>命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">git reset --hard HEAD^  <span class="hljs-comment"># 回退到上一个版本，使用hard模式 HEAD表示当前 HEAD^表示上一个</span><br>git reset --hard 3s56fv  <span class="hljs-comment"># 跳转到某个commit id，id可以不用打全</span><br></code></pre></td></tr></table></figure>
@@ -294,8 +296,8 @@
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git reset HEAD &lt;file&gt;  <span class="hljs-comment"># 把文件的暂存区修改回退到工作区</span><br></code></pre></td></tr></table></figure>
 
 <p>假如要从仓库中删除一个文件，那么应该使用<code>git rm</code>命令，假如是误删除了一个文件，也可以使用和上面一样的<code>git checkout</code>命令来恢复。</p>
-<h2 id="添加远程库、推送"><a href="#添加远程库、推送" class="headerlink" title="添加远程库、推送"></a>添加远程库、推送</h2><p>假如想要将仓库共享出去，那么可以使用<code>git remote add</code>命令添加远程库，远程库的名字一般都默认为origin</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git remote add origin git@github.com:用户名/库名.git  <span class="hljs-comment"># 添加一个叫做origin的远程库</span><br></code></pre></td></tr></table></figure>
+<h2 id="添加远程库、推送"><a href="#添加远程库、推送" class="headerlink" title="添加远程库、推送"></a>添加远程库、推送</h2><p>查看、删除、添加远程库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs bash">git remote -v  <span class="hljs-comment"># 查看现有的远程库信息</span><br>git remote rm 远程库名字  <span class="hljs-comment"># 删除一个远程库在本地的信息</span><br>git remote add origin git@github.com:用户名/库名.git  <span class="hljs-comment"># 添加一个叫做origin的远程库</span><br></code></pre></td></tr></table></figure>
 
 <p>之后把本地库内容推送到远程库上可以使用<code>git push</code>命令</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">git push origin master  <span class="hljs-comment"># origin是远程库名 master是分支名</span><br></code></pre></td></tr></table></figure>

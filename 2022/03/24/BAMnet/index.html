@@ -1,0 +1,612 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases Input module把输入问题Q通过word embedding表示成词向量序列 Memory module 通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案 对于候选答案，用三种信息表示">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases">
+<meta property="og:url" content="http://blog.kamino.link/2022/03/24/BAMnet/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases Input module把输入问题Q通过word embedding表示成词向量序列 Memory module 通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案 对于候选答案，用三种信息表示">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324155759.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324160234.png">
+<meta property="article:published_time" content="2022-03-24T10:30:00.000Z">
+<meta property="article:modified_time" content="2022-04-03T02:23:19.031Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="BAMnet">
+<meta property="article:tag" content="知识图谱">
+<meta property="article:tag" content="QA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324155759.png">
+  
+  <title>论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-03-24 18:30" pubdate>
+        2022年3月24日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      1.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      6 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月3日 上午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="论文笔记-Bidirectional-Attentive-Memory-Networks-for-Question-Answering-over-Knowledge-Bases"><a href="#论文笔记-Bidirectional-Attentive-Memory-Networks-for-Question-Answering-over-Knowledge-Bases" class="headerlink" title="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases"></a>论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases</h1><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324155759.png" srcset="/img/loading.gif" lazyload alt="BAMnet"></p>
+<h2 id="Input-module"><a href="#Input-module" class="headerlink" title="Input module"></a>Input module</h2><p>把输入问题Q通过word embedding表示成词向量序列</p>
+<h2 id="Memory-module"><a href="#Memory-module" class="headerlink" title="Memory module"></a>Memory module</h2><ol>
+<li>通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案</li>
+<li>对于候选答案，用三种信息表示：type, path, context</li>
+<li>使用记忆神经网络对三种信息分别进行编码</li>
+</ol>
+<h2 id="KB-aware-attention-module"><a href="#KB-aware-attention-module" class="headerlink" title="KB-aware attention module"></a>KB-aware attention module</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324160234.png" srcset="/img/loading.gif" lazyload></p>
+<p>问题输入先经过一个SA，再作为query对记忆网络的三种信息进行注意力分布，然后三种信息组合在一起得到$m$，$m$是KB summary，即知识图谱的摘要向量。</p>
+<p>然后，用$H^Q$乘上$m$，即$[words,hid]\times [hid,memories]$，得到$[words,memories]$形状的张量，表示每个单词对于记忆中的信息，然后进行最大池化，表示选择一个word对应最强的那个信息。</p>
+<h2 id="importance-module"><a href="#importance-module" class="headerlink" title="importance module"></a>importance module</h2><p>首先用问题乘记忆矩阵得到$A^{QM}$，表示问题对于回答的重要性。</p>
+<h2 id="enhancing-module"><a href="#enhancing-module" class="headerlink" title="enhancing module"></a>enhancing module</h2><p>利用双向注意力进一步增强</p>
+<p>目前存在的食物推荐方法大多基于菜谱内容、用户之前的行为、食物偏好、标签偏好。而pFoodReq考虑了营养并且可以以自然语言提问。</p>
+<p>pfoodreq的任务是根据食物知识图谱进行的受限的问题回答，并充分考虑用户偏好个性化和营养。</p>
+<p>输入：自然语言的问题、饮食偏好、营养指南</p>
+<p>首先，为了实现语言交互式，需要使用自然语言处理（NLP）技术构建一个聊天机器人。目前国内外效果较好的聊天机器人大多采用<strong>深度学习</strong>和<strong>句式匹配</strong>的方式：对于一般聊天内容，神经网络能够从大规模语料数据中学习到普遍的回复方式，效率较高，不需要人工制定句式。并且，目前的神经网络还能够创造新的句子，提高了回复的多样性。但是深度学习的缺点是过程不透明、结果不确定，且容易受到语料库污染的影响。对于涉及一些特定领域的话题，开发者往往人工制定一系列的句式对用户消息进行匹配，若匹配成功，则回复指定的消息。这种方式效率较低、多样性也较差，但是结果确定。这两种方式往往结合使用，既能满足多样性的需求，也能较好地控制回复。</p>
+<p>基于深度学习的聊天机器人模型大多采用序列到序列（seq2seq）的方式，这是因为用户输入的语句和模型输出的语句都是不定长度的，都可以看作是序列。为了将自然语言转变为深度学习模型能够处理的向量，需要对语句进行词嵌入（Word Embedding）。一般将单词作为最小单位，构建词汇表，并将词汇表中每个词都映射到一个高维空间，在这个高维空间中，距离越近的两个词的相似度就越高。实现词嵌入既能使用提前训练好的<code>Word2vec</code>、<code>Glove</code>等模型，也能自行在Seq2Seq的过程中进行训练。除此以外，在英文类语言的处理中，也可以使用比单词更细的粒度，即<code>subword</code>。这种方法能够将<code>lower</code>进一步区分为<code>low</code>和<code>-er</code>两部分，从而让模型学习到更多的语言知识。将语句转换成向量之后，模型可以通过LSTM、GRU等循环神经网络进行学习，也可以使用近年热门的Transformer网络进行学习，在输出阶段，由于是生成任务，大部分方法都使用自回归模式（auto regressive），即单词逐个输出。聊天机器人技术目前趋于成熟，以<code>chatbot</code>为关键词在Github网站上搜索，能够搜索到超过74,000个仓库。</p>
+<p>其次，我们不仅需要和用户聊好天，还需要从用户所发的消息中提取出关键信息，涉及语义情感分析、中文分词、词性标注、关键词提取等方面。其中，语义情感分析指的是分析自然语言所蕴含的情感，按照分析的粒度可以分为篇章级，句子级，词或短语级，本项目需要进行的语义情感分析的粒度为句子级别，需要分析出用户消息中的情感倾向，从而在之后的阶段更好地进行个性化推荐。中文由于其本身特点，不像英文那样使用空格分隔单词，所以需要进行分词。进行分词之后可以进行下一步的词性标注、关键词提取或者进行词嵌入后输入给聊天机器人。词性标注和关键词提取是提取信息的重点，为了让之后的个性化推荐模型效果更好，可以在这一阶段提取出例如营养偏好、过敏食物、偏好食物等关键信息。目前Python的jieba库能够实现高效率、高精准度的中文分词，还有于Github网站开源的汉语处理工具包<code>HanLP 2.1</code>具备功能完善、精度准确、性能高效、语料时新、架构清晰、可自定义的特点。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/BAMnet/">BAMnet</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1/">知识图谱</a>
+                    
+                      <a class="hover-with-bg" href="/tags/QA/">QA</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
