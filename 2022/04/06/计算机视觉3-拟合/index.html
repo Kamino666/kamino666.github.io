@@ -1,0 +1,695 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="计算机视觉学习笔记#3 拟合之前提到的边缘检测虽然能得到线，但是无法得到线的位置，而在下图这种例子中，假如要检测硬币的位置，那需要知道画面中圆边缘和圆心的位置。拟合能够用数学来描述出结果，而不是像素。  拟合的难点要找到车的拟合边缘有以下难点  那图中可能存在许多不属于这个车的边缘（噪声） 车可能被遮挡。 车包含多个线条，在提取一条线的时候，其他线都是噪声。   最小二乘法：所有点都是有效点的情况">
+<meta property="og:type" content="article">
+<meta property="og:title" content="计算机视觉学习笔记#3 拟合：最小二乘法、RANSAC、Hough霍夫变换（附代码）">
+<meta property="og:url" content="http://blog.kamino.link/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%893-%E6%8B%9F%E5%90%88/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="计算机视觉学习笔记#3 拟合之前提到的边缘检测虽然能得到线，但是无法得到线的位置，而在下图这种例子中，假如要检测硬币的位置，那需要知道画面中圆边缘和圆心的位置。拟合能够用数学来描述出结果，而不是像素。  拟合的难点要找到车的拟合边缘有以下难点  那图中可能存在许多不属于这个车的边缘（噪声） 车可能被遮挡。 车包含多个线条，在提取一条线的时候，其他线都是噪声。   最小二乘法：所有点都是有效点的情况">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406180421.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406180618.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406182926.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413135923.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413141301.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413142847.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413144236.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413144350.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413144607.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413150106.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155705.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155734.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155748.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155939.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413160342.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413161352.png">
+<meta property="article:published_time" content="2022-04-06T07:30:00.000Z">
+<meta property="article:modified_time" content="2022-04-15T01:11:51.028Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="计算机视觉">
+<meta property="article:tag" content="代码">
+<meta property="article:tag" content="RANSAC">
+<meta property="article:tag" content="霍夫变换">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406180421.png">
+  
+  <title>计算机视觉学习笔记#3 拟合：最小二乘法、RANSAC、Hough霍夫变换（附代码） - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="计算机视觉学习笔记#3 拟合：最小二乘法、RANSAC、Hough霍夫变换（附代码）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-06 15:30" pubdate>
+        2022年4月6日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      17 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">计算机视觉学习笔记#3 拟合：最小二乘法、RANSAC、Hough霍夫变换（附代码）</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月15日 上午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="计算机视觉学习笔记-3-拟合"><a href="#计算机视觉学习笔记-3-拟合" class="headerlink" title="计算机视觉学习笔记#3 拟合"></a>计算机视觉学习笔记#3 拟合</h1><p>之前提到的边缘检测虽然能得到线，但是无法得到线的位置，而在下图这种例子中，假如要检测硬币的位置，那需要知道画面中圆边缘和圆心的位置。<strong>拟合</strong>能够用数学来描述出结果，而不是像素。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406180421.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="拟合的难点"><a href="#拟合的难点" class="headerlink" title="拟合的难点"></a>拟合的难点</h2><p>要找到车的拟合边缘有以下难点</p>
+<ul>
+<li>那图中可能存在许多不属于这个车的边缘（噪声）</li>
+<li>车可能被遮挡。</li>
+<li>车包含多个线条，在提取一条线的时候，其他线都是噪声。</li>
+</ul>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406180618.png" srcset="/img/loading.gif" lazyload alt="例子 车"></p>
+<h2 id="最小二乘法：所有点都是有效点的情况"><a href="#最小二乘法：所有点都是有效点的情况" class="headerlink" title="最小二乘法：所有点都是有效点的情况"></a>最小二乘法：所有点都是有效点的情况</h2><p>注意最小二乘法的距离是数轴上的距离。如图先定义一个能量函数（类似机器学习的loss），然后把用矩阵表示方程，则$Y=XB$，然后我们希望能量函数$E=||Y-XB||^2$最小，就求导等于0时为极值。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406182926.png" srcset="/img/loading.gif" lazyload alt="最小二乘法"></p>
+<p><strong>缺陷：</strong>无法处理垂直线段的情况，因为此时这个距离未定义</p>
+<h2 id="全最小二乘法"><a href="#全最小二乘法" class="headerlink" title="全最小二乘法"></a>全最小二乘法</h2><p>距离的定义改成点到线段的举例，所以改了一下能量函数。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413135923.png" srcset="/img/loading.gif" lazyload alt="全最小二乘"></p>
+<h2 id="RANSAC：一条直线-多点噪声"><a href="#RANSAC：一条直线-多点噪声" class="headerlink" title="RANSAC：一条直线+多点噪声"></a>RANSAC：一条直线+多点噪声</h2><p>RANSAC是<code>RANdom SAmple Consensus</code>的缩写，即基于随机采样的一种方式，是一种能够处理拟合有较多噪声的一条直线的方法。</p>
+<p>核心思想是先选择两个点构成一条直线，然后其余点给这条直线进行投票。如图，第一步首先选择两个点，然后第二步构建一条直线，第三步计算其余点到直线的距离，第四步选择距离较小的点为这条线进行<strong>投票</strong>，第五步重复。</p>
+<blockquote>
+<p>RANSAC也可以拟合其他情况，那么方法扩展为：</p>
+<ol>
+<li>选择目标模型的最少确定点（比如三角形就是三个点，圆形也是三个点，正方形是两个点）</li>
+<li>构建模型，并计算其余点对于这个模型的误差（比如距离圆的距离，距离正方形最近边的距离）</li>
+<li>设置阈值，误差小于阈值的点投上一票</li>
+<li>重复</li>
+</ol>
+</blockquote>
+<p>现在还有个问题，就是到底要重复多少次才能找到理想的线？假设总共循环$N$次，有比例$e$的噪声点，线的可信度为$p$，那么：<br>$$<br>(1-(1-e)^2)^N = 1-p<br>$$<br>左边选择两个属于直线的点的概率为$(1-e)^2$，其他情况则是1减去这个值，也就是错误情况。假如实验错误了$N$次，也就等于右式。经过计算可以得到下表</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413141301.png" srcset="/img/loading.gif" lazyload alt="RANSAC"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413142847.png" srcset="/img/loading.gif" lazyload></p>
+<p>在确定最终结果的时候，我们记录了许多条线对应得到的投票数，假如设置一个投票阈值，也可以实现提取多条线。</p>
+<h2 id="Hough-霍夫变换：多条直线"><a href="#Hough-霍夫变换：多条直线" class="headerlink" title="Hough 霍夫变换：多条直线"></a>Hough 霍夫变换：多条直线</h2><h3 id="初步思想"><a href="#初步思想" class="headerlink" title="初步思想"></a>初步思想</h3><p>主要思想是<strong>转换空间+投票</strong>。这种方法能够处理多条直线、高噪声甚至直线部分点缺失的情况。</p>
+<p>如图，霍夫变换能让<strong>图像空间的一条直线映射到霍夫空间的一个点</strong>（下图1），而<strong>图像空间的一个点映射到霍夫空间的一条线</strong>（下图2）。图像域的直线方程为$y=m_0x+b_0$，其中有两个确定直线的参数$m_0,b_0$，这两个参数能够构成霍夫参数空间，即以$m_0$为横坐标，$b_0$为纵坐标。</p>
+<p>假如图像空间有许多个点，那在霍夫空间上就会有许多条直线（如下图3），这些直线会有一个交点，那这个霍夫空间的交点可以映射回一条直线。</p>
+<p>另外，由于噪声等因素，在霍夫空间可能不会有明显的一个交点，所以会离散化霍夫空间，分成许多小格子，每条线会给经过的小格子<strong>投票</strong>，得到票数越多的小格子就越可能是交点的位置。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413144236.png" srcset="/img/loading.gif" lazyload alt="1"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413144350.png" srcset="/img/loading.gif" lazyload alt="2"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413144607.png" srcset="/img/loading.gif" lazyload alt="3"></p>
+<h3 id="实际思想：极坐标"><a href="#实际思想：极坐标" class="headerlink" title="实际思想：极坐标"></a>实际思想：极坐标</h3><p>那么现在还有问题，假如图像空间有垂直线，那么$m$会趋近于无穷。这个的解决方法就是使用<strong>极坐标</strong>。如图，一条直线对应的$\theta,|\rho|$就是过原点的法线角度和长度。（<strong>此处图有点小错误，$\rho$可能是负数，距离应该取绝对值</strong>）。</p>
+<ul>
+<li>图像空间的直线：$x\cos\theta_0+y\sin\theta_0=\rho_0$ <code>-&gt;</code>  $(\theta_0,\rho_o)$。</li>
+<li>图像空间的点：$(x_0,y_0)$ <code>-&gt;</code> $x_0\cos\theta+y_0\sin\theta=\rho$ 。</li>
+</ul>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413150106.png" srcset="/img/loading.gif" lazyload alt="极坐标霍夫空间"></p>
+<p>那么在极坐标进行投票就是对于所有$\theta\in[0,\pi]$，计算$\rho=x_0\cos\theta+y_0\sin\theta$，然后在对应的投票矩阵中<code>+1</code>。下面是一些例子：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155705.png" srcset="/img/loading.gif" lazyload alt="正方形 圆形"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155734.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155748.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="霍夫变换噪声分析"><a href="#霍夫变换噪声分析" class="headerlink" title="霍夫变换噪声分析"></a>霍夫变换噪声分析</h3><p>当噪声增加的时候，可能在霍夫空间较难找出一个点，而图像完全是噪声、没有直线的时候，在霍夫空间也可能有交点，从而识别出线。解决方法是相邻区间加权，就像高斯平滑相对平均平滑一样。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413155939.png" srcset="/img/loading.gif" lazyload alt="包含噪声"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413160342.png" srcset="/img/loading.gif" lazyload alt="全是噪声"></p>
+<h3 id="利用梯度"><a href="#利用梯度" class="headerlink" title="利用梯度"></a>利用梯度</h3><p>在边缘检测的时候，其实能够检测到一个点对应的直线方向，所以能得到一个具体的$\theta$，所以就不用对于所有$\theta\in[0,\pi]$了。</p>
+<blockquote>
+<p>实践时也不是只用一个$\theta$，而是取一些区间</p>
+</blockquote>
+<h3 id="霍夫圆检测"><a href="#霍夫圆检测" class="headerlink" title="霍夫圆检测"></a>霍夫圆检测</h3><p>霍夫变换也能够用来检测圆，此时霍夫空间就是三维的了，对于图上的一个像素，它可能位于圆上，这个时候就是<code>已知圆上一点，求圆心和半径</code>。</p>
+<p>通过边缘检测可以得到圆上一个点的梯度方向，易知圆心在梯度的正向或者反向上。所以霍夫空间上一个$r$就能有两个点（圆心）。这样就可以对于所有$r\in[0,图像边界]$进行投票。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220413161352.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="霍夫变换直线检测代码"><a href="#霍夫变换直线检测代码" class="headerlink" title="霍夫变换直线检测代码"></a>霍夫变换直线检测代码</h3><p>下面这份代码实现了使用极坐标霍夫变换检测直线，包括<strong>非最大化抑制、加权投票、检测多条直线</strong>等，注释超全。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">coded by Kamino, kamino.plus@qq.com, 2022/4/15</span><br><span class="hljs-string">未经许可不得转载</span><br><span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> cv2<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm<br><span class="hljs-keyword">from</span> queue <span class="hljs-keyword">import</span> PriorityQueue<br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">non_max_suppression</span>(<span class="hljs-params">x</span>):</span><br>    res = np.zeros_like(x)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(x.shape[<span class="hljs-number">0</span>]):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(x.shape[<span class="hljs-number">1</span>]):<br>            <span class="hljs-keyword">if</span> x[i, j] == <span class="hljs-number">0</span>:<br>                <span class="hljs-keyword">continue</span><br>            <span class="hljs-keyword">if</span> np.<span class="hljs-built_in">sum</span>(x[i - <span class="hljs-number">1</span>:i + <span class="hljs-number">2</span>, j - <span class="hljs-number">1</span>:j + <span class="hljs-number">2</span>] &gt; x[i, j]) == <span class="hljs-number">0</span>:<br>                <span class="hljs-comment"># print(x[i - 1:i + 2, j - 1:j + 2])</span><br>                res[i, j] = x[i, j]<br>    <span class="hljs-keyword">return</span> res<br><br><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hough_line</span>(<span class="hljs-params">x, theta_prec=<span class="hljs-number">1.0</span>, rho_prec=<span class="hljs-number">2.0</span>, topk=<span class="hljs-number">1</span>, weight_mat: np.ndarray = <span class="hljs-literal">None</span>, non_max=<span class="hljs-literal">False</span></span>):</span><br>    <span class="hljs-keyword">if</span> weight_mat <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:  <span class="hljs-comment"># 权重矩阵得是方阵，且边长要是单数</span><br>        <span class="hljs-keyword">assert</span> <span class="hljs-built_in">len</span>(weight_mat.shape) <span class="hljs-keyword">and</span> weight_mat.shape[<span class="hljs-number">0</span>] == weight_mat.shape[<span class="hljs-number">1</span>] <span class="hljs-keyword">and</span> weight_mat.shape[<span class="hljs-number">0</span>] % <span class="hljs-number">2</span> == <span class="hljs-number">1</span><br>    <span class="hljs-comment"># theta_ax和rho_ax是霍夫空间两个轴的量化数组</span><br>    <span class="hljs-comment"># 使用theta_prec和rho_prec两个参数来确定量化精度，数字越大量化越粗</span><br>    theta_ax = np.deg2rad(np.arange(<span class="hljs-number">0</span>, <span class="hljs-number">180</span>, theta_prec))<br>    max_rho = np.sqrt(x.shape[<span class="hljs-number">0</span>] ** <span class="hljs-number">2</span> + x.shape[<span class="hljs-number">1</span>] ** <span class="hljs-number">2</span>)<br>    rho_ax = np.arange(-max_rho, max_rho, rho_prec)<br>    <span class="hljs-comment"># 霍夫空间：是一个rho行theta列的空间</span><br>    hough_space = np.zeros((<span class="hljs-built_in">len</span>(rho_ax), <span class="hljs-built_in">len</span>(theta_ax)))<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> tqdm(<span class="hljs-built_in">range</span>(x.shape[<span class="hljs-number">0</span>])):  <span class="hljs-comment"># i行 j列</span><br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(x.shape[<span class="hljs-number">1</span>]):<br>            <span class="hljs-comment"># 找到二值图像中的1点</span><br>            <span class="hljs-keyword">if</span> x[i, j] == <span class="hljs-number">0</span>:<br>                <span class="hljs-keyword">continue</span><br>            <span class="hljs-comment"># 对于每一个theta的量化值求rho</span><br>            <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(theta_ax)):<br>                rh = j * np.cos(theta_ax[t]) + i * np.sin(theta_ax[t])<br>                <span class="hljs-comment"># 量化得到的rho值，由于rho可能为负数，而数组是没有负数索引的</span><br>                <span class="hljs-comment"># （虽然python的负索引有倒数的意义），所以我们要平移到正确的</span><br>                <span class="hljs-comment"># 位置上。</span><br>                <span class="hljs-comment"># 1.加轴的最大值 2.除以精度 3.找到最近整数位</span><br>                <span class="hljs-comment"># *4.给相邻区块加权添加</span><br>                <span class="hljs-comment"># *5.非最大化抑制</span><br>                <span class="hljs-keyword">if</span> weight_mat <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>                    hough_space[<span class="hljs-built_in">int</span>(<span class="hljs-built_in">round</span>((rh + max_rho) / rho_prec)), t] += <span class="hljs-number">1</span><br>                <span class="hljs-keyword">else</span>:<br>                    tgt_point = (<span class="hljs-built_in">int</span>(<span class="hljs-built_in">round</span>((rh + max_rho) / rho_prec)), t)<br>                    offset = (weight_mat.shape[<span class="hljs-number">0</span>] - <span class="hljs-number">1</span>) // <span class="hljs-number">2</span><br>                    hot_area = hough_space[tgt_point[<span class="hljs-number">0</span>] - offset:tgt_point[<span class="hljs-number">0</span>] + offset + <span class="hljs-number">1</span>,<br>                               tgt_point[<span class="hljs-number">1</span>] - offset:tgt_point[<span class="hljs-number">1</span>] + offset + <span class="hljs-number">1</span>]<br>                    <span class="hljs-keyword">if</span> hot_area.shape == weight_mat.shape:<br>                        hough_space[tgt_point[<span class="hljs-number">0</span>] - offset:tgt_point[<span class="hljs-number">0</span>] + offset + <span class="hljs-number">1</span>,<br>                        tgt_point[<span class="hljs-number">1</span>] - offset:tgt_point[<span class="hljs-number">1</span>] + offset + <span class="hljs-number">1</span>] += weight_mat<br>    <span class="hljs-keyword">if</span> non_max <span class="hljs-keyword">is</span> <span class="hljs-literal">True</span>:<br>        hough_space = non_max_suppression(hough_space)<br><br>    <span class="hljs-comment"># 用优先队列（大顶堆）找到前n个结果</span><br>    <span class="hljs-keyword">if</span> topk == <span class="hljs-number">1</span>:<br>        points = np.where(hough_space == np.<span class="hljs-built_in">max</span>(hough_space))<br>        <span class="hljs-keyword">return</span> (rho_ax[points[<span class="hljs-number">0</span>]], theta_ax[points[<span class="hljs-number">1</span>]]), hough_space<br>    <span class="hljs-keyword">else</span>:<br>        queue = PriorityQueue()<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(hough_space.shape[<span class="hljs-number">0</span>]):<br>            <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(hough_space.shape[<span class="hljs-number">1</span>]):<br>                queue.put((-hough_space[i, j], rho_ax[i], theta_ax[j], i, j))<br>        res = [queue.get()[<span class="hljs-number">1</span>:] <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(topk)]<br>        <span class="hljs-keyword">return</span> res, hough_space<br><br><br>img = cv2.imread(<span class="hljs-string">&quot;ironnet_small.jpg&quot;</span>, cv2.IMREAD_GRAYSCALE)<br>canny_img = cv2.Canny(img, <span class="hljs-number">200</span>, <span class="hljs-number">230</span>)<br>kernel = np.array([[<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">12</span>, <span class="hljs-number">9</span>, <span class="hljs-number">4</span>], [<span class="hljs-number">5</span>, <span class="hljs-number">12</span>, <span class="hljs-number">15</span>, <span class="hljs-number">12</span>, <span class="hljs-number">5</span>], [<span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">12</span>, <span class="hljs-number">9</span>, <span class="hljs-number">4</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>]]) / <span class="hljs-number">159</span><br>rho_thetas, hough_img = hough_line(canny_img, topk=<span class="hljs-number">10</span>, rho_prec=<span class="hljs-number">1</span>, theta_prec=<span class="hljs-number">0.5</span>, weight_mat=<span class="hljs-literal">None</span>, non_max=<span class="hljs-literal">True</span>)<br><br><span class="hljs-comment"># 下面都是绘图了</span><br><span class="hljs-comment"># figure1是对比</span><br>fig = plt.figure(<span class="hljs-number">1</span>)<br>ax = plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>ax.imshow(img, cmap=plt.get_cmap(<span class="hljs-string">&#x27;gray&#x27;</span>))<br>ax.set_title(<span class="hljs-string">&#x27;Result&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;*&quot;</span> * <span class="hljs-number">30</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;预测出的直线方程&quot;</span>)<br><span class="hljs-keyword">for</span> rho, theta, _, _ <span class="hljs-keyword">in</span> rho_thetas:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;x*<span class="hljs-subst">&#123;<span class="hljs-built_in">round</span>(np.cos(theta), <span class="hljs-number">2</span>)&#125;</span>+y*<span class="hljs-subst">&#123;<span class="hljs-built_in">round</span>(np.sin(theta), <span class="hljs-number">2</span>)&#125;</span>=<span class="hljs-subst">&#123;<span class="hljs-built_in">round</span>(rho / <span class="hljs-number">2</span>, <span class="hljs-number">2</span>)&#125;</span>&quot;</span>)<br>    x_ = np.arange(<span class="hljs-number">0</span>, canny_img.shape[<span class="hljs-number">1</span>])<br>    y_ = (rho - x_ * np.cos(theta)) / np.sin(theta)<br>    ax.plot(x_, y_, <span class="hljs-string">&#x27;red&#x27;</span>)<br>plt.ylim([img.shape[<span class="hljs-number">0</span>], <span class="hljs-number">0</span>])<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;*&quot;</span> * <span class="hljs-number">30</span>)<br>ax = plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>)<br>ax.imshow(canny_img, cmap=plt.get_cmap(<span class="hljs-string">&#x27;gray&#x27;</span>))<br>ax.set_title(<span class="hljs-string">&#x27;Canny&#x27;</span>)<br><span class="hljs-comment"># figure2是霍夫空间可视化</span><br>fig = plt.figure(<span class="hljs-number">2</span>)<br>ax = plt.subplot(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>, <span class="hljs-number">1</span>)<br>ax.imshow(hough_img, origin=<span class="hljs-string">&#x27;lower&#x27;</span>)<br><span class="hljs-keyword">for</span> _, _, ri, ti <span class="hljs-keyword">in</span> rho_thetas:<br>    ax.scatter(ti, ri)<br>ax.set_ylabel(<span class="hljs-string">r&#x27;$\rho$&#x27;</span>)<br>ax.set_xlabel(<span class="hljs-string">r&#x27;$\theta$&#x27;</span>)<br>ax.set_title(<span class="hljs-string">&#x27;Hough space&#x27;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
+
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%89/">计算机视觉</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E4%BB%A3%E7%A0%81/">代码</a>
+                    
+                      <a class="hover-with-bg" href="/tags/RANSAC/">RANSAC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E9%9C%8D%E5%A4%AB%E5%8F%98%E6%8D%A2/">霍夫变换</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%892-%E8%BE%B9%E7%BC%98%E6%8F%90%E5%8F%96/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机视觉学习笔记#2 边缘提取：Canny（附代码）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/06/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86-%E5%80%92%E8%B0%B1/">
+                        <span class="hidden-mobile">语音信号处理 倒谱</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

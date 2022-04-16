@@ -1,0 +1,730 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="消息认证码（MAC，Message Authentication Code）能够使用一个密钥K来浓缩一个任意长的消息M，消息认证码的实现算法中，通常使用散列函数（hash function）实现。本文详细介绍MAC以及一些散列函数的原理与实现。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="消息认证码（MAC，Message Authentication Code）能够使用一个密钥K来浓缩一个任意长的消息M，消息认证码的实现算法中，通常使用散列函数（hash function）实现。本文详细介绍MAC以及一些散列函数的原理与实现。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学 消息认证码（MAC）与散列函数（hash 哈希函数） 附代码">
+<meta property="og:url" content="http://blog.kamino.link/2022/04/15/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E4%B8%8E%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="消息认证码（MAC，Message Authentication Code）能够使用一个密钥K来浓缩一个任意长的消息M，消息认证码的实现算法中，通常使用散列函数（hash function）实现。本文详细介绍MAC以及一些散列函数的原理与实现。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415100136.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415102245.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415132023.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415134122.jpg">
+<meta property="article:published_time" content="2022-04-15T01:00:00.000Z">
+<meta property="article:modified_time" content="2022-04-16T07:14:07.265Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="密码学">
+<meta property="article:tag" content="MAC">
+<meta property="article:tag" content="Hash">
+<meta property="article:tag" content="消息认证码">
+<meta property="article:tag" content="MD5">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415100136.png">
+  
+  <title>密码学 消息认证码（MAC）与散列函数（hash 哈希函数） 附代码 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="密码学 消息认证码（MAC）与散列函数（hash 哈希函数） 附代码">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-15 09:00" pubdate>
+        2022年4月15日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      7.8k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      24 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">密码学 消息认证码（MAC）与散列函数（hash 哈希函数） 附代码</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月16日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="密码学-消息认证码（MAC）与散列函数（hash）"><a href="#密码学-消息认证码（MAC）与散列函数（hash）" class="headerlink" title="密码学 消息认证码（MAC）与散列函数（hash）"></a>密码学 消息认证码（MAC）与散列函数（hash）</h1><p><strong>消息认证码（MAC，Message Authentication Code）</strong>能够使用一个密钥K来浓缩一个任意长的消息M，数学表示为$MAC=C_K(M)$。易知MAC是一种多对一的函数，主要用来使通信双方确信消息内容未被更改。MAC需要保证：</p>
+<ul>
+<li>假如某人已知消息$M$和$C_K(M)$，也无法构造$M’$使$C_K(M’)=C_K(M)$。</li>
+<li>假如改变$M$的一个或多个bit，消息认证码相同概率极低</li>
+<li>任意两个消息的消息认证码相同概率极低</li>
+</ul>
+<p>消息认证码的实现算法中，通常使用<strong>散列函数（hash function）</strong>实现，这种实现方法统称<strong>散列消息认证码（HMAC）</strong>。常用的散列函数包括：SHA-1、SHA-256、MD5。</p>
+<h2 id="HMAC"><a href="#HMAC" class="headerlink" title="HMAC"></a>HMAC</h2><p>HMAC在<code>RFC2104</code>中定义如下，其中$\oplus$是异或XOR，$||$是拼接。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415100136.png" srcset="/img/loading.gif" lazyload alt="HMAC"></p>
+<p>公式有点抽象，我画了个图。一开始要将密钥$K$得到$K’$，即把不定长的密钥通过补0或者hash得到定长的<code>b bit</code>密钥，<strong>这里的</strong>$b$是<strong>hash函数的分块大小</strong>。得到$K’$之后，需要和一个常数<code>ipad</code>进行异或，<code>ipad</code>是<code>0x36</code>的二进制循环重复。异或之后得到$S_i$，和消息进行拼接后送入Hash处理得到<code>n bit</code>，<strong>这里的</strong>$n$<strong>是hash函数的输出长度</strong>。之后和前面再进行一次类似的操作，就能得到最终结果。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415102245.jpg" srcset="/img/loading.gif" lazyload alt="HMAC示意图"></p>
+<h2 id="散列函数-HASH"><a href="#散列函数-HASH" class="headerlink" title="散列函数 HASH"></a>散列函数 HASH</h2><p>所有散列函数都有如下一个基本特性：<strong>如果两个散列值是不相同的（根据同一函数），那么这两个散列值的原始输入也是不相同的</strong>。但是假如不同的输入得到了相同的输出，就发生了<strong>“散列碰撞”</strong>。</p>
+<p>散列函数的输入一般是非常非常大的，可以将消息分块hash，输出值域是固定的。</p>
+<table>
+<thead>
+<tr>
+<th>算法名称</th>
+<th>block大小</th>
+<th>输出大小</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MD5</td>
+<td>512</td>
+<td>128</td>
+</tr>
+<tr>
+<td>SHA-0</td>
+<td>512</td>
+<td>160</td>
+</tr>
+<tr>
+<td>SHA-1</td>
+<td>512</td>
+<td>160</td>
+</tr>
+<tr>
+<td>SHA-256</td>
+<td>512</td>
+<td>256</td>
+</tr>
+<tr>
+<td>SHA-512</td>
+<td>1024</td>
+<td>512</td>
+</tr>
+</tbody></table>
+<h3 id="MD5原理"><a href="#MD5原理" class="headerlink" title="MD5原理"></a>MD5原理</h3><ol>
+<li><p><strong>对消息进行填充</strong></p>
+<p>满足填充后长度mod 512 = 448，留出64bit表示原始信息长度。</p>
+<p>填充方法是先填充一个<code>1</code>，然后全填充<code>0</code>。</p>
+<p>填充是必须存在的，假如长度是是960mod512=448，那也需要填充512bit。</p>
+<p>由于理论上信息无限长，所以表示信息长度的64bit进行取模循环使用。</p>
+</li>
+<li><p><strong>分组</strong></p>
+<p>将上面的数据分成<code>512bit</code>的block$\boldsymbol {M}$，然后每个block细分成16个<code>32bit</code>word，第$i$个word用$\boldsymbol {M_i}$表示。</p>
+</li>
+<li><p><strong>获取常数表</strong>$\boldsymbol T$</p>
+<p>$\boldsymbol T$中一共有64个元素，每个元素是32bit的数字，由下面公式算出：</p>
+<p>$\boldsymbol T_i = int(4294967296 \times abs(\sin(i)))$</p>
+</li>
+<li><p><strong>规定辅助函数F G H I</strong></p>
+<p>定义4个辅助函数如下：<br>$$<br>F(X,Y,Z)=(XY)\lor ((\neg X)Z)<br>$$</p>
+<p>$$<br>G(X,Y,Z)=(XZ)\lor (Y(\neg Z))<br>$$</p>
+<p>$$<br>H(X,Y,Z)=X \oplus Y \oplus Z<br>$$</p>
+<p>$$<br>I(X,Y,Z)=Y \oplus (X\lor\neg Z)<br>$$</p>
+</li>
+<li><p><strong>初始化寄存器A B C D</strong></p>
+<p>初始化A、B、C、D四个<code>32bit</code>的寄存器，初始值如下：</p>
+<figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-attribute">A</span>: <span class="hljs-number">01</span> <span class="hljs-number">23</span> <span class="hljs-number">45</span> <span class="hljs-number">67</span><br><span class="hljs-attribute">B</span>: <span class="hljs-number">89</span> ab cd ef<br><span class="hljs-attribute">C</span>: fe dc ba <span class="hljs-number">98</span><br><span class="hljs-attribute">D</span>: <span class="hljs-number">76</span> <span class="hljs-number">54</span> <span class="hljs-number">32</span> <span class="hljs-number">10</span><br></code></pre></td></tr></table></figure></li>
+<li><p><strong>进行运算</strong></p>
+<p>整体结构如下图，<strong>上一个block的输出作为当前block的输入</strong>（首个输入就用第5步的初始化），每一个block<strong>进行4轮运算，每轮运算又分成16步</strong>。在4轮结束之后，ABCD寄存器的值要和输入的ABCD寄存器值<strong>分别</strong>进行一个模32bit求和。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415132023.jpg" srcset="/img/loading.gif" lazyload alt="整体结构"></p>
+<p>每一步的具体情况如下图，图中<code>func</code>表示每一轮用到的辅助函数，就是第4点的<code>FGHI</code>，四个辅助函数分别对应4轮。图中所有的加法都是模32bit，<code>&lt;&lt;</code>表示循环左移s位。每一步需要三个参数<code>i,j,s</code>。这三个参数的确定如下：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220415134122.jpg" srcset="/img/loading.gif" lazyload alt="step结构"></p>
+<ul>
+<li><p><code>i</code></p>
+<p>设某一轮中第$k$步</p>
+<p>第一轮：$i=k$；</p>
+<p>第二轮：$i=(1+5k)mod16$；</p>
+<p>第三轮：$i=(5+3k)mod16$；</p>
+<p>第四轮：$i=(7k)mod16$；</p>
+</li>
+<li><p><code>j</code></p>
+<p>四轮总共有64步，从这个角度的第$j$步。</p>
+</li>
+<li><p><code>s</code></p>
+<p>第一轮：<code>7 12 17 22</code>循环使用</p>
+<p>第二轮：<code>5 9 14 20</code>循环使用</p>
+<p>第三轮：<code>4 11 16 23</code>循环使用</p>
+<p>第四轮：<code>6 10 15 21</code>循环使用</p>
+</li>
+</ul>
+</li>
+</ol>
+<h3 id="MD5实现"><a href="#MD5实现" class="headerlink" title="MD5实现"></a>MD5实现</h3><p>使用Python根据<code>RFC1321.txt</code>实现的MD5算法，<strong>转载请保留署名</strong>。</p>
+<blockquote>
+<p> 需要注意的是<strong>字节序</strong>！对应<code>reverse_endianness</code>这个函数。</p>
+<p>比如用4Byte保存的数字8本来是<code>00 00 00 08</code>，但是翻转字节序之后就是<code>08 00 00 00</code>了。</p>
+<p>算法中的寄存器初始值、信息长度、block信息和最后寄存器输出都要改变一下字节序。</p>
+</blockquote>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># -*- coding: utf-8 -*-</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># coded by Kamino, 2022, &lt;kamino@cuc.edu.cn&gt;</span><br><span class="hljs-comment">#</span><br><span class="hljs-comment"># It is a simple implementation of the MD5 algorithm in Python3.10.</span><br><span class="hljs-comment"># Distributed freely with attribution.</span><br><span class="hljs-comment"># This code is based on rfc1321.txt.</span><br><span class="hljs-comment"># It is not recommended to use this code in practice. For security</span><br><span class="hljs-comment"># and performance, please use hashlib.</span><br><span class="hljs-comment">#</span><br><span class="hljs-keyword">import</span> bitarray <span class="hljs-keyword">as</span> ba<br><span class="hljs-keyword">from</span> bitarray.util <span class="hljs-keyword">import</span> ba2int, int2ba, hex2ba<br><span class="hljs-keyword">from</span> typing <span class="hljs-keyword">import</span> <span class="hljs-type">Union</span><br><span class="hljs-keyword">import</span> hashlib  <span class="hljs-comment"># Only for evaluation</span><br><br><br><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MD5</span>:</span><br>    <span class="hljs-comment"># Constants</span><br>    T = [<br>        <span class="hljs-number">0xd76aa478</span>, <span class="hljs-number">0xe8c7b756</span>, <span class="hljs-number">0x242070db</span>, <span class="hljs-number">0xc1bdceee</span>, <span class="hljs-number">0xf57c0faf</span>, <span class="hljs-number">0x4787c62a</span>, <span class="hljs-number">0xa8304613</span>, <span class="hljs-number">0xfd469501</span>,<br>        <span class="hljs-number">0x698098d8</span>, <span class="hljs-number">0x8b44f7af</span>, <span class="hljs-number">0xffff5bb1</span>, <span class="hljs-number">0x895cd7be</span>, <span class="hljs-number">0x6b901122</span>, <span class="hljs-number">0xfd987193</span>, <span class="hljs-number">0xa679438e</span>, <span class="hljs-number">0x49b40821</span>,<br>        <span class="hljs-number">0xf61e2562</span>, <span class="hljs-number">0xc040b340</span>, <span class="hljs-number">0x265e5a51</span>, <span class="hljs-number">0xe9b6c7aa</span>, <span class="hljs-number">0xd62f105d</span>, <span class="hljs-number">0x2441453</span>, <span class="hljs-number">0xd8a1e681</span>, <span class="hljs-number">0xe7d3fbc8</span>,<br>        <span class="hljs-number">0x21e1cde6</span>, <span class="hljs-number">0xc33707d6</span>, <span class="hljs-number">0xf4d50d87</span>, <span class="hljs-number">0x455a14ed</span>, <span class="hljs-number">0xa9e3e905</span>, <span class="hljs-number">0xfcefa3f8</span>, <span class="hljs-number">0x676f02d9</span>, <span class="hljs-number">0x8d2a4c8a</span>,<br>        <span class="hljs-number">0xfffa3942</span>, <span class="hljs-number">0x8771f681</span>, <span class="hljs-number">0x6d9d6122</span>, <span class="hljs-number">0xfde5380c</span>, <span class="hljs-number">0xa4beea44</span>, <span class="hljs-number">0x4bdecfa9</span>, <span class="hljs-number">0xf6bb4b60</span>, <span class="hljs-number">0xbebfbc70</span>,<br>        <span class="hljs-number">0x289b7ec6</span>, <span class="hljs-number">0xeaa127fa</span>, <span class="hljs-number">0xd4ef3085</span>, <span class="hljs-number">0x4881d05</span>, <span class="hljs-number">0xd9d4d039</span>, <span class="hljs-number">0xe6db99e5</span>, <span class="hljs-number">0x1fa27cf8</span>, <span class="hljs-number">0xc4ac5665</span>,<br>        <span class="hljs-number">0xf4292244</span>, <span class="hljs-number">0x432aff97</span>, <span class="hljs-number">0xab9423a7</span>, <span class="hljs-number">0xfc93a039</span>, <span class="hljs-number">0x655b59c3</span>, <span class="hljs-number">0x8f0ccc92</span>, <span class="hljs-number">0xffeff47d</span>, <span class="hljs-number">0x85845dd1</span>,<br>        <span class="hljs-number">0x6fa87e4f</span>, <span class="hljs-number">0xfe2ce6e0</span>, <span class="hljs-number">0xa3014314</span>, <span class="hljs-number">0x4e0811a1</span>, <span class="hljs-number">0xf7537e82</span>, <span class="hljs-number">0xbd3af235</span>, <span class="hljs-number">0x2ad7d2bb</span>, <span class="hljs-number">0xeb86d391</span>,<br>    ]<br>    <span class="hljs-comment"># index of message word(32b)</span><br>    MI = [<br>        [<span class="hljs-number">0</span>, <span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>, <span class="hljs-number">5</span>, <span class="hljs-number">6</span>, <span class="hljs-number">7</span>, <span class="hljs-number">8</span>, <span class="hljs-number">9</span>, <span class="hljs-number">10</span>, <span class="hljs-number">11</span>, <span class="hljs-number">12</span>, <span class="hljs-number">13</span>, <span class="hljs-number">14</span>, <span class="hljs-number">15</span>],<br>        [<span class="hljs-number">1</span>, <span class="hljs-number">6</span>, <span class="hljs-number">11</span>, <span class="hljs-number">0</span>, <span class="hljs-number">5</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">4</span>, <span class="hljs-number">9</span>, <span class="hljs-number">14</span>, <span class="hljs-number">3</span>, <span class="hljs-number">8</span>, <span class="hljs-number">13</span>, <span class="hljs-number">2</span>, <span class="hljs-number">7</span>, <span class="hljs-number">12</span>],<br>        [<span class="hljs-number">5</span>, <span class="hljs-number">8</span>, <span class="hljs-number">11</span>, <span class="hljs-number">14</span>, <span class="hljs-number">1</span>, <span class="hljs-number">4</span>, <span class="hljs-number">7</span>, <span class="hljs-number">10</span>, <span class="hljs-number">13</span>, <span class="hljs-number">0</span>, <span class="hljs-number">3</span>, <span class="hljs-number">6</span>, <span class="hljs-number">9</span>, <span class="hljs-number">12</span>, <span class="hljs-number">15</span>, <span class="hljs-number">2</span>],<br>        [<span class="hljs-number">0</span>, <span class="hljs-number">7</span>, <span class="hljs-number">14</span>, <span class="hljs-number">5</span>, <span class="hljs-number">12</span>, <span class="hljs-number">3</span>, <span class="hljs-number">10</span>, <span class="hljs-number">1</span>, <span class="hljs-number">8</span>, <span class="hljs-number">15</span>, <span class="hljs-number">6</span>, <span class="hljs-number">13</span>, <span class="hljs-number">4</span>, <span class="hljs-number">11</span>, <span class="hljs-number">2</span>, <span class="hljs-number">9</span>],<br>    ]<br>    <span class="hljs-comment"># shift numbers</span><br>    S = [<br>        [<span class="hljs-number">7</span>, <span class="hljs-number">12</span>, <span class="hljs-number">17</span>, <span class="hljs-number">22</span>, <span class="hljs-number">7</span>, <span class="hljs-number">12</span>, <span class="hljs-number">17</span>, <span class="hljs-number">22</span>, <span class="hljs-number">7</span>, <span class="hljs-number">12</span>, <span class="hljs-number">17</span>, <span class="hljs-number">22</span>, <span class="hljs-number">7</span>, <span class="hljs-number">12</span>, <span class="hljs-number">17</span>, <span class="hljs-number">22</span>, ],<br>        [<span class="hljs-number">5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">14</span>, <span class="hljs-number">20</span>, <span class="hljs-number">5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">14</span>, <span class="hljs-number">20</span>, <span class="hljs-number">5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">14</span>, <span class="hljs-number">20</span>, <span class="hljs-number">5</span>, <span class="hljs-number">9</span>, <span class="hljs-number">14</span>, <span class="hljs-number">20</span>, ],<br>        [<span class="hljs-number">4</span>, <span class="hljs-number">11</span>, <span class="hljs-number">16</span>, <span class="hljs-number">23</span>, <span class="hljs-number">4</span>, <span class="hljs-number">11</span>, <span class="hljs-number">16</span>, <span class="hljs-number">23</span>, <span class="hljs-number">4</span>, <span class="hljs-number">11</span>, <span class="hljs-number">16</span>, <span class="hljs-number">23</span>, <span class="hljs-number">4</span>, <span class="hljs-number">11</span>, <span class="hljs-number">16</span>, <span class="hljs-number">23</span>, ],<br>        [<span class="hljs-number">6</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">21</span>, <span class="hljs-number">6</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">21</span>, <span class="hljs-number">6</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">21</span>, <span class="hljs-number">6</span>, <span class="hljs-number">10</span>, <span class="hljs-number">15</span>, <span class="hljs-number">21</span>, ]<br>    ]<br>    <span class="hljs-comment"># initial numbers of the 4 register</span><br>    INIT = [<span class="hljs-number">0x67452301</span>, <span class="hljs-number">0xefcdab89</span>, <span class="hljs-number">0x98badcfe</span>, <span class="hljs-number">0x10325476</span>]<br>    <span class="hljs-comment"># functions</span><br>    F = <span class="hljs-keyword">lambda</span> x, y, z: (x &amp; y) | ((~x) &amp; z)<br>    G = <span class="hljs-keyword">lambda</span> x, y, z: (x &amp; z) | (y &amp; (~z))<br>    H = <span class="hljs-keyword">lambda</span> x, y, z: x ^ y ^ z<br>    I = <span class="hljs-keyword">lambda</span> x, y, z: y ^ (x | (~z))<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">hash</span>(<span class="hljs-params">cls, src: <span class="hljs-type">Union</span>[<span class="hljs-built_in">bytes</span>, <span class="hljs-built_in">str</span>]</span>) -&gt; <span class="hljs-built_in">str</span>:</span><br>        processed_blocks = cls._preprocess(src)<br>        res = cls.md5_core(processed_blocks)<br>        <span class="hljs-keyword">return</span> res.tobytes().<span class="hljs-built_in">hex</span>()<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">reverse_endianness</span>(<span class="hljs-params">cls, x: ba.bitarray</span>) -&gt; ba.bitarray:</span><br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Change the endianness of x.</span><br><span class="hljs-string">        example when x is a number of 264:</span><br><span class="hljs-string">        00 00 00 00 00 00 01 08 -&gt; 08 01 00 00 00 00 00 00</span><br><span class="hljs-string">        :param x:</span><br><span class="hljs-string">        :return:</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        _x = x.tobytes().<span class="hljs-built_in">hex</span>(<span class="hljs-string">&#x27;_&#x27;</span>).split(<span class="hljs-string">&#x27;_&#x27;</span>)<br>        _x.reverse()<br>        <span class="hljs-keyword">return</span> hex2ba(<span class="hljs-string">&quot;&quot;</span>.join(_x))<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_preprocess</span>(<span class="hljs-params">cls, src: <span class="hljs-type">Union</span>[<span class="hljs-built_in">bytes</span>, <span class="hljs-built_in">str</span>]</span>):</span><br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Make blocks of 512bit/64B and pad to the standard format</span><br><span class="hljs-string">        :param src:</span><br><span class="hljs-string">        :return:</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        src = src.encode() <span class="hljs-keyword">if</span> <span class="hljs-built_in">type</span>(src) <span class="hljs-keyword">is</span> <span class="hljs-built_in">str</span> <span class="hljs-keyword">else</span> src<br>        length = <span class="hljs-built_in">len</span>(src)<br>        <span class="hljs-comment"># make blocks</span><br>        blocks = []<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">0</span>, <span class="hljs-built_in">len</span>(src), <span class="hljs-number">64</span>):<br>            block = ba.bitarray()<br>            block.frombytes(src[i: i + <span class="hljs-number">64</span>])<br>            blocks.append(block)<br><br>        <span class="hljs-comment"># pad 100...0</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(blocks) == <span class="hljs-number">0</span>:  <span class="hljs-comment"># prevent empty input</span><br>            blocks.append(ba.bitarray())<br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(blocks[-<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">448</span>:  <span class="hljs-comment"># less than 488bit: pad 100...0 until 488</span><br>            blocks[-<span class="hljs-number">1</span>].extend(<span class="hljs-string">&quot;1&quot;</span> + <span class="hljs-string">&quot;0&quot;</span> * (<span class="hljs-number">448</span> - <span class="hljs-built_in">len</span>(blocks[-<span class="hljs-number">1</span>]) - <span class="hljs-number">1</span>))<br>        <span class="hljs-keyword">elif</span> <span class="hljs-built_in">len</span>(blocks[-<span class="hljs-number">1</span>]) &lt; <span class="hljs-number">512</span>:  <span class="hljs-comment"># greater than or equal to 488：pad to 512，than add a new block of 448*0</span><br>            blocks[-<span class="hljs-number">1</span>].extend(<span class="hljs-string">&quot;1&quot;</span> + <span class="hljs-string">&quot;0&quot;</span> * (<span class="hljs-number">512</span> - <span class="hljs-built_in">len</span>(blocks[-<span class="hljs-number">1</span>]) - <span class="hljs-number">1</span>))<br>            blocks.append(ba.bitarray(<span class="hljs-string">&quot;0&quot;</span> * <span class="hljs-number">448</span>))<br>        <span class="hljs-keyword">else</span>:  <span class="hljs-comment"># equal to 512，directly add a padded block of 488</span><br>            blocks.append(ba.bitarray(<span class="hljs-string">&quot;1&quot;</span> + <span class="hljs-string">&quot;0&quot;</span> * <span class="hljs-number">447</span>))<br><br>        <span class="hljs-comment"># add the 64bit/8B length to the end</span><br>        <span class="hljs-comment"># NOTICE! low-order bytes are placed earlier</span><br>        <span class="hljs-comment"># example when length is 264:</span><br>        <span class="hljs-comment"># 00 00 00 00 00 00 01 08 -&gt; 08 01 00 00 00 00 00 00</span><br>        blocks[-<span class="hljs-number">1</span>] += cls.reverse_endianness(int2ba(length * <span class="hljs-number">8</span>, <span class="hljs-number">64</span>))<br>        <span class="hljs-keyword">return</span> blocks<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_cyclic_left_shift32</span>(<span class="hljs-params">cls, x, n</span>):</span><br>        <span class="hljs-string">&quot;&quot;&quot;Cyclic left shift n bit of a 32bit word&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># &amp; 0xffffffff means (mod 2^32)</span><br>        <span class="hljs-keyword">return</span> ((x &lt;&lt; n) | (x &gt;&gt; (<span class="hljs-number">32</span> - n))) &amp; <span class="hljs-number">0xffffffff</span><br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">_step</span>(<span class="hljs-params">cls, a, b, c, d, mi, tj, s, func</span>):</span><br>        <span class="hljs-string">&quot;&quot;&quot;process a step.&quot;&quot;&quot;</span><br>        <span class="hljs-comment"># &amp; 0xffffffff means (mod 2^32)</span><br>        e1 = (func(b, c, d) + a + mi + tj) &amp; <span class="hljs-number">0xffffffff</span><br>        e2 = (b + cls._cyclic_left_shift32(e1, s)) &amp; <span class="hljs-number">0xffffffff</span><br>        <span class="hljs-keyword">return</span> d, e2, b, c<br><br><span class="hljs-meta">    @classmethod</span><br>    <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">md5_core</span>(<span class="hljs-params">cls, blocks</span>):</span><br>        <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">        Core function of MD5 algorithm.</span><br><span class="hljs-string">        Notice the to reverse endianness!</span><br><span class="hljs-string">        &quot;&quot;&quot;</span><br>        func_list = (cls.F, cls.G, cls.H, cls.I)<br>        a, b, c, d = cls.INIT<br>        <span class="hljs-comment"># Block</span><br>        <span class="hljs-keyword">for</span> block <span class="hljs-keyword">in</span> blocks:<br>            aa, bb, cc, dd = a, b, c, d<br>            <span class="hljs-comment"># Round</span><br>            <span class="hljs-keyword">for</span> round_num <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>                <span class="hljs-comment"># Step</span><br>                <span class="hljs-keyword">for</span> step_num <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">16</span>):<br>                    block_bytes = block[cls.MI[round_num][step_num] * <span class="hljs-number">32</span>:cls.MI[round_num][step_num] * <span class="hljs-number">32</span> + <span class="hljs-number">32</span>]<br>                    aa, bb, cc, dd = cls._step(<br>                        aa, bb, cc, dd,<br>                        ba2int(cls.reverse_endianness(block_bytes)),<br>                        cls.T[round_num * <span class="hljs-number">16</span> + step_num],<br>                        cls.S[round_num][step_num],<br>                        func_list[round_num]<br>                    )<br>            a = (a + aa) &amp; <span class="hljs-number">0xffffffff</span><br>            b = (b + bb) &amp; <span class="hljs-number">0xffffffff</span><br>            c = (c + cc) &amp; <span class="hljs-number">0xffffffff</span><br>            d = (d + dd) &amp; <span class="hljs-number">0xffffffff</span><br>        <span class="hljs-keyword">return</span> cls.reverse_endianness(int2ba(a, <span class="hljs-number">32</span>)) + cls.reverse_endianness(int2ba(b, <span class="hljs-number">32</span>)) + \<br>               cls.reverse_endianness(int2ba(c, <span class="hljs-number">32</span>)) + cls.reverse_endianness(int2ba(d, <span class="hljs-number">32</span>))<br><br><br>test_suite = &#123;<br>    <span class="hljs-string">&quot;&quot;</span>: <span class="hljs-string">&quot;d41d8cd98f00b204e9800998ecf8427e&quot;</span>,<br>    <span class="hljs-string">&quot;a&quot;</span>: <span class="hljs-string">&quot;0cc175b9c0f1b6a831c399e269772661&quot;</span>,<br>    <span class="hljs-string">&quot;abc&quot;</span>: <span class="hljs-string">&quot;900150983cd24fb0d6963f7d28e17f72&quot;</span>,<br>    <span class="hljs-string">&quot;message digest&quot;</span>: <span class="hljs-string">&quot;f96b697d7cb7938d525a2f31aaf161d0&quot;</span>,<br>    <span class="hljs-string">&quot;abcdefghijklmnopqrstuvwxyz&quot;</span>: <span class="hljs-string">&quot;c3fcd3d76192e4007dfb496cca67e13b&quot;</span>,<br>    <span class="hljs-string">&quot;ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&quot;</span>: <span class="hljs-string">&quot;d174ab98d277d9f5a5611c2c9f419d9f&quot;</span>,<br>    <span class="hljs-string">&quot;12345678901234567890123456789012345678901234567890123456789012345678901234567890&quot;</span>: <span class="hljs-string">&quot;57edf4a22be3c955ac49da2e2107b67a&quot;</span><br>&#125;<br><br><span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> test_suite.items():<br>    <span class="hljs-comment"># my_res = md5(md5_pad(str2bin(k))).tobytes().hex()</span><br>    my_res = MD5.<span class="hljs-built_in">hash</span>(k)<br>    hashlib_res = hashlib.md5(k.encode()).hexdigest()<br>    truth_res = v<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;For message: \&quot;<span class="hljs-subst">&#123;k&#125;</span>\&quot;&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;My: <span class="hljs-subst">&#123;my_res&#125;</span>\nHashlib: <span class="hljs-subst">&#123;hashlib_res&#125;</span>\nTruth: <span class="hljs-subst">&#123;truth_res&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;\033[1;33;40m <span class="hljs-subst">&#123;my_res == hashlib_res == truth_res&#125;</span> \033[0m&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="SHA1"><a href="#SHA1" class="headerlink" title="SHA1"></a>SHA1</h3><p>未完待续……</p>
+<blockquote>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/HMAC">HMAC - Wikipedia</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=cBuHXDWp5Ek">Hash Based Message Authentication - YouTube</a></p>
+<p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E6%95%A3%E5%88%97%E5%87%BD%E6%95%B8">散列函数 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
+<p>RFC1321.txt</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                      <a class="hover-with-bg" href="/tags/MAC/">MAC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Hash/">Hash</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B6%88%E6%81%AF%E8%AE%A4%E8%AF%81%E7%A0%81/">消息认证码</a>
+                    
+                      <a class="hover-with-bg" href="/tags/MD5/">MD5</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%892-%E8%BE%B9%E7%BC%98%E6%8F%90%E5%8F%96/">
+                        <span class="hidden-mobile">计算机视觉学习笔记#2 边缘提取：Canny（附代码）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

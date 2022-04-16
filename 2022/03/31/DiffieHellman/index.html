@@ -18,20 +18,22 @@
   <meta name="keywords" content="Kamino">
   <meta name="description" content="密钥交换指的是两名用户在不安全信道中，在没有任何预先消息的情况下商量出一个密钥，从而建立一个安全信道。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Diffie Hellman 密钥交换原理、教程">
+<meta property="og:title" content="Diffie Hellman 密钥交换原理及ElGamal加密算法">
 <meta property="og:url" content="http://blog.kamino.link/2022/03/31/DiffieHellman/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
 <meta property="og:description" content="密钥交换指的是两名用户在不安全信道中，在没有任何预先消息的情况下商量出一个密钥，从而建立一个安全信道。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220404151755.jpg">
 <meta property="article:published_time" content="2022-03-31T12:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-03T02:40:58.674Z">
+<meta property="article:modified_time" content="2022-04-04T07:17:58.244Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="密码学">
 <meta property="article:tag" content="Diffie">
 <meta property="article:tag" content="Hellman">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220404151755.jpg">
   
-  <title>Diffie Hellman 密钥交换原理、教程 - Kamino&#39;s Blog</title>
+  <title>Diffie Hellman 密钥交换原理及ElGamal加密算法 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -190,7 +192,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Diffie Hellman 密钥交换原理、教程">
+            <span class="h2" id="subtitle" title="Diffie Hellman 密钥交换原理及ElGamal加密算法">
               
             </span>
 
@@ -211,7 +213,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      372 字
+      676 字
     </span>
   
 
@@ -220,7 +222,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      1 分钟
+      2 分钟
     </span>
   
 
@@ -257,16 +259,16 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Diffie Hellman 密钥交换原理、教程</h1>
+            <h1 style="display: none">Diffie Hellman 密钥交换原理及ElGamal加密算法</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年4月3日 上午
+                  本文最后更新于：2022年4月4日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Diffie-Hellman-密钥交换原理、教程"><a href="#Diffie-Hellman-密钥交换原理、教程" class="headerlink" title="Diffie Hellman 密钥交换原理、教程"></a>Diffie Hellman 密钥交换原理、教程</h1><p><strong>密钥交换</strong>指的是两名用户在不安全信道中，在没有任何预先消息的情况下商量出一个密钥，从而建立一个安全信道。</p>
+              <h1 id="Diffie-Hellman-密钥交换原理及ElGamal加密算法"><a href="#Diffie-Hellman-密钥交换原理及ElGamal加密算法" class="headerlink" title="Diffie Hellman 密钥交换原理及ElGamal加密算法"></a>Diffie Hellman 密钥交换原理及ElGamal加密算法</h1><p><strong>密钥交换</strong>指的是两名用户在不安全信道中，在没有任何预先消息的情况下商量出一个密钥，从而建立一个安全信道。</p>
 <p>Diffie和Hellman是两个人，他们在1976年发明了这个算法。</p>
 <p>算法安全性基于<strong>离散对数问题</strong>：已知p是质数，g和x是整数，计算$y=g^x\ mod\ p$快。但是已知p，g，y，计算x很困难。</p>
 <h2 id="过程"><a href="#过程" class="headerlink" title="过程"></a>过程</h2><ol>
@@ -277,6 +279,23 @@
 <li>Bob计算$K_b=A^b\ mod\ p=g^{ab}\ mod\ p$。</li>
 <li>可知$K_a=K_b$</li>
 </ol>
+<h2 id="ElGamal加密算法"><a href="#ElGamal加密算法" class="headerlink" title="ElGamal加密算法"></a>ElGamal加密算法</h2><blockquote>
+<p><strong>本原根</strong></p>
+<p>满足$a^m\equiv1(mod\ n)$，且$m=\phi(n)$，则$a$是$n$的本原根。</p>
+</blockquote>
+<p>Elgamal加密算法是基于Diffie Hellman 密钥交换的非对称加密算法，过程如下：</p>
+<ol>
+<li>选择质数$p$，公开</li>
+<li>计算模$p$情况下的本原根$g$，公开</li>
+<li>选择整数$X_A&lt;p$作为私钥</li>
+<li>计算公钥$Y_A=g^{X_A}\ mod\ p$</li>
+<li>设明文$M$，随机选择整数$k$，使$k$与$p-1$互质</li>
+<li>计算$C_1=g^k\ mod\ p$</li>
+<li>计算$C_2=(Y_A)^kM\ mod\ p$</li>
+<li>密文为$(C_1,C_2)$</li>
+<li>解密明文为$M=\frac{C_2}{C_1^{X_A}}\ mod\ p$</li>
+</ol>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220404151755.jpg" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
