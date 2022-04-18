@@ -1,0 +1,648 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="线性代数自用超基础笔记大学课堂上怎么可能听得懂（笑），跟着3Blue1Brown大神学吧！笔记可能不严谨，慎看！ 向量是什么？$\begin{bmatrix}-2\\ 3\end{bmatrix}$是一个原点在$(0,0)$，终点在$(-2,3)$的箭头。 $\begin{bmatrix}2\\ 1\\ 3\end{bmatrix}$是一个原点在$(0,0,0)$，终点在$(2,1,3)$的箭头。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="线性代数自用超基础笔记">
+<meta property="og:url" content="http://blog.kamino.link/2022/04/17/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E8%87%AA%E7%94%A8%E8%B6%85%E5%9F%BA%E7%A1%80%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="线性代数自用超基础笔记大学课堂上怎么可能听得懂（笑），跟着3Blue1Brown大神学吧！笔记可能不严谨，慎看！ 向量是什么？$\begin{bmatrix}-2\\ 3\end{bmatrix}$是一个原点在$(0,0)$，终点在$(-2,3)$的箭头。 $\begin{bmatrix}2\\ 1\\ 3\end{bmatrix}$是一个原点在$(0,0,0)$，终点在$(2,1,3)$的箭头。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417204330.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417212742.gif">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417220329.png">
+<meta property="article:published_time" content="2022-04-17T12:34:00.000Z">
+<meta property="article:modified_time" content="2022-04-18T04:05:00.735Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="线性代数">
+<meta property="article:tag" content="数学">
+<meta property="article:tag" content="矩阵">
+<meta property="article:tag" content="特征值">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417204330.png">
+  
+  <title>线性代数自用超基础笔记 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="线性代数自用超基础笔记">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-17 20:34" pubdate>
+        2022年4月17日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">线性代数自用超基础笔记</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月18日 中午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="线性代数自用超基础笔记"><a href="#线性代数自用超基础笔记" class="headerlink" title="线性代数自用超基础笔记"></a>线性代数自用超基础笔记</h1><p>大学课堂上怎么可能听得懂（笑），跟着<code>3Blue1Brown</code>大神学吧！笔记可能不严谨，慎看！</p>
+<h2 id="向量是什么？"><a href="#向量是什么？" class="headerlink" title="向量是什么？"></a>向量是什么？</h2><p>$\begin{bmatrix}-2\\ 3\end{bmatrix}$是一个原点在$(0,0)$，终点在$(-2,3)$的箭头。</p>
+<p>$\begin{bmatrix}2\\ 1\\ 3\end{bmatrix}$是一个原点在$(0,0,0)$，终点在$(2,1,3)$的箭头。</p>
+<p>向量可以相加、可以乘常数，表示这个箭头的变化。</p>
+<blockquote>
+<p>单个向量看做箭头比较合适</p>
+<p>多个向量看做点比较合适</p>
+</blockquote>
+<h3 id="基向量"><a href="#基向量" class="headerlink" title="基向量"></a>基向量</h3><p>二维空间中有两个特殊的向量$\hat{i},\hat{j}$，叫做基向量（basis vectors）。其它向量也可以表示成基向量乘常数然后相加，比如$\begin{bmatrix}-2\\ 3\end{bmatrix}$是$\hat{i}$乘常数-2，$\hat{j}$乘常数3之后相加。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417204330.png" srcset="/img/loading.gif" lazyload alt="基向量"></p>
+<h3 id="线性相关-线性无关"><a href="#线性相关-线性无关" class="headerlink" title="线性相关 线性无关"></a>线性相关 线性无关</h3><p>那假如我们选择另外两个向量当做基向量呢？显然，只要选择两个<strong>线性无关（Linearly independent）</strong>（不共线）的向量作为基向量，那就可以<strong>张成一个二维空间</strong>。假如<strong>线性相关（Linearly dependent）</strong>，那就只能张成一条直线。<strong>更高维的空间同理。</strong></p>
+<h2 id="矩阵乘法与线性变换（Linear-Transformation）"><a href="#矩阵乘法与线性变换（Linear-Transformation）" class="headerlink" title="矩阵乘法与线性变换（Linear Transformation）"></a>矩阵乘法与线性变换（Linear Transformation）</h2><p><strong>“变换”</strong>类似于一个“函数”，输入进一个向量，输出一个向量，而用“变换”这一次的原因是需要我们从<strong>运动</strong>的角度看待，即输入向量<code>运动</code>到输出向量上。而考虑<strong>整个变换</strong>，则要考虑空间内所有向量经过变换后到达对应的另一个向量。</p>
+<p>而<strong>线性</strong>变换指的是直线在变换之后仍然是直线，且原点固定。</p>
+<p>如何表示线性变换呢？只需要记录<strong>两个基向量变换后的位置</strong>就行。下面是一个例子，其中$\hat{i}$变换到了$(3,-2)$，而$\hat{j}$变换到了$(2,1)$。我们通常用矩阵来表示：$\begin{bmatrix}3&amp;2\\ -2&amp;1\end{bmatrix}$。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417212742.gif" srcset="/img/loading.gif" lazyload alt="线性变换"></p>
+<p>而矩阵乘法就能表示对某一个向量进行线性变换：<br>$$<br>\begin{bmatrix}a&amp;b\\ c&amp;d\end{bmatrix}\begin{bmatrix}x\\ y\end{bmatrix}<br>$$</p>
+<h2 id="行列式"><a href="#行列式" class="headerlink" title="行列式"></a>行列式</h2><p>既然矩阵能变换空间，我们来关注一下面积的变化：原空间中面积为1的区域变换后的面积就叫做<strong>行列式（determinant）</strong>。当变换后面积为0时，变换后的基肯定是线性相关的了。当变换的面积是负数时，其实是把空间翻了个面。 </p>
+<p><code>2x2</code>的行列式很好算，就是左上乘右下减去右上成左下。<br>$$<br>def(\begin{bmatrix}3&amp;2\\ 0&amp;2\end{bmatrix})=6<br>$$</p>
+<h2 id="线性方程组与矩阵"><a href="#线性方程组与矩阵" class="headerlink" title="线性方程组与矩阵"></a>线性方程组与矩阵</h2><p>线性方程组可以按照下面的方式写成矩阵，要求解就是找到一个向量$\vec{x}$，使用$A$变换后能变到$\vec{v}$上。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417220329.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="逆矩阵（inverse）"><a href="#逆矩阵（inverse）" class="headerlink" title="逆矩阵（inverse）"></a>逆矩阵（inverse）</h2><p>既然矩阵$A$能让$\vec{x}$变换到$\vec{v}$，那也会有另一个矩阵让$\vec{v}$变换到$\vec{x}$，即$\vec{x}=A^{-1}\vec{v}$，这就是<strong>矩阵的逆</strong>。</p>
+<p>显而易见，$A^{-1}A=AA^{-1}=E$，先变过去再变回来还是原来的基向量。</p>
+<p>矩阵的逆存在的条件是行列式不为零$det(A)\neq0$，因为被压缩成直线以后不能在变回来。</p>
+<h2 id="秩（Rank）"><a href="#秩（Rank）" class="headerlink" title="秩（Rank）"></a>秩（Rank）</h2><p>一个矩阵变换后空间的维数</p>
+<h2 id="基变换-相似矩阵"><a href="#基变换-相似矩阵" class="headerlink" title="基变换 相似矩阵"></a>基变换 相似矩阵</h2><p>现在有两个空间，我们可以用矩阵乘来将A空间的向量转换到B空间，但假如我想对A空间进行一个变换（旋转90°），那我要怎么得到这个变换在B空间的表示呢？</p>
+<p>假设$M$是我想要表示的变换，而$A$能够让一个向量从A空间变换到B空间，那么$M$在B空间的表示为：$A^{-1}MA$。</p>
+<p>而且，$A^{-1}MA$和$M$是相似矩阵。</p>
+<h2 id="特征值-特征向量（Eigenvalue-Eigenvector）"><a href="#特征值-特征向量（Eigenvalue-Eigenvector）" class="headerlink" title="特征值 特征向量（Eigenvalue Eigenvector）"></a>特征值 特征向量（Eigenvalue Eigenvector）</h2><p>某个矩阵$A$满足$\boldsymbol{A}\vec{v}=\lambda\vec{v}$时，$\vec{v}$是特征向量，$\lambda$是特征值。</p>
+<p>也就是说这个矩阵对向量$\vec{v}$变换后，不改变方向，只改变长度到$\lambda$倍。</p>
+<p>解法就是移项到左边$(\boldsymbol{A}-\lambda\boldsymbol{I})\vec{v}=0$，默认特征向量不为0，那么就是求让特征向量在变换后是零向量的矩阵，即$det(\boldsymbol{A}-\lambda\boldsymbol{I})=0$。</p>
+<p>特别的，<strong>对角矩阵</strong>的对角元就是特征值。</p>
+<h3 id="特征值分解"><a href="#特征值分解" class="headerlink" title="特征值分解"></a>特征值分解</h3><p>结合基变换，我们可以对相似矩阵进行<strong>特征值分解</strong>。一个线性变换可以看作是<code>旋转+拉伸</code>，特征值分解就是把<code>旋转</code>和<code>拉伸</code>分开。对于某个矩阵$\boldsymbol{A}$，分解成<br>$$<br>A=P\Lambda P^{-1}<br>$$<br>其中P是表示旋转变换（基变换），且列向量是单位化的特征向量。而$\Lambda$是对角矩阵，表示拉伸变换，对角元是特征值。</p>
+<p>其实反过来就是$P^{-1}AP=\Lambda $，就是当前这个矩阵在另一个对基向量表示的空间下是对角矩阵。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0/">线性代数</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%95%B0%E5%AD%A6/">数学</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%9F%A9%E9%98%B5/">矩阵</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E7%89%B9%E5%BE%81%E5%80%BC/">特征值</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%894-%E5%B1%80%E9%83%A8%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/">
+                        <span class="hidden-mobile">计算机视觉学习笔记#4 局部特征提取 Harris角点检测、Blob斑点检测、SIFT（附代码）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
