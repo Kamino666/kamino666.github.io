@@ -1,0 +1,713 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）为什么要进行频域分析？因为人耳是根据频率来听声音的，如下图，耳蜗的各个部分可以分析出不同频率的信号。  如何获取频谱信号的频域都是使用快速傅里叶变换（Fast Fourier Transform, FFT）来获得的，为了获得良好的频域信号，需要先进行三个步骤：预加重（pre-emphasis）、端点检测（endpoint de">
+<meta property="og:type" content="article">
+<meta property="og:title" content="语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）">
+<meta property="og:url" content="http://blog.kamino.link/2022/04/06/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%862-%E9%A2%91%E5%9F%9F%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）为什么要进行频域分析？因为人耳是根据频率来听声音的，如下图，耳蜗的各个部分可以分析出不同频率的信号。  如何获取频谱信号的频域都是使用快速傅里叶变换（Fast Fourier Transform, FFT）来获得的，为了获得良好的频域信号，需要先进行三个步骤：预加重（pre-emphasis）、端点检测（endpoint de">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419132005.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419132834.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419134509.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419141156.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419145252.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412121426.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420101041.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420101121.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420101833.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420102059.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420105025.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420105844.png">
+<meta property="article:published_time" content="2022-04-06T07:30:00.000Z">
+<meta property="article:modified_time" content="2022-04-20T02:59:07.596Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="语音信号处理">
+<meta property="article:tag" content="语谱图">
+<meta property="article:tag" content="倒谱">
+<meta property="article:tag" content="MFCC">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419132005.png">
+  
+  <title>语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码） - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2022-04-06 15:30" pubdate>
+        2022年4月6日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2022年4月20日 上午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="语音信号处理-2-频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）"><a href="#语音信号处理-2-频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）" class="headerlink" title="语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）"></a>语音信号处理#2 频域分析：傅里叶频谱、语谱图、倒谱、MFCC（附代码）</h1><p>为什么要进行频域分析？因为人耳是根据频率来听声音的，如下图，耳蜗的各个部分可以分析出不同频率的信号。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419132005.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="如何获取频谱"><a href="#如何获取频谱" class="headerlink" title="如何获取频谱"></a>如何获取频谱</h2><p><strong>信号的频域都是使用快速傅里叶变换（Fast Fourier Transform, FFT）来获得的</strong>，为了获得良好的频域信号，需要先进行三个步骤：<strong>预加重（pre-emphasis）、端点检测（endpoint detection）、分帧加窗（enframe, windowing</strong>）。</p>
+<ol>
+<li><p>预加重</p>
+<p>如下图，假如不进行预加重，那高频的信号会越来越低（如蓝线），所以我们要对高频信号提前施加权重，使用公式$x(n)=x(n)-ax(n-1)$，其中$0&lt;&lt;a&lt;1$，一般取0.98等较大的值。</p>
+<p>公式表示在z域就是$H(z)=1-az^{-1}$。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419132834.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>端点检测</p>
+<p>一段语音中人不可能一直在说话，而是有停顿，所以我们要检测停顿以免干扰信号。简单的可以用短时能量来检测，比如<code>sh</code>这个发音（“是”发音的前面）很像噪声，但是计算出来的能量不一样。人发音的时候能量更大，而噪声的能量更小，需要设定一个阈值就能分开。这个阈值可以通过噪声样本得到，即让人先沉默一段时间，然后这段时间的E作为阈值。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419134509.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>分帧加窗</p>
+<p>上一节说过啦，就不再说了</p>
+</li>
+</ol>
+<p>进行完上面这些预处理之后，就可以直接FFT到频域啦。语音信号可以被可视化为语谱图，横轴表示时间，纵轴表示频率，颜色表示频率的对应的值。要注意的是可能需要对语谱图$10log_{10}$更能看清，并且为了让0频率在中间，可以用<code>fftshift</code>挪过去。</p>
+<h3 id="MATLAB实现"><a href="#MATLAB实现" class="headerlink" title="MATLAB实现"></a>MATLAB实现</h3><p>可以看到预加重了的信号高频更绿，也就是把高频提升了起来。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419141156.png" srcset="/img/loading.gif" lazyload alt="image-20220419141156085"></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs matlab">clear all<br>close all<br>clc<br><br><span class="hljs-comment">%% 分帧</span><br><span class="hljs-comment">% 输入文件</span><br>input_audio = <span class="hljs-string">&#x27;yiersansi.m4a&#x27;</span>;<br><span class="hljs-comment">% 读取</span><br>[x,Fs] = audioread(input_audio);<br><span class="hljs-comment">% 预加重</span><br>x = x(<span class="hljs-number">2</span>:<span class="hljs-keyword">end</span>,<span class="hljs-number">1</span>) - <span class="hljs-number">0.98</span> * x(<span class="hljs-number">1</span>:<span class="hljs-keyword">end</span><span class="hljs-number">-1</span>,<span class="hljs-number">1</span>);<br>[len,~] = <span class="hljs-built_in">size</span>(x);<br><span class="hljs-comment">% 配置</span><br>frame_second = <span class="hljs-number">20</span>; <span class="hljs-comment">% ms</span><br>overlap_percent = <span class="hljs-number">0.5</span>;<br>frame_size = <span class="hljs-built_in">floor</span>(Fs * <span class="hljs-number">0.001</span> * frame_second);<br>overlap = <span class="hljs-built_in">floor</span>(overlap_percent * frame_size);<br><span class="hljs-comment">% 分帧</span><br><span class="hljs-keyword">for</span> n = <span class="hljs-number">1</span>:(frame_size-overlap):len-frame_size<br>    num = (n<span class="hljs-number">-1</span>) / (frame_size-overlap) + <span class="hljs-number">1</span>;<br>    y(:,num) = x(n:n+frame_size<span class="hljs-number">-1</span>);<br><span class="hljs-keyword">end</span><br>[d,frame_num] = <span class="hljs-built_in">size</span>(y);<br><br><span class="hljs-comment">%% 加窗</span><br>w = hamming(d);<br><span class="hljs-keyword">for</span> n = <span class="hljs-number">1</span>:frame_num<br>    y_hat(:,n) = <span class="hljs-built_in">abs</span>(fftshift(fft(y(:,n) .* w))) .^ <span class="hljs-number">2</span>;<br><span class="hljs-keyword">end</span><br><br><span class="hljs-comment">%% 展示</span><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">1</span>);subplot(<span class="hljs-number">121</span>);<span class="hljs-built_in">plot</span>(x);<br>subplot(<span class="hljs-number">122</span>);imagesc(<span class="hljs-number">10</span>*<span class="hljs-built_in">log10</span>(y_hat)); title(<span class="hljs-string">&#x27;语谱图&#x27;</span>);xlabel(<span class="hljs-string">&#x27;帧数&#x27;</span>); ylabel(<span class="hljs-string">&#x27;功率谱&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="倒谱（Cepstrum）"><a href="#倒谱（Cepstrum）" class="headerlink" title="倒谱（Cepstrum）"></a>倒谱（Cepstrum）</h2><p>倒谱来源于语音信号的建模：语音信号$z(t)$可以看作是<strong>声门激励信号</strong>$x(t)$和<strong>声道冲激响应</strong>$y(t)$的<strong>卷积</strong>：$z(t)=x(t)<em>y(t)$。<strong>声门</strong>是声带之间的区域，声门每开启和关闭一次的时间叫做<strong>基音周期</strong>，声道是从声门到嘴唇的通道，由咽、鼻、口构成，其中口腔是最重要的部分。也就是说，*<em>人发出的语音就是声道冲激响应随着声门一次次发出的信号。</em></em></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220419145252.png" srcset="/img/loading.gif" lazyload></p>
+<p><strong>声门激励信号</strong>$x(t)$：发清音时（声带不振动，如拼音b p），为能量较小的白噪声；发浊音时（声带振动，如拼音m n），为以<strong>基音周期</strong>为周期的冲激序列。</p>
+<p><strong>声道冲激响应</strong>$y(t)$：是一个双边衰减序列。</p>
+<p><strong>基音周期</strong>：据统计，人的基音周期$T_p$范围为$[2.5,20]ms$，也就是$[50,400]Hz$。假如采样频率是$10kHz$，那么计算下来基音周期就是$[25,200]$个点。对应关系是$2.5ms=400Hz=25\ point$。</p>
+<p>因为这两个信号是卷积在一起的，为了把这两个分开，我们要解卷积，可以使用<strong>同态处理</strong>方法，<strong>将卷积变成相加</strong>。</p>
+<h3 id="同态处理"><a href="#同态处理" class="headerlink" title="同态处理"></a>同态处理</h3><p>同态处理指的是将<strong>非线性组合信号</strong>通过某种变换转换成<strong>线性组合信号</strong>，然后通过线性操作进行处理的方式。</p>
+<ol>
+<li><p>$z(t)=x(t)y(t)$</p>
+<p>这种相乘的非线性组合信号正常来说很难分开，可以先进行log运算转换成$\log z(t)=\log x(t)+log y(t)$。然后DFT到频域进行处理，然后再IDFT回来再进行个指数运算就能转换回来，<strong>是图像中的同态滤波</strong>。</p>
+</li>
+<li><p>$z(t)=x(t)*y(t)$</p>
+<p>时域卷积转到频域就是相乘$Z(w)=X(w)Y(w)$，然后和上面这种情况一样$\log Z(w)=\log X(w) + \log Y(w)$，再转回时域进行线性处理。</p>
+<p>下图(b)是卷积同态系统，先经过特征系统，再线性处理，最后逆特征系统。特征系统就是一个<code>Z变换 -&gt; log/e -&gt; 逆Z变换</code>的过程。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412121426.jpg" srcset="/img/loading.gif" lazyload alt="卷积同态系统"></p>
+</li>
+</ol>
+<h3 id="计算倒谱与复倒谱"><a href="#计算倒谱与复倒谱" class="headerlink" title="计算倒谱与复倒谱"></a>计算倒谱与复倒谱</h3><p>倒谱（Cepstrum）的英文就是频谱（Spectrum）前四个字母倒过来。</p>
+<ul>
+<li>$z(t)$的复倒谱$\hat z(t)$就是进行<strong>Z变换</strong>后取<strong>对数</strong>然后再<strong>逆Z变换</strong>的结果，这个过程也叫做<strong>特征系统</strong>$D_*[\cdot]$。</li>
+<li>$z(t)$的倒谱$\hat z(t)$也差不多，就是在Z变换之后会<strong>取幅值</strong>，因为一般不注重相位信息。</li>
+</ul>
+<p><strong>实际中不用Z变换，直接FFT。</strong></p>
+<h3 id="利用倒谱求共振峰和基音频率"><a href="#利用倒谱求共振峰和基音频率" class="headerlink" title="利用倒谱求共振峰和基音频率"></a>利用倒谱求共振峰和基音频率</h3><p>共振峰就是频谱的包络，基音频率就是倒谱的一个峰值</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420101041.png" srcset="/img/loading.gif" lazyload alt="共振峰"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420101121.png" srcset="/img/loading.gif" lazyload alt="基音频率"></p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br></pre></td><td class="code"><pre><code class="hljs matlab"><span class="hljs-comment">% 倒谱分析</span><br>clear all; clc; close all;<br><span class="hljs-comment">%% 读取</span><br>input_audio = <span class="hljs-string">&#x27;F716.wav&#x27;</span>;                       <span class="hljs-comment">% 文件名</span><br>[yy,fs] = audioread(input_audio);  <br>start = <span class="hljs-number">2500</span>;                                   <span class="hljs-comment">% 开始的采样点</span><br>nfft = <span class="hljs-number">2048</span>;                                    <span class="hljs-comment">% FFT长度</span><br>time = (<span class="hljs-number">0</span>:nfft<span class="hljs-number">-1</span>)/fs;                           <span class="hljs-comment">% 时间刻度</span><br>yy = yy(<span class="hljs-number">2</span>:<span class="hljs-keyword">end</span>,<span class="hljs-number">1</span>) - <span class="hljs-number">0.98</span> * yy(<span class="hljs-number">1</span>:<span class="hljs-keyword">end</span><span class="hljs-number">-1</span>,<span class="hljs-number">1</span>);        <span class="hljs-comment">% 预加重</span><br>y = yy(start:start<span class="hljs-number">-1</span>+nfft,:) .* hanning(nfft);  <span class="hljs-comment">% 模拟分帧</span><br><br><span class="hljs-comment">%% 展示原波形</span><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">1</span>), subplot <span class="hljs-number">211</span>; <span class="hljs-built_in">plot</span>(time,y,<span class="hljs-string">&#x27;k&#x27;</span>);     <span class="hljs-comment">% 画出信号波形</span><br>title(<span class="hljs-string">&#x27;信号波形&#x27;</span>); ylabel(<span class="hljs-string">&#x27;幅值&#x27;</span>); xlabel([<span class="hljs-string">&#x27;时间/s&#x27;</span>]); grid;<br><br><span class="hljs-comment">%% DFT的模的对数值</span><br>Y=<span class="hljs-built_in">log</span>(<span class="hljs-built_in">abs</span>(fft(y)));<br>nn=<span class="hljs-number">1</span>:nfft/<span class="hljs-number">2</span>; ff=(nn<span class="hljs-number">-1</span>)*fs/nfft;               <span class="hljs-comment">% 计算频率刻度</span><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">2</span>); subplot <span class="hljs-number">311</span>; <span class="hljs-built_in">plot</span>(ff,Y(nn),<span class="hljs-string">&#x27;k&#x27;</span>);   <span class="hljs-comment">% 信号的频谱，对应ppt22页(b)</span><br>grid on; <span class="hljs-built_in">hold</span> on;<br><br><span class="hljs-comment">%% 倒谱图</span><br>z=ifft(Y);                                    <span class="hljs-comment">% 然后ifft回来得到倒谱</span><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">1</span>),subplot <span class="hljs-number">212</span>; <span class="hljs-built_in">plot</span>(time,z,<span class="hljs-string">&#x27;k&#x27;</span>); <span class="hljs-built_in">hold</span> on;      <span class="hljs-comment">% 画出倒谱图 </span><br>axis([<span class="hljs-number">0</span> time(<span class="hljs-number">512</span>) <span class="hljs-number">-0.15</span> <span class="hljs-number">0.15</span>]); grid;         <span class="hljs-comment">% 倒谱对称的，就看一半</span><br>ylabel(<span class="hljs-string">&#x27;幅值&#x27;</span>); title(<span class="hljs-string">&#x27;信号倒谱图&#x27;</span>); <br><br><span class="hljs-comment">%% 分离声门激励脉冲和声道冲激响应</span><br>mcep=<span class="hljs-built_in">floor</span>(fs / <span class="hljs-number">500</span>);                                <span class="hljs-comment">% 认为基音频率都应低于500HZ</span><br><br><span class="hljs-comment">%% 声道冲激响应</span><br>zy=z(<span class="hljs-number">1</span>:mcep+<span class="hljs-number">1</span>); <span class="hljs-comment">% 0~40（mcep）区间构成声道冲激响应的倒谱序列</span><br><span class="hljs-comment">% [左边的40个点 凑0 左边的40个点的倒序]</span><br><span class="hljs-comment">% 就是把那些需要的点提出来然后其他部分填0填到1024去做FFT</span><br>zy=[zy&#x27; <span class="hljs-built_in">zeros</span>(<span class="hljs-number">1</span>,nfft<span class="hljs-number">-2</span>*mcep<span class="hljs-number">-1</span>) zy(<span class="hljs-keyword">end</span>:<span class="hljs-number">-1</span>:<span class="hljs-number">2</span>)&#x27;];<br>ZY=fft(zy);                                             <span class="hljs-comment">% 计算声道冲激响应的频谱</span><br><span class="hljs-comment">%ZY=ifft(exp(fft(zy)));                                 % 逆特征</span><br><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">2</span>); subplot <span class="hljs-number">312</span>;<br><span class="hljs-built_in">plot</span>(ff,<span class="hljs-built_in">real</span>(ZY(nn)), <span class="hljs-string">&#x27;k&#x27;</span>); grid;<br>title(<span class="hljs-string">&#x27;声道冲激响频谱&#x27;</span>); ylabel(<span class="hljs-string">&#x27;幅值&#x27;</span>); xlabel([<span class="hljs-string">&#x27;频率/Hz&#x27;</span>]); <br><br><span class="hljs-comment">%% 声门激励脉冲</span><br><span class="hljs-comment">% 和上面zy的取值区间刚好错开</span><br>ft=[<span class="hljs-built_in">zeros</span>(<span class="hljs-number">1</span>,mcep+<span class="hljs-number">1</span>) z(mcep+<span class="hljs-number">2</span>:<span class="hljs-keyword">end</span>-mcep)&#x27; <span class="hljs-built_in">zeros</span>(<span class="hljs-number">1</span>,mcep)];<br>FT=fft(ft);                                  <span class="hljs-comment">% 计算声门激励脉冲的频谱</span><br><span class="hljs-comment">%FT=ifft(exp(fft(ft)));                      % 逆特征</span><br><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">2</span>)<br>subplot <span class="hljs-number">313</span>; <span class="hljs-built_in">plot</span>(ff,<span class="hljs-built_in">abs</span>(FT(nn)),<span class="hljs-string">&#x27;k&#x27;</span>); grid;<span class="hljs-comment">% 画出声门激励脉冲的频谱</span><br>title(<span class="hljs-string">&#x27;声门激励脉冲频谱&#x27;</span>)<br>ylabel(<span class="hljs-string">&#x27;幅值&#x27;</span>); xlabel([<span class="hljs-string">&#x27;频率/Hz&#x27;</span>]); <br><br><span class="hljs-comment">%% 求共振峰</span><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">2</span>), subplot <span class="hljs-number">311</span>;<span class="hljs-built_in">hold</span> on;<br><span class="hljs-built_in">plot</span>(ff, <span class="hljs-built_in">real</span>(ZY(nn)), <span class="hljs-string">&#x27;red&#x27;</span>); <span class="hljs-built_in">hold</span> on;<br>[pks, locs] = findpeaks(<span class="hljs-built_in">real</span>(ZY(nn)));<br><span class="hljs-built_in">scatter</span>(ff(locs), pks, <span class="hljs-string">&#x27;red&#x27;</span>, <span class="hljs-string">&#x27;filled&#x27;</span>);<br>axis([<span class="hljs-number">0</span> <span class="hljs-number">12000</span> <span class="hljs-number">-10</span> <span class="hljs-number">3</span>]);<br>grid on;<br><span class="hljs-built_in">hold</span> off;<br>title(<span class="hljs-string">&#x27;共振峰&#x27;</span>);<br><br><span class="hljs-comment">%% 求基音频率</span><br><span class="hljs-comment">% 划定基音频率的范围</span><br>st_point = <span class="hljs-built_in">floor</span>(fs / <span class="hljs-number">500</span>);<br>end_point = <span class="hljs-built_in">floor</span>(fs / <span class="hljs-number">50</span>);<br>loc = <span class="hljs-built_in">find</span>(<span class="hljs-built_in">max</span>(z(st_point:end_point)) == z(st_point:end_point)) + st_point - <span class="hljs-number">1</span>;  <span class="hljs-comment">% 基音频率的位置</span><br>pitch_freq = <span class="hljs-number">1</span> / time(loc)                                        <span class="hljs-comment">% Hz</span><br><span class="hljs-built_in">figure</span>(<span class="hljs-number">1</span>);subplot <span class="hljs-number">212</span>;<br><span class="hljs-comment">% 标出基音频率范围和基音频率点</span><br><span class="hljs-built_in">scatter</span>(time([loc, st_point, end_point]), z([loc, st_point, end_point]), <span class="hljs-string">&#x27;red&#x27;</span>);<br></code></pre></td></tr></table></figure>
+
+<h2 id="MFCC"><a href="#MFCC" class="headerlink" title="MFCC"></a>MFCC</h2><p>MFCC是Mel Frequency Cepstrum Coefficient梅尔频率倒谱系数的缩写，是语音识别领域常用的一种特征提取方式。</p>
+<p>MFCC同样也是模拟人的耳蜗，耳蜗不同的地方听到的是不同的频率，但是之间仍然有交叉<strong>重叠</strong>，并不是说这边听<code>40~50Hz</code>，另外一边听<code>50~60Hz</code>。所以MFCC使用三角滤波，对某个频率周围进行加权（类似计算机视觉里常用的高斯平滑）。还有一个问题，就是耳蜗听频率<strong>并不是均匀分布</strong>的，而是越高频越稀疏，所以MFCC使用不同宽度的三角波，越高频越宽，这叫做Mel-scale滤波器组。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420101833.png" srcset="/img/loading.gif" lazyload alt="重叠与三角波"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420102059.png" srcset="/img/loading.gif" lazyload alt="滤波器组"></p>
+<p>具体来说，MFCC流程图如下，先FFT再log（和求倒谱一样的思路），然后施加不同宽度的三角波，但是实际上我们是也可以通过改变横轴尺度来实现，这就叫<strong>Mel-Scaling</strong>。最后，不同于倒谱的是，我们求<strong>DCT</strong>而不是求IFFT来得到MFCC。</p>
+<p>使用DCT的好处有：</p>
+<ul>
+<li>比FFT更简单</li>
+<li>得到的是实数值</li>
+<li>能聚焦不同频段的能量</li>
+<li>能减少维度</li>
+</ul>
+<p>在进行DCT之后，我们取<strong>前12到13个数字</strong>作为特征（这些参数包含了大部分的信息），并且我们还求这些数字的<strong>一阶导数和二阶导数</strong>，<strong>总共加起来每个音频帧的MFCC有39个参数</strong>。</p>
+<pre><code class=" mermaid">graph LR
+A[原始音频信号] --&gt; B[FFT]
+B --&gt; C[Log]
+C --&gt; D[Mel-Scaling]
+D --&gt; E[离散余弦变换 DCT]
+E --&gt; F((MFCC))
+</code></pre>
+
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420105025.png" srcset="/img/loading.gif" lazyload alt="Mel-Scaling"></p>
+<p>最后，我们可以可视化MFCC如下图</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420105844.png" srcset="/img/loading.gif" lazyload alt="可视化MFCC"></p>
+<blockquote>
+<p>参考资料：</p>
+<p>语音信号处理（第3版） 赵力等 机械工业出版社</p>
+<p>台湾大学公开课 數位語音處理概論 李琳山 教授</p>
+<p><a target="_blank" rel="noopener" href="http://fancyerii.github.io/books/mfcc/">MFCC特征提取教程 - 李理的博客 (fancyerii.github.io)</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=4_SH2nfbQZ8">Mel-Frequency Cepstral Coefficients Explained Easily - YouTube</a></p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">语音信号处理</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">语音信号处理</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%AF%AD%E8%B0%B1%E5%9B%BE/">语谱图</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%80%92%E8%B0%B1/">倒谱</a>
+                    
+                      <a class="hover-with-bg" href="/tags/MFCC/">MFCC</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%893-%E6%8B%9F%E5%90%88/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机视觉学习笔记#3 拟合：最小二乘法、RANSAC、Hough霍夫变换（附代码）</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%891-%E5%AF%BC%E5%BC%95/">
+                        <span class="hidden-mobile">计算机视觉学习笔记#1 导引</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

@@ -13,15 +13,15 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。局部特征（Local Feature）相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被识别出来。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="计算机视觉学习笔记#4 局部特征点提取 Harris角点检测、Blob斑点检测、SIFT（附代码）之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。局部特征（Local Feature）相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被">
+  <meta name="description" content="之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。局部特征（Local Feature）相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被识别出来。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="计算机视觉学习笔记#4 局部特征提取 Harris角点检测、Blob斑点检测、SIFT（附代码）">
+<meta property="og:title" content="计算机视觉学习笔记#4 局部特征提取 Harris角点检测、SIFT尺度不变检测（附代码）">
 <meta property="og:url" content="http://blog.kamino.link/2022/04/17/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%894-%E5%B1%80%E9%83%A8%E7%89%B9%E5%BE%81%E6%8F%90%E5%8F%96/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="计算机视觉学习笔记#4 局部特征点提取 Harris角点检测、Blob斑点检测、SIFT（附代码）之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。局部特征（Local Feature）相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被">
+<meta property="og:description" content="之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。局部特征（Local Feature）相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被识别出来。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417182254.jpeg">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417182749.png">
@@ -33,8 +33,13 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418122543.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418153714.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418153758.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418201054.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418201200.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418203836.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420132329.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420163847.png">
 <meta property="article:published_time" content="2022-04-17T12:30:00.000Z">
-<meta property="article:modified_time" content="2022-04-18T07:38:24.906Z">
+<meta property="article:modified_time" content="2022-04-26T12:22:27.434Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="计算机视觉">
 <meta property="article:tag" content="代码">
@@ -43,7 +48,7 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417182254.jpeg">
   
-  <title>计算机视觉学习笔记#4 局部特征提取 Harris角点检测、Blob斑点检测、SIFT（附代码） - Kamino&#39;s Blog</title>
+  <title>计算机视觉学习笔记#4 局部特征提取 Harris角点检测、SIFT尺度不变检测（附代码） - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -202,7 +207,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="计算机视觉学习笔记#4 局部特征提取 Harris角点检测、Blob斑点检测、SIFT（附代码）">
+            <span class="h2" id="subtitle" title="计算机视觉学习笔记#4 局部特征提取 Harris角点检测、SIFT尺度不变检测（附代码）">
               
             </span>
 
@@ -223,7 +228,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4.3k 字
+      6.5k 字
     </span>
   
 
@@ -232,7 +237,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      13 分钟
+      20 分钟
     </span>
   
 
@@ -269,16 +274,16 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">计算机视觉学习笔记#4 局部特征提取 Harris角点检测、Blob斑点检测、SIFT（附代码）</h1>
+            <h1 style="display: none">计算机视觉学习笔记#4 局部特征提取 Harris角点检测、SIFT尺度不变检测（附代码）</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年4月18日 下午
+                  本文最后更新于：2022年4月26日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="计算机视觉学习笔记-4-局部特征点提取-Harris角点检测、Blob斑点检测、SIFT（附代码）"><a href="#计算机视觉学习笔记-4-局部特征点提取-Harris角点检测、Blob斑点检测、SIFT（附代码）" class="headerlink" title="计算机视觉学习笔记#4 局部特征点提取 Harris角点检测、Blob斑点检测、SIFT（附代码）"></a>计算机视觉学习笔记#4 局部特征点提取 Harris角点检测、Blob斑点检测、SIFT（附代码）</h1><p>之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。<strong>局部特征（Local Feature）</strong>相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被识别出来。</p>
+              <h1 id="计算机视觉学习笔记-4-局部特征提取-Harris角点检测、SIFT尺度不变检测（附代码）"><a href="#计算机视觉学习笔记-4-局部特征提取-Harris角点检测、SIFT尺度不变检测（附代码）" class="headerlink" title="计算机视觉学习笔记#4 局部特征提取 Harris角点检测、SIFT尺度不变检测（附代码）"></a>计算机视觉学习笔记#4 局部特征提取 Harris角点检测、SIFT尺度不变检测（附代码）</h1><p>之前我们学习了提取图像边缘、拟合图中的直线或者圆，这次就来看看局部特征点的提取。<strong>局部特征（Local Feature）</strong>相较于全局特征（Global Feature）来说关注的图像面积更小，只关心一小块邻域，能在保留图像重要信息的同时减少处理数据量，假如图像中物体被遮挡、视角发生改变，局部特征仍然能够被识别出来。</p>
 <p>局部特征在图像对齐、图像拼接、动作追踪、机器人导航、图像检索、目标识别等领域中被广泛使用，其中图像对齐指的是下图这种将一张图像对齐成另一张更端正的图像；图像拼接就是类似手机上全景拍照功能，拿着手机扫一圈自动合成成一张图像；动作追踪则是识别一个物体的运动轨迹，可以用来做电子防抖。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417182254.jpeg" srcset="/img/loading.gif" lazyload alt="图像对齐"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220417182749.png" srcset="/img/loading.gif" lazyload alt="图像拼接"></p>
@@ -313,8 +318,30 @@
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418153758.png" srcset="/img/loading.gif" lazyload></p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> numpy <span class="hljs-keyword">as</span> np<br><span class="hljs-keyword">import</span> matplotlib.pyplot <span class="hljs-keyword">as</span> plt<br><span class="hljs-keyword">import</span> cv2<br><br><br><span class="hljs-comment"># 仍然是简单的非最大化抑制</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">non_max_suppression</span>(<span class="hljs-params">x</span>):</span><br>    res = np.zeros_like(x)<br>    <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(x.shape[<span class="hljs-number">0</span>]):<br>        <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(x.shape[<span class="hljs-number">1</span>]):<br>            <span class="hljs-keyword">if</span> x[i, j] == <span class="hljs-number">0</span>:<br>                <span class="hljs-keyword">continue</span><br>            <span class="hljs-keyword">if</span> np.<span class="hljs-built_in">sum</span>(x[i - <span class="hljs-number">1</span>:i + <span class="hljs-number">2</span>, j - <span class="hljs-number">1</span>:j + <span class="hljs-number">2</span>] &gt; x[i, j]) == <span class="hljs-number">0</span>:<br>                <span class="hljs-comment"># print(x[i - 1:i + 2, j - 1:j + 2])</span><br>                res[i, j] = x[i, j]<br>    <span class="hljs-keyword">return</span> res<br><br><br>img = cv2.imread(<span class="hljs-string">&quot;imgs/ironnet_small.jpg&quot;</span>, cv2.IMREAD_GRAYSCALE)<br>aperture_size = <span class="hljs-number">3</span>  <span class="hljs-comment"># 梯度的窗大小</span><br>block_size = <span class="hljs-number">3</span>  <span class="hljs-comment"># 为了代码易懂就默认考虑的邻域是3</span><br>alpha = <span class="hljs-number">0.06</span><br>r_threshold = <span class="hljs-number">500000</span><br>Ix = cv2.Sobel(img, cv2.CV_32F, <span class="hljs-number">1</span>, <span class="hljs-number">0</span>, ksize=aperture_size)<br>Iy = cv2.Sobel(img, cv2.CV_32F, <span class="hljs-number">0</span>, <span class="hljs-number">1</span>, ksize=aperture_size)<br>kernel = np.array([[<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>], [<span class="hljs-number">2</span>, <span class="hljs-number">4</span>, <span class="hljs-number">2</span>], [<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>]]) / <span class="hljs-number">16</span>  <span class="hljs-comment"># 高斯核</span><br><span class="hljs-comment"># kernel = np.array([[2, 4, 5, 4, 2], [4, 9, 12, 9, 4], [5, 12, 15, 12, 5], [4, 9, 12, 9, 4], [2, 4, 5, 4, 2]]) / 159</span><br><br><span class="hljs-comment"># 循环每一点</span><br>R = np.zeros(img.shape)<br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, img.shape[<span class="hljs-number">0</span>] - <span class="hljs-number">2</span>):<br>    <span class="hljs-keyword">for</span> j <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>, img.shape[<span class="hljs-number">1</span>] - <span class="hljs-number">2</span>):<br>        ix2 = np.<span class="hljs-built_in">sum</span>(Ix[i - <span class="hljs-number">1</span>:i + <span class="hljs-number">2</span>, j - <span class="hljs-number">1</span>:j + <span class="hljs-number">2</span>] ** <span class="hljs-number">2</span> * kernel)<br>        iy2 = np.<span class="hljs-built_in">sum</span>(Iy[i - <span class="hljs-number">1</span>:i + <span class="hljs-number">2</span>, j - <span class="hljs-number">1</span>:j + <span class="hljs-number">2</span>] ** <span class="hljs-number">2</span> * kernel)<br>        ixiy = np.<span class="hljs-built_in">sum</span>(Ix[i - <span class="hljs-number">1</span>:i + <span class="hljs-number">2</span>, j - <span class="hljs-number">1</span>:j + <span class="hljs-number">2</span>] * Iy[i - <span class="hljs-number">1</span>:i + <span class="hljs-number">2</span>, j - <span class="hljs-number">1</span>:j + <span class="hljs-number">2</span>] * kernel)<br>        r = (ix2 * iy2 - ixiy ** <span class="hljs-number">2</span>) - alpha * (ix2 + iy2) ** <span class="hljs-number">2</span><br>        R[i, j] = r<br>        <span class="hljs-comment"># if r &gt; r_threshold:</span><br>        <span class="hljs-comment">#     R[i, j] = r</span><br><br><span class="hljs-comment"># 阈值</span><br><span class="hljs-comment"># R[R &lt; r_threshold] = 0</span><br><span class="hljs-comment"># 非最大化抑制</span><br>res = non_max_suppression(R)<br><span class="hljs-comment"># res = R</span><br>points = np.where(res &gt; res.<span class="hljs-built_in">max</span>()*<span class="hljs-number">0.5</span>)<br><br><span class="hljs-comment"># 画图</span><br>plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">1</span>)<br>plt.imshow(R)<br>plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">2</span>)<br>plt.imshow(img, cmap=plt.get_cmap(<span class="hljs-string">&#x27;gray&#x27;</span>))<br>plt.scatter(points[<span class="hljs-number">1</span>], points[<span class="hljs-number">0</span>])<br><br><span class="hljs-comment"># cv2</span><br>plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>)<br>cv2_res = cv2.cornerHarris(img, <span class="hljs-number">3</span>, <span class="hljs-number">3</span>, alpha)<br>plt.imshow(cv2_res)<br>plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">2</span>, <span class="hljs-number">4</span>)<br>cv2_points = np.where(cv2_res &gt; cv2_res.<span class="hljs-built_in">max</span>()*<span class="hljs-number">0.5</span>)<br>plt.imshow(img, cmap=plt.get_cmap(<span class="hljs-string">&#x27;gray&#x27;</span>))<br>plt.scatter(cv2_points[<span class="hljs-number">1</span>], cv2_points[<span class="hljs-number">0</span>])<br>plt.show()<br><br></code></pre></td></tr></table></figure>
 
-
-
+<h2 id="尺度不变检测"><a href="#尺度不变检测" class="headerlink" title="尺度不变检测"></a>尺度不变检测</h2><p>Harris角点检测虽然有用，但是假如图片进行了尺度缩放，就可能无法检测到对应的点了，所以我们还需要一个尺度不变的特征点提取方式（Blob Detection）。</p>
+<h3 id="从高斯到拉普拉斯"><a href="#从高斯到拉普拉斯" class="headerlink" title="从高斯到拉普拉斯"></a>从高斯到拉普拉斯</h3><p>那么如何进行尺度的检测呢？我们先来了解<strong>拉普拉斯核（Laplacian）</strong>的一个有趣的性质。拉普拉斯核，其实也就是高斯核求两次导，能较好地得到下图第三行的这种结果，过零点是边缘位置。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418201054.png" srcset="/img/loading.gif" lazyload></p>
+<p>接下来看这张比较重要的图，左边第一二列能够比较明显检测出两个边缘，而当这个慢慢变瘦的时候，用拉普拉斯核卷积出来的响应会慢慢融合，直到缩放到某个程度的时候，两个响应合在一起会得到一个最大值。<strong>此时，我们称拉普拉斯模版和信号匹配上了，也就是用不同的拉普拉斯模版检测到了信号的尺度。</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418201200.png" srcset="/img/loading.gif" lazyload></p>
+<p>但是这个有小问题，就是刚才固定的是拉普拉斯的$\sigma$，现实中固定的是图像尺度，而改变$\sigma$的时候会发现拉普拉斯信号会变平，所以要乘回个$\sigma^2$。下图尺度和$\sigma=8$有关系，然而没有标准化的时候信号几乎都看不到了。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220418203836.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="从-sigma-到尺度"><a href="#从-sigma-到尺度" class="headerlink" title="从$\sigma$到尺度"></a>从$\sigma$到尺度</h3><p>既然有了拉普拉斯这种方法，我们就可以开始准备检测尺度了。</p>
+<p>对于一个图像，我们可以用许多不同$\sigma$的拉普拉斯核进行卷积，然后就会得到$H\times W\times C$的一个数组，里面的值代表该像素在某个$\sigma$下的响应。要找到极值，我们可以进行非最大化抑制，判断$3\times 3 \times 3$范围内其他值是否大于中心值，假如中心值是最大的，那就找到了一个点和对应的$\sigma$。在检测出了$\sigma$之后，我们就能画出一个半径为$3\sigma$的圆表示检测结果了（$3\sigma$是经验公式）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420132329.png" srcset="/img/loading.gif" lazyload></p>
+<p>然而，根据我们现在的方法，图像的每一个像素都要进行处理，而且要用很大的卷积核，太耗费资源了，所以我们要想办法减少复杂度：</p>
+<ol>
+<li>第一种方法是结合Harris角点，在检测出角点的周围像素进行检测，而不是对所有像素都进行多尺度的滤波。</li>
+<li>第二种方法就是<strong>著名的SIFT</strong>。</li>
+</ol>
+<h3 id="SIFT"><a href="#SIFT" class="headerlink" title="SIFT"></a>SIFT</h3><p>SIFT（Scale-Invariant Feature Transform）是尺度不变特征变换，这种方法使用DoG（Difference of Gaussians）来代替拉普拉斯核。DoG的定义如下，是对图像进行不同$\sigma$的高斯的差。<br>$$<br>\begin{align*}<br>DoG&amp;=G(x,y,k\sigma)-G(x,y,\sigma) \\<br>&amp;\approx (k-1)\sigma^2 \underbrace{\nabla^2G(\sigma)}_{Laplacian}<br>\end{align*}<br>$$</p>
+<blockquote>
+<p><strong>推导：</strong>本质上是差分近似代替微分<br>$$<br>\frac{\partial G}{\partial \sigma} \approx \frac{G(k\sigma)-G(\sigma)}{(k-1)\sigma}<br>$$<br>而恰巧<br>$$<br>\displaylines{\frac{\partial G}{\partial \sigma}=\frac{-2\sigma^2+x^2+y^2}{\sigma^5}\exp(-\frac{x^2+y^2}{2\sigma^2}) \\<br>\nabla^2G=\frac{-2\sigma^2+x^2+y^2}{\sigma^6}\exp(-\frac{x^2+y^2}{2\sigma^2}) \\<br>\therefore \frac{\partial G}{\partial \sigma} \sigma=\nabla^2G}<br>$$</p>
+</blockquote>
+<p>那么究竟是怎么减少计算量的呢？<strong>高斯函数有一个特别的性质</strong>，两个一维高斯函数的卷积还是高斯函数，且能算出标准差$\sigma$：$G_1(x, \sigma_1)*G_2(x, \sigma_2)=G(x,\sqrt{\sigma_1^2+\sigma_2^2})$（证明见<a target="_blank" rel="noopener" href="https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.583.3007&rep=rep1&type=pdf">2003-003.dvi (psu.edu)</a>）。<strong>高斯函数还有一个特别的性质</strong>，一个二维高斯函数可以拆分成两个方差相同的一维高斯函数的卷积：$I(x,y)*g(x,y)=I(x,y)<em>g_{column}(y)<em>g_{row}(x)$（证明见<a target="_blank" rel="noopener" href="https://blog.csdn.net/captainjtx/article/details/8690711">二维高斯核的可分离性</a>）。<strong>这两个性质何在一起</strong>，对一幅图像进行$\sigma=1$的高斯平滑后，再对平滑后的图像进行一次$\sigma=1$的高斯平滑，结果和直接进行$\sigma=\sqrt{2}$的高斯平滑等价。**也就是说，大$\sigma$能够分解成多个小$\sigma$。</em></em></p>
+<p>如下图，左边从下往上依次是$\sigma,k\sigma,k^2\sigma,k^3\sigma,k^4\sigma$，计算完第一层后，对第一层的图像进行一次$\sigma\sqrt{k^2-1}$的高斯平滑就能得到第二层，所以能减少实际计算高斯平滑所用的$\sigma$的值，也就是不用那么宽的窗了。而得到左边黄色的一叠图像之后，求差值就能得到右边蓝色的一叠图像。右边蓝色的图像可以直接来找极值。</p>
+<p>虽然窗宽的增长速度变慢了，但是在大尺度的时候仍然有过宽的问题，所以SIFT还区分了octave，一个octave就像下图的五个黄色高斯层，在这么一个octave结束之后，图像会缩小到原来的二分之一。之前是通过增加窗宽来增加尺度，现在通过减小图像也能增加尺度，这也是SIFT减少计算量的方式之一。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220420163847.png" srcset="/img/loading.gif" lazyload alt="image-20220420163847207"></p>
+<p>假设一个octave要提取出$s$个尺度，那么$k=2^{1/s}$，</p>
 <blockquote>
 <p>参考文献：</p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/76363570">Harris 角点学习笔记 - 知乎 (zhihu.com)</a></p>

@@ -13,26 +13,27 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="近期看的一些杂七杂八的论文">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="语音信号处理 倒谱分析声门激励和声道冲激语音信号$z(t)$可以看作是声门激励信号$x(t)$和声道冲激响应$y(t)$的卷积：$z(t)&#x3D;x(t)*y(t)$ 声门激励信号$x(t)$：发清音时（声带不振动，如拼音b p），为能量较小白噪声；发浊音时（声带振动，如拼音m n），为以基音周期为周期的冲激序列。 声道冲激响应$y(t)$：是一个双边衰减序列，值主要在[-25,25]内。 为了把这两个">
+  <meta name="description" content="近期看的一些杂七杂八的论文">
 <meta property="og:type" content="article">
-<meta property="og:title" content="语音信号处理 倒谱">
-<meta property="og:url" content="http://blog.kamino.link/2022/04/06/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86-%E5%80%92%E8%B0%B1/index.html">
+<meta property="og:title" content="近期看的一些论文#1">
+<meta property="og:url" content="http://blog.kamino.link/2022/04/24/%E8%BF%91%E6%9C%9F%E7%9C%8B%E7%9A%84%E4%B8%80%E4%BA%9B%E8%AE%BA%E6%96%871/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="语音信号处理 倒谱分析声门激励和声道冲激语音信号$z(t)$可以看作是声门激励信号$x(t)$和声道冲激响应$y(t)$的卷积：$z(t)&#x3D;x(t)*y(t)$ 声门激励信号$x(t)$：发清音时（声带不振动，如拼音b p），为能量较小白噪声；发浊音时（声带振动，如拼音m n），为以基音周期为周期的冲激序列。 声道冲激响应$y(t)$：是一个双边衰减序列，值主要在[-25,25]内。 为了把这两个">
+<meta property="og:description" content="近期看的一些杂七杂八的论文">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412121426.jpg">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412141109.png">
-<meta property="article:published_time" content="2022-04-06T07:30:00.000Z">
-<meta property="article:modified_time" content="2022-04-12T08:10:28.203Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113519.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113745.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113217.png">
+<meta property="article:published_time" content="2022-04-24T03:29:59.518Z">
+<meta property="article:modified_time" content="2022-04-26T12:20:58.293Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="语音信号处理">
+<meta property="article:tag" content="CVPR2022">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412121426.jpg">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113519.png">
   
-  <title>语音信号处理 倒谱 - Kamino&#39;s Blog</title>
+  <title>近期看的一些论文#1 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -191,7 +192,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="语音信号处理 倒谱">
+            <span class="h2" id="subtitle" title="近期看的一些论文#1">
               
             </span>
 
@@ -201,8 +202,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-04-06 15:30" pubdate>
-        2022年4月6日 下午
+      <time datetime="2022-04-24 11:29" pubdate>
+        2022年4月24日 上午
       </time>
     </span>
   
@@ -212,7 +213,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      859 字
+      304 字
     </span>
   
 
@@ -221,7 +222,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3 分钟
+      1 分钟
     </span>
   
 
@@ -258,40 +259,21 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">语音信号处理 倒谱</h1>
+            <h1 style="display: none">近期看的一些论文#1</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年4月12日 下午
+                  本文最后更新于：2022年4月26日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="语音信号处理-倒谱分析声门激励和声道冲激"><a href="#语音信号处理-倒谱分析声门激励和声道冲激" class="headerlink" title="语音信号处理 倒谱分析声门激励和声道冲激"></a>语音信号处理 倒谱分析声门激励和声道冲激</h1><p>语音信号$z(t)$可以看作是<strong>声门激励信号</strong>$x(t)$和<strong>声道冲激响应</strong>$y(t)$的<strong>卷积</strong>：$z(t)=x(t)*y(t)$</p>
-<p><strong>声门激励信号</strong>$x(t)$：发清音时（声带不振动，如拼音b p），为能量较小白噪声；发浊音时（声带振动，如拼音m n），为以<strong>基音周期</strong>为周期的冲激序列。</p>
-<p><strong>声道冲激响应</strong>$y(t)$：是一个双边衰减序列，值主要在<code>[-25,25]</code>内。</p>
-<p>为了把这两个分开，我们要进行<strong>同态处理</strong>，将卷积变成相加，然后在变化后的域（倒频域）上$\pm25$内是$y(t)$，外是$x(t)$。</p>
-<blockquote>
-<p>此处25原理未知，但和采样点有关。</p>
-</blockquote>
-<h2 id="同态处理"><a href="#同态处理" class="headerlink" title="同态处理"></a>同态处理</h2><p>同态处理指的是将<strong>非线性组合信号</strong>通过某种变换转换成<strong>线性组合信号</strong>，然后通过线性操作进行处理的方式。</p>
-<ol>
-<li><p>$z(t)=x(t)y(t)$</p>
-<p>这种相乘的非线性组合信号正常来说很难分开，可以先进行log运算转换成$\log z(t)=\log x(t)+log y(t)$。然后DFT到频域进行处理，然后再IDFT回来再进行个指数运算就能转换回来。</p>
-</li>
-<li><p>$z(t)=x(t)*y(t)$</p>
-<p>这种卷积的非线性组合信号也很难分开，时域卷积转到频域就是相乘$Z(w)=X(w)Y(w)$，然后和上面这种情况一样$\log Z(w)=\log X(w) + \log Y(w)$，再转回时域进行线性处理。之后要弄回来就是转频域，然后指数运算，然后转时域。</p>
-<p>由于语音信号可视为声门激励信号和声道冲击响应的卷积，所以这个形式更常见。</p>
-<p>下图(b)是卷积同态系统，先经过特征系统，再线性处理，最后逆特征系统。特征系统就是一个<code>Z变换 -&gt; log/e -&gt; 逆Z变换</code>的过程。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412121426.jpg" srcset="/img/loading.gif" lazyload alt="卷积同态系统"></p>
-</li>
-</ol>
-<h2 id="倒谱与复倒谱（Cepstrum）"><a href="#倒谱与复倒谱（Cepstrum）" class="headerlink" title="倒谱与复倒谱（Cepstrum）"></a>倒谱与复倒谱（Cepstrum）</h2><p>考虑上一节的2情况，语音信号常常也是这样：$z(t)=x(t)*y(t)$</p>
-<ul>
-<li>$z(t)$的复倒谱$\hat z(t)$就是进行<strong>Z变换</strong>后取<strong>对数</strong>然后再<strong>逆Z变换</strong>的结果，这个过程也叫做<strong>特征系统</strong>$D_*[\cdot]$。</li>
-<li>$z(t)$的倒谱$\hat z(t)$也差不多，就是在Z变换之后会<strong>取幅值</strong>，因为一般不注重相位信息。</li>
-</ul>
-<h2 id="倒谱法求语音信号共振峰"><a href="#倒谱法求语音信号共振峰" class="headerlink" title="倒谱法求语音信号共振峰"></a>倒谱法求语音信号共振峰</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220412141109.png" srcset="/img/loading.gif" lazyload alt="共振峰"></p>
+              <h1 id="近期看的一些论文-1"><a href="#近期看的一些论文-1" class="headerlink" title="近期看的一些论文#1"></a>近期看的一些论文#1</h1><p>[TOC]</p>
+<h2 id="Marginal-Contrastive-Correspondence-for-Guided-Image-Generation"><a href="#Marginal-Contrastive-Correspondence-for-Guided-Image-Generation" class="headerlink" title="Marginal Contrastive Correspondence for Guided Image Generation"></a><strong>Marginal Contrastive Correspondence for Guided Image Generation</strong></h2><p>说的是用条件输入和示例风格图片输入生成和条件输入形状一样，和风格输入的风格一样的图片的任务。</p>
+<p>这里说的Contrastive是在Conditional Input和Ground Truth的编码特征进行对比学习，这里用来一个marginal contrastive loss比较有意思，大概意思是小明考了100分但是我只给他90分从而让他不要骄傲。伪代码如下图，就是在相乘得到的余弦相似度分数矩阵对角线上加一个角度，对于正确预测的例子给一个惩罚，从而得到margin的效果。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113519.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113745.png" srcset="/img/loading.gif" lazyload></p>
+<p> <img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113217.png" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
@@ -301,9 +283,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AF%BE%E7%A8%8B%E7%AC%94%E8%AE%B0/">课程笔记</a>
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87/">论文</a>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">语音信号处理</a>
+                      <a class="hover-with-bg" href="/categories/%E6%AF%8F%E6%97%A5%E8%AE%BA%E6%96%87/">每日论文</a>
                     
                   </div>
                 
@@ -311,7 +293,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%86/">语音信号处理</a>
+                      <a class="hover-with-bg" href="/tags/CVPR2022/">CVPR2022</a>
                     
                   </div>
                 
@@ -328,9 +310,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%893-%E6%8B%9F%E5%90%88/">
+                      <a href="/2022/04/26/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%863-%E7%BA%BF%E6%80%A7%E9%A2%84%E6%B5%8B%E5%88%86%E6%9E%90/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">计算机视觉学习笔记#3 拟合：最小二乘法、RANSAC、Hough霍夫变换（附代码）</span>
+                        <span class="hidden-mobile">语音信号处理#3 线性预测分析（LPC）</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -338,8 +320,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/04/06/%E8%AE%A1%E7%AE%97%E6%9C%BA%E8%A7%86%E8%A7%891-%E5%AF%BC%E5%BC%95/">
-                        <span class="hidden-mobile">计算机视觉学习笔记#1 导引</span>
+                      <a href="/2022/04/19/%E8%AF%AD%E9%9F%B3%E4%BF%A1%E5%8F%B7%E5%A4%84%E7%90%861-%E7%9F%AD%E6%97%B6%E6%97%B6%E5%9F%9F%E5%88%86%E6%9E%90/">
+                        <span class="hidden-mobile">语音信号处理#1 短时时域分析</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
