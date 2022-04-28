@@ -24,7 +24,7 @@
 <meta property="og:description" content="一个充满干货的速查语法文章。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-02-23T08:00:00.000Z">
-<meta property="article:modified_time" content="2022-04-15T04:20:21.776Z">
+<meta property="article:modified_time" content="2022-04-28T03:25:17.623Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="LaTeX">
 <meta property="article:tag" content="Markdown">
@@ -210,7 +210,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.2k 字
+      2.6k 字
     </span>
   
 
@@ -219,7 +219,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      8 分钟
     </span>
   
 
@@ -260,7 +260,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年4月15日 中午
+                  本文最后更新于：2022年4月28日 上午
                 
               </p>
             
@@ -421,42 +421,50 @@
 <td><code>\omega</code></td>
 </tr>
 </tbody></table>
-<h2 id="特殊字符、字体"><a href="#特殊字符、字体" class="headerlink" title="特殊字符、字体"></a>特殊字符、字体</h2><p>用一些命令修饰可以得到不同字体的符号<br>$$<br>mathbb: \mathbb{ABCDE} \\<br>mathcal: \mathcal{ABEPST} \\<br>mathbf: \mathbf{AESPRE} \\<br>boldsymbol: \boldsymbol{asABd}<br>$$<br>特殊地，有一个代替<code>l</code>的单独的符号<code>\ell</code><br>$$<br>\ell<br>$$</p>
+<h2 id="特殊字符、字体"><a href="#特殊字符、字体" class="headerlink" title="特殊字符、字体"></a>特殊字符、字体</h2><p>用一些命令修饰可以得到不同字体的符号<br>$$<br>\displaylines{<br>mathbb: \mathbb{ABCDE} \\<br>mathcal: \mathcal{ABEPST} \\<br>mathbf: \mathbf{AESPRE} \\<br>boldsymbol: \boldsymbol{asABd}}<br>$$<br>特殊地，有一个代替<code>l</code>的单独的符号<code>\ell</code><br>$$<br>\ell<br>$$</p>
 <h2 id="三角函数、对数、指数d"><a href="#三角函数、对数、指数d" class="headerlink" title="三角函数、对数、指数d"></a>三角函数、对数、指数d</h2><p>使用<code>$符号语法$</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs latex">$\tan$、$\sin$、$\cos$、$\lg$、$\arcsin$、$\arctan$、$\min$、$\max$、$\exp$、$\log$<br>$\log_n(2)$ $\circ$<br></code></pre></td></tr></table></figure>
 
 <p>$\tan$、$\sin$、$\cos$、$\lg$、$\arcsin$、$\arctan$、$\min$、$\max$、$\exp$、$\log$</p>
 <p>$\log_2(2)$ $30^\circ$</p>
-<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs latex">$+$、$-$、$=$、$&gt;$、$&lt;$、$\times$、$\div$、$\equiv$、$\leq$、$\geq$、$\neq$ $!$<br>$\pm$ $\mp$ $\cdot$ $\ast$ || $\frac&#123;分子&#125;&#123;分母&#125;$  $&#123;分子&#125; \voer &#123;分母&#125;$<br>$\sqrt&#123;&#125;$ $\sqrt[n]&#123;&#125;$<br></code></pre></td></tr></table></figure>
+<h2 id="运算符"><a href="#运算符" class="headerlink" title="运算符"></a>运算符</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs latex">$+$、$-$、$=$、$&gt;$、$&lt;$、$\times$、$\div$、$\equiv$、$\leq$、$\geq$、$\neq$ $!$<br>$\pm$ $\mp$ $\cdot$ $\ast$ || $\frac&#123;分子&#125;&#123;分母&#125;$  $&#123;分子&#125; \voer &#123;分母&#125;$<br>$\sqrt&#123;&#125;$ $\sqrt[n]&#123;&#125;$<br>\nabla \partial<br></code></pre></td></tr></table></figure>
 
 <p>$+$、$-$、$=$、$&gt;$、$&lt;$、$\times$、$\div$、$\equiv$、$\leq$、$\geq$、$\neq$  $!$</p>
 <p>$\pm$ $\mp$ $\cdot$ $\ast$ $|x+y|$  $\frac{分子}{分母}$  ${x+y} \over {y+z}$ </p>
 <p>$\sqrt[]{x+y}$ $\sqrt[n]{x+y}$</p>
+<p>$\nabla \quad \partial$</p>
 <h2 id="集合"><a href="#集合" class="headerlink" title="集合"></a>集合</h2><p>一些运算符要得到否定形式可以在前缀加<code>not</code></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs latex">$\cup$、$\cap$、$\in$、$\notin$、$\ni$、$\subset$、$\subseteq$、$\supset$、$\supseteq$、$\infty$、$\mid$、$\emptyset$<br></code></pre></td></tr></table></figure>
 
 <p>$\cup$、$\cap$、$\in$、$\notin$、$\ni$、$\subset$、$\subseteq$、$\supset$、$\supseteq$、$\infty$、$\mid$、$\emptyset$</p>
 <h2 id="上标下标"><a href="#上标下标" class="headerlink" title="上标下标"></a>上标下标</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs latex">^ _ &#123;&#125;用这个来组合<br></code></pre></td></tr></table></figure>
 
-<p>$x^4$ $x_1$ ${16}<em>{8}O{2+}</em>{2}$</p>
+<p>$x^4$ $x_1$ </p>
 <p>有一些在头顶或脚下的标注符号</p>
-<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs latex">\hat \tilde \overline \underline \overbrace \underbrace \overleftarrow \overrightarrow<br>\overbrace&#123;123&#125;^&#123;L&#125;<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs latex">\hat \overline \underline \overbrace \underbrace \overleftarrow \overrightarrow \tilde \widetilde<br>\overbrace&#123;123&#125;^&#123;L&#125;<br></code></pre></td></tr></table></figure>
 
-<p>$\hat a\quad \overline a\quad \underline a\quad \overbrace{abc} \quad \underbrace{abc} \quad \overleftarrow{a} \quad \overrightarrow{a}$</p>
+<p>$\hat a\quad \overline a\quad \underline a\quad \overbrace{abc} \quad \underbrace{abc} \quad \overleftarrow{a} \quad \overrightarrow{a} \quad \tilde{a} \quad \widetilde{a}$</p>
 <p>$\overbrace{123}^{L}$</p>
 <h2 id="高级运算"><a href="#高级运算" class="headerlink" title="高级运算"></a>高级运算</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs latex">$\lim\limits_&#123;x \to y&#125;$<br>$\sum$ $\sum_&#123;n=1&#125;^\infty k$<br>$\prod_&#123;i=0&#125;^n$<br>$\int$<br></code></pre></td></tr></table></figure>
 
 <p> $\lim\limits_{x \to \infty} \exp(-x) = 0$</p>
 <p>$\sum_{n=1}^\infty k \quad \prod_{i=0}^n \quad \int^y_0f(s)ds$</p>
-<h2 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs latex">\lor  \land  \neg  \oplus  \odot<br></code></pre></td></tr></table></figure>
+<h2 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs latex">\lor  \land  \neg  \oplus  \odot \because \therefore<br></code></pre></td></tr></table></figure>
 
-<p>$\lor \quad \land \quad \neg \quad \oplus \quad \odot$</p>
-<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs latex">$$<br>  \begin&#123;matrix&#125;<br>   1 &amp; 2 &amp; 3 \\<br>   4 &amp; 5 &amp; 6 \\<br>   7 &amp; 8 &amp; 9<br>  \end&#123;matrix&#125; <br>$$<br></code></pre></td></tr></table></figure>
+<p>$\lor \quad \land \quad \neg \quad \oplus \quad \odot \quad \because  \quad \therefore$</p>
+<h2 id="矩阵"><a href="#矩阵" class="headerlink" title="矩阵"></a>矩阵</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs latex">matrix没有括号 bmatrix方括号 pmatrix圆括号 vmatrix大括号 Vmatrix竖线<br>$$<br>  \begin&#123;bmatrix&#125;<br>   1 &amp; 2 &amp; 3 \\<br>   4 &amp; 5 &amp; 6 \\<br>   7 &amp; 8 &amp; 9<br>  \end&#123;bmatrix&#125; <br>$$<br></code></pre></td></tr></table></figure>
 
-<p>$$<br>\begin{matrix}<br>   1 &amp; 2 &amp; 3 \<br>   4 &amp; 5 &amp; 6 \<br>   7 &amp; 8 &amp; 9<br>  \end{matrix}<br>$$</p>
+<p>$$<br>\begin{bmatrix}<br>   1 &amp; 2 &amp; 3 \\<br>   4 &amp; 5 &amp; 6 \\<br>   7 &amp; 8 &amp; 9<br>  \end{bmatrix}<br>$$</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs latex">\cdots \vdots \ddots<br></code></pre></td></tr></table></figure>
+
+<p>$\cdots \quad \vdots \quad \ddots$</p>
 <h2 id="分段函数"><a href="#分段函数" class="headerlink" title="分段函数"></a>分段函数</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs latex">$$<br>X(m,n)=<br>\begin&#123;cases&#125;<br>x(n),\\<br>x(n-1)\\<br>x(n-1)<br>\end&#123;cases&#125;<br>$$<br></code></pre></td></tr></table></figure>
 
-<p>$$<br>X(m,n)=<br>\begin{cases}<br>x(n),\<br>x(n-1)\<br>x(n-1)<br>\end{cases}<br>$$</p>
+<p>$$<br>X(m,n)=<br>\begin{cases}<br>x(n),\\<br>x(n-1)\\<br>x(n-1)<br>\end{cases}<br>$$</p>
+<h2 id="等式"><a href="#等式" class="headerlink" title="等式"></a>等式</h2><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs latex">\begin&#123;align&#125;<br>f(x,y) &amp;= (x+y)^2 \tag&#123;1&#125; \\<br>&amp;= x^2+2xy+y^2 \tag&#123;2&#125; \\<br>\end&#123;align&#125;<br></code></pre></td></tr></table></figure>
+
+
+<p>$$<br>\begin{align}<br>f(x,y) &amp;= (x+y)^2 \tag{1} \\<br>&amp;= x^2+2xy+y^2 \tag{2} \\<br>\end{align}<br>$$</p>
 
             </div>
             <hr>
