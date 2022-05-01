@@ -28,8 +28,9 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113217.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220428101648.jpg">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220428112712.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220428113509.png">
 <meta property="article:published_time" content="2022-04-24T03:29:59.518Z">
-<meta property="article:modified_time" content="2022-04-28T03:29:55.822Z">
+<meta property="article:modified_time" content="2022-04-28T03:38:26.448Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="CVPR2022">
 <meta name="twitter:card" content="summary_large_image">
@@ -215,7 +216,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      1.4k 字
     </span>
   
 
@@ -265,7 +266,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年4月28日 上午
+                  本文最后更新于：2022年4月28日 中午
                 
               </p>
             
@@ -276,12 +277,15 @@
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113519.png" srcset="/img/loading.gif" lazyload></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113745.png" srcset="/img/loading.gif" lazyload></p>
 <p> <img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220424113217.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="IN-DEFENSE-OF-PSEUDO-LABELING-AN-UNCERTAINTY-AWARE-PSEUDO-LABEL-SELECTION-FRAMEWORK-FOR-SEMI-SUPERVISED-LEARNING"><a href="#IN-DEFENSE-OF-PSEUDO-LABELING-AN-UNCERTAINTY-AWARE-PSEUDO-LABEL-SELECTION-FRAMEWORK-FOR-SEMI-SUPERVISED-LEARNING" class="headerlink" title="IN DEFENSE OF PSEUDO-LABELING: AN UNCERTAINTY-AWARE PSEUDO-LABEL SELECTION FRAMEWORK FOR SEMI-SUPERVISED LEARNING"></a>IN DEFENSE OF PSEUDO-LABELING: AN UNCERTAINTY-AWARE PSEUDO-LABEL SELECTION FRAMEWORK FOR SEMI-SUPERVISED LEARNING</h2><p>针对使用伪标签（Pseudo label）方法进行半监督学习的改进。贡献点有两个：1. pseudo-label selection 2. uncertainty-aware pseudo-label selection</p>
+<h2 id="In-Defense-Of-Pseudo-labeling-An-Uncertainty-aware-Pseudo-label-Selection-Framework-For-Semi-supervised-Learning"><a href="#In-Defense-Of-Pseudo-labeling-An-Uncertainty-aware-Pseudo-label-Selection-Framework-For-Semi-supervised-Learning" class="headerlink" title="In Defense Of Pseudo-labeling: An Uncertainty-aware Pseudo-label Selection Framework For Semi-supervised Learning"></a>In Defense Of Pseudo-labeling: An Uncertainty-aware Pseudo-label Selection Framework For Semi-supervised Learning</h2><p>针对使用伪标签（Pseudo label）方法进行半监督学习的改进。贡献点有两个：1. pseudo-label selection 2. uncertainty-aware pseudo-label selection</p>
 <p>首先是<strong>伪标签选择机制（Pseudo label selection）</strong>：主要思想是：“我不确信这个数据属于哪个类，但是我确信它不属于哪个类！”。如下图，对于一个类计算loss要$\tilde{y}^{(i)}, \hat{y}^{(i)}, g^{(i)}$。其中，$\tilde{y}^{(i)}$是模型生成的伪标签，$\hat{y}^{(i)}$是模型这次预测的概率，$g^{(i)}$判断是否对该类计算loss，由下面这个式子得出：<br>$$<br>g_c^{(i)}=\mathbb{l}[p_c^{(i)} \ge \tau_p] + \mathbb{l}[p_c^{(i)} \le \tau_n]<br>$$<br>其中 $\mathbb{l}$ 是判断函数，符合条件为1，不符合条件为0。$\tau_p, \tau_n$是两个阈值。就是将确信属于某个类或者确信不属于某个类的标记为1。对于多标签任务，论文里也有适用的Loss的变种。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220428101648.jpg" srcset="/img/loading.gif" lazyload></p>
 <p>然后，<strong>作者通过预测模型的不确定性改进了上面的伪标签选择机制</strong>（uncertainty-aware pseudo-label selection）。<br>$$<br>g_c^{(i)}=\mathbb{l}[u(p_c^{(i)}) \le k_p]\cdot \mathbb{l}[p_c^{(i)} \ge \tau_p] + \mathbb{l}[u(p_c^{(i)}) \le k_n] \cdot \mathbb{l}[p_c^{(i)} \le \tau_n]<br>$$<br>其中$u(p_c^{(i)})$是模型预测出概率的不确定性，$k_p,k_n$是两个不确定性的阈值。</p>
 <p>而如何预测模型的不确定性有很多方法，作者尝试了很多，效果如下：</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220428112712.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="VideoSSL-Semi-Supervised-Learning-for-Video-Classifification"><a href="#VideoSSL-Semi-Supervised-Learning-for-Video-Classifification" class="headerlink" title="VideoSSL: Semi-Supervised Learning for Video Classifification"></a>VideoSSL: Semi-Supervised Learning for Video Classifification</h2><p>半监督视频分类学习任务，有标签的数据直接用3D CNN进行CE Loss，然后无标签的生成伪标签后Pseudo CE Loss，顺便还进行一个知识蒸馏，3D CNN的概率输出逼近一个预训练好的2D CNN的概率输出，论文中M是ImageNet的1000类，那个Soft CE Loss就是计算互信息。</p>
+<p><strong>方法挺简单的但是也没放出代码来……</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220428113509.png" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
