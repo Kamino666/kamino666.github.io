@@ -4,6 +4,64 @@
   
   
   <entry>
+    <title>Python itertools 快速熟悉+速查</title>
+    <link href="/2022/06/13/Python%20Itertools/"/>
+    <url>/2022/06/13/Python%20Itertools/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Python-itertools-快速熟悉-速查"><a href="#Python-itertools-快速熟悉-速查" class="headerlink" title="Python itertools 快速熟悉+速查"></a>Python itertools 快速熟悉+速查</h1><p><a href="https://docs.python.org/zh-cn/3/library/itertools.html">itertools — 为高效循环而创建迭代器的函数 — Python 3.10.5 文档</a></p><p>Python itertools是一个工具库，提供一些方便的迭代工具。本文提供库里面函数的简要信息以便速查。</p><table><thead><tr><th>函数名</th><th>用途</th></tr></thead><tbody><tr><td>count</td><td>range的无穷版本</td></tr><tr><td>cycle</td><td>无穷循环迭代一个迭代器</td></tr><tr><td>repeat</td><td>循环固定次数</td></tr><tr><td>accumulate</td><td>每一次的结果是<strong>当前迭代值+之前的迭代值</strong></td></tr><tr><td>chain</td><td>拼接迭代，可以拼接tuple和list和iter来进行迭代</td></tr><tr><td></td><td></td></tr><tr><td>compress</td><td>按照一个mask来迭代部分数据</td></tr><tr><td>dropwhile</td><td>直到条件第一次为false时才开始迭代</td></tr><tr><td>takewhile</td><td>迭代直到条件第一次为false时</td></tr><tr><td></td><td></td></tr><tr><td>groupby</td><td>把AAAABBBCCAAA分组成A B C A，即返回连续的键和组，返回的组是一个迭代器</td></tr><tr><td>pairwise</td><td>两个两个出来</td></tr><tr><td></td><td></td></tr><tr><td>islice</td><td>另一种切片，但是是针对迭代器的</td></tr><tr><td>starmap</td><td>是另一种map，每个取出的迭代值会送入一个function得到最终结果（没太看懂和map的区别）</td></tr><tr><td>zip_longest</td><td>另一种zip，但是长度是更长的那个参数，用fillvalue来填充缺失值</td></tr><tr><td></td><td></td></tr><tr><td>product</td><td>多个之间全部组合<br /># product(‘ABCD’, ‘xy’) –&gt; Ax Ay Bx By Cx Cy Dx Dy    <br /># product(range(2), repeat=3) –&gt; 000 001 010 011 100 101 110 111</td></tr><tr><td>permutations</td><td>自身排列无重复组合，r是长度，默认是最长<br /># permutations(‘ABCD’, r=2) –&gt; AB AC AD BA BC BD CA CB CD DA DB DC   <br /># permutations(range(3)) –&gt; 012 021 102 120 201 210</td></tr><tr><td>combinations</td><td>自身排列无重复组合，只是位置不同则被看做是相同，r是长度<br /># combinations(‘ABCD’, 2) –&gt; AB AC AD BC BD CD     <br /># combinations(range(4), 3) –&gt; 012 013 023 123</td></tr></tbody></table>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>itertools</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>Python的路径操作（使用Pathlib、glob、shutil等库）</title>
+    <link href="/2022/06/13/Python%E8%B7%AF%E5%BE%84%E6%93%8D%E4%BD%9C/"/>
+    <url>/2022/06/13/Python%E8%B7%AF%E5%BE%84%E6%93%8D%E4%BD%9C/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Python的路径操作（使用pathlib、glob、shutil、os库）"><a href="#Python的路径操作（使用pathlib、glob、shutil、os库）" class="headerlink" title="Python的路径操作（使用pathlib、glob、shutil、os库）"></a>Python的路径操作（使用pathlib、glob、shutil、os库）</h1><p>在用Python处理数据时，经常需要进行读取遍历、复制移动、新建文件夹等操作，本文对比介绍Python中常用的各类路径操作，包括Pathlib、glob、shutil、os。</p><p>从下表可知，一般用来处理文件、路径的这四个库都是python内置的，很方便使用，其中pathlib和glob是文件路径的管理，而shutil是复制移动删除文件，os则是更广泛一些，不仅包含一些路径操作和文件操作，还有许多其他的功能。</p><table><thead><tr><th>Module</th><th>内容介绍</th><th>是否内置</th></tr></thead><tbody><tr><td>pathlib</td><td>面向对象的文件管理库</td><td>内置</td></tr><tr><td>glob</td><td>使用Unix-style的文件名匹配扩展</td><td>内置</td></tr><tr><td>os</td><td>系统接口</td><td>内置</td></tr><tr><td>shutil</td><td>高级文件操作库</td><td>内置</td></tr></tbody></table><h2 id="路径管理的对比"><a href="#路径管理的对比" class="headerlink" title="路径管理的对比"></a>路径管理的对比</h2><p>在pathlib、glob、os中，<strong>pathlib</strong>是最简易使用的，符合面向对象的思路，同时也兼顾了性能和实用性。在我的另外一篇博客中有介绍：<a href="https://blog.kamino.link/2021/02/23/Python-Pathlib%E5%BA%93%E5%9F%BA%E7%A1%80%E4%BD%BF%E7%94%A8%E6%95%99%E7%A8%8B/">Python-Pathlib库基础使用教程 - Kamino’s Blog</a></p><p>这里对比一下三个库中类似的一些函数：</p><ol><li><p><code>pathlib.Path.glob(pattern)</code>和<code>pathlib.Path.rglob(pattern)</code></p><p>对一个Path对象下的，符合pattern的路径进行遍历。rglob不仅会匹配当前文件夹，还会递归的遍历子文件夹。pattern不是正则，只支持<code>*匹配多个字符，?匹配单个字符，[]匹配括号中包含的字符</code>。假如使用**匹配一个目录，则表示当前所有子目录以及递归下去的所有子目录。</p><p><strong>注意返回的顺序是arbitrary的（我试验是根据字母顺序排的，但是一般不利用这一点）</strong>。</p><p><strong>注意返回的是iterator而不是list，这有利于处理许多文件。</strong></p><p><strong>注意返回的iterator的元素也是Pathlike的对象</strong></p></li><li><p><code>glob.glob(pathname)</code>和<code>glob.iglob(pathname)</code></p><p>glob没有引入path对象，所以参数是一个完整的路径，匹配的规则也和pathlib的glob一样，递归可以用<code>**</code>表示。</p><p>不同的是，glob通过传入<code>recursive=True</code>而不是用另一个函数来递归匹配。</p><p><strong>注意glob和iglob的区别是，glob返回列表，iglob返回iterator。</strong></p></li><li><p><code>os.listdir(path)</code>和<code>os.walk()</code>和<code>os.scandir()</code></p><p><code>os.listdir(path)</code>返回文件名而不是路径组成的列表。需要对每一个元素判断是目录还是文件。</p><p><code>os.walk()</code>遍历目录树，返回iterator，针对每个节点（目录）都生成一个三元组： <code>(dirpath, dirnames, filenames)</code>，dirpath是当前节点的路径，而dirnames是当前节点下的目录的名字，filenames是当前节点下的文件的名字。</p><p><code>os.scandir()</code>返回目录下的文件的DirEntry对象组成的iterator。需要对每一个对象判断是目录还是文件。</p></li></ol><p>:warning: <strong>注意<code>pathlib.Path(&#39;.&#39;).glob(&#39;*&#39;)</code>和<code>os</code>的操作都返回当前目录下包括以<code>.</code>开头的文件和目录，而<code>glob.glob(&#39;*&#39;)</code>不会包括以<code>.</code>开头的。</strong></p><p>在使用<strong>type-hint</strong>的时候，假如要提示传入一个路径，可以用<code>os.PathLike</code>。</p><h2 id="文件操作的对比"><a href="#文件操作的对比" class="headerlink" title="文件操作的对比"></a>文件操作的对比</h2><h3 id="创建文件夹"><a href="#创建文件夹" class="headerlink" title="创建文件夹"></a>创建文件夹</h3><p>创建文件夹用os、pathlib都可以，<code>os</code>中使用<code>os.mkdir()</code>来创建一个目录，但是要求父目录存在并且要创建的目录不存在。假如父目录不一定存在则可以使用<code>os.makedirs()</code>，同时这个函数也可以指定要创建的目录已经存在的情况。</p><p><code>pathlib.Path.mkdir()</code>则合并了上面两个函数，用参数确定需不需要父目录存在和目录已存在的处理方式。</p><p>两者都可以指定创建文件夹的权限。</p><h3 id="复制、删除、移动文件"><a href="#复制、删除、移动文件" class="headerlink" title="复制、删除、移动文件"></a>复制、删除、移动文件</h3><p>这些操作乖乖用shutil最方便</p><p><code>shutil.copyfile(src,dst)</code>是最快的复制文件内容（无元数据）从src到dst的方法，dst必须要是完整的<strong>文件的名字</strong>。</p><p><code>shutil.copy(src,dst)</code>是复制文件到目录或者另一个文件的方法，这里dst可以是一个目录，表示复制到该目录下。</p><p><code>shutil.copy2(src,dst)</code>同上，但是copy2还会保留元信息。</p><p><code>shutil.copytree(src,dst)</code>是复制文件夹，会保留元信息。</p><p><code>shutil.rmtree(path)</code>是递归删除一个文件夹。</p><p><code>shutil.move(src,dst)</code>是移动一个文件<strong>或者文件夹</strong>，可以通过参数来指定移动时使用copy还是copy2的方法。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>Python</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Python</tag>
+      
+      <tag>Pathlib</tag>
+      
+      <tag>glob</tag>
+      
+      <tag>shutil</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>VideoSSL相关论文（视频分类、动作识别、半监督、自监督）</title>
     <link href="/2022/05/07/VideoSSL%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87/"/>
     <url>/2022/05/07/VideoSSL%E7%9B%B8%E5%85%B3%E8%AE%BA%E6%96%87/</url>
