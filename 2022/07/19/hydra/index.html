@@ -13,28 +13,26 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="在Linux上配置Clash梯子的教程，需要提前买订阅链接">
+  <meta name="description" content="Python的`Hydra`库是一个开源的配置管理库，能够动态创建一个可继承的的配置系统，十分灵活，能够用来管理深度学习中许多的参数。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="在Linux上配置Clash梯子的教程，需要提前买订阅链接">
+  <meta name="description" content="Python的&#96;Hydra&#96;库是一个开源的配置管理库，能够动态创建一个可继承的的配置系统，十分灵活，能够用来管理深度学习中许多的参数。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux配置Clash代理">
-<meta property="og:url" content="http://blog.kamino.link/2022/05/01/Linux%E9%85%8D%E7%BD%AEClash/index.html">
+<meta property="og:title" content="Python Hydra库使用介绍">
+<meta property="og:url" content="http://blog.kamino.link/2022/07/19/hydra/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="在Linux上配置Clash梯子的教程，需要提前买订阅链接">
+<meta property="og:description" content="Python的&#96;Hydra&#96;库是一个开源的配置管理库，能够动态创建一个可继承的的配置系统，十分灵活，能够用来管理深度学习中许多的参数。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501191729.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501193137.png">
-<meta property="article:published_time" content="2022-05-01T02:39:00.000Z">
-<meta property="article:modified_time" content="2022-07-12T08:07:26.877Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220719231948.png">
+<meta property="article:published_time" content="2022-07-19T13:40:00.000Z">
+<meta property="article:modified_time" content="2022-07-20T05:48:03.657Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Linux">
-<meta property="article:tag" content="Clash">
+<meta property="article:tag" content="Python">
+<meta property="article:tag" content="Hydra">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220719231948.png">
   
-  <title>Linux配置Clash代理 - Kamino&#39;s Blog</title>
+  <title>Python Hydra库使用介绍 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -188,12 +186,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20210930101514.jpg') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20220720134113.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Linux配置Clash代理">
+            <span class="h2" id="subtitle" title="Python Hydra库使用介绍">
               
             </span>
 
@@ -203,8 +201,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-05-01 10:39" pubdate>
-        2022年5月1日 上午
+      <time datetime="2022-07-19 21:40" pubdate>
+        2022年7月19日 晚上
       </time>
     </span>
   
@@ -214,7 +212,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.1k 字
+      2.8k 字
     </span>
   
 
@@ -223,7 +221,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      9 分钟
     </span>
   
 
@@ -260,49 +258,88 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Linux配置Clash代理</h1>
+            <h1 style="display: none">Python Hydra库使用介绍</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年7月12日 下午
+                  本文最后更新于：2022年7月20日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux配置Clash代理"><a href="#Linux配置Clash代理" class="headerlink" title="Linux配置Clash代理"></a>Linux配置Clash代理</h1><p>这篇文章用来防止忘记怎么配Clash，干货笔记。<strong>不需要管理员权限。</strong></p>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>要准备三样东西：1. 用钱买的梯子的订阅链接   2. Clash二进制文件   3. 经常下载失败的MMDB文件</p>
-<p>最新版本可以从Github的官方repo下载下来，从Assets中找到Linux amd64的gz文件<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash/releases">下载地址</a>。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png" srcset="/img/loading.gif" lazyload></p>
-<p>二进制文件和MMDB文件提供网盘备份：链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ySpuF3JRVTEOtg0FwKNG0w?pwd=ngro">ngro</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>Clash基本就靠config.yaml运行，不用输入什么参数。运行clash就是在一个端口搭好了梯子，要让应用走这个梯子出去还要配置应用对应的设置。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">gunzip xxx.gz  <span class="hljs-comment"># gunzip解压gz文件</span><br><span class="hljs-built_in">cd</span> &lt;folder&gt;  <span class="hljs-comment"># 进入有那个可执行文件的文件夹</span><br>wget -O config.yaml [订阅链接]  <span class="hljs-comment"># 下载订阅链接，或者直接把文件重命名为config.yaml</span><br>chmod +x clash  <span class="hljs-comment"># 该权限让其可执行</span><br>./clash <span class="hljs-comment"># 运行梯子</span><br>./clash -d /etc/clash   <span class="hljs-comment"># 指定config目录</span><br>./clash -f /etc/clash/config.yaml  <span class="hljs-comment"># 指定config文件</span><br></code></pre></td></tr></table></figure>
+              <h1 id="Python-Hydra库使用介绍"><a href="#Python-Hydra库使用介绍" class="headerlink" title="Python Hydra库使用介绍"></a>Python Hydra库使用介绍</h1><p>Python的<code>Hydra</code>库是一个开源的配置管理库，能够<strong>动态</strong>创建一个<strong>可继承的</strong>的配置系统，十分灵活，能够用来管理深度学习中许多的参数。</p>
+<p>Hydra库由Facebook开发，文档：<a target="_blank" rel="noopener" href="https://hydra.cc/docs/intro/">Getting started | Hydra</a>，GitHub：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/hydra">facebookresearch/hydra</a>。</p>
+<h2 id="为什么要使用Hydra"><a href="#为什么要使用Hydra" class="headerlink" title="为什么要使用Hydra"></a>为什么要使用Hydra</h2><p>一般在深度学习中，需要处理很多的配置参数，比如数据集路径、优化器、学习率、模型架构等，目前有的人使用原生的<code>argparse</code>库来从命令行读入配置、有的人使用<code>json</code>或者<code>yaml</code>格式的配置文件、有的人在源代码中写一个类来保存配置、有的人直接使用<code>.py</code>文件来写配置、还有的大型库（如<code>openmmlab</code>）自己开发一套配置系统。下面来分析各种方式的优缺点：</p>
+<table>
+<thead>
+<tr>
+<th>方式</th>
+<th>优点</th>
+<th>缺点</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>argparse</td>
+<td>Python内置，使用方便</td>
+<td>一旦需要很多的配置，那命令就会非常长，可能需要额外一个<code>.sh</code>文件来运行</td>
+</tr>
+<tr>
+<td>json、yaml配置文件</td>
+<td>通用配置文件，也拥有对应的内置库，使用方便</td>
+<td>若要对某个超参数进行消融实验，则要复制一堆整个的文件，然后对某一项进行修改</td>
+</tr>
+<tr>
+<td>源代码中写一个class、py文件当配置</td>
+<td>不需要额外操作，直接是python的数据结构，甚至还能使用一些高级语法，也可以通过继承来结构化</td>
+<td>要进行消融实验还是很麻烦，并且会让代码变得更长，继承也不是很灵活</td>
+</tr>
+<tr>
+<td>OpenMMLab的Config</td>
+<td>精心设计，功能强大，支持继承，拓展方便</td>
+<td>不适合用来构建自己的库，需要阅读很多的源代码</td>
+</tr>
+<tr>
+<td><strong>Hydra</strong></td>
+<td>支持继承，可通过yaml和命令行混合配置，还支持一些动态插值的语法……</td>
+<td>因为是第三方库，需要进行一定的学习</td>
+</tr>
+</tbody></table>
+<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install hydra-core<br></code></pre></td></tr></table></figure>
 
-<h3 id="Ubuntu-GUI应用"><a href="#Ubuntu-GUI应用" class="headerlink" title="Ubuntu GUI应用"></a>Ubuntu GUI应用</h3><p>其他发行版应该也同理，要让桌面应用走梯子就直接在设置里找到Network下的Proxy，然后把HTTP和HTTPS的端口都设置成<code>7890</code>（默认），ip地址设置成<code>127.0.0.1</code>，要使用socks协议代理则设置端口为<code>7891</code>。一些ip不走代理，用GUI设置一般不用管。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501191729.png" srcset="/img/loading.gif" lazyload></p>
-<p>以上步骤也可以用命令实现，如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks port 7891<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy ignore-hosts <span class="hljs-string">&quot;[&#x27;localhost&#x27;, &#x27;127.0.0.0/8&#x27;, &#x27;::1&#x27;]&quot;</span><br><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span>  <span class="hljs-comment"># 开启</span><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;none&#x27;</span>    <span class="hljs-comment"># 关闭</span><br></code></pre></td></tr></table></figure>
+<h2 id="一个简单的使用例子"><a href="#一个简单的使用例子" class="headerlink" title="一个简单的使用例子"></a>一个简单的使用例子</h2><p>这个例子改自官方文档，新建一个<code>conf/config.yaml</code>文件，内容如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">db:</span><br>  <span class="hljs-attr">driver:</span> <span class="hljs-string">mysql</span><br>  <span class="hljs-attr">user:</span> <span class="hljs-string">omry</span><br>  <span class="hljs-attr">pass:</span> <span class="hljs-string">secret</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="环境变量设置代理"><a href="#环境变量设置代理" class="headerlink" title="环境变量设置代理"></a>环境变量设置代理</h3><p>大多数的网络库会通过识别环境变量来走代理，要设置<code>http_proxy</code>和<code>https_proxy</code>这两项：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br><span class="hljs-built_in">export</span> http_proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890/&quot;</span><br><span class="hljs-built_in">export</span> https_proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890/&quot;</span><br><span class="hljs-comment"># 关闭</span><br><span class="hljs-built_in">unset</span> http_proxy<br><span class="hljs-built_in">unset</span> https_proxy<br></code></pre></td></tr></table></figure>
+<p>然后代码里通过装饰器可以得到数据：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> hydra<br><span class="hljs-keyword">from</span> omegaconf <span class="hljs-keyword">import</span> DictConfig, OmegaConf<br><span class="hljs-comment"># 装饰器config_path参数表示配置文件的目录，config_name表示配置文件的名字</span><br><span class="hljs-meta">@hydra.main(<span class="hljs-params">version_base=<span class="hljs-literal">None</span>, config_path=<span class="hljs-string">&quot;conf&quot;</span>, config_name=<span class="hljs-string">&quot;config&quot;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">my_app</span>(<span class="hljs-params">cfg: DictConfig</span>) -&gt; <span class="hljs-literal">None</span>:</span><br>    <span class="hljs-built_in">print</span>(OmegaConf.to_yaml(cfg))  <span class="hljs-comment"># 可视化配置</span><br>    <span class="hljs-built_in">print</span>(cfg.db.user)  <span class="hljs-comment"># object style</span><br>    <span class="hljs-built_in">print</span>(cfg[<span class="hljs-string">&#x27;db&#x27;</span>][<span class="hljs-string">&#x27;user&#x27;</span>])  <span class="hljs-comment"># dict style</span><br>    cfg.db.user = <span class="hljs-string">&#x27;kamino&#x27;</span>  <span class="hljs-comment"># 可以重新赋值</span><br>    <span class="hljs-built_in">print</span>(cfg[<span class="hljs-string">&#x27;db&#x27;</span>].user)  <span class="hljs-comment"># 混合 style</span><br>    other_func(cfg)  <span class="hljs-comment"># 可以调用其他函数来传参</span><br>    <br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">other_func</span>(<span class="hljs-params">cfg</span>):</span><br>    <span class="hljs-built_in">print</span>(cfg[<span class="hljs-string">&#x27;db&#x27;</span>].user)<br>    <br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    my_app()<br></code></pre></td></tr></table></figure>
 
-<p>可以写在环境变量文件<code>~/.bashrc</code>（给自己用）或<code>/etc/profile</code>（全局用），但是记得要source。</p>
-<h3 id="wget设置代理"><a href="#wget设置代理" class="headerlink" title="wget设置代理"></a>wget设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在home目录下新建这个文件，也可以直接编辑/etc/wgetrc（但是不推荐，而且要管理权限）</span><br>vi ~/.wgetrc<br><span class="hljs-comment"># 内容为以下：</span><br>https_proxy = http://127.0.0.1:7890/<br>http_proxy = http://127.0.0.1:7890/<br>use_proxy= on<br></code></pre></td></tr></table></figure>
+<p>输出如下：</p>
+<figure class="highlight dts"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs dts"><span class="hljs-symbol">db:</span><br><span class="hljs-symbol">  driver:</span> mysql<br><span class="hljs-symbol">  user:</span> omry<br><span class="hljs-symbol">  pass:</span> secret<br><br>omry<br>omry<br>kamino<br>kamino<br></code></pre></td></tr></table></figure>
 
-<p>设置完要<code>source ~/.wgetrc</code>。</p>
-<h3 id="Git设置代理"><a href="#Git设置代理" class="headerlink" title="Git设置代理"></a>Git设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br>git config --global http.proxy http://127.0.0.1:7890<br>git config --global https.proxy https://127.0.0.1:7890<br><span class="hljs-comment"># 关闭</span><br>git config --global --<span class="hljs-built_in">unset</span> http.proxy<br>git config --global --<span class="hljs-built_in">unset</span> https.proxy<br></code></pre></td></tr></table></figure>
+<p>简单吧😄</p>
+<h2 id="使用继承的简单例子"><a href="#使用继承的简单例子" class="headerlink" title="使用继承的简单例子"></a>使用继承的简单例子</h2><p>如图所示构建了一个深度学习中可能出现的例子，在配置文件夹<code>conf</code>下有一个<code>config2.yaml</code>是组合的配置文件。一个深度学习代码可能包含<code>backbone</code>、<code>dataset</code>、<code>head</code>等方面的配置，假设我们要使用mnist数据集，用resnet模型，并自定义一个10分类2层的一个分类器，然后指定学习率为1e-3，那在backbone文件夹下就新建一个<code>resnet.yaml</code>文件，其余同理。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220719231948.png" srcset="/img/loading.gif" lazyload></p>
+<p>在主文件中要在一开始就写如图中的<strong>defaults</strong>配置项，表示继承下来的部分，其中key是文件夹的名字，value是具体配置文件的名字，<code>_self_</code>表示本文件，当某个值存在冲突的时候会根据顺序处理冲突，假如同一个值被多个配置定义了，那更后的一个会覆盖，假如有多个相同的key，那最终key下的配置会被合并。</p>
+<p>💚 defaults中的key还可以是一个目录的格式，比如<code>- backbone/v1/v2: vgg</code>，解析后也是需要<code>.backbone.v1.v2.&lt;proprety&gt;</code>来获取值。</p>
+<p>💚defaults中也可以忽略key，则不添加层次关系。比如<code>- run</code>，就表示加载进<code>run.yaml</code>下的配置。</p>
+<p>把上面的配置输出如下：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">backbone:</span><br>  <span class="hljs-attr">layer:</span> <span class="hljs-number">18</span><br><span class="hljs-attr">head:</span><br>  <span class="hljs-attr">hidden_size:</span> <span class="hljs-number">256</span><br><span class="hljs-attr">dataset:</span><br>  <span class="hljs-attr">data_dir:</span> <span class="hljs-string">./data</span><br><span class="hljs-attr">learning_rate:</span> <span class="hljs-number">0.001</span><br></code></pre></td></tr></table></figure>
 
+<h2 id="从命令行中获取配置参数"><a href="#从命令行中获取配置参数" class="headerlink" title="从命令行中获取配置参数"></a>从命令行中获取配置参数</h2><ul>
+<li><p>假设我在backbone添加了一个新的模型<code>vgg</code>，那就是在backbone文件夹下新建一个<code>vgg.yaml</code>，之后可以通过更改默认配置文件来切换模型——但是，我们也可以直接在命令行中进行切换：</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python main2.py backbone=vgg<br></code></pre></td></tr></table></figure></li>
+<li><p>假如在backbone里提供多个模型，但是不提供默认的模型，需要强制用户手动选择，则不用填defaults，而是在命令行中用<code>+</code>来进行选择。（若已有默认，则会报错）</p>
+  <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python main2.py +backbone=vgg<br></code></pre></td></tr></table></figure></li>
+<li><p>假如要覆盖某个具体数值，可以直接在命令行中赋值：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">python main2.py learning_rate=1e-4<br>python main2.py backbone.layer=30<br></code></pre></td></tr></table></figure></li>
+<li><p>假如不确定某个配置项在配置文件中是否存在，则用<code>++</code>，若配置项存在则覆盖，若配置项不存在则追加</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">python main2.py ++lr=1e-2<br></code></pre></td></tr></table></figure></li>
+</ul>
+<h2 id="Yaml配置中可使用的动态语法"><a href="#Yaml配置中可使用的动态语法" class="headerlink" title="Yaml配置中可使用的动态语法"></a>Yaml配置中可使用的动态语法</h2><p>正如官方的这个例子：</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">node:</span>                         <span class="hljs-comment"># Config is hierarchical</span><br>  <span class="hljs-attr">loompa:</span> <span class="hljs-number">10</span>                  <span class="hljs-comment"># Simple value</span><br>  <span class="hljs-attr">zippity:</span> <span class="hljs-string">$&#123;node.loompa&#125;</span>     <span class="hljs-comment"># 直接插值</span><br>  <span class="hljs-attr">do:</span> <span class="hljs-string">&quot;oompa $&#123;node.loompa&#125;&quot;</span>  <span class="hljs-comment"># 字符串插值</span><br>  <span class="hljs-attr">waldo:</span> <span class="hljs-string">???</span>                  <span class="hljs-comment"># 缺失值，在使用前需要先赋值否则报错</span><br></code></pre></td></tr></table></figure>
 
-
-<h2 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h2><p>编辑你的<code>config.yaml</code>，设置下面两项可以开启外部管理，一定要设置secret。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">external-controller:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:50040</span><br><span class="hljs-attr">secret:</span> <span class="hljs-string">&#x27;&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<p>设置好了以后访问<code>http://clash.razord.top</code>，输入对应的信息就能用web来管理本地的clash啦~</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501193137.png" srcset="/img/loading.gif" lazyload></p>
-<blockquote>
-<p>参考文献：</p>
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/369344633">Linux下安装&amp;配置Clash以实现代理上网 - 知乎 (zhihu.com)</a></p>
-<p><a target="_blank" rel="noopener" href="https://lancellc.gitbook.io/clash/">Introduce - Clash (gitbook.io)</a></p>
-</blockquote>
+<p>可以用<code>$&#123;&#125;</code>来引用其他配置中的值，要注意这个引用的值是<strong>绝对路径</strong>。</p>
+<p>还可以用<code>???</code>来表示需要用户手动配置的必填值，缺失会报错<code>omegaconf.errors.MissingMandatoryValue</code>。</p>
+<p>需要注意的是，使用这些语法后，只有在使用值的时候才会实时算出对应值来，用<code>print(OmegaConf.to_yaml(cfg))  # 可视化配置</code>这种语句可视化会发现值还是<code>???</code>或者<code>$&#123;&#125;</code>。</p>
 
             </div>
             <hr>
@@ -312,9 +349,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
-                    
-                      <a class="hover-with-bg" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">环境配置</a>
+                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
                     
                   </div>
                 
@@ -322,9 +357,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
                     
-                      <a class="hover-with-bg" href="/tags/Clash/">Clash</a>
+                      <a class="hover-with-bg" href="/tags/Hydra/">Hydra</a>
                     
                   </div>
                 
@@ -341,18 +376,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/05/01/Linux%E9%85%8D%E7%BD%AEDenseflow/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Linux配置Denseflow</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/04/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%E5%8D%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">
-                        <span class="hidden-mobile">深度学习之半监督学习</span>
+                      <a href="/2022/07/10/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B01/">
+                        <span class="hidden-mobile">深度学习调参笔记#1-正则化（weight decay）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

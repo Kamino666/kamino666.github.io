@@ -13,28 +13,27 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="在Linux上配置Clash梯子的教程，需要提前买订阅链接">
+  <meta name="description" content="在模型过拟合的时候，总是会想着添加正则化，在PyTorch中常用的添加正则化的方法，就是在优化器中添加`weight_decay`参数，然而，调参过程中也有一些细节需要注意。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="在Linux上配置Clash梯子的教程，需要提前买订阅链接">
+  <meta name="description" content="在模型过拟合的时候，总是会想着添加正则化，在PyTorch中常用的添加正则化的方法，就是在优化器中添加&#96;weight_decay&#96;参数，然而，调参过程中也有一些细节需要注意。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux配置Clash代理">
-<meta property="og:url" content="http://blog.kamino.link/2022/05/01/Linux%E9%85%8D%E7%BD%AEClash/index.html">
+<meta property="og:title" content="深度学习调参笔记#1-正则化（weight decay）">
+<meta property="og:url" content="http://blog.kamino.link/2022/07/10/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B01/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="在Linux上配置Clash梯子的教程，需要提前买订阅链接">
+<meta property="og:description" content="在模型过拟合的时候，总是会想着添加正则化，在PyTorch中常用的添加正则化的方法，就是在优化器中添加&#96;weight_decay&#96;参数，然而，调参过程中也有一些细节需要注意。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501191729.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501193137.png">
-<meta property="article:published_time" content="2022-05-01T02:39:00.000Z">
-<meta property="article:modified_time" content="2022-07-12T08:07:26.877Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220710204253.png">
+<meta property="article:published_time" content="2022-07-10T12:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-11T03:26:14.868Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Linux">
-<meta property="article:tag" content="Clash">
+<meta property="article:tag" content="Pytorch">
+<meta property="article:tag" content="正则化">
+<meta property="article:tag" content="weight_decay">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220710204253.png">
   
-  <title>Linux配置Clash代理 - Kamino&#39;s Blog</title>
+  <title>深度学习调参笔记#1-正则化（weight decay） - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -188,12 +187,12 @@
 </nav>
 
     <div class="banner" id="banner" parallax=true
-         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20210930101514.jpg') no-repeat center center;
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
            background-size: cover;">
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Linux配置Clash代理">
+            <span class="h2" id="subtitle" title="深度学习调参笔记#1-正则化（weight decay）">
               
             </span>
 
@@ -203,8 +202,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-05-01 10:39" pubdate>
-        2022年5月1日 上午
+      <time datetime="2022-07-10 20:00" pubdate>
+        2022年7月10日 晚上
       </time>
     </span>
   
@@ -214,7 +213,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.1k 字
+      1.9k 字
     </span>
   
 
@@ -223,7 +222,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      6 分钟
     </span>
   
 
@@ -260,48 +259,30 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Linux配置Clash代理</h1>
+            <h1 style="display: none">深度学习调参笔记#1-正则化（weight decay）</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年7月12日 下午
+                  本文最后更新于：2022年7月11日 上午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux配置Clash代理"><a href="#Linux配置Clash代理" class="headerlink" title="Linux配置Clash代理"></a>Linux配置Clash代理</h1><p>这篇文章用来防止忘记怎么配Clash，干货笔记。<strong>不需要管理员权限。</strong></p>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>要准备三样东西：1. 用钱买的梯子的订阅链接   2. Clash二进制文件   3. 经常下载失败的MMDB文件</p>
-<p>最新版本可以从Github的官方repo下载下来，从Assets中找到Linux amd64的gz文件<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash/releases">下载地址</a>。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png" srcset="/img/loading.gif" lazyload></p>
-<p>二进制文件和MMDB文件提供网盘备份：链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ySpuF3JRVTEOtg0FwKNG0w?pwd=ngro">ngro</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>Clash基本就靠config.yaml运行，不用输入什么参数。运行clash就是在一个端口搭好了梯子，要让应用走这个梯子出去还要配置应用对应的设置。</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">gunzip xxx.gz  <span class="hljs-comment"># gunzip解压gz文件</span><br><span class="hljs-built_in">cd</span> &lt;folder&gt;  <span class="hljs-comment"># 进入有那个可执行文件的文件夹</span><br>wget -O config.yaml [订阅链接]  <span class="hljs-comment"># 下载订阅链接，或者直接把文件重命名为config.yaml</span><br>chmod +x clash  <span class="hljs-comment"># 该权限让其可执行</span><br>./clash <span class="hljs-comment"># 运行梯子</span><br>./clash -d /etc/clash   <span class="hljs-comment"># 指定config目录</span><br>./clash -f /etc/clash/config.yaml  <span class="hljs-comment"># 指定config文件</span><br></code></pre></td></tr></table></figure>
+              <h1 id="深度学习调参笔记-1-正则化（weight-decay）"><a href="#深度学习调参笔记-1-正则化（weight-decay）" class="headerlink" title="深度学习调参笔记#1-正则化（weight decay）"></a>深度学习调参笔记#1-正则化（weight decay）</h1><p>在模型过拟合的时候，总是会想着添加正则化，在PyTorch中常用的添加正则化的方法，就是在优化器中添加<code>weight_decay</code>参数，然而，调参过程中也有一些细节需要注意。</p>
+<p>首先要弄明白正则化的目的，《深度学习》书的第七章中提到，<strong>正则化旨在减少泛化误差而不是训练误差</strong>，其中最常用的一个方式就是<strong>参数范数惩罚</strong>。这个方法简单来说就是在损失函数中添加一项$\alpha\Omega(\theta)$，$\alpha$表示惩罚强度、$\Omega(\theta)$表示模型的复杂度。添加这个之后，就会倾向于学习更简单的网络。</p>
+<p>要注意的点就是，通常只<strong>对权重(weight)<strong>做惩罚而</strong>不对偏置(bias)<strong>做正则惩罚。过拟合实际上是模型对于轻微的输入改变，产生剧烈的输出改变，而输出结果</strong>主要</strong>取决于权重而不是偏置，所以权重的L2更能起到表示模型复杂度的作用。偏置对模型复杂度贡献较低，但是对最终结果有一定影响，假如惩罚了偏置，可能会导致欠拟合。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220710204253.png" srcset="/img/loading.gif" lazyload alt="Overfitted_Data"></p>
+<h2 id="那么在PyTorch中如何只对权重做惩罚呢？"><a href="#那么在PyTorch中如何只对权重做惩罚呢？" class="headerlink" title="那么在PyTorch中如何只对权重做惩罚呢？"></a>那么在PyTorch中如何只对权重做惩罚呢？</h2><p>参考<a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5/blob/master/train.py#L153-L171">yolov5代码</a>，下面为了排版有部分删减：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python">g = [], [], []  <span class="hljs-comment"># optimizer parameter groups</span><br>bn = <span class="hljs-built_in">tuple</span>(v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> nn.__dict__.items() <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;Norm&#x27;</span> <span class="hljs-keyword">in</span> k)  <span class="hljs-comment"># normalization layers, i.e. BatchNorm2d()</span><br><span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> model.modules():<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(v, <span class="hljs-string">&#x27;bias&#x27;</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(v.bias, nn.Parameter):<br>        g[<span class="hljs-number">2</span>].append(v.bias)    <span class="hljs-comment"># 所有偏置不decay</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(v, bn):  <br>        g[<span class="hljs-number">1</span>].append(v.weight)  <span class="hljs-comment"># 权重中Normalization层不decay</span><br>    <span class="hljs-keyword">elif</span> <span class="hljs-built_in">hasattr</span>(v, <span class="hljs-string">&#x27;weight&#x27;</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(v.weight, nn.Parameter):  <br>        g[<span class="hljs-number">0</span>].append(v.weight)  <span class="hljs-comment"># 除此以外的才decay</span><br><br><span class="hljs-keyword">if</span> opt.optimizer == <span class="hljs-string">&#x27;Adam&#x27;</span>: <span class="hljs-comment"># adjust beta1 to momentum</span><br>	optimizer = Adam(g[<span class="hljs-number">2</span>], lr=hyp[<span class="hljs-string">&#x27;lr0&#x27;</span>], betas=(hyp[<span class="hljs-string">&#x27;momentum&#x27;</span>], <span class="hljs-number">0.999</span>))  <br><span class="hljs-keyword">elif</span> opt.optimizer == <span class="hljs-string">&#x27;AdamW&#x27;</span>: <span class="hljs-comment"># adjust beta1 to momentum</span><br>	optimizer = AdamW(g[<span class="hljs-number">2</span>], lr=hyp[<span class="hljs-string">&#x27;lr0&#x27;</span>], betas=(hyp[<span class="hljs-string">&#x27;momentum&#x27;</span>], <span class="hljs-number">0.999</span>))  <br><br>optimizer.add_param_group(&#123;<span class="hljs-string">&#x27;params&#x27;</span>: g[<span class="hljs-number">0</span>], <span class="hljs-string">&#x27;weight_decay&#x27;</span>:hyp[<span class="hljs-string">&#x27;weight_decay&#x27;</span>]&#125;)  <span class="hljs-comment"># add g0 with weight_decay</span><br>optimizer.add_param_group(&#123;<span class="hljs-string">&#x27;params&#x27;</span>: g[<span class="hljs-number">1</span>]&#125;)  <span class="hljs-comment"># add g1 (BatchNorm2d weights)</span><br></code></pre></td></tr></table></figure>
 
-<h3 id="Ubuntu-GUI应用"><a href="#Ubuntu-GUI应用" class="headerlink" title="Ubuntu GUI应用"></a>Ubuntu GUI应用</h3><p>其他发行版应该也同理，要让桌面应用走梯子就直接在设置里找到Network下的Proxy，然后把HTTP和HTTPS的端口都设置成<code>7890</code>（默认），ip地址设置成<code>127.0.0.1</code>，要使用socks协议代理则设置端口为<code>7891</code>。一些ip不走代理，用GUI设置一般不用管。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501191729.png" srcset="/img/loading.gif" lazyload></p>
-<p>以上步骤也可以用命令实现，如下：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks port 7891<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy ignore-hosts <span class="hljs-string">&quot;[&#x27;localhost&#x27;, &#x27;127.0.0.0/8&#x27;, &#x27;::1&#x27;]&quot;</span><br><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span>  <span class="hljs-comment"># 开启</span><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;none&#x27;</span>    <span class="hljs-comment"># 关闭</span><br></code></pre></td></tr></table></figure>
+<p>也可以参考<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/mae/blob/efb2a8062c206524e35e47d04501ed4f544c0ae8/main_pretrain.py#L178-L180">MAE代码</a>，使用timm库的一个函数来设置（新版本有改动，没对应函数了）</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> timm<br><span class="hljs-keyword">assert</span> timm.__version__ == <span class="hljs-string">&quot;0.3.2&quot;</span>  <span class="hljs-comment"># version check</span><br><span class="hljs-keyword">import</span> timm.optim.optim_factory <span class="hljs-keyword">as</span> optim_factory<br><span class="hljs-comment"># following timm: set wd as 0 for bias and norm layers</span><br>param_groups = optim_factory.add_weight_decay(model_without_ddp, args.weight_decay)<br>optimizer = torch.optim.AdamW(param_groups, lr=args.lr, betas=(<span class="hljs-number">0.9</span>, <span class="hljs-number">0.95</span>))<br></code></pre></td></tr></table></figure>
 
-<h3 id="环境变量设置代理"><a href="#环境变量设置代理" class="headerlink" title="环境变量设置代理"></a>环境变量设置代理</h3><p>大多数的网络库会通过识别环境变量来走代理，要设置<code>http_proxy</code>和<code>https_proxy</code>这两项：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br><span class="hljs-built_in">export</span> http_proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890/&quot;</span><br><span class="hljs-built_in">export</span> https_proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890/&quot;</span><br><span class="hljs-comment"># 关闭</span><br><span class="hljs-built_in">unset</span> http_proxy<br><span class="hljs-built_in">unset</span> https_proxy<br></code></pre></td></tr></table></figure>
-
-<p>可以写在环境变量文件<code>~/.bashrc</code>（给自己用）或<code>/etc/profile</code>（全局用），但是记得要source。</p>
-<h3 id="wget设置代理"><a href="#wget设置代理" class="headerlink" title="wget设置代理"></a>wget设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在home目录下新建这个文件，也可以直接编辑/etc/wgetrc（但是不推荐，而且要管理权限）</span><br>vi ~/.wgetrc<br><span class="hljs-comment"># 内容为以下：</span><br>https_proxy = http://127.0.0.1:7890/<br>http_proxy = http://127.0.0.1:7890/<br>use_proxy= on<br></code></pre></td></tr></table></figure>
-
-<p>设置完要<code>source ~/.wgetrc</code>。</p>
-<h3 id="Git设置代理"><a href="#Git设置代理" class="headerlink" title="Git设置代理"></a>Git设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br>git config --global http.proxy http://127.0.0.1:7890<br>git config --global https.proxy https://127.0.0.1:7890<br><span class="hljs-comment"># 关闭</span><br>git config --global --<span class="hljs-built_in">unset</span> http.proxy<br>git config --global --<span class="hljs-built_in">unset</span> https.proxy<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h2><p>编辑你的<code>config.yaml</code>，设置下面两项可以开启外部管理，一定要设置secret。</p>
-<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">external-controller:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:50040</span><br><span class="hljs-attr">secret:</span> <span class="hljs-string">&#x27;&#x27;</span><br></code></pre></td></tr></table></figure>
-
-<p>设置好了以后访问<code>http://clash.razord.top</code>，输入对应的信息就能用web来管理本地的clash啦~</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501193137.png" srcset="/img/loading.gif" lazyload></p>
+<p>timm中每一层的<code>weight_decay</code>还不一样：<a target="_blank" rel="noopener" href="https://github.com/rwightman/pytorch-image-models/blob/master/timm/optim/optim_factory.py#L89">pytorch-image-models/optim_factory.py at master · rwightman/pytorch-image-models (github.com)</a></p>
 <blockquote>
-<p>参考文献：</p>
-<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/369344633">Linux下安装&amp;配置Clash以实现代理上网 - 知乎 (zhihu.com)</a></p>
-<p><a target="_blank" rel="noopener" href="https://lancellc.gitbook.io/clash/">Introduce - Clash (gitbook.io)</a></p>
+<p>参考资料：</p>
+<p>《深度学习》</p>
+<p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/66894061">深度学习里面的偏置为什么不加正则？ - 知乎 (zhihu.com)</a></p>
 </blockquote>
 
             </div>
@@ -312,9 +293,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
+                      <a class="hover-with-bg" href="/categories/Pytorch/">Pytorch</a>
                     
-                      <a class="hover-with-bg" href="/categories/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">环境配置</a>
+                      <a class="hover-with-bg" href="/categories/Pytorch/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
                     
                   </div>
                 
@@ -322,9 +303,11 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Linux/">Linux</a>
+                      <a class="hover-with-bg" href="/tags/Pytorch/">Pytorch</a>
                     
-                      <a class="hover-with-bg" href="/tags/Clash/">Clash</a>
+                      <a class="hover-with-bg" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/">正则化</a>
+                    
+                      <a class="hover-with-bg" href="/tags/weight-decay/">weight_decay</a>
                     
                   </div>
                 
@@ -341,9 +324,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/05/01/Linux%E9%85%8D%E7%BD%AEDenseflow/">
+                      <a href="/2022/07/19/hydra/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">Linux配置Denseflow</span>
+                        <span class="hidden-mobile">Python Hydra库使用介绍</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -351,8 +334,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/04/27/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%20%E5%8D%8A%E7%9B%91%E7%9D%A3%E5%AD%A6%E4%B9%A0/">
-                        <span class="hidden-mobile">深度学习之半监督学习</span>
+                      <a href="/2022/06/13/Jupyter%20Notebook%20tricks/">
+                        <span class="hidden-mobile">Jupyter Notebook的使用技巧，充分发挥它的强大之处！</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
