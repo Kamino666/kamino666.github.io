@@ -4,6 +4,39 @@
   
   
   <entry>
+    <title>深度学习调参笔记#2-可复现的细节（固定seed）</title>
+    <link href="/2022/07/20/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B02/"/>
+    <url>/2022/07/20/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B02/</url>
+    
+    <content type="html"><![CDATA[<h1 id="深度学习调参笔记-2-可复现的细节（固定seed）"><a href="#深度学习调参笔记-2-可复现的细节（固定seed）" class="headerlink" title="深度学习调参笔记#2-可复现的细节（固定seed）"></a>深度学习调参笔记#2-可复现的细节（固定seed）</h1><p>在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。</p><h2 id="固定种子-seed"><a href="#固定种子-seed" class="headerlink" title="固定种子 seed"></a>固定种子 seed</h2><p>模型训练中，参数的初始化、数据的顺序等都具有一定的不确定性，而计算机通过种子生成伪随机数，所以固定种子还是十分有必要的。（但是固定一个神奇的种子来表面提升学习效果是不可取的）</p><p>下面这几项参考<code>pytorch_lightning</code>的种子设置：</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">random.seed(seed)  <span class="hljs-comment"># 配置Python random库的随机种子</span><br>np.random.seed(seed)  <span class="hljs-comment"># 配置Numpy库的随机种子</span><br>torch.manual_seed(seed)  <span class="hljs-comment"># 配置torch的随机种子</span><br>torch.cuda.manual_seed(seed)  <span class="hljs-comment"># 配置单个GPU上的种子</span><br>torch.cuda.manual_seed_all(seed)  <span class="hljs-comment"># 配置所有GPU上的种子</span><br></code></pre></td></tr></table></figure><h2 id="配置使用确定性操作"><a href="#配置使用确定性操作" class="headerlink" title="配置使用确定性操作"></a>配置使用确定性操作</h2><p>即使固定了种子，算法的结果在不同设备（或者不同平台）上可能还是不同，所以假如对复现有很高要求，还要配置使用确定性操作。要注意的是，使用确定性操作往往会让算法变慢，需要进行速度和复现性的取舍。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 将benchmark设置为False会让cudnn在有多种算法可选的情况下选择固定的一种</span><br><span class="hljs-comment"># 假如是True的话，cudnn会对多种算法进行测试，找到在你硬件上运行最快的那个算法，</span><br><span class="hljs-comment"># 然后再固定使用这个算法进行计算。</span><br><span class="hljs-comment"># 假如模型输入不会变化，比较规则，那设置成True可能会提高性能</span><br><span class="hljs-comment"># 假如模型输入会变化，那设置成True反而可能导致性能降低</span><br><span class="hljs-comment"># 不过要复现那还是设置成False吧~</span><br>torch.backends.cudnn.benchmark = <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># benchmark=False让选择的算法是固定的，然而这个算法本身可能还是non-deterministic的</span><br><span class="hljs-comment"># 所以设置deterministic=True可以让torch选择可确定的算法</span><br>torch.backends.cudnn.deterministic = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure><blockquote><p>参考资料：</p><p><a href="https://pytorch.org/docs/stable/generated/torch.manual_seed.html">torch.manual_seed — PyTorch 1.12 documentation</a></p><p><a href="https://pytorch.org/docs/stable/notes/randomness.html">Reproducibility — PyTorch 1.12 documentation</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+      <category>PyTorch</category>
+      
+      <category>深度学习</category>
+      
+      <category>调参笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>Pytorch</tag>
+      
+      <tag>正则化</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>使用GitHub Access Token实现免登陆上传代码</title>
     <link href="/2022/07/20/%E4%BD%BF%E7%94%A8github%20access%20token%E5%AE%9E%E7%8E%B0%E5%85%8D%E7%99%BB%E9%99%86%E4%B8%8A%E4%BC%A0%E4%BB%A3%E7%A0%81/"/>
     <url>/2022/07/20/%E4%BD%BF%E7%94%A8github%20access%20token%E5%AE%9E%E7%8E%B0%E5%85%8D%E7%99%BB%E9%99%86%E4%B8%8A%E4%BC%A0%E4%BB%A3%E7%A0%81/</url>
@@ -13,7 +46,7 @@
     
     <categories>
       
-      <category>未分类</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -67,9 +100,13 @@
     
     <categories>
       
-      <category>Pytorch</category>
+      <category>学习笔记</category>
+      
+      <category>PyTorch</category>
       
       <category>深度学习</category>
+      
+      <category>调参笔记</category>
       
     </categories>
     
@@ -99,8 +136,6 @@
     <categories>
       
       <category>Python</category>
-      
-      <category>Jupyter Notebook</category>
       
     </categories>
     
@@ -187,9 +222,7 @@
     
     <categories>
       
-      <category>论文</category>
-      
-      <category>每日论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -215,8 +248,6 @@
     <categories>
       
       <category>Linux</category>
-      
-      <category>环境配置</category>
       
     </categories>
     
@@ -245,8 +276,6 @@
       
       <category>Linux</category>
       
-      <category>环境配置</category>
-      
     </categories>
     
     
@@ -272,7 +301,9 @@
     
     <categories>
       
-      <category>技术杂文</category>
+      <category>学习笔记</category>
+      
+      <category>深度学习</category>
       
     </categories>
     
@@ -301,7 +332,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>语音信号处理</category>
       
@@ -330,9 +361,7 @@
     
     <categories>
       
-      <category>论文</category>
-      
-      <category>每日论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -357,7 +386,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>语音信号处理</category>
       
@@ -386,7 +415,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -417,7 +446,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>计算机视觉</category>
       
@@ -449,6 +478,8 @@
     
     
     <categories>
+      
+      <category>学习笔记</category>
       
       <category>密码学</category>
       
@@ -483,7 +514,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>计算机视觉</category>
       
@@ -514,7 +545,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>计算机视觉</category>
       
@@ -547,7 +578,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>语音信号处理</category>
       
@@ -580,7 +611,7 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>计算机视觉</category>
       
@@ -606,6 +637,8 @@
     
     
     <categories>
+      
+      <category>学习笔记</category>
       
       <category>密码学</category>
       
@@ -647,9 +680,7 @@
     
     <categories>
       
-      <category>论文</category>
-      
-      <category>每日论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -679,6 +710,8 @@
     
     
     <categories>
+      
+      <category>学习笔记</category>
       
       <category>密码学</category>
       
@@ -731,33 +764,6 @@
   
   
   <entry>
-    <title>Python多进程编程</title>
-    <link href="/2022/03/24/Python%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B/"/>
-    <url>/2022/03/24/Python%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%BC%96%E7%A8%8B/</url>
-    
-    <content type="html"><![CDATA[<h1 id="Python多进程编程"><a href="#Python多进程编程" class="headerlink" title="Python多进程编程"></a>Python多进程编程</h1><p>Python多进程的基本概念和接口与多线程编程几乎一样，可以参考<a href="https://blog.kamino.link/2021/03/01/Python-Multithreading-in-detail/">我之前写的博客</a>。</p><p>这篇博客主要记录多进程特有的一些坑。</p><h2 id="保证参数可序列化"><a href="#保证参数可序列化" class="headerlink" title="保证参数可序列化"></a>保证参数可序列化</h2><p><a href="https://docs.python.org/zh-cn/3/library/multiprocessing.html#multiprocessing-programming">multiprocessing — 基于进程的并行 — Python 3.10.3 文档</a>官方文档中说</p><blockquote><p>保证所代理的方法的参数是可以序列化的。</p></blockquote>]]></content>
-    
-    
-    <categories>
-      
-      <category>Python</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>Python</tag>
-      
-      <tag>多线程</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>RSA加密算法</title>
     <link href="/2022/03/23/rsa/"/>
     <url>/2022/03/23/rsa/</url>
@@ -766,6 +772,8 @@
     
     
     <categories>
+      
+      <category>学习笔记</category>
       
       <category>密码学</category>
       
@@ -794,11 +802,9 @@
     
     <categories>
       
-      <category>课程笔记</category>
+      <category>学习笔记</category>
       
       <category>密码学</category>
-      
-      <category>学习笔记</category>
       
     </categories>
     
@@ -829,9 +835,9 @@
     
     <categories>
       
-      <category>密码学</category>
-      
       <category>学习笔记</category>
+      
+      <category>密码学</category>
       
     </categories>
     
@@ -860,9 +866,9 @@
     
     <categories>
       
-      <category>密码学</category>
-      
       <category>学习笔记</category>
+      
+      <category>密码学</category>
       
     </categories>
     
@@ -889,7 +895,7 @@
     
     <categories>
       
-      <category>学习笔记</category>
+      <category>Python</category>
       
     </categories>
     
@@ -917,6 +923,8 @@
     <categories>
       
       <category>学习笔记</category>
+      
+      <category>语音信号处理</category>
       
     </categories>
     
@@ -966,9 +974,7 @@
     
     <categories>
       
-      <category>论文</category>
-      
-      <category>每日论文</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -993,9 +999,7 @@
     
     <categories>
       
-      <category>论文</category>
-      
-      <category>每日论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1013,6 +1017,27 @@
   
   
   <entry>
+    <title>《爱无可忍》——伊恩·麦克尤恩</title>
+    <link href="/2022/01/03/%E7%88%B1%E6%97%A0%E5%8F%AF%E5%BF%8D%E4%B9%A6%E8%AF%84/"/>
+    <url>/2022/01/03/%E7%88%B1%E6%97%A0%E5%8F%AF%E5%BF%8D%E4%B9%A6%E8%AF%84/</url>
+    
+    <content type="html"><![CDATA[<h1 id="《爱无可忍》Enduring-Love"><a href="#《爱无可忍》Enduring-Love" class="headerlink" title="《爱无可忍》Enduring Love"></a>《爱无可忍》Enduring Love</h1><h2 id="主线剧情"><a href="#主线剧情" class="headerlink" title="主线剧情"></a>主线剧情</h2><ol><li>热气球事件</li><li>帕里病态地爱上了乔</li><li>乔半夜接到帕里打来的示爱电话</li><li>乔感觉到在图书馆被帕里跟踪</li><li>乔与克拉莉莎沟通但未被重视</li><li>乔与帕里见面，帕里示爱，之后帕里常常守在乔的房子周围</li><li>乔报警但被忽视</li><li>克拉莉莎过了糟糕的一天之后回家，乔却向她倾诉关于帕里的事，两人吵架，乔冲出家门，而克拉莉莎怀疑帕里是乔的想象，乔偷看了克拉莉莎的信件</li><li>   乔拜访洛根家，见到<strong>琼·洛根</strong>和她的两个孩子，了解到妻子正在怀疑丈夫出轨</li><li>   乔想以<code>德·克莱拉鲍特综合征</code>来研究帕里，但是又有些许畏惧</li><li>   帕里读了乔的论文，继续寄很多信给乔，而乔与克拉莉莎的矛盾更深，克拉莉莎搬去儿童房睡了</li><li>   乔又去了一回警察局但又被忽视</li><li>   乔和克拉莉莎参加晚宴，关系有缓和，但是发生了凶杀案</li><li>   乔认为是帕里雇凶杀错人，去警察局受询问时又被忽视</li><li>   乔打电话给黑道乔尼想买枪自卫</li><li>   乔买到了枪，在回家路上接到电话发现帕里已经劫持了克拉莉莎</li><li>   乔赶回家中，帕里交涉时激动拿出刀子，却指向了自己，拿自己威胁乔，乔不为所动举枪射伤帕里</li><li>   乔进了警察局，克拉莉莎决定去哥哥家暂住</li><li>   十天后，乔策划了一场野餐，邀请了洛根一家和克拉莉莎，解除了“丈夫出轨”的怀疑，而乔和克拉莉莎也重归于好。</li><li>   之后两人领养了一个孩子。</li></ol><h2 id="观点"><a href="#观点" class="headerlink" title="观点"></a>观点</h2><ol><li><p><em>Enduring Love</em>的第一种解释：，Enduring作为形容词，表示持久的、不朽的爱。这是一种“虽然遇到困难但仍然走下去了”的爱。</p><p>乔和克拉莉莎之间因为热气球事件产生了误会。乔因为科研道路不顺，只能屈尊从事科普行业而一直耿耿于怀，此时出现了患有<code>德·克莱拉鲍特综合征</code>的帕里能作为研究对象，同时，乔不断被克拉莉莎、被警察所忽视，再加上他对于热气球事件本身有“没能更勇敢”的愧疚感，所以乔“重返科学界”的想法复燃（之前他们已经讨论过，决定放弃重返科学界了），一边忍受着帕里的爱的威胁，一边孤军奋战进行研究。</p><p>在乔最后射伤帕里之后，克拉莉莎写了给乔的信，信中说乔一意孤行，在对抗帕里的时候没有与她同行，变成了她的陌生人。这是一封非常主观的信，把锅几乎都甩给了乔，但我并不仍为都是乔的错，实际上，虽然乔在一开始被帕里打电话的时候没告诉克拉莉莎，但是这是为了不打扰当时的氛围，在之后乔向克拉莉莎提出这件事的时候，克拉莉莎也没有给予足够的重视，直到有一天，乔被帕里烦的不行，克拉莉莎也度过了不好的一天，两个人的负能量撞到一块，矛盾就爆发了。</p><p>假如小说到这停止，我会认为这是一个剧情极其差劲的书，偶尔的巧合不应当成为两人感情破裂的理由，就像推理小说中侦探不能随便灵光一闪就找到了凶手一样。在网上经常看见有人问“假如穿越到二战前杀死希特勒会怎么样？”这类的问题，历史的趋势是不可阻挡的，简单来说，死了一个希特勒，可能还有另一个希特勒上台。同样，两个人的爱情假如是因为一件小事而彻底破灭，只能说明他们长期以来就积攒了怨气与不和。确实，现实中可能就是有那些个巧合导致两个人的分开，但是这种剧情是否值得写成书呢？</p><p>到了最后一章，乔和克拉莉莎用眼神请求对方的原谅，他们的爱重新占据了高点，也更加证明了他们之间的爱的珍贵。他们都原谅了对方，也都深深地自责过了。</p><p>克拉莉莎这个角色给我的感觉是理性，她虽然也会因为各种事而烦恼、吵架，但是不会轻易地放弃一段感情，在感觉到两人之间有问题的时候，她会采取去儿童房、去哥哥家的方式，给两人一些缓冲的时间。什么样的情侣一看就能在一起很久？也许就是他们这种吧。</p></li><li><p><em>Enduring Love</em>的第二种解释：enduring作为动词，表示忍受着爱。乔忍受着帕里的爱。</p><p>作者伊恩擅长于描写奇奇怪怪的人的心理，帕里就是这本书描写最深刻的角色之一，他沉浸在自己的世界中，沐浴在爱一个人的幸福之中。但是这种爱情是荒谬的，爱情应该是双向的，只有互相喜欢，才能产生爱情。</p></li></ol>]]></content>
+    
+    
+    <categories>
+      
+      <category>非技术杂文</category>
+      
+      <category>读书笔记</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>《模仿犯》——宫部美雪 ：娓娓道来的社会派悬疑小说</title>
     <link href="/2021/12/23/%E6%A8%A1%E4%BB%BF%E7%8A%AF%E4%B9%A6%E8%AF%84/"/>
     <url>/2021/12/23/%E6%A8%A1%E4%BB%BF%E7%8A%AF%E4%B9%A6%E8%AF%84/</url>
@@ -1022,9 +1047,9 @@
     
     <categories>
       
-      <category>读书笔记</category>
+      <category>非技术杂文</category>
       
-      <category>日本文学</category>
+      <category>读书笔记</category>
       
     </categories>
     
@@ -1053,7 +1078,7 @@
     
     <categories>
       
-      <category>Pytorch</category>
+      <category>PyTorch</category>
       
     </categories>
     
@@ -1082,7 +1107,11 @@
     
     <categories>
       
-      <category>未分类</category>
+      <category>学习笔记</category>
+      
+      <category>PyTorch</category>
+      
+      <category>深度学习</category>
       
     </categories>
     
@@ -1100,6 +1129,27 @@
   
   
   <entry>
+    <title>数字图像处理复习笔记</title>
+    <link href="/2021/12/07/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E5%A4%8D%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
+    <url>/2021/12/07/%E6%95%B0%E5%AD%97%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86%E5%A4%8D%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="数字图像处理复习笔记"><a href="#数字图像处理复习笔记" class="headerlink" title="数字图像处理复习笔记"></a>数字图像处理复习笔记</h1><p>[TOC]</p><h2 id="第一章-绪论"><a href="#第一章-绪论" class="headerlink" title="第一章 绪论"></a>第一章 绪论</h2><p><strong>数字图像是一个被采样和量化后的二维函数</strong>$\bold{f(x,y)}$，其中，$x,y,f$都是有限的和离散的。</p><p>数字图像也可看做是一个二维矩阵，行列划分后，每个小块区域叫做<strong>像素</strong>，每个像素一般由一个<strong>0到255</strong>的数值表示（灰度图）或者由多个0到255的数值表示（彩色图像）。</p><blockquote><p>为什么是0~255？因为$(255)_{10}=(1111\ 1111)_2$</p></blockquote><h3 id="数字图像的来源"><a href="#数字图像的来源" class="headerlink" title="数字图像的来源"></a>数字图像的来源</h3><ol><li>伽马射线成像：用于核医学和天文观测</li><li>X射线成像：用于医学、工业、天文</li><li>紫外波段成像：荧光显微法</li><li>可见光成像：最常见的</li><li>红外波段成像：用于海岸线测绘、矿物测绘、土壤温度测绘、土壤含水量测绘</li><li>微波波段成像：雷达图像，可以不被云层阻挡</li><li>无线电波段成像：核磁共振成像MRI</li><li>声波成像：医学超声波</li><li>计算机生成图像</li></ol><h3 id="数字图像的特点是什么？"><a href="#数字图像的特点是什么？" class="headerlink" title="数字图像的特点是什么？"></a>数字图像的特点是什么？</h3><ol><li>信息量大</li><li>像素之间相关性较大、冗余较多</li><li>对三维景物的理解，使用单个视角二维图像不够</li><li>二维图像的观察受人的主观因素较大</li></ol><h3 id="数字图像处理是什么？"><a href="#数字图像处理是什么？" class="headerlink" title="数字图像处理是什么？"></a>数字图像处理是什么？</h3><ul><li>狭义上指<strong>图像-&gt;图像</strong>，即通过处理把一副图像变为修改后的另一幅图像。</li><li>广义上也指<strong>图像-&gt;非图像</strong>，即理解分析一副数字图像。</li></ul><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207102623.png"></p><h2 id="第二章-数字图像基础"><a href="#第二章-数字图像基础" class="headerlink" title="第二章 数字图像基础"></a>第二章 数字图像基础</h2><h3 id="人类视觉感知"><a href="#人类视觉感知" class="headerlink" title="人类视觉感知"></a>人类视觉感知</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207112130.png"></p><ul><li><p>虹膜：类似光圈，控制进光亮</p></li><li><p>晶状体：改变焦距、聚焦图像</p></li><li><p>视网膜：感受图像。有锥状体和杆状体两种光感受器。</p><ul><li>锥状体：数量较少，中间凹的中间部分，颜色敏感，<strong>亮视觉</strong></li><li>杆状体：数量较多，分布面积大，颜色不敏感，对低照明度敏感，分辨率低，负责察觉运动，<strong>暗视觉</strong></li></ul></li><li><p>中间凹：成像芯片</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207112720.png" alt="image-20211207112703026"></p></li></ul><pre><code class=" mermaid">graph LRA[光信号] --&gt; B[晶状体透镜]B --&gt; C[中间凹区域]C --&gt; D[光接收器]D --&gt; E[电脉冲信号]E --&gt; F[大脑解码]</code></pre><h3 id="视觉特性"><a href="#视觉特性" class="headerlink" title="视觉特性"></a>视觉特性</h3><ul><li><p>亮度适应</p><p>人能感受到的光亮度最大值与最小值之比为$10^{10}$，随着光线亮度增加，人眼感受到的主观亮度对数增加。</p></li></ul><p>$$<br>主观亮度=K\cdot ln(客观亮度) + k_0<br>$$<br><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114034.png"></p><p>图中Scotopic和Photopic两条曲线代表杆状体和锥状体的亮度感知曲线，而<strong>红点处是指在某一个亮度下人眼能够同时分辨的亮度范围（人眼动态范围）</strong></p><ul><li><p><strong>马赫带现象</strong>：边界处，主观亮度对比强。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114753.png"></p></li><li><p><strong>同时对比现象</strong>：对于相同的亮度，背景变化时主观亮度会变化。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207114856.png"></p></li></ul><h3 id="图像采样与量化"><a href="#图像采样与量化" class="headerlink" title="图像采样与量化"></a>图像采样与量化</h3><p>图像的数字化就是图像的采样和量化，<strong>采样</strong>是把空间坐标离散化，<strong>量化</strong>是把灰度离散化。</p><p>采样值决定<strong>空间分辨率</strong>（1920*1080 etc），量化值决定<strong>灰度分辨率</strong>（L级 etc）。</p><p>细节丰富的图像应该<strong>细采样、粗量化</strong>，避免模糊；缓变的图像应该<strong>细量化、粗采样</strong>，避免假轮廓。</p><h3 id="图像内插"><a href="#图像内插" class="headerlink" title="图像内插"></a>图像内插</h3><ul><li>最近邻插值：选择最近邻点的灰度值</li><li>双线性插值：找到最近的4个点，进行加权平均，$v(x,y)=ax+by+cxy+d$</li><li>双三次内插：找到最近的16个点$\sum^3_i\sum^3_j a_{ij}x^iy^j$</li></ul><h3 id="概率方法"><a href="#概率方法" class="headerlink" title="概率方法"></a>概率方法</h3><p>对比度越高，图像标准差越大。</p><h3 id="像素空间基本关系"><a href="#像素空间基本关系" class="headerlink" title="像素空间基本关系"></a>像素空间基本关系</h3><p><strong>邻域：</strong></p><ul><li>4邻域：$N_4(p)$上下左右</li><li>4对角邻域：$N_D{(p)}$左上 左下 右上 右下</li><li>8邻域：$N_8(p)$周围一圈</li></ul><p><strong>邻接性：</strong>若两个像素邻接，那么空间上满足4、8或D邻域；灰度上应该属于同一个灰度值集合。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200638.jpg" style="zoom: 25%;" /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211207200926.jpg" style="zoom: 67%;" /></p><ul><li>4邻接：若p、q位置如图且灰度相似</li><li>8邻接：若p、r位置如图且灰度相似</li><li>m邻接：若q在$N_4(p)$中或者q在$N_d(p)$中，且绿色部分（4邻域）没有灰度相似的像素。</li></ul><p><strong>通路：</strong>从p到q的像素序列依次邻接，根据邻接类型定义4、8或m通路。</p><p><strong>连通：</strong>定义一个集合S，若S中的p、q存在完全由S中的像素组成的通路，则p和q在S中连通。</p><p><strong>连通分量：</strong>对于S中任意像素p，S中连通到p的像素集合叫做连通分量。</p><p><strong>连通集：</strong>若S中仅有一个连通分量，则S叫做连通集。</p><p><strong>距离：</strong>满足$D(p,q)\ge0,D(p,q)=D(q,p),D(p,z)\le D(p,q)+D(q,z)$的函数。</p><ol><li>欧氏距离，圆形</li><li>$D_4$距离，$D_4(p,q)=|x-s|+|y-t|$，菱形，城市街区距离</li><li>$D_8$距离，$D_8(p,q)=max(|x-s|,|y-t|)$，方形，棋盘距离</li></ol><h2 id="第三章-灰度变换-空间滤波"><a href="#第三章-灰度变换-空间滤波" class="headerlink" title="第三章 灰度变换 空间滤波"></a>第三章 灰度变换 空间滤波</h2><p>这一章主要针对图像空间域进行操作，灰度变换就是对单个像素进行操作，而空间滤波就是针对一个邻域（常见方形）使用算子$T$进行卷积操作，算子$T$也可以叫做空间滤波器、核、模板、窗口。<br>$$<br>g(x,y)=T[f(x,y)]<br>$$<br><img src="D:\Download\xdXTn.gif" alt="图像卷积运算"></p><h3 id="灰度变换"><a href="#灰度变换" class="headerlink" title="灰度变换"></a>灰度变换</h3><p>用$s=T(r)$表示用$T$处理原始像素$r$得到处理后像素$s$。</p><table><thead><tr><th>名称</th><th>公式</th><th>作用</th></tr></thead><tbody><tr><td>图像反转</td><td>$s=L-1-r$</td><td>黑白反转</td></tr><tr><td>对数变换</td><td>$s=c\ log(1+r)$</td><td><strong>拓展暗像素值</strong>，压缩亮像素值。常用来可视化傅里叶频谱。</td></tr><tr><td>伽马变换</td><td>$s=cr^\gamma$</td><td>拓展暗像素值，压缩亮像素值。用于伽马校正，增强对比度、处理“冲淡”了的图像。</td></tr><tr><td>对比度拉伸</td><td>分段函数</td><td>手动指定曲线形状</td></tr><tr><td>灰度级分层</td><td>分段函数</td><td>手动指定某一范围灰度进行调整</td></tr><tr><td>比特平面分层</td><td>分段函数</td><td>把256级图像看做由8个1bit平面组成的图像。然后针对每个比特平面进行处理。低阶比特平面存储细节，而高阶存储整体。</td></tr><tr><td>直方图均衡、直方图匹配（规定化）</td><td>分段函数</td><td>在直方图的角度，均衡就是把直方图处理成近似横线，匹配就是把直方图处理成想要的形状。</td></tr></tbody></table><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105105.png" alt="反转变换与恒等变换与对数变换" style="zoom: 67%;" /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105316.png" alt="伽马变换" style="zoom: 67%;" /></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213105617.png" alt="对比度拉伸"  /><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213111302.png" alt="灰度级分层" style="zoom: 67%;" /></p><h4 id="位平面分解"><a href="#位平面分解" class="headerlink" title="位平面分解"></a>位平面分解</h4><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229114030.png"></p><p>用于辅助决定量化位数是否充足、图像压缩、数字水印。</p><h4 id="直方图均衡"><a href="#直方图均衡" class="headerlink" title="直方图均衡"></a>直方图均衡</h4><p>针对比较难的直方图均衡进行计算方法介绍（不涉及原理公式推导）</p><ol><li>计算直方图$f(n_k)$</li><li>计算灰度分布频率$p_r(k)=f(n_k)/N$。</li><li>计算累计灰度分布频率$g_k=\sum p_r(k_i)$。</li><li>计算均衡后图像直方图$round(g_k\cdot (L-1))$。L为灰度层数。四舍五入累计概率×灰度最大值。</li><li>根据计算出的均衡直方图，将原图灰度映射到新图</li></ol><h4 id="直方图规定化"><a href="#直方图规定化" class="headerlink" title="直方图规定化"></a>直方图规定化</h4><p>通过<strong>一个指定的函数产生一个特定的直方图</strong>。根据这个直方图确定一个灰度级变换。由此产生的新图像的直方图符合指定的直方图，这样的方法称为<strong>直方图匹配或直方图规定化</strong>。</p><h4 id="局部直方图均衡化"><a href="#局部直方图均衡化" class="headerlink" title="局部直方图均衡化"></a>局部直方图均衡化</h4><p>在一个小邻域内做直方图均衡化。</p><h4 id="直方图统计"><a href="#直方图统计" class="headerlink" title="直方图统计"></a>直方图统计</h4><p>统计图像全局均值$m_G$和方差$\sigma_G^2$，然后统计小领域的均值$m$和$\sigma^2$，根据这四个值来进行操作，比如：将均值较小的地方（<strong>暗区域</strong>）和方差比较低但并非完全平滑的地方（<strong>低对比度区域</strong>）提升亮度。<br>$$<br>g(x,y)=\begin{cases}E\cdot f(x,y), \quad m \le k_0m_G\ and\ k_1\sigma_G \le \sigma \le k_2\sigma_G \ f(x,y),\qquad otherwise\end{cases}<br>$$</p><h3 id="空间滤波"><a href="#空间滤波" class="headerlink" title="空间滤波"></a>空间滤波</h3><p>卷积操作$g(x,y)=\sum^a_{s=-a}\sum^b_{s=-b}w(s,t)f(x+s,y+t)$。</p><table><thead><tr><th>名称</th><th>模版</th><th>作用</th></tr></thead><tbody><tr><td>线性平滑</td><td>$\frac{1}{9} \cdot \ \begin{matrix} 1&amp;1&amp;1\1&amp;1&amp;1\1&amp;1&amp;1\ \end{matrix}$</td><td>平滑</td></tr><tr><td>高斯线性平滑</td><td>$\frac{1}{16} \cdot \ \begin{matrix} 1&amp;2&amp;1\2&amp;4&amp;2\1&amp;2&amp;1\ \end{matrix}$</td><td>加权平均，平滑</td></tr><tr><td>统计排序（非线性）平滑</td><td>取中值</td><td>去掉椒盐噪声效果好（<strong>但是可能改变图像的性质，一般不用于医学图像处理</strong>）</td></tr><tr><td>拉普拉斯锐化</td><td>$\begin{matrix} 0&amp;1&amp;0\1&amp;-4&amp;1\0&amp;1&amp;0\ \end{matrix}$</td><td>微分算子，锐化边缘（<strong>需要加原图像</strong>）</td></tr><tr><td></td><td>$\begin{matrix} 1&amp;1&amp;1\1&amp;-8&amp;1\1&amp;1&amp;1\ \end{matrix}$</td><td>加对角线的版本</td></tr><tr><td>非锐化掩蔽、高提升滤波</td><td>无</td><td>印刷和出版业常用</td></tr><tr><td>Sobel锐化</td><td>$\begin{matrix} -1&amp;-2&amp;-1\0&amp;0&amp;0\1&amp;2&amp;1\ \end{matrix}$</td><td>x方向的一阶微分（<strong>需要加原图像</strong>）</td></tr><tr><td></td><td>$\begin{matrix} -1&amp;0&amp;1\-2&amp;0&amp;2\-1&amp;0&amp;1\ \end{matrix}$</td><td>y方向的版本</td></tr><tr><td></td><td>$\begin{matrix} -2&amp;-1&amp;0\-1&amp;0&amp;1\0&amp;1&amp;2\ \end{matrix}$</td><td>斜着的版本，朝着另一个方向斜也可以</td></tr></tbody></table><h4 id="拉普拉斯锐化"><a href="#拉普拉斯锐化" class="headerlink" title="拉普拉斯锐化"></a>拉普拉斯锐化</h4><p>特点是模板所有数字和是0，这样是为了在平滑区域不改变。假如某个3x3区域全是1，那么计算之后的微分就是0。</p><p>拉普拉斯锐化后的结果是微分，需要和原图像相加或者相减（取决于中心是正数还是负数）。</p><p>拉普拉斯加上对角线是为了保证旋转不变性。</p><h4 id="Sobel锐化"><a href="#Sobel锐化" class="headerlink" title="Sobel锐化"></a>Sobel锐化</h4><p>同样，所有数字和是0，使用的是一阶微分。0线的方向就是锐化的方向。权重2是为了平滑图像。</p><p>（注意下面和右边是正数） </p><p><strong>一般使用x方向和y方向的绝对值之和作为梯度，此时非线性。</strong></p><h4 id="非锐化屏蔽"><a href="#非锐化屏蔽" class="headerlink" title="非锐化屏蔽"></a>非锐化屏蔽</h4><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211213113914.jpg" style="zoom:50%;" /><p>如图，原始信号模糊之后，再减去模糊信号能获得钝化模板。就是原始图像减去模糊图像得到被模糊掉的信号，然后把这个信号乘常数加回到原信号。</p><h2 id="第四章-频率域滤波"><a href="#第四章-频率域滤波" class="headerlink" title="第四章 频率域滤波"></a>第四章 频率域滤波</h2><p>就是通过傅里叶变换把图像从空域变换到频域进行处理。<br>$$<br>\bold{IDFT}(H(u,v) \cdot \bold{DFT}(f(x,y)))<br>$$<br>频域和时域通过<strong>卷积</strong>操作相通，但是根据信号与系统的规律，我们之前用的有限的时域卷积核对应着无限大的频域，而这一章从频域的角度使用有限的频域卷积核，对应着无限大的时域卷积核。</p><p>低通滤波器用来平滑图像，高通滤波器用来锐化图像。</p><table><thead><tr><th>名称</th><th>公式（$D_0$是截止频率）</th><th>作用</th></tr></thead><tbody><tr><td>理想低通滤波  ILPF</td><td>$H(u,v)=\begin{cases}1, D(u,v)\le D_0 \ 0, D(u,v)&gt; D_0 \end{cases}$</td><td>强行截断频域的高频信号，会产生<code>振铃</code>效应</td></tr><tr><td>布特沃斯低通BLPF</td><td>$H(u,v)=\frac{1}{1+[D(u,v)/D_0]^{2n}}$</td><td>n是阶数，越高越快从1到0</td></tr><tr><td>高斯低通滤波GLPF</td><td>$H(u,v)=exp(-\frac{D^2(u,v)}{2D_0^2})$</td><td></td></tr><tr><td>理想高通滤波 IHPF</td><td>$H(u,v)=\begin{cases}0, D(u,v)\le D_0 \ 1, D(u,v)&gt; D_0 \end{cases}$</td><td>$1-低通$</td></tr><tr><td>布特沃斯高通BHPF</td><td>$H(u,v)=\frac{1}{1+[D_0/D(u,v)]^{2n}}$</td><td>$1-低通$</td></tr><tr><td>高斯高通滤波GHPF</td><td>$H(u,v)=1 - exp(-\frac{D^2(u,v)}{2D_0^2})$</td><td>$1-低通$</td></tr><tr><td>同态滤波</td><td>$H(u,v)=(\gamma_H-\gamma_L)[1 - exp(-c\frac{D^2(u,v)}{2D_0^2})]+\gamma_L$</td><td>本来GHPF是0-&gt;1，然后压缩到$\gamma_H-\gamma_L$然后再上移。通过c来控制锐利程度。</td></tr><tr><td>带阻滤波器</td><td>用$\frac{DW}{D^2-D_0^2}$代替$\frac{D_0}{D}$，高斯exp括号内的2忽略。</td><td>能够有效去除周期噪声</td></tr><tr><td>带通滤波器</td><td>1-带阻滤波器</td><td></td></tr></tbody></table><h3 id="高频强调滤波器"><a href="#高频强调滤波器" class="headerlink" title="高频强调滤波器"></a>高频强调滤波器</h3><p>$$<br>g(x,y)=\bold{IDFT}{[k_1+k_2H_{hp}(u,v)]F(u,v)}<br>$$</p><p>$k_2$控制高频贡献，$k_1$控制原点偏移量，使零频率不被过滤。</p><h3 id="同态滤波"><a href="#同态滤波" class="headerlink" title="同态滤波"></a>同态滤波</h3><p>同态滤波的思想就是把图像的<strong>照射分量</strong>和<strong>反射分量</strong>分开处理。照射分量就是光照在某个物体上的强度，而反射分量更接近与反射系数，值域为$[0,1]$，表示光在某个物体上的反射强度。</p><p>“同态”指的是特殊的映射，比如$f(x)=e^x$，有$f(a+b)=f(a)\times f(b)$，把原本的加法映射成乘法。</p><ol><li><p>图像建模为$f(x,y)=i_{照射}(x,y)r_{反射}(x,y)$，使用对数操作转换成相加$ln\ f(x,y)=ln\ i(x,y)+ln\ r(x,y)$，这一步就是“同态”的关键。</p></li><li><p>然后就可以用傅里叶变换了$\bold{FT}[ln\ f(x,y)]=\bold{FT}[ln\ i(x,y)]+\bold{FT}[ln\ r(x,y)]$。把上式记作$Z(u,v)=F_i(u,v)+F_r(u,v)$，则用可以用滤波器进行处理$H(u,v)Z(u,v)=H(u,v)F_i(u,v)+H(u,v)F_r(u,v)$。</p></li><li><p>对于$F_i(u,v)$和$F_r(u,v)$，低频成分通常与照射光有关，而高频成分与反射相联系，所以使用修改过后的高斯高通滤波器作为$H(u,v)$。之后就傅里叶反变换回去$\bold{IFT}[H\cdot Z]=\bold{IFT}[H\cdot F_i]+\bold{IFT}[H\cdot F_r]$。再通过取指数把加法转换回乘法。</p></li></ol><h2 id="第五章-图像复原与重建"><a href="#第五章-图像复原与重建" class="headerlink" title="第五章 图像复原与重建"></a>第五章 图像复原与重建</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211223201116.png"></p><p>$g(x,y)$是退化图像。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211223201156.png"></p><h3 id="图像复原与图像增强的区别"><a href="#图像复原与图像增强的区别" class="headerlink" title="图像复原与图像增强的区别"></a>图像复原与图像增强的区别</h3><p><strong>图像复原是客观过程</strong>，识图恢复图像原来的面貌，有客观的测量方法；而<strong>图像增强使从主观视觉角度</strong>改善图像质量，为了人类视觉而进行优化。</p><h3 id="图像噪声是什么？"><a href="#图像噪声是什么？" class="headerlink" title="图像噪声是什么？"></a>图像噪声是什么？</h3><p><strong>图像噪声</strong>指造成图像失真、质量下降的图像信号，主要来源于图像的获取和传输过程。噪声根据统计特性可以分为<strong>周期噪声</strong>和<strong>随机噪声</strong>，还可能有空间特性（相关性）或者频率特性。随机噪声可以用概率密度函数（PDF）来建模，有高斯噪声、瑞利噪声、伽马噪声等。<strong>脉冲噪声（椒盐噪声）</strong>指的是数字化最大值或最小值的噪声。</p><table><thead><tr><th>名称</th><th>模版 / 公式</th><th>作用</th></tr></thead><tbody><tr><td>算术均值滤波器</td><td>$\frac{1}{9} \cdot \ \begin{matrix} 1&amp;1&amp;1\1&amp;1&amp;1\1&amp;1&amp;1\ \end{matrix}$</td><td>平滑图像来降低噪声，但是不抗椒盐噪声</td></tr><tr><td>几何均值滤波器</td><td>$[\prod g(x,y)]^{\frac{1}{mn}}$或者$exp(\frac{1}{9}log\ a + \frac{1}{9}log\ b + …)$</td><td><strong>丢失的细节更少</strong>，但是不抗椒盐噪声</td></tr><tr><td>谐波均值滤波器</td><td>$mn\cdot [\sum1/g(x,y)]^{-1}$</td><td>处理<strong>高斯噪声和盐噪声</strong>，不抗椒噪声</td></tr><tr><td>逆谐波均值滤波器</td><td>$\frac{\sum g(s,t)^{Q+1}}{\sum g(s,t)^{Q}}$</td><td>$Q&gt;0$抗椒，$Q&lt;0$抗盐，$Q=0$就是算术均值，$Q=-1$就是谐波均值。</td></tr><tr><td>中值滤波器</td><td>找中值</td><td>抗<strong>椒盐噪声</strong></td></tr><tr><td>最大值/最小值/中点滤波器</td><td>找最大值、最小值、最大值与最小值的平均</td><td>前两者只抗椒盐噪声中的一种，而<strong>后者处理高斯和均匀噪声</strong></td></tr><tr><td>修正后阿尔法均值滤波器</td><td>把最大最小值去掉再求平均，去掉的值数量为$d$</td><td><strong>高斯噪声和椒盐噪声</strong>混合</td></tr><tr><td>自适应局部降低噪声滤波器</td><td>$g(x,y)-\frac{\sigma^2_\eta}{\sigma^2_L}[g(x,y)-m_L]$</td><td>$\sigma^2_\eta$是噪声方差，需要估计。剩下两个是局部的方差和均值。需要避免第二项是负值。</td></tr><tr><td>自适应中值滤波器</td><td>见下</td><td>能够比传统中值滤波器处理<strong>概率更大的椒盐噪声</strong></td></tr><tr><td>陷波滤波器</td><td>见下</td><td>最有用的选择性滤波器</td></tr></tbody></table><h3 id="自适应局部降噪滤波器"><a href="#自适应局部降噪滤波器" class="headerlink" title="自适应局部降噪滤波器"></a>自适应局部降噪滤波器</h3><p>噪声方差为0的时候返回原图像，噪声方差&gt;=图像方差时取算术均值。</p><h3 id="自适应中值滤波器"><a href="#自适应中值滤波器" class="headerlink" title="自适应中值滤波器"></a>自适应中值滤波器</h3><ol><li>选择窗口$S_{xy}$，找到中值$z_{med}$，假如中值不符合$z_{min}&lt;z_{med}&lt;z_{max}$，则扩大窗口再选中值，直到窗口大小到达规定的$S_{max}$。</li><li>找到中值之后，判断窗口中心点符不符合$z_{min}&lt;z_{xy}&lt;z_{max}$，假如符合就不变，不符合就改成之前找到的中值。</li></ol><p>假如噪声密度比较小，那么窗口就不会开太大，能够保留细节。</p><h3 id="陷波滤波器"><a href="#陷波滤波器" class="headerlink" title="陷波滤波器"></a>陷波滤波器</h3><p><strong>陷波滤波器必须是对称的</strong>。特殊的，位于原点处时是低通/高通滤波器。</p><h3 id="退化模型"><a href="#退化模型" class="headerlink" title="退化模型"></a>退化模型</h3><p>假设退化模型是线性不变的，那么受损图像，从时域可以看作是$g(x,y)=h(x,y)*f(x,y)+\eta(x,y)$，从频域可以看作是$G(u,v)=H(u,v)F(u,v)+N(u,v)$</p><p><strong>进行图像复原的关键是获得</strong>$H,\eta$。获取$H$可以基于实验法、观察法、数学建模法。</p><h3 id="逆滤波"><a href="#逆滤波" class="headerlink" title="逆滤波"></a>逆滤波</h3><p>获取之后，假设$\eta=0$，那么做逆滤波$F(u,v)=\frac{G(u,v)}{H(u,v)}, \hat f(x,y)=\bold {IDFT}(F(u,v))$。但是当$H(u,v)$很小时，$F$会很大，逆滤波复原会不稳定。</p><h3 id="维纳滤波"><a href="#维纳滤波" class="headerlink" title="维纳滤波"></a>维纳滤波</h3><p>目标：寻找一个滤波器使得滤波后图像与原图像的MSE最小。维纳滤波器假定<strong>图像与噪声均为平稳随机过程</strong><br>$$<br>\hat F(u,v)=\frac{|H|^2}{|H|^2+\frac{S_\eta}{S_f}}\cdot \frac{G(u,v)}{H}<br>$$<br>其中$S_{\eta}$是噪声功率谱，$S_f$是原始图像功率谱，$\frac{S_\eta}{S_f}$常用常数代替。</p><h3 id="求二维傅里叶幅度"><a href="#求二维傅里叶幅度" class="headerlink" title="求二维傅里叶幅度"></a>求二维傅里叶幅度</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211226204427.png"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211226204535.png"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211226204552.png"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211226204650.png"></p><h2 id="第六章-彩色图像处理"><a href="#第六章-彩色图像处理" class="headerlink" title="第六章 彩色图像处理"></a>第六章 彩色图像处理</h2><h3 id="彩色模型"><a href="#彩色模型" class="headerlink" title="彩色模型"></a>彩色模型</h3><h4 id="RGB"><a href="#RGB" class="headerlink" title="RGB"></a>RGB</h4><p>从光的三原色得出了<strong>RGB色彩模式（加色模式）</strong></p><h4 id="CMY-K"><a href="#CMY-K" class="headerlink" title="CMY(K)"></a>CMY(K)</h4><p>从原色相加的二次色得出了<strong>CMY(K)色彩模式（减色模式）</strong>。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229122521.png"></p><h4 id="HSI"><a href="#HSI" class="headerlink" title="HSI"></a>HSI</h4><p>但是人最直观的彩色模型是<strong>HSI（色调、饱和度、亮度）</strong>，通常所说的色度是色调和饱和度的统称。HSI指的是Hue, Saturation, Intensity，其中I就是RGB的平均值。</p><h4 id="YUV"><a href="#YUV" class="headerlink" title="YUV"></a>YUV</h4><p>用于PAL制式的彩色电视信号传输，$Y$是RGB的加权平均数，$U=B-Y, V=R-Y$。</p><h4 id="YCbCr"><a href="#YCbCr" class="headerlink" title="YCbCr"></a>YCbCr</h4><p>JPEG使用的彩色空间，Y和YUV一样，而Cb是U乘一个常数，Cr是V乘一个常数。</p><h3 id="伪彩色"><a href="#伪彩色" class="headerlink" title="伪彩色"></a>伪彩色</h3><p>由于人眼对彩色的识别度更高，所以常将黑白照片<strong>根据灰度级</strong>人工分层成不同的颜色。</p><h3 id="全彩色图像处理"><a href="#全彩色图像处理" class="headerlink" title="全彩色图像处理"></a>全彩色图像处理</h3><ol><li>可以分别处理每一个分量</li><li>也可以统一处理是三个分量</li><li>也可以只处理一个分量（比如调整亮度分量，做直方图均衡；或者把饱和度分量提高，增强对比度）</li></ol><h2 id="第九章-形态学滤波"><a href="#第九章-形态学滤波" class="headerlink" title="第九章 形态学滤波"></a>第九章 形态学滤波</h2><p>图像的形态学指的是对<strong>图像形状和结构的分析及处理</strong>，本章主要讨论二值图像。</p><p>形态学滤波定义一个类似卷积核的领域，叫做<strong>结构元素Structure Element</strong>，可以是任意尺寸、任意形状，但是实际中一般填充为矩形。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229133902.png"></p><h3 id="逻辑运算"><a href="#逻辑运算" class="headerlink" title="逻辑运算"></a>逻辑运算</h3><h4 id="击中hit、击不中miss、包含fit"><a href="#击中hit、击不中miss、包含fit" class="headerlink" title="击中hit、击不中miss、包含fit"></a>击中hit、击不中miss、包含fit</h4><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229134106.png"></p><h4 id="腐蚀erosion、膨胀dilation"><a href="#腐蚀erosion、膨胀dilation" class="headerlink" title="腐蚀erosion、膨胀dilation"></a>腐蚀erosion、膨胀dilation</h4><p>腐蚀能够将图像的边界向内缩，膨胀则向外张</p><p><strong>腐蚀：</strong>当结构元素（se）包含（fit）于二值图像$f(x,y)$时，中心点为1.（即进行<code>与</code>操作）。可以用$A\ominus B$表示。</p><p><strong>膨胀：</strong>当结构元素（se）击中（hit）于二值图像$f(x,y)$时，中心点为1.（即进行<code>或</code>操作）。可以用$A\oplus B$表示。</p><p>腐蚀和膨胀不是一对可逆操作，但有对偶性。</p><h4 id="开运算、闭运算"><a href="#开运算、闭运算" class="headerlink" title="开运算、闭运算"></a>开运算、闭运算</h4><p>开运算即<strong>先腐蚀后膨胀</strong>，用$A\circ B$表示。作用为区分开物体、消除细突出物、降低噪声、平滑轮廓。</p><p>闭运算即<strong>先膨胀后腐蚀</strong>，用$A\bullet B$表示。作用为消除小孔洞、填补断裂。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229135234.png" alt="开运算"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229135245.png" alt="闭运算"></p><h3 id="应用"><a href="#应用" class="headerlink" title="应用"></a>应用</h3><h4 id="边界提取"><a href="#边界提取" class="headerlink" title="边界提取"></a>边界提取</h4><p>先腐蚀，然后减去腐蚀。<br>$$<br>A-(A\ominus se)<br>$$</p><h4 id="孔洞填充"><a href="#孔洞填充" class="headerlink" title="孔洞填充"></a>孔洞填充</h4><ol><li>先选择一个在孔洞内的点集合$X_{0}$。</li><li>$X_k=(X_{k-1}\oplus se) \cap \overline A$。</li><li>假如$X_k=X_{k-1}$，算法结束，取$X_k \cup A$作为结果。</li></ol><p>即对选取的点进行条件膨胀，用图像$A$取反来限制。</p><h4 id="提取连通分量"><a href="#提取连通分量" class="headerlink" title="提取连通分量"></a>提取连通分量</h4><ol><li>先选择一个在所需连通分量里的点集合$X_0$</li><li>$X_k=(X_{k-1}\oplus se) \cap A$。</li><li>假如$X_k=X_{k-1}$，算法结束，取$X_k$作为结果。</li></ol><p>和孔洞填充很像，直接用图像$A$来限制。</p><h2 id="第十章-图像分割"><a href="#第十章-图像分割" class="headerlink" title="第十章 图像分割"></a>第十章 图像分割</h2><p>图像分隔技术就是<strong>把图像分隔成若干个不同的区域</strong>。一般基于区域之间亮度值的不连续性和区域内的相似性。</p><h3 id="点的检测"><a href="#点的检测" class="headerlink" title="点的检测"></a>点的检测</h3><p>模板和要为0，从而在平滑区域响应为0。并且设置阈值可以避免检测过于灵敏。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229144739.png"></p><h3 id="线的检测"><a href="#线的检测" class="headerlink" title="线的检测"></a>线的检测</h3><p>类似的检测方法，模板系数和要为0</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229144941.png"></p><h3 id="边缘检测"><a href="#边缘检测" class="headerlink" title="边缘检测"></a>边缘检测</h3><p>边缘可能是对象的分界处、也可能是对象内部不同材料的分界处。在边缘上有边缘法线、边缘方向如图。而边缘附近的灰度分布有下面三种。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229145150.png"></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229145228.png"></p><p>边缘检测的步骤：<strong>平滑降噪 -&gt; 边缘点检测 -&gt; 边缘定位</strong></p><ul><li>平滑降噪：基于导数计算，所以容易受到噪声影响，但是平滑的同时也导致边缘强度的损失。</li><li>边缘点检测：微分算子能够突出边缘，然后通过设置阈值来提取边缘点。</li><li>边缘定位：精确确定边缘的位置。从候选点集中选择真实成员。</li></ul><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211229145822.png"></p><h4 id="Sobel梯度法"><a href="#Sobel梯度法" class="headerlink" title="Sobel梯度法"></a>Sobel梯度法</h4><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220102105906.png"></p><p>Sobel既能提取x和y方向的微分，还有一定的平滑效果。提取出梯度之后，设置一个阈值，大于threshold的就设置为1，其余为0.</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220102110058.png"></p><h4 id="二阶导数-LoG法"><a href="#二阶导数-LoG法" class="headerlink" title="二阶导数 LoG法"></a>二阶导数 LoG法</h4><p>二阶导数有以下优势：① 可以利用零交叉性质定位边缘，还可以确定一个像素是在暗的一边还是亮的一边。</p><p><strong>边缘检测一般不用拉普拉斯算子的原始形式</strong>，因为①二阶导数对噪声更加敏感了；②对于一个边缘会产生两个幅值；③不能检测边缘方向。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220102110344.png"></p><p>所以一般用<strong>LoG方法</strong>：</p><ol><li>用高斯滤波器进行平滑降噪</li><li>用二阶拉普拉斯检测边缘点</li><li>根据二阶导数零交叉点定位边缘</li></ol><p>所以<strong>LoG算子</strong>定义为高斯平滑的二阶导数：<br>$$<br>G_\sigma(x,y)=\frac{1}{2\pi\sigma^2}\cdot exp(-\frac{x^2+y^2}{2\sigma^2})  \ \nabla^2G_\sigma(x,y)=\frac{1}{2\pi\sigma^4}(\frac{x^2+y^2}{\sigma^2}-2)\cdot exp(-\frac{x^2+y^2}{2\sigma^2})<br>$$<br>然后寻找零交叉点：以p为中心的3x3邻域，比较左/右、上/下和两个对角的值，如果符号不一样且差值超过了一个阈值，那么这个点就是零交叉点。</p><h4 id="Canny法"><a href="#Canny法" class="headerlink" title="Canny法"></a>Canny法</h4><p>没说很详细，不考吧大概</p><ol><li>用高斯滤波器进行平滑降噪</li><li>用一阶偏导的有限差分计算梯度幅值和方向</li><li>对梯度幅值进行非极大值抑制</li><li>双阈值算法和连接分析来检测并连接边缘</li></ol><h4 id="直方图阈值分割法"><a href="#直方图阈值分割法" class="headerlink" title="直方图阈值分割法"></a>直方图阈值分割法</h4><p>通过设置一个阈值，根据同一个区域的相似性进行分割。最简单的就是通过直方图找到阈值，但是会受到噪音的干扰。可以选取谷底，也可以选取两个峰值之间某个固定位置。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220102114334.png"></p><h4 id="Isodata门限算法"><a href="#Isodata门限算法" class="headerlink" title="Isodata门限算法"></a>Isodata门限算法</h4><ol><li>选取门限的初值$T_0$</li><li>用$T_i$分隔图像，分成$G_1$和$G_2$两类像素</li><li>计算$G_1$和$G_2$的平均灰度$\mu_1$和$\mu_2$</li><li>令新门限$T_{i+1}=\frac{1}{2}(\mu_1+\mu_2)$</li><li>重复2-4，直至$\Delta T=0$</li></ol><h4 id="Otsu最佳全局阈值法"><a href="#Otsu最佳全局阈值法" class="headerlink" title="Otsu最佳全局阈值法"></a>Otsu最佳全局阈值法</h4><ol><li><p>计算输入图像的归一化直方图</p></li><li><p>对于阈值$k=0,1,…,L-1$计算像素被分类到$[0,k]$的概率$P_1(k)$</p></li><li><p>对于阈值$k=0,1,…,L-1$计算像素被分类到$[0,k]$的平均灰度$m(k)=\sum^{k}_{i=0}ip_i$</p></li><li><p>计算整个图像的平均灰度$m_G=m(L-1)$</p></li><li><p>对于阈值$k=0,1,…,L-1$计算类间方差<br>$$<br>\sigma^2_B(k)=\frac{[m_GP_1(k)-m(k)]^2}{P_1(k)[1-P_1(k)]}<br>$$<br>其实类间方差是由$\sigma_B^2=P_1(m_1-m_G)^2+P_2(m_2-m_G)^2$的化简得来的。</p></li><li><p>让$\sigma_B^2(k)$最大的$k^*$值就是$Otsu$阈值。如果不唯一，则取每个$k^*$的平均。</p></li></ol><h4 id="可变阈值处理"><a href="#可变阈值处理" class="headerlink" title="可变阈值处理"></a>可变阈值处理</h4><p>把图像分成许多小块，然后分别用不同的门限进行分割。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220102122315.png"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+      <category>数字图像处理</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记</title>
     <link href="/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     <url>/2021/12/04/ORG%20TRL%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
@@ -1109,7 +1159,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1136,7 +1186,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1154,6 +1204,27 @@
   
   
   <entry>
+    <title>JavaScript速成</title>
+    <link href="/2021/11/23/JavaScript%E9%80%9F%E6%88%90/"/>
+    <url>/2021/11/23/JavaScript%E9%80%9F%E6%88%90/</url>
+    
+    <content type="html"><![CDATA[<h1 id="JavaScript速通"><a href="#JavaScript速通" class="headerlink" title="JavaScript速通"></a>JavaScript速通</h1><p>[TOC]</p><p>JavaScript（简称JS）是用于网页的脚本语言，控制了网页的行为，它的标准用ECMA命名。要使用JS非常简单，比Python、C++简单很多，只需要在html页面中的<code>&lt;script&gt;</code>标签内写入JS代码，然后用浏览器运行即可。</p><h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><table><thead><tr><th>数据类型</th><th>定义方式</th><th>说明</th></tr></thead><tbody><tr><td>数字Number</td><td>3.4、33e5</td><td>直接写</td></tr><tr><td>字符串String</td><td>“yes”、’no’</td><td>用单引号或者双引号（和Python一样）</td></tr><tr><td>数组Array</td><td>[4, 3, 54]</td><td>值可以不同类型（和Python一样）</td></tr><tr><td>对象Object</td><td>{age: “asdf”}</td><td>键值对，键不用引号，值可以随意类型。获取对象属性用<code>对象.属性</code>，同时也支持Python字典那样的访问形式</td></tr><tr><td>函数Function</td><td>function f(param_a){xxx}</td><td>用关键字function</td></tr><tr><td>布尔值bool</td><td>true false</td><td>小写</td></tr><tr><td>空Null</td><td></td><td></td></tr><tr><td>未定义underfined</td><td></td><td>和上面差不多</td></tr></tbody></table><h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量用<code>var</code>关键字声明，比其他语言能多用<code>$</code>这个字符命名。</p><p>在ECMA2015中添加了<code>let</code>和<code>const</code>关键字，<code>let</code>声明一个只在代码块<code>&#123;&#125;</code>内有效的变量，<code>const</code>声明一个只读常量。</p><h3 id="布尔比较"><a href="#布尔比较" class="headerlink" title="布尔比较"></a>布尔比较</h3><ol><li><code>&amp;&amp;</code>与 、<code>||</code>或、<code>!</code>非</li><li><code>&gt; &lt; &gt;= &lt;=</code>比大小</li><li><code>==</code>转换数据类型再比较，一般用得少 <code>===</code>不转换数据类型比较，假如类型不同返回false。</li><li><code>NaN</code>是特殊的Number，用它比较始终为false，用isNan()函数验证。<strong>（不能if(a===NaN)）</strong></li><li>比较浮点数最好算差的绝对值小于某个很小的数</li></ol><h3 id="字符串（ES6）"><a href="#字符串（ES6）" class="headerlink" title="字符串（ES6）"></a>字符串（ES6）</h3><ol><li><p>用<code>\</code>转义</p></li><li><p>用波浪号下面的反斜杠来表示多行字符串</p></li><li><p>用<code>+</code>连接字符串，或者用模板字符串（如同python里的<code>f&quot;&#123;&#125;&quot;</code>）。</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> age = <span class="hljs-number">10</span>;<br><span class="hljs-keyword">var</span> message = <span class="hljs-string">&quot;我$&#123;age&#125;岁了&quot;</span><br></code></pre></td></tr></table></figure></li><li><p>用索引访问、<code>.length</code>获取长度、<code>.toUpperCase()</code>变大写等等</p></li></ol><h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><p>用<code>if ... else if ... else ...</code>。</p><h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><ol><li>用c++那样的<code>for(;;)</code></li><li>用<code>for ... in ...</code>列出对象的所有属性</li><li>用<code>while</code>和<code>do...while</code></li></ol><h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>函数用<code>function</code>关键字定义，假如没有return就返回<code>undefined</code>。也可以把函数赋值给一个变量。</p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fun</span>(<span class="hljs-params">x</span>)</span>&#123;...&#125;<br><span class="hljs-comment">// 等于</span><br><span class="hljs-keyword">var</span> fun = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">x</span>)</span>&#123;...&#125;<br></code></pre></td></tr></table></figure><p>调用函数时，可以随意传入参数，比定义的多和少都没关系，假如参数少了那未知的会变成<code>undefined</code>。</p><p>在函数内有个特殊的变量<code>arguments</code>，是一个类似数组的东西，内容是传入的所有参数。</p><p>ES6引入了类似Python中<code>*args</code>这样的语法，即<code>rest</code></p><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//rest前面用三个点， rest的值是额外的参数</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fun</span>(<span class="hljs-params">a, b, ...rest</span>)</span>&#123;...&#125; <br></code></pre></td></tr></table></figure><h2 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h2><h3 id="ES6-解构赋值"><a href="#ES6-解构赋值" class="headerlink" title="ES6 解构赋值"></a>ES6 解构赋值</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> [x, y, z] = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-string">&#x27;JavaScript&#x27;</span>, <span class="hljs-string">&#x27;ES6&#x27;</span>];<br><span class="hljs-keyword">var</span> [, , z] = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-string">&#x27;JavaScript&#x27;</span>, <span class="hljs-string">&#x27;ES6&#x27;</span>];  <span class="hljs-comment">// 可以忽略</span><br><span class="hljs-comment">// 对象的嵌套解构赋值</span><br><span class="hljs-keyword">var</span> person = &#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;小明&#x27;</span>,<br>    <span class="hljs-attr">age</span>: <span class="hljs-number">20</span>,<br>    <span class="hljs-attr">gender</span>: <span class="hljs-string">&#x27;male&#x27;</span>,<br>    <span class="hljs-attr">passport</span>: <span class="hljs-string">&#x27;G-12345678&#x27;</span>,<br>    <span class="hljs-attr">school</span>: <span class="hljs-string">&#x27;No.4 middle school&#x27;</span>,<br>    <span class="hljs-attr">address</span>: &#123;<br>        <span class="hljs-attr">city</span>: <span class="hljs-string">&#x27;Beijing&#x27;</span>,<br>        <span class="hljs-attr">street</span>: <span class="hljs-string">&#x27;No.1 Road&#x27;</span>,<br>        <span class="hljs-attr">zipcode</span>: <span class="hljs-string">&#x27;100001&#x27;</span><br>    &#125;<br>&#125;;<br><span class="hljs-keyword">var</span> &#123;name, <span class="hljs-attr">address</span>: &#123;city, zip&#125;&#125; = person;<br><span class="hljs-comment">// 交换</span><br><span class="hljs-keyword">var</span> x=<span class="hljs-number">1</span>, y=<span class="hljs-number">2</span>;<br>[x, y] = [y, x]<br></code></pre></td></tr></table></figure><h3 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> xiaoming = &#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;小明&#x27;</span>,<br>    <span class="hljs-attr">birth</span>: <span class="hljs-number">1990</span>,<br>    <span class="hljs-attr">age</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;<br>        <span class="hljs-keyword">var</span> y = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getFullYear();<br>        <span class="hljs-keyword">return</span> y - <span class="hljs-built_in">this</span>.birth;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure><h3 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">x =&gt; x*x<br><span class="hljs-comment">// 相当于</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> x * x;<br>&#125;<br></code></pre></td></tr></table></figure>]]></content>
+    
+    
+    <categories>
+      
+      <category>学习笔记</category>
+      
+      <category>JavaScript</category>
+      
+    </categories>
+    
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Https协议的安全性原理</title>
     <link href="/2021/11/19/HTTPS/"/>
     <url>/2021/11/19/HTTPS/</url>
@@ -1162,6 +1233,8 @@
     
     
     <categories>
+      
+      <category>学习笔记</category>
       
       <category>密码学</category>
       
@@ -1192,6 +1265,8 @@
     
     <categories>
       
+      <category>学习笔记</category>
+      
       <category>密码学</category>
       
     </categories>
@@ -1216,6 +1291,8 @@
     
     
     <categories>
+      
+      <category>学习笔记</category>
       
       <category>密码学</category>
       
@@ -1246,9 +1323,9 @@
     
     <categories>
       
-      <category>机器学习</category>
+      <category>学习笔记</category>
       
-      <category>课程笔记</category>
+      <category>机器学习</category>
       
     </categories>
     
@@ -1275,9 +1352,9 @@
     
     <categories>
       
-      <category>机器学习</category>
+      <category>学习笔记</category>
       
-      <category>课程笔记</category>
+      <category>机器学习</category>
       
     </categories>
     
@@ -1302,9 +1379,9 @@
     
     <categories>
       
-      <category>机器学习</category>
+      <category>学习笔记</category>
       
-      <category>课程笔记</category>
+      <category>机器学习</category>
       
     </categories>
     
@@ -1329,7 +1406,7 @@
     
     <categories>
       
-      <category>常用易忘</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -1354,7 +1431,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1383,9 +1460,7 @@
     
     <categories>
       
-      <category>常用易忘</category>
-      
-      <category>Python</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -1411,8 +1486,6 @@
     
     
     <categories>
-      
-      <category>常用易忘</category>
       
       <category>Python</category>
       
@@ -1441,7 +1514,7 @@
     
     <categories>
       
-      <category>常用易忘</category>
+      <category>PyTorch</category>
       
     </categories>
     
@@ -1468,7 +1541,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1494,8 +1567,6 @@
     
     
     <categories>
-      
-      <category>常用易忘</category>
       
       <category>Python</category>
       
@@ -1553,7 +1624,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1580,7 +1651,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1605,7 +1676,7 @@
     
     <categories>
       
-      <category>未分类</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -1623,35 +1694,6 @@
   
   
   <entry>
-    <title>深度学习之梯度累加（Pytorch实现）</title>
-    <link href="/2021/10/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0Pytorch%E5%AE%9E%E7%8E%B0/"/>
-    <url>/2021/10/03/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E4%B9%8B%E6%A2%AF%E5%BA%A6%E7%B4%AF%E5%8A%A0Pytorch%E5%AE%9E%E7%8E%B0/</url>
-    
-    <content type="html"><![CDATA[<h1 id="深度学习之梯度累加（Pytorch实现）"><a href="#深度学习之梯度累加（Pytorch实现）" class="headerlink" title="深度学习之梯度累加（Pytorch实现）"></a>深度学习之梯度累加（Pytorch实现）</h1><blockquote><p>参考文献</p><p><a href="https://towardsdatascience.com/what-is-gradient-accumulation-in-deep-learning-ec034122cfa">What is Gradient Accumulation in Deep Learning? | by Raz Rotenberg | Towards Data Science</a></p><p><a href="https://www.cnblogs.com/sddai/p/14598018.html">梯度累加(Gradient Accumulation) - stardsd - 博客园 (cnblogs.com)</a></p></blockquote><h2 id="梯度累加是什么"><a href="#梯度累加是什么" class="headerlink" title="梯度累加是什么"></a>梯度累加是什么</h2><p>梯度累加就是把一个<strong>大Batch分成小mini-batch</strong>，每个mini-batch分别送模型算loss得到梯度，并进行累加，直到大Batch里所有数据计算完，再梯度下降。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211003145612.jpg" alt="梯度累加示意图"></p><p>梯度累加就是运行几个step但是不更新模型，在这几个step中，模型的参数不变，也就是假装我们在计算大Batch。</p><h2 id="Pytorch代码示例"><a href="#Pytorch代码示例" class="headerlink" title="Pytorch代码示例"></a>Pytorch代码示例</h2><p>传统训练过程</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, (inputs, labels) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(trainloader):<br>    optimizer.zero_grad()                   <span class="hljs-comment"># 梯度清零</span><br>    outputs = net(inputs)                   <span class="hljs-comment"># 正向传播</span><br>    loss = criterion(outputs, labels)       <span class="hljs-comment"># 计算损失</span><br>    loss.backward()                         <span class="hljs-comment"># 反向传播，计算梯度</span><br>    optimizer.step()                        <span class="hljs-comment"># 更新参数</span><br>    <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % evaluation_steps == <span class="hljs-number">0</span>:<br>        evaluate_model()<br></code></pre></td></tr></table></figure><p>梯度累加</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> i, (inputs, labels) <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(trainloader):<br>    outputs = net(inputs)                   <span class="hljs-comment"># 正向传播</span><br>    loss = criterion(outputs, labels)       <span class="hljs-comment"># 计算损失函数</span><br>    loss = loss / accumulation_steps        <span class="hljs-comment"># 损失标准化</span><br>    loss.backward()                         <span class="hljs-comment"># 反向传播，计算梯度</span><br>    <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % accumulation_steps == <span class="hljs-number">0</span>:<br>        optimizer.step()                    <span class="hljs-comment"># 更新参数</span><br>        optimizer.zero_grad()               <span class="hljs-comment"># 梯度清零</span><br>        <span class="hljs-keyword">if</span> (i+<span class="hljs-number">1</span>) % evaluation_steps == <span class="hljs-number">0</span>:<br>            evaluate_model()<br></code></pre></td></tr></table></figure><p><strong>挖坑：Video Captioning通过梯度累加来加快速度</strong></p><p><strong>实验平台GPU被占了做不了实验填不了坑了哼唧</strong></p>]]></content>
-    
-    
-    <categories>
-      
-      <category>Pytorch</category>
-      
-    </categories>
-    
-    
-    <tags>
-      
-      <tag>深度学习</tag>
-      
-      <tag>Pytorch</tag>
-      
-      <tag>梯度累加</tag>
-      
-    </tags>
-    
-  </entry>
-  
-  
-  
-  <entry>
     <title>Git原理</title>
     <link href="/2021/09/22/Git%E5%8E%9F%E7%90%86/"/>
     <url>/2021/09/22/Git%E5%8E%9F%E7%90%86/</url>
@@ -1661,9 +1703,7 @@
     
     <categories>
       
-      <category>Git</category>
-      
-      <category>常用易忘</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -1688,7 +1728,7 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
@@ -1719,7 +1759,7 @@
       
       <category>Python</category>
       
-      <category>数据库</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -1745,6 +1785,8 @@
     
     
     <categories>
+      
+      <category>技术杂文</category>
       
       <category>爬虫历史系列</category>
       
@@ -1772,8 +1814,6 @@
     <categories>
       
       <category>Linux</category>
-      
-      <category>环境配置</category>
       
     </categories>
     
@@ -1807,8 +1847,6 @@
     <categories>
       
       <category>Linux</category>
-      
-      <category>环境配置</category>
       
     </categories>
     
@@ -1889,12 +1927,14 @@
     
     <categories>
       
-      <category>论文</category>
+      <category>论文笔记</category>
       
     </categories>
     
     
     <tags>
+      
+      <tag>Video Captioning</tag>
       
       <tag>机器学习</tag>
       
@@ -1915,8 +1955,6 @@
     
     
     <categories>
-      
-      <category>常用易忘</category>
       
       <category>Linux</category>
       
@@ -1943,7 +1981,7 @@
     
     <categories>
       
-      <category>常用易忘</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -1979,9 +2017,7 @@
       
       <tag>Python</tag>
       
-      <tag>机器学习</tag>
-      
-      <tag>深度学习</tag>
+      <tag>Pathlib</tag>
       
     </tags>
     
@@ -1998,8 +2034,6 @@
     
     
     <categories>
-      
-      <category>常用易忘</category>
       
       <category>Linux</category>
       
@@ -2026,7 +2060,7 @@
     
     <categories>
       
-      <category>未分类</category>
+      <category>学习笔记</category>
       
     </categories>
     
@@ -2053,6 +2087,8 @@
     
     <categories>
       
+      <category>技术杂文</category>
+      
       <category>爬虫历史系列</category>
       
     </categories>
@@ -2077,6 +2113,8 @@
     
     
     <categories>
+      
+      <category>技术杂文</category>
       
       <category>爬虫历史系列</category>
       
