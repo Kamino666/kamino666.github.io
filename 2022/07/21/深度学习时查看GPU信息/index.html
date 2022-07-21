@@ -13,24 +13,28 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。">
+  <meta name="description" content="在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。">
+  <meta name="description" content="在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="深度学习调参笔记#2-可复现的细节（固定seed）">
-<meta property="og:url" content="http://blog.kamino.link/2022/07/20/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B02/index.html">
+<meta property="og:title" content="查看GPU信息，监控GPU状态">
+<meta property="og:url" content="http://blog.kamino.link/2022/07/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%97%B6%E6%9F%A5%E7%9C%8BGPU%E4%BF%A1%E6%81%AF/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。">
+<meta property="og:description" content="在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-07-20T12:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-21T09:16:46.250Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173005.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173137.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173425.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173702.png">
+<meta property="article:published_time" content="2022-07-21T09:00:00.000Z">
+<meta property="article:modified_time" content="2022-07-21T09:37:30.119Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Pytorch">
-<meta property="article:tag" content="正则化">
+<meta property="article:tag" content="GPU">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173005.png">
   
-  <title>深度学习调参笔记#2-可复现的细节（固定seed） - Kamino&#39;s Blog</title>
+  <title>查看GPU信息，监控GPU状态 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -189,7 +193,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="深度学习调参笔记#2-可复现的细节（固定seed）">
+            <span class="h2" id="subtitle" title="查看GPU信息，监控GPU状态">
               
             </span>
 
@@ -199,8 +203,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-07-20 20:00" pubdate>
-        2022年7月20日 晚上
+      <time datetime="2022-07-21 17:00" pubdate>
+        2022年7月21日 下午
       </time>
     </span>
   
@@ -210,7 +214,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      972 字
+      357 字
     </span>
   
 
@@ -219,7 +223,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3 分钟
+      1 分钟
     </span>
   
 
@@ -256,7 +260,7 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">深度学习调参笔记#2-可复现的细节（固定seed）</h1>
+            <h1 style="display: none">查看GPU信息，监控GPU状态</h1>
             
               <p class="note note-info">
                 
@@ -265,21 +269,15 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="深度学习调参笔记-2-可复现的细节（固定seed）"><a href="#深度学习调参笔记-2-可复现的细节（固定seed）" class="headerlink" title="深度学习调参笔记#2-可复现的细节（固定seed）"></a>深度学习调参笔记#2-可复现的细节（固定seed）</h1><p>在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。</p>
-<h2 id="固定种子-seed"><a href="#固定种子-seed" class="headerlink" title="固定种子 seed"></a>固定种子 seed</h2><p>模型训练中，参数的初始化、数据的顺序等都具有一定的不确定性，而计算机通过种子生成伪随机数，所以固定种子还是十分有必要的。（但是固定一个神奇的种子来表面提升学习效果是不可取的）</p>
-<p>下面这几项参考<code>pytorch_lightning</code>的种子设置：</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">random.seed(seed)  <span class="hljs-comment"># 配置Python random库的随机种子</span><br>np.random.seed(seed)  <span class="hljs-comment"># 配置Numpy库的随机种子</span><br>torch.manual_seed(seed)  <span class="hljs-comment"># 配置torch的随机种子</span><br>torch.cuda.manual_seed(seed)  <span class="hljs-comment"># 配置单个GPU上的种子</span><br>torch.cuda.manual_seed_all(seed)  <span class="hljs-comment"># 配置所有GPU上的种子</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="配置使用确定性操作"><a href="#配置使用确定性操作" class="headerlink" title="配置使用确定性操作"></a>配置使用确定性操作</h2><p>即使固定了种子，算法的结果在不同设备（或者不同平台）上可能还是不同，所以假如对复现有很高要求，还要配置使用确定性操作。要注意的是，使用确定性操作往往会让算法变慢，需要进行速度和复现性的取舍。</p>
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 将benchmark设置为False会让cudnn在有多种算法可选的情况下选择固定的一种</span><br><span class="hljs-comment"># 假如是True的话，cudnn会对多种算法进行测试，找到在你硬件上运行最快的那个算法，</span><br><span class="hljs-comment"># 然后再固定使用这个算法进行计算。</span><br><span class="hljs-comment"># 假如模型输入不会变化，比较规则，那设置成True可能会提高性能</span><br><span class="hljs-comment"># 假如模型输入会变化，那设置成True反而可能导致性能降低</span><br><span class="hljs-comment"># 不过要复现那还是设置成False吧~</span><br>torch.backends.cudnn.benchmark = <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
-
-<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># benchmark=False让选择的算法是固定的，然而这个算法本身可能还是non-deterministic的</span><br><span class="hljs-comment"># 所以设置deterministic=True可以让torch选择可确定的算法</span><br>torch.backends.cudnn.deterministic = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
-
-<blockquote>
-<p>参考资料：</p>
-<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.manual_seed.html">torch.manual_seed — PyTorch 1.12 documentation</a></p>
-<p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/notes/randomness.html">Reproducibility — PyTorch 1.12 documentation</a></p>
-</blockquote>
+              <h1 id="查看GPU信息，监控GPU状态的方法"><a href="#查看GPU信息，监控GPU状态的方法" class="headerlink" title="查看GPU信息，监控GPU状态的方法"></a>查看GPU信息，监控GPU状态的方法</h1><p>在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。</p>
+<h2 id="nvidia-smi"><a href="#nvidia-smi" class="headerlink" title="nvidia-smi"></a>nvidia-smi</h2><p>这可能是最常用的查看GPU信息的方法，在命令行敲下<code>nvidia-smi</code>就行了，如下图，可以看到GPU的显存占用情况、有几个GPU、负载情况、谁在用GPU等等</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173005.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173137.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="lspci"><a href="#lspci" class="headerlink" title="lspci"></a>lspci</h2><p><code>lspci</code>是linux下查看PCI总线上的设备的命令，显卡自然也连在PCI总线上，可以查到信息</p>
+<p>如下图，可以看到有几个GPU和GPU的全称（nvidia-smi可能看不到）</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173425.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="gpustat"><a href="#gpustat" class="headerlink" title="gpustat"></a>gpustat</h2><p>这是一个基于nvidia-smi的工具，可以通过<code>pip install gpustat</code>直接安装，能够更直观显示GPU的信息，使用时<code>gpustat</code>可以查看当前状态，加上<code>-i</code>参数可以实时监测</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173702.png" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
@@ -289,13 +287,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                      <a class="hover-with-bg" href="/categories/Linux/">Linux</a>
                     
-                      <a class="hover-with-bg" href="/categories/PyTorch/">PyTorch</a>
-                    
-                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-                    
-                      <a class="hover-with-bg" href="/categories/PyTorch/%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B0/">调参笔记</a>
+                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
                     
                   </div>
                 
@@ -303,9 +297,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Pytorch/">Pytorch</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/">正则化</a>
+                      <a class="hover-with-bg" href="/tags/GPU/">GPU</a>
                     
                   </div>
                 
@@ -322,18 +314,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%97%B6%E6%9F%A5%E7%9C%8BGPU%E4%BF%A1%E6%81%AF/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">查看GPU信息，监控GPU状态</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/07/20/%E4%BD%BF%E7%94%A8github%20access%20token%E5%AE%9E%E7%8E%B0%E5%85%8D%E7%99%BB%E9%99%86%E4%B8%8A%E4%BC%A0%E4%BB%A3%E7%A0%81/">
-                        <span class="hidden-mobile">使用GitHub Access Token实现免登陆上传代码</span>
+                      <a href="/2022/07/20/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B02/">
+                        <span class="hidden-mobile">深度学习调参笔记#2-可复现的细节（固定seed）</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
