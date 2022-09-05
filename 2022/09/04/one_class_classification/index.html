@@ -13,24 +13,25 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Kamino&#39;s Blog">
+  <meta name="description" content="One Class Classification (OCC) 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Endnote 20 下载资源链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1J_trId1ErzHPPpusQ9Cnxg提取码：zkpg  安装选择试用，安装完后用crack的文件替换即可。">
+  <meta name="description" content="One Class Classification (OCC) 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Endnote 20 下载资源">
-<meta property="og:url" content="http://blog.kamino.link/2022/09/04/Endnote20%E8%B5%84%E6%BA%90/index.html">
+<meta property="og:title" content="One Class Classification算法简单介绍">
+<meta property="og:url" content="http://blog.kamino.link/2022/09/04/one_class_classification/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Endnote 20 下载资源链接：https:&#x2F;&#x2F;pan.baidu.com&#x2F;s&#x2F;1J_trId1ErzHPPpusQ9Cnxg提取码：zkpg  安装选择试用，安装完后用crack的文件替换即可。">
+<meta property="og:description" content="One Class Classification (OCC) 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2022-09-04T05:40:00.000Z">
-<meta property="article:modified_time" content="2022-09-04T05:41:35.286Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220904194106.png">
+<meta property="article:published_time" content="2022-09-04T10:40:00.000Z">
+<meta property="article:modified_time" content="2022-09-05T02:39:40.106Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Endnote20">
-<meta property="article:tag" content="文献管理">
+<meta property="article:tag" content="one_class_classification">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220904194106.png">
   
-  <title>Endnote 20 下载资源 - Kamino&#39;s Blog</title>
+  <title>One Class Classification算法简单介绍 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -189,7 +190,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="Endnote 20 下载资源">
+            <span class="h2" id="subtitle" title="One Class Classification算法简单介绍">
               
             </span>
 
@@ -199,8 +200,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-09-04 13:40" pubdate>
-        2022年9月4日 下午
+      <time datetime="2022-09-04 18:40" pubdate>
+        2022年9月4日 晚上
       </time>
     </span>
   
@@ -210,7 +211,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      96 字
+      442 字
     </span>
   
 
@@ -256,17 +257,25 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Endnote 20 下载资源</h1>
+            <h1 style="display: none">One Class Classification算法简单介绍</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年9月4日 下午
+                  本文最后更新于：2022年9月5日 上午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Endnote-20-下载资源"><a href="#Endnote-20-下载资源" class="headerlink" title="Endnote 20 下载资源"></a>Endnote 20 下载资源</h1><p>链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1J_trId1ErzHPPpusQ9Cnxg">https://pan.baidu.com/s/1J_trId1ErzHPPpusQ9Cnxg</a><br>提取码：zkpg </p>
-<p>安装选择试用，安装完后用crack的文件替换即可。</p>
+              <h1 id="One-Class-Classification算法简单介绍"><a href="#One-Class-Classification算法简单介绍" class="headerlink" title="One Class Classification算法简单介绍"></a>One Class Classification算法简单介绍</h1><p><strong>One Class Classification (OCC)</strong> 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。</p>
+<p>异常检测任务的特点是<strong>数据极其不均衡</strong>，异常情况通常来说较少，所以当做二分类问题可能效果不佳。而OCC只需要正常数据，其能学习到正常数据的边界，并以此分类。</p>
+<p>如下图，传统的分类就是比如区分苹果和梨，红点是苹果，蓝点是梨，黑色实线就是学习到的分类器。而OCC就是区分“苹果与梨”和其它，虚线就是学习到的OCC分类器，一个苹果商标就处于外面，属于异常数据。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220904194106.png" srcset="/img/loading.gif" lazyload alt="image-20220904194058232"></p>
+<blockquote>
+<p>参考文献：</p>
+<p><a target="_blank" rel="noopener" href="https://machinelearningmastery.com/one-class-classification-algorithms/">One-Class Classification Algorithms for Imbalanced Datasets (machinelearningmastery.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/58029015">one class classification - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="http://homepage.tudelft.nl/n9d04/thesis.pdf">thesis.pdf (tudelft.nl)</a></p>
+</blockquote>
 
             </div>
             <hr>
@@ -276,7 +285,7 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E8%BD%AF%E4%BB%B6%E8%B5%84%E6%BA%90/">软件资源</a>
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
                     
                   </div>
                 
@@ -284,9 +293,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Endnote20/">Endnote20</a>
-                    
-                      <a class="hover-with-bg" href="/tags/%E6%96%87%E7%8C%AE%E7%AE%A1%E7%90%86/">文献管理</a>
+                      <a class="hover-with-bg" href="/tags/one-class-classification/">one_class_classification</a>
                     
                   </div>
                 
@@ -303,9 +310,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/09/04/one_class_classification/">
+                      <a href="/2022/09/05/Generative%20Cooperative%20Learning%20for%20Unsupervised%20Video%20Anomaly%20Detection%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">One Class Classification算法简单介绍</span>
+                        <span class="hidden-mobile">Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -313,8 +320,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/08/31/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%96%B9%E5%90%91%E5%A6%82%E4%BD%95%E5%86%99%E8%AE%BA%E6%96%87%E7%9A%84%E7%AC%94%E8%AE%B0/">
-                        <span class="hidden-mobile">深度学习方向如何写论文的笔记</span>
+                      <a href="/2022/09/04/Endnote20%E8%B5%84%E6%BA%90/">
+                        <span class="hidden-mobile">Endnote 20 下载资源</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

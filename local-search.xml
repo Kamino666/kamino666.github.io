@@ -4,6 +4,58 @@
   
   
   <entry>
+    <title>Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记</title>
+    <link href="/2022/09/05/Generative%20Cooperative%20Learning%20for%20Unsupervised%20Video%20Anomaly%20Detection%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <url>/2022/09/05/Generative%20Cooperative%20Learning%20for%20Unsupervised%20Video%20Anomaly%20Detection%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1 id="Generative-Cooperative-Learning-for-Unsupervised-Video-Anomaly-Detection论文笔记"><a href="#Generative-Cooperative-Learning-for-Unsupervised-Video-Anomaly-Detection论文笔记" class="headerlink" title="Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记"></a>Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记</h1><p>这篇论文是CVPR2022的一篇无监督视频异常检测的文章。视频异常检测没有明确的定义，“异常”可能指暴力行为、爆炸、枪击、逆行等，同时，异常情况出现的概率相较于正常情况较低，数据也很难收集，所以视频异常检测是一个很难的任务。这篇文章提出了Generative Cooperative Learning (GCL) ，其包含一个<strong>辨别器</strong> (discriminator) 和一个<strong>生成器</strong> (generator，也是一个autoencoder)，它们进行合作式的互相学习来实现无监督学习。测试阶段，根据原文的实现，每16帧将会输出一个异常分数。</p><p><a href="https://openaccess.thecvf.com/content/CVPR2022/html/Zaheer_Generative_Cooperative_Learning_for_Unsupervised_Video_Anomaly_Detection_CVPR_2022_paper.html">CVPR 2022 Open Access Repository (thecvf.com)</a></p><h2 id="大致介绍"><a href="#大致介绍" class="headerlink" title="大致介绍"></a>大致介绍</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905112320.png" alt="模型大图"></p><p>模型整体结构如上图。</p><p>输入的无标签视频数据将会分成长度为 $p$ 的segment，然后使用ResNext3D进行特征提取，得到2048维的向量（不是很清楚这个特征提取模型，好像是提取之后没有时间维度了），随机的segment feature被组合成batch送入模型。</p><p>模型包含一个基于Autoencoder的生成器 $\mathcal G$ 和一个多层FC的辨别器 $\mathcal D$。Autoencoder有编码和重构两个阶段，在训练时生成器的目的就是：对于正常数据能够很好地重构，对于异常数据不能很好重构，所以，生成器在计算重构损失时，正常数据<strong>应该</strong>损失较小，异常数据<strong>应该</strong>损失较大。生成器的损失$\mathcal L_r$通过初始特征和重构特征之间计算MSE得到。在得到batch中每个segment的损失之后，会进行伪标签 $\mathcal l^q_G$ 的生成，根据之前的假设，设置一个阈值$\mathcal L^{th}_G$，损失大于阈值的伪标签为异常。<strong>注意，此时得到的损失$\mathcal L_r$并非最终的损失。</strong></p><p>得到伪标签后，这个伪标签将监督辨别器的训练，这个没什么好说的，计算二分类交叉熵损失$\mathcal L_D$。在辨别器得到分布后，也会生成伪标签$\mathcal l^q_D$ ，设置一个阈值$\mathcal L^{th}_D$，概率大于阈值的伪标签为异常。如下图，得到的异常的segment的重构特征将会被替换为另一个“错误的”特征，然后再与输入计算MSE得到生成器的损失$\mathcal L_G$。通过如此指定“错误的”特征，能够避免让生成器较好地重构异常数据特征，回应了之前的假设。作者把这个叫做Negative learning。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905114334.png"></p><h2 id="细节介绍"><a href="#细节介绍" class="headerlink" title="细节介绍"></a>细节介绍</h2><h3 id="生成器预训练"><a href="#生成器预训练" class="headerlink" title="生成器预训练"></a>生成器预训练</h3><p>为了获得更好的效果，生成器会使用更clean的数据进行预训练。这个更clean的数据的提取比较简单，计算$||f^{t+1}<em>{i,j}-f^{t}</em>{i,j}||<em>2$，假如超过阈值$D</em>{th}$了就不使用$f^{t+1}_{i,j}$。</p><h3 id="Negative-Learning"><a href="#Negative-Learning" class="headerlink" title="Negative Learning"></a>Negative Learning</h3><p>可以用多种方式替换异常数据的重构特征：（1）全1向量 （2）均匀分布的随机向量 （3）高斯分布的随机向量 （4）不替换。</p><p>作者通过下图的实验发现全1更好。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905120117.png" alt="Negative Learning"></p><h3 id="阈值选择"><a href="#阈值选择" class="headerlink" title="阈值选择"></a>阈值选择</h3><p>重构特征生成伪标签的阈值：$\mathcal L^{th}_G = \mu_R+\sigma_R$</p><p>辨别器生成伪标签的阈值：$\mathcal L^{th}_D = \mu_R+0.1\sigma_R$</p><p>预训练的阈值：$D_{th}=0.70$（这个真的迷惑，好诡异的超参）</p><h3 id="本文提出的无监督学习与其他视频异常检测方法的区别"><a href="#本文提出的无监督学习与其他视频异常检测方法的区别" class="headerlink" title="本文提出的无监督学习与其他视频异常检测方法的区别"></a>本文提出的无监督学习与其他视频异常检测方法的区别</h3><h2 id="结果比较"><a href="#结果比较" class="headerlink" title="结果比较"></a>结果比较</h2>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>视频异常检测</tag>
+      
+      <tag>无监督学习</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>One Class Classification算法简单介绍</title>
+    <link href="/2022/09/04/one_class_classification/"/>
+    <url>/2022/09/04/one_class_classification/</url>
+    
+    <content type="html"><![CDATA[<h1 id="One-Class-Classification算法简单介绍"><a href="#One-Class-Classification算法简单介绍" class="headerlink" title="One Class Classification算法简单介绍"></a>One Class Classification算法简单介绍</h1><p><strong>One Class Classification (OCC)</strong> 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。</p><p>异常检测任务的特点是<strong>数据极其不均衡</strong>，异常情况通常来说较少，所以当做二分类问题可能效果不佳。而OCC只需要正常数据，其能学习到正常数据的边界，并以此分类。</p><p>如下图，传统的分类就是比如区分苹果和梨，红点是苹果，蓝点是梨，黑色实线就是学习到的分类器。而OCC就是区分“苹果与梨”和其它，虚线就是学习到的OCC分类器，一个苹果商标就处于外面，属于异常数据。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220904194106.png" alt="image-20220904194058232"></p><blockquote><p>参考文献：</p><p><a href="https://machinelearningmastery.com/one-class-classification-algorithms/">One-Class Classification Algorithms for Imbalanced Datasets (machinelearningmastery.com)</a></p><p><a href="https://zhuanlan.zhihu.com/p/58029015">one class classification - 知乎 (zhihu.com)</a></p><p><a href="http://homepage.tudelft.nl/n9d04/thesis.pdf">thesis.pdf (tudelft.nl)</a></p></blockquote>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术杂文</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>one_class_classification</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Endnote 20 下载资源</title>
     <link href="/2022/09/04/Endnote20%E8%B5%84%E6%BA%90/"/>
     <url>/2022/09/04/Endnote20%E8%B5%84%E6%BA%90/</url>
