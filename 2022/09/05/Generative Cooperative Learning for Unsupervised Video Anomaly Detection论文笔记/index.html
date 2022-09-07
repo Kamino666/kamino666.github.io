@@ -23,16 +23,23 @@
 <meta property="og:site_name" content="Kamino&#39;s Blog">
 <meta property="og:description" content="这篇论文是CVPR2022的一篇无监督视频异常检测的文章。这篇文章提出了Generative Cooperative Learning (GCL) ，其包含一个辨别器和一个生成器，它们进行合作式的互相学习来实现无监督学习。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907221045.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905112320.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905114334.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905120117.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907155538.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907155929.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907160631.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907161125.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907215225.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907215104.png">
 <meta property="article:published_time" content="2022-09-05T02:40:00.000Z">
-<meta property="article:modified_time" content="2022-09-05T05:44:54.690Z">
+<meta property="article:modified_time" content="2022-09-07T14:12:52.239Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="视频异常检测">
 <meta property="article:tag" content="无监督学习">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905112320.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907221045.png">
   
   <title>Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记 - Kamino&#39;s Blog</title>
 
@@ -214,7 +221,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.5k 字
+      2.9k 字
     </span>
   
 
@@ -223,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      9 分钟
     </span>
   
 
@@ -264,13 +271,14 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年9月5日 下午
+                  本文最后更新于：2022年9月7日 晚上
                 
               </p>
             
             <div class="markdown-body">
               <h1 id="Generative-Cooperative-Learning-for-Unsupervised-Video-Anomaly-Detection论文笔记"><a href="#Generative-Cooperative-Learning-for-Unsupervised-Video-Anomaly-Detection论文笔记" class="headerlink" title="Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记"></a>Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记</h1><p>这篇论文是CVPR2022的一篇无监督视频异常检测的文章。视频异常检测没有明确的定义，“异常”可能指暴力行为、爆炸、枪击、逆行等，同时，异常情况出现的概率相较于正常情况较低，数据也很难收集，所以视频异常检测是一个很难的任务。这篇文章提出了Generative Cooperative Learning (GCL) ，其包含一个<strong>辨别器</strong> (discriminator) 和一个<strong>生成器</strong> (generator，也是一个autoencoder)，它们进行合作式的互相学习来实现无监督学习。测试阶段，根据原文的实现，每16帧将会输出一个异常分数。</p>
 <p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/CVPR2022/html/Zaheer_Generative_Cooperative_Learning_for_Unsupervised_Video_Anomaly_Detection_CVPR_2022_paper.html">CVPR 2022 Open Access Repository (thecvf.com)</a></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907221045.png" srcset="/img/loading.gif" lazyload></p>
 <h2 id="大致介绍"><a href="#大致介绍" class="headerlink" title="大致介绍"></a>大致介绍</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220905112320.png" srcset="/img/loading.gif" lazyload alt="模型大图"></p>
 <p>模型整体结构如上图。</p>
 <p>输入的无标签视频数据将会分成长度为 $p$ 的segment，然后使用ResNext3D进行特征提取，得到2048维的向量（不是很清楚这个特征提取模型，好像是提取之后没有时间维度了），随机的segment feature被组合成batch送入模型。</p>
@@ -284,7 +292,36 @@
 <h3 id="阈值选择"><a href="#阈值选择" class="headerlink" title="阈值选择"></a>阈值选择</h3><p>重构特征生成伪标签的阈值：$\mathcal L^{th}_G = \mu_R+\sigma_R$</p>
 <p>辨别器生成伪标签的阈值：$\mathcal L^{th}_D = \mu_R+0.1\sigma_R$</p>
 <p>预训练的阈值：$D_{th}=0.70$（这个真的迷惑，好诡异的超参）</p>
-<h3 id="本文提出的无监督学习与其他视频异常检测方法的区别"><a href="#本文提出的无监督学习与其他视频异常检测方法的区别" class="headerlink" title="本文提出的无监督学习与其他视频异常检测方法的区别"></a>本文提出的无监督学习与其他视频异常检测方法的区别</h3><h2 id="结果比较"><a href="#结果比较" class="headerlink" title="结果比较"></a>结果比较</h2>
+<h3 id="本文提出的无监督学习与其他视频异常检测方法的区别"><a href="#本文提出的无监督学习与其他视频异常检测方法的区别" class="headerlink" title="本文提出的无监督学习与其他视频异常检测方法的区别"></a>本文提出的无监督学习与其他视频异常检测方法的区别</h3><p>主要根据论文中Related Work进行分析。</p>
+<ul>
+<li><p>与One-Class Classification (OCC) 的区别</p>
+<p>OCC可见另一个[博客](<a href="https://blog.kamino.link/2022/09/04/one_class_classification/">One Class Classification算法简单介绍 - Kamino’s Blog</a>)的说明。OCC在异常检测领域运用比较广泛，其需要正常的数据，不需异常数据就能进行训练。缺点是很接近正常数据的异常数据也会被well-reconstruction，并且需要的是正常的数据，不能混进异常数据。</p>
+</li>
+<li><p>与Weakly Supervised的区别</p>
+<p>WS使用video-level的异常视频标注来训练，从而能够预测frame-level的异常分数。video-level的异常视频并不是说整个视频都是异常的，而是说这个视频中包含异常帧，但是并不知道具体位置。确定是也需要标签。</p>
+</li>
+<li><p>与其他Unsupervised的区别</p>
+<p>作者说一些Unsupervised的方法其实是OCC，而本文是可以同时使用正常的和<strong>异常的</strong>数据进行训练。</p>
+</li>
+</ul>
+<h2 id="结果比较"><a href="#结果比较" class="headerlink" title="结果比较"></a>结果比较</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>本次使用两个数据集，UCF-Crime和ShanghaiTech。两者都是监控摄像头下的视频异常事件数据集，<strong>UCF-Crime</strong>包含13类事件，总共有128小时，训练集包含810异常视频和800正常视频，测试集包含140异常视频和150正常视频，这个数据集的训练集包含video-level的标注，而测试集还有frame-level的标注。<strong>ShanghaiTech</strong>包含13个场景下的130中异常事件，训练集由63个异常视频和175个正常视频，测试集包含44个异常视频和155个正常视频。</p>
+<h3 id="整体比较"><a href="#整体比较" class="headerlink" title="整体比较"></a>整体比较</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907155538.png" srcset="/img/loading.gif" lazyload></p>
+<p>如上图，$GCL_{OCC}$指的是也和其他OCC任务一样只使用正常数据进行训练，结果比其他方法好很多。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907155929.png" srcset="/img/loading.gif" lazyload></p>
+<p>如上图，即使与弱监督学习的方法比较，$GCL_{WS}$也是comparable的。（但是这里不是很清楚WS的版本有什么变化）</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907160631.png" srcset="/img/loading.gif" lazyload></p>
+<p>SOTA了无监督的方法，$GCL_B$是baseline，$GCL_{PT}$是进行预训练的版本。</p>
+<h3 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h3><p>接下来才是重点，在UCF上进行的消融实验。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907161125.png" srcset="/img/loading.gif" lazyload></p>
+<p>如上图，先用AutoEncoder做实验，使用所有数据的AE结果较差，使用标注出来的正常视频训练能达到65.76%AUC，而作者使用的 temporal difference的方法则能接近标注的效果，说明作者的TD方式是有用的。</p>
+<p>其次，Negative learning的作用可以从第4、5行证实，Pretrain的作用可以从5、6行证实。</p>
+<p>作者最后还发现OCC能够带来更好的效果，也就是说，OCC这种只用正常视频数据进行训练的也应该被看做是一种“监督学习”，而和本文提出的无监督学习应该分开。</p>
+<h3 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h3><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907215225.png" srcset="/img/loading.gif" lazyload></div></div><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220907215104.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<p>Fig6发现使用了Negative learning的AutoEncoder更能够将红色的异常数据区分开来。Fig8是4个视频的异常分数图，第一个是正常视频，分数都很低，第二个和第三个异常视频都表现不错，而第四个视频在开始和结尾有预测失误，作者说是因为这个视频开头结尾出现了浮动的文字，这在训练集中很少见。</p>
+<h2 id="限制"><a href="#限制" class="headerlink" title="限制"></a>限制</h2><p>系统是根据已有数据来进行学习的，假如以往都没有异常事件发生，那系统可能把罕见的正常事件当做异常。比如某个机器每三个月要换一次电池，前两个月的数据被用来训练模型，而模型没有见过换电池的数据，所以很容易把换电池看作异常。</p>
+<h2 id="没看懂的地方"><a href="#没看懂的地方" class="headerlink" title="没看懂的地方"></a>没看懂的地方</h2><p>作者的GCL的Weakly Supervised版本是咋改的？？？</p>
+
             </div>
             <hr>
             <div>
