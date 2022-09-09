@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>机器学习中常用指标避坑</title>
+    <link href="/2022/09/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E9%81%BF%E5%9D%91/"/>
+    <url>/2022/09/08/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E4%B8%AD%E5%B8%B8%E7%94%A8%E6%8C%87%E6%A0%87%E9%81%BF%E5%9D%91/</url>
+    
+    <content type="html"><![CDATA[<h1 id="机器学习中常用指标避坑"><a href="#机器学习中常用指标避坑" class="headerlink" title="机器学习中常用指标避坑"></a>机器学习中常用指标避坑</h1><p>在进行机器学习的过程中有一些经常用到的指标，然而有的时候可能因为代码写错了导致几个指标互相矛盾（最简单的比如Accuracy大于100%），这篇文章草草列出一些检查的方法。</p><h2 id="Accuracy-正确率"><a href="#Accuracy-正确率" class="headerlink" title="Accuracy 正确率"></a>Accuracy 正确率</h2><p>这可能是最简单的指标了，就是预测正确的除以总数。然而此处有时会使用Top-N Accuracy，N指的是分类问题中，预测出的前N高的概率中，只要包含正确的分类就算对，常用的是Top-1和Top-5。</p><ul><li>Top-1就是最普通的Acc。</li><li>在同一个实验中，N越大的Acc越高（也可能相等）。</li><li>假如N&gt;=分类数，则Top-N Acc为1。</li></ul><h2 id="Precision和Recall"><a href="#Precision和Recall" class="headerlink" title="Precision和Recall"></a>Precision和Recall</h2><ul><li><strong>Precision</strong>：查准率、精确率，预测为Positive中有多少是True的</li><li><strong>Recall</strong>：查全率、召回率，应该被预测为Positive中有多少是True的</li></ul><p>假设有一个二分类问题，其中正例占比60%，反例占比40%。则当模型预测的全都是1时，Recall=1，Precision=0.6。当模型预测全都是0时，Recall=0，Precision由于分母为0没有值。当模型瞎猜时，Precision在0.6左右。</p><p>决策时可以设置阈值来决定多大概率判断为Positive，这样能绘制出Precision-Recall曲线（如下图），同一个实验中，当变量只有阈值时，Recall越大，则Precision大概率会更小，但不是一定。从图中Recall=1时也可以看出正例所占的比例，下图中正例占比为50%。</p><p>根据这个图，若计算其图像下的面积（AUC），即可得到<strong>Average Precision</strong> (AP)，也就是<strong>平均准确率</strong>，是不同阈值下准确率的平均。AP取值范围为<code>0~1</code>。</p><p>假如是多分类，那还可以计算<strong>Mean Average Precision</strong> (MAP)。把多分类中某个类当做positive，其他为negative，就能得出一个AP，每个类的AP的平均值就是MAP。</p><p><img src="https://scikit-learn.org/stable/_images/sphx_glr_plot_precision_recall_001.png" alt="2-class Precision-Recall curve"></p><h2 id="ROC"><a href="#ROC" class="headerlink" title="ROC"></a>ROC</h2><p>ROC是一条曲线，是以FPR为横轴，Recall为纵轴的曲线！一般取其曲线下面积（AUC）作为指标。范围是<code>0~1</code>。</p><p>AUC的全称是Area Under Curve，就是曲线下的面积，要用AUC的时候必须说清楚是什么曲线下的面积！</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>技术杂文</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>机器学习</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>Generative Cooperative Learning for Unsupervised Video Anomaly Detection论文笔记</title>
     <link href="/2022/09/05/Generative%20Cooperative%20Learning%20for%20Unsupervised%20Video%20Anomaly%20Detection%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     <url>/2022/09/05/Generative%20Cooperative%20Learning%20for%20Unsupervised%20Video%20Anomaly%20Detection%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
