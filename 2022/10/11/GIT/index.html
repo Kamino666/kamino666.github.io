@@ -16,36 +16,30 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="这是CVPR2022的一篇来自微软的论文，他们使用自家的SwinTransformer，提出了一种进行Video Captioning任务的End-to-End的网络。这个网络没有利用多模态特征，只使用了经过运动数据集预训练得到的Swin来提取特征。">
+  <meta name="description" content="Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="这是CVPR2022的一篇来自微软的论文，他们使用自家的SwinTransformer，提出了一种进行Video Captioning任务的End-to-End的网络。这个网络没有利用多模态特征，只使用了经过运动数据集预训练得到的Swin来提取特征。">
+  <meta name="description" content="Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记">
-<meta property="og:url" content="http://blog.kamino.link/2022/10/10/swinbert/index.html">
+<meta property="og:title" content="GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记">
+<meta property="og:url" content="http://blog.kamino.link/2022/10/11/GIT/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="这是CVPR2022的一篇来自微软的论文，他们使用自家的SwinTransformer，提出了一种进行Video Captioning任务的End-to-End的网络。这个网络没有利用多模态特征，只使用了经过运动数据集预训练得到的Swin来提取特征。">
+<meta property="og:description" content="Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221010143935.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221010164557.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162103.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162100.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162057.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162050.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162704.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162702.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162700.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162658.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162654.png">
-<meta property="article:published_time" content="2022-10-10T06:21:00.000Z">
-<meta property="article:modified_time" content="2022-10-11T08:27:05.443Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011165120.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172137.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172903.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174223.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174610.png">
+<meta property="article:published_time" content="2022-10-11T08:35:00.000Z">
+<meta property="article:modified_time" content="2022-10-11T11:00:03.322Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="SwinBERT">
+<meta property="article:tag" content="GIT">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221010143935.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011165120.png">
   
-  <title>SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记 - Kamino&#39;s Blog</title>
+  <title>GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -204,7 +198,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记">
+            <span class="h2" id="subtitle" title="GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记">
               
             </span>
 
@@ -214,8 +208,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-10-10 14:21" pubdate>
-        2022年10月10日 下午
+      <time datetime="2022-10-11 16:35" pubdate>
+        2022年10月11日 下午
       </time>
     </span>
   
@@ -225,7 +219,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.8k 字
+      1.7k 字
     </span>
   
 
@@ -234,7 +228,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      9 分钟
+      5 分钟
     </span>
   
 
@@ -271,52 +265,39 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记</h1>
+            <h1 style="display: none">GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年10月11日 下午
+                  本文最后更新于：2022年10月11日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="SwinBERT-End-to-End-Transformers-with-Sparse-Attention-for-Video-Captioning-论文笔记"><a href="#SwinBERT-End-to-End-Transformers-with-Sparse-Attention-for-Video-Captioning-论文笔记" class="headerlink" title="SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记"></a>SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记</h1><p>这是CVPR2022的一篇来自微软的论文，他们使用自家的SwinTransformer，提出了一种进行Video Captioning任务的End-to-End的网络。这个网络没有利用多模态<strong>特征</strong>，只使用了经过运动数据集预训练得到的Swin来提取特征。这个网络也没有使用其他的offline的特征提取模型，简化了模型结构。结果显示这个模型达到了SOTA。这个网络还探索了Dense Sampling对结果的提升，训练时一个视频能采样高达64帧。</p>
-<p>我感觉表面上这个模型是为了简化而来，但是仍然有很多层Transformer，其Sparse Attention确实能够加快速度，但是并没有通过实际的算法或者CUDA算子实现。这个工作相较来说更扎实，在5个数据集上进行了实验（MSVD、MSRVTT、VATEX、YouCook2、TVC），其他工作可能只会在前两个数据集上进行。</p>
+              <h1 id="GIT-A-Generative-Image-to-text-Transformer-for-Vision-and-Language-论文笔记"><a href="#GIT-A-Generative-Image-to-text-Transformer-for-Vision-and-Language-论文笔记" class="headerlink" title="GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记"></a>GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记</h1><p>Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。</p>
 <ul>
-<li>论文链接：<a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/CVPR2022/html/Lin_SwinBERT_End-to-End_Transformers_With_Sparse_Attention_for_Video_Captioning_CVPR_2022_paper.html">CVPR 2022 Open Access Repository (thecvf.com)</a></li>
-<li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/microsoft/SwinBERT#Download">microsoft/SwinBERT: Research code for CVPR 2022 paper “SwinBERT: End-to-End Transformers with Sparse Attention for Video Captioning” (github.com)</a></li>
+<li>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.14100">GIT: A Generative Image-to-text Transformer for Vision and Language (arxiv.org)</a></li>
+<li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/microsoft/GenerativeImage2Text">microsoft/GenerativeImage2Text: GIT: A Generative Image-to-text Transformer for Vision and Language (github.com)</a></li>
 </ul>
-<h2 id="模型基本架构"><a href="#模型基本架构" class="headerlink" title="模型基本架构"></a>模型基本架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221010143935.png" srcset="/img/loading.gif" lazyload alt="SwinBERT"></p>
-<p>整体来说，SwinBERT包含两个Transformer。</p>
-<p>被密集采样得到的视频帧将被送入VidSwin中得到$\frac{T}{2} \times \frac{H}{32} \times \frac{W}{32}$个video token，每个token是$8C$维的向量，一个token初始包含<code>32x32x2</code>的块。举例来说，一个224x224x16的视频，应该有392个token。</p>
-<p>之后，video token和word token被拼接在一起送入多模态Transformer Encoder中进行编码，这里会用到<strong>Sparse Attention Mask</strong>。正常来说，Self-attention中$Q$和$K^T$叉乘之后，会得到一个$L\times L$的方矩阵（这里$L$是输入长度），这个矩阵之后就会和一个Mask矩阵相乘，这个Mask矩阵能控制某个query是否对某个key进行attention。一般情况下这个Mask会在两种情况下用到：</p>
-<ol>
-<li>当我们输入的Batch序列中各项数据不等长时，会先padding到固定长度$L$，然后将被pad的部分的Mask置0，那样在计算注意力的过程中就不会计算pad位置的注意力。</li>
-<li>当要进行Seq2Seq模型的输出时，以机器翻译为例，每输出一个单词时，应该只能对之前生成的单词计算注意力，所以此时Mask会呈现阶梯状，第一个单词只能计算它自己的注意力，第二个单词只能计算第一个和自己的注意力……</li>
-</ol>
-<p>话说回来，观察上图的Sparse Attention Mask，取出第一行，表示第一个word token能够对自己和所有video token计算注意力，取出第二行，表示第二个word token能够对自己和第一个word token以及所有video token计算注意力……而在轮到video token时，令其只能对video而不能对word计算注意力。</p>
-<p>以上部分都是不可学习的部分，而video对video的注意力矩阵（$V$）是可学习的矩阵，SwinBERT通过施加sparsity constraint令其只关注一些关键的video token：<br>$$<br>\mathcal L_{SPARSE}=\lambda \times \sum^M_{i=1}\sum^M_{j=1}|V_{i,j}|<br>$$<br>这就是一个简单的抑制$V$矩阵的值的loss，类似L2正则化。如图中所示，$V$会因此变得稀疏，理论上可以通过自定义CUDA算子进行加速，但是他们没做，所以整体来说计算量还是很大（作者在Discussion中也提到了，如下图）。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221010164557.png" srcset="/img/loading.gif" lazyload></p>
-<p>在最终训练目标的设置上，SwinBERT采用了<strong>Masked Language Modeling</strong>而不是Captioning，这里有一些迷惑。</p>
-<h2 id="一些细节"><a href="#一些细节" class="headerlink" title="一些细节"></a>一些细节</h2><p>Video Swin Transformer使用Kinetics-600预训练的参数，采用其Swin-base版本（<strong>12层</strong>）。VidSwin得出的特征维度会通过一个MLP映射到multi-modal的维度。</p>
-<p>Multi-modal transformer encoder随机初始化（而不是用BERT等模型初始化），维度为512，有<strong>12层</strong>。</p>
-<p>训练时先resize短边到224，再RandomCrop个224x224。测试时则是CenterCrop。</p>
-<h2 id="实验结果"><a href="#实验结果" class="headerlink" title="实验结果"></a>实验结果</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162103.png" srcset="/img/loading.gif" lazyload></p>
-<p>整体实验没什么好说的，五个数据集基本都SOTA。下面是关于采样帧数的实验（指标为CIDEr），实验发现越多帧能带来更好的性能（未使用可学习mask）。但是越多帧数会带来更多更多的算力需求，即使是微软也最高只能把T设置成64。同时也可以考虑在刚开始训练时使用更少的帧数，然后使用更多的帧数进一步训练，并且实验证明进一步训练只用训练mask就能达到好结果。注意在使用更多的帧数时，由于输入的shape发生改变，mask的shape也会发生改变，需要进行线性插值。</p>
-<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162100.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162057.png" srcset="/img/loading.gif" lazyload></div></div></div>
-
-<p>对于attention mask的实验则更多，如下图添加了之后效果提升很多。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162050.png" srcset="/img/loading.gif" lazyload></p>
-<p>下图是针对soft和binary的实验，作者使用的mask可以看做是一种soft的mask，然而也可以通过设置阈值来转换为binary的mask。这里实验中，binary就是soft的模型通过阈值0.5 finetune之后的结果。结果显示binary的效果比soft更差，但是实际上binary有能加速的潜力，且其相较于Full仍然有提升。同时这个表也使用了不同的T，也体现出T越大效果越好。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162704.png" srcset="/img/loading.gif" lazyload></p>
-<p>下面还有一些迁移学习的实验，VATEX-&gt;MSVD的效果比较好，但VATEX-&gt;MSRVTT的效果并不那么好。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162702.png" srcset="/img/loading.gif" lazyload></p>
-<p>对于Sparse，作者通过下图说明，训练过程中mask非零的部分越来越少，但是CIDEr的增长却不受限制，说明Sparse的策略有效。同时对于超参$\lambda$在附加材料里也有实验，等于5的时候效果最好。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162700.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162658.png" srcset="/img/loading.gif" lazyload></p>
-<p>作者还放了一个可视化图，但是我感觉并不是特别清楚。样例视频中选择一帧进行展示，边缘的token对视频首末的注意力更多，作者分析是因为边缘是背景，和时间联系不大。中间的token则在时间上各处都有注意力，因为包含更多的运动信息。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011162654.png" srcset="/img/loading.gif" lazyload></p>
-<p>文章还给了一些Qualitative results，可以去原论文看。</p>
+<h2 id="没啥好讲的-模型架构"><a href="#没啥好讲的-模型架构" class="headerlink" title="(没啥好讲的)模型架构"></a>(没啥好讲的)模型架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011165120.png" srcset="/img/loading.gif" lazyload alt="GIT"></p>
+<p>GIT进行五种任务：Image Captioning、Image QA、Video Captioning、Video QA、Text Recognition、Image Classification。</p>
+<p>图像或者图像序列将会通过Image Encoder编码为多个token，对于序列还会增加额外的可学习的temporal embedding。同时文本每个word也tokenize&amp;embed成word token。之后，visual token和word token在一个统一的Text Decoder中解码为文本（别的地方一般称之为Multimodal Encoder）。对于Captioning、QA和Text Recognition都比较直观，这里还会通过输出目标类别对应的文字的方式来进行Image Classification任务。</p>
+<p>GIT的Image Encoder来源于微软之前的Florence模型（也是一个大规模统一预训练模型），是一个叫做<strong>CoSwin</strong>的模型，这是一个通过CvT论文中方法修改过的Swin Transformer（CvT和Swin也都是微软家的），其通过将Swin中的patch embedding和patch merging替换为卷积来将CNN与Transformer结合（如下图）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172137.png" srcset="/img/loading.gif" lazyload alt="CvT"></p>
+<blockquote>
+<p>提到的论文：</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2111.11432.pdf">Florence: A New Foundation Model for Computer Vision</a></p>
+<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/ICCV2021/papers/Wu_CvT_Introducing_Convolutions_to_Vision_Transformers_ICCV_2021_paper.pdf">CvT: Introducing Convolutions to Vision Transformers</a></p>
+</blockquote>
+<p>这个架构与SwinBERT有些类似（可以参考我另一篇<a href="https://blog.kamino.link/2022/10/10/swinbert/">博客</a>，同样也是微软家的），他们同样用Transformer架构的视觉编码器得到token然后送进类BERT的架构中进行文本生成任务，也同样随机初始化后面这个类BERT的架构（这个是有人做过实验说明随机初始化更好的）。如下图，在进行生成任务时，注意力mask也和SwinBERT类似，视觉的token只能对视觉token施加注意力，word token则能对visual token和之前生成的word施加注意力。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172903.png" srcset="/img/loading.gif" lazyload></p>
+<p>与SwinBERT不同的是，GIT使用Language modeling（LM）进行训练，而不是Masked Language modeling（MLM）。原因是因为LM训练得更快，作者分析说MLM一次只能训练一部分token的生成，而LM能训练所有token。</p>
+<p>GIT还有一点与SwinBERT不同，就是后面接的多模态的Transformer，居然只是6层的Transformer网络，是SwinBERT的一半。</p>
+<p>GIT标配700M参数量，还有更小的GIT<del>B</del>和GIT<del>L</del>，以及更大的GIT2。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174223.png" srcset="/img/loading.gif" lazyload alt="不同参数量的变种"></p>
+<h2 id="Video-Captioning实验分析"><a href="#Video-Captioning实验分析" class="headerlink" title="Video Captioning实验分析"></a>Video Captioning实验分析</h2><p>由于我对Video Captioning更感兴趣，所以就分析这方面的实验。大表如下，MSVD数据集上感觉指标已经到头了，180.2的CIDEr。而在更大的MSRVTT数据集和VATEX数据集上也获得了非常大的提升。然而，YouCook2、TVC上结果没有那么明显。</p>
+<p>其只有129M参数量的GIT<del>B</del>效果也算十分不错，对于缺少卡的炼丹师来说也许能够进行更大范围的应用。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174610.png" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
@@ -336,7 +317,7 @@
                     
                       <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
                     
-                      <a class="hover-with-bg" href="/tags/SwinBERT/">SwinBERT</a>
+                      <a class="hover-with-bg" href="/tags/GIT/">GIT</a>
                     
                   </div>
                 
@@ -353,9 +334,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/10/11/GIT/">
+                      <a href="/2022/10/12/MV-GPT/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记</span>
+                        <span class="hidden-mobile">End-to-end Generative Pretraining for Multimodal Video Captioning 论文笔记</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -363,8 +344,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/09/30/Open-book/">
-                        <span class="hidden-mobile">Open-book Video Captioning with Retrieve-Copy-Generate Network论文笔记</span>
+                      <a href="/2022/10/10/swinbert/">
+                        <span class="hidden-mobile">SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
