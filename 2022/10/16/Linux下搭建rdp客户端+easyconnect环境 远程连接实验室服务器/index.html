@@ -16,30 +16,30 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。">
+  <meta name="description" content="为了学习Linux以及方便开发，在电脑上装了Ubuntu系统，但是平常也需要连接到实验室的多卡服务器上跑代码，所以配置了Ubuntu上通过RDP远程连接的环境。但是校园网一直都慢慢的，也不一定连得上，不如通过代理连接，我学校用的是EasyConnect，于是也花了几天都将其配置好了，记录如下。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。">
+  <meta name="description" content="为了学习Linux以及方便开发，在电脑上装了Ubuntu系统，但是平常也需要连接到实验室的多卡服务器上跑代码，所以配置了Ubuntu上通过RDP远程连接的环境。但是校园网一直都慢慢的，也不一定连得上，不如通过代理连接，我学校用的是EasyConnect，于是也花了几天都将其配置好了，记录如下。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记">
-<meta property="og:url" content="http://blog.kamino.link/2022/10/11/GIT/index.html">
+<meta property="og:title" content="Linux下搭建rdp&#x2F;ssh客户端+easyconnect环境 远程连接实验室服务器">
+<meta property="og:url" content="http://blog.kamino.link/2022/10/16/Linux%E4%B8%8B%E6%90%AD%E5%BB%BArdp%E5%AE%A2%E6%88%B7%E7%AB%AF+easyconnect%E7%8E%AF%E5%A2%83%20%E8%BF%9C%E7%A8%8B%E8%BF%9E%E6%8E%A5%E5%AE%9E%E9%AA%8C%E5%AE%A4%E6%9C%8D%E5%8A%A1%E5%99%A8/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。">
+<meta property="og:description" content="为了学习Linux以及方便开发，在电脑上装了Ubuntu系统，但是平常也需要连接到实验室的多卡服务器上跑代码，所以配置了Ubuntu上通过RDP远程连接的环境。但是校园网一直都慢慢的，也不一定连得上，不如通过代理连接，我学校用的是EasyConnect，于是也花了几天都将其配置好了，记录如下。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011165120.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172137.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172903.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174223.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174610.png">
-<meta property="article:published_time" content="2022-10-11T08:35:00.000Z">
-<meta property="article:modified_time" content="2022-10-12T07:06:33.257Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016160400.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016164106.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016165117.png">
+<meta property="article:published_time" content="2022-10-16T07:49:41.463Z">
+<meta property="article:modified_time" content="2022-10-17T05:55:35.837Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="GIT">
+<meta property="article:tag" content="Ubuntu">
+<meta property="article:tag" content="EasyConnect">
+<meta property="article:tag" content="Remmina">
+<meta property="article:tag" content="WindTerm">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011165120.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016160400.png">
   
-  <title>GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记 - Kamino&#39;s Blog</title>
+  <title>Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器 - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -198,7 +198,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记">
+            <span class="h2" id="subtitle" title="Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器">
               
             </span>
 
@@ -208,8 +208,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2022-10-11 16:35" pubdate>
-        2022年10月11日 下午
+      <time datetime="2022-10-16 15:49" pubdate>
+        2022年10月16日 下午
       </time>
     </span>
   
@@ -219,7 +219,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.7k 字
+      1.8k 字
     </span>
   
 
@@ -228,7 +228,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      5 分钟
+      6 分钟
     </span>
   
 
@@ -265,59 +265,64 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记</h1>
+            <h1 style="display: none">Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年10月12日 下午
+                  本文最后更新于：2022年10月17日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="GIT-A-Generative-Image-to-text-Transformer-for-Vision-and-Language-论文笔记"><a href="#GIT-A-Generative-Image-to-text-Transformer-for-Vision-and-Language-论文笔记" class="headerlink" title="GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记"></a>GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记</h1><p>Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。</p>
-<ul>
-<li>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.14100">GIT: A Generative Image-to-text Transformer for Vision and Language (arxiv.org)</a></li>
-<li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/microsoft/GenerativeImage2Text">microsoft/GenerativeImage2Text: GIT: A Generative Image-to-text Transformer for Vision and Language (github.com)</a></li>
-</ul>
-<h2 id="没啥好讲的-模型架构"><a href="#没啥好讲的-模型架构" class="headerlink" title="(没啥好讲的)模型架构"></a>(没啥好讲的)模型架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011165120.png" srcset="/img/loading.gif" lazyload alt="GIT"></p>
-<p>GIT进行五种任务：Image Captioning、Image QA、Video Captioning、Video QA、Text Recognition、Image Classification。</p>
-<p>图像或者图像序列将会通过Image Encoder编码为多个token，对于序列还会增加额外的可学习的temporal embedding。同时文本每个word也tokenize&amp;embed成word token。之后，visual token和word token在一个统一的Text Decoder中解码为文本（别的地方一般称之为Multimodal Encoder）。对于Captioning、QA和Text Recognition都比较直观，这里还会通过输出目标类别对应的文字的方式来进行Image Classification任务。</p>
-<p>GIT的Image Encoder来源于微软之前的Florence模型（也是一个大规模统一预训练模型），是一个叫做<strong>CoSwin</strong>的模型，这是一个通过CvT论文中方法修改过的Swin Transformer（CvT和Swin也都是微软家的），其通过将Swin中的patch embedding和patch merging替换为卷积来将CNN与Transformer结合（如下图）。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172137.png" srcset="/img/loading.gif" lazyload alt="CvT"></p>
-<blockquote>
-<p>提到的论文：</p>
-<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2111.11432.pdf">Florence: A New Foundation Model for Computer Vision</a></p>
-<p><a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/ICCV2021/papers/Wu_CvT_Introducing_Convolutions_to_Vision_Transformers_ICCV_2021_paper.pdf">CvT: Introducing Convolutions to Vision Transformers</a></p>
-</blockquote>
-<p>这个架构与SwinBERT有些类似（可以参考我另一篇<a href="https://blog.kamino.link/2022/10/10/swinbert/">博客</a>，同样也是微软家的），他们同样用Transformer架构的视觉编码器得到token然后送进类BERT的架构中进行文本生成任务，也同样随机初始化后面这个类BERT的架构（这个是有人做过实验说明随机初始化更好的）。如下图，在进行生成任务时，注意力mask也和SwinBERT类似，视觉的token只能对视觉token施加注意力，word token则能对visual token和之前生成的word施加注意力。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011172903.png" srcset="/img/loading.gif" lazyload></p>
-<p>与SwinBERT不同的是，GIT使用Language modeling（LM）进行训练，而不是Masked Language modeling（MLM）。原因是因为LM训练得更快，作者分析说MLM一次只能训练一部分token的生成，而LM能训练所有token。</p>
-<p>GIT还有一点与SwinBERT不同，就是后面接的多模态的Transformer，居然只是6层的Transformer网络，是SwinBERT的一半。</p>
-<p>GIT标配700M参数量，还有更小的$GIT_B$和$GIT_L$，以及更大的GIT2。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174223.png" srcset="/img/loading.gif" lazyload alt="不同参数量的变种"></p>
-<h2 id="Video-Captioning实验分析"><a href="#Video-Captioning实验分析" class="headerlink" title="Video Captioning实验分析"></a>Video Captioning实验分析</h2><p>由于我对Video Captioning更感兴趣，所以就分析这方面的实验。大表如下，MSVD数据集上感觉指标已经到头了，180.2的CIDEr。而在更大的MSRVTT数据集和VATEX数据集上也获得了非常大的提升。然而，YouCook2、TVC上结果没有那么明显。</p>
-<p>其只有129M参数量的$GIT_B$效果也算十分不错，对于缺少卡的炼丹师来说也许能够进行更大范围的应用。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221011174610.png" srcset="/img/loading.gif" lazyload></p>
+              <h1 id="Linux下搭建rdp-ssh客户端-easyconnect环境-远程连接实验室服务器"><a href="#Linux下搭建rdp-ssh客户端-easyconnect环境-远程连接实验室服务器" class="headerlink" title="Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器"></a>Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器</h1><p>为了学习Linux以及方便开发，在电脑上装了Ubuntu系统，但是平常也需要连接到实验室的多卡服务器上跑代码，所以配置了Ubuntu上通过RDP远程连接和SSH连接的环境。配置之后还发现，校园网一直都慢慢的，也不一定连得上，不如通过代理连接，我学校用的是EasyConnect，于是也花了几天都将其配置好了，记录如下。</p>
+<p>（本文不包括服务器端的设置~）</p>
+<h2 id="RDP客户端"><a href="#RDP客户端" class="headerlink" title="RDP客户端"></a>RDP客户端</h2><p>这里使用Linux上功能强大又好看的<strong>Remmina</strong>，在<a target="_blank" rel="noopener" href="https://remmina.org/how-to-install-remmina/">官网</a>上就能找到不同系统的多种安装方法，这个地方应该没有什么障碍，在Ubuntu上，最简单的可能就是在Snap商店上点击安装了hhhh</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016160400.png" srcset="/img/loading.gif" lazyload alt="Remmina"></p>
+<p>假如本身网络能直接连接校园网，那就打开Remmina，点击左上角新建，选择RDP协议，在<code>服务器</code>填写对应的IP，然后<code>用户名</code>和<code>密码</code>可填可不填，不填的话之后会有单独界面让你填写。</p>
+<p>接下来有一点很<strong>重要</strong>：点击<code>高级</code>选项卡，翻到最下面，打开<code>Relax Order检查</code>和<code>字形缓存</code>，不然连不上。</p>
+<h2 id="SSH客户端"><a href="#SSH客户端" class="headerlink" title="SSH客户端"></a>SSH客户端</h2><p>Windows下Xshell、MobaXterm甚至pycharm都很好用，但还有一款跨平台的开源免费ssh客户端很好用，那就是——<strong>WindTerm.</strong></p>
+<p>官网连接：<a target="_blank" rel="noopener" href="https://github.com/kingToolbox/WindTerm">kingToolbox/WindTerm: A professional cross-platform SSH/Sftp/Shell/Telnet/Serial terminal. (github.com)</a></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016164106.png" srcset="/img/loading.gif" lazyload alt="WindTerm"></p>
+<p>选择WindTerm还有很重要的一点原因，那就是它发布的是Protable版！不需要sudo，不需要安装，不需要处理烦人的环境，下载点开即可使用。（对于小白来说记得chmod）</p>
+<p>这里放出百度网盘的备份：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/18ugpIj7ZJ8ILlqpxRipFMg?pwd=9hc7">https://pan.baidu.com/s/18ugpIj7ZJ8ILlqpxRipFMg?pwd=9hc7</a> </p>
+<h2 id="配置EasyConnect"><a href="#配置EasyConnect" class="headerlink" title="配置EasyConnect"></a>配置EasyConnect</h2><p>为了能在校外访问校内服务器，需要配置EasyConnect走代理来连接，这里不推荐直接安装在系统上，而是通过运行在Docker中。这里Docker作为一个沙盒，不让EasyConnect作妖（用这个软件有被监控的风险）。</p>
+<p>GitHub上已经有大佬做好了对应的镜像：<a target="_blank" rel="noopener" href="https://github.com/Hagb/docker-easyconnect">Hagb/docker-easyconnect</a></p>
+<p>这里介绍一下我用的版本和安装步骤：</p>
+<ol>
+<li><p>安装Docker</p>
+</li>
+<li><p>拉取镜像<code>docker pull hagb/docker-easyconnect:cli</code>（使用命令行版本，毕竟要图形也没啥用）</p>
+</li>
+<li><p>输入运行命令</p>
+<p>下面把vpnaddress、username、password提前写好就能直接启动了</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run \<br>  --device /dev/net/tun --cap-add NET_ADMIN -ti \<br>  -p 127.0.0.1:1080:1080 \ <span class="hljs-comment"># 配置SOCKS5代理端口</span><br>  -p 127.0.0.1:8888:8888 \ <span class="hljs-comment"># 配置HTTP代理端口</span><br>  -e EC_VER=7.6.3 \ <span class="hljs-comment"># EasyConnect的版本</span><br>  -e CLI_OPTS=<span class="hljs-string">&quot;-d vpnaddress -u username -p password&quot;</span> \  <span class="hljs-comment"># 账户信息</span><br>  hagb/docker-easyconnect:cli<br></code></pre></td></tr></table></figure></li>
+<li><p>查看代理情况</p>
+<p>假如上面直接显示<code>user &quot;xxx&quot; login successfully!</code>那就应该没问题，为了保险再查看一下本机的端口情况：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ sudo netstat -ap | grep 8888<br>tcp 0 0 localhost:8888 0.0.0.0:* LISTEN 6325/docker-proxy<br>$ sudo netstat -ap | grep socks<br>tcp 0 0 localhost:socks 0.0.0.0:* LISTEN 6385/docker-proxy<br></code></pre></td></tr></table></figure></li>
+</ol>
+<h2 id="让Remmina走代理连接"><a href="#让Remmina走代理连接" class="headerlink" title="让Remmina走代理连接"></a>让Remmina走代理连接</h2><p>Remmina的GUI里面好像没有专门的设置，但是可以通过修改配置文件得到</p>
+<p>打开Remmina，选中之前建立的链接，在窗口下面会有一个路径（<code>.remmina</code>），这是配置文件，打开它，在末尾加上：</p>
+<figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-attribute">proxy_hostname</span>=localhost<br><span class="hljs-attribute">proxy_type</span>=socks5<br>proxy_post-1080<br></code></pre></td></tr></table></figure>
+
+<h2 id="让WindTerm走代理连接"><a href="#让WindTerm走代理连接" class="headerlink" title="让WindTerm走代理连接"></a>让WindTerm走代理连接</h2><p>左上角新建会话，在SSH-&gt;代理 中填写相关信息，不用用户和密码。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016165117.png" srcset="/img/loading.gif" lazyload></p>
 
             </div>
             <hr>
             <div>
               <div class="post-metas mb-3">
                 
-                  <div class="post-meta mr-3">
-                    <i class="iconfont icon-category"></i>
-                    
-                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-                    
-                  </div>
-                
                 
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
+                      <a class="hover-with-bg" href="/tags/Ubuntu/">Ubuntu</a>
                     
-                      <a class="hover-with-bg" href="/tags/GIT/">GIT</a>
+                      <a class="hover-with-bg" href="/tags/EasyConnect/">EasyConnect</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Remmina/">Remmina</a>
+                    
+                      <a class="hover-with-bg" href="/tags/WindTerm/">WindTerm</a>
                     
                   </div>
                 
@@ -334,18 +339,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/10/12/MV-GPT/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">End-to-end Generative Pretraining for Multimodal Video Captioning 论文笔记</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/10/10/swinbert/">
-                        <span class="hidden-mobile">SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记</span>
+                      <a href="/2022/10/12/MV-GPT/">
+                        <span class="hidden-mobile">End-to-end Generative Pretraining for Multimodal Video Captioning 论文笔记</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
