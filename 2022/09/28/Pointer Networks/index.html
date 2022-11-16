@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141105.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141249.png">
 <meta property="article:published_time" content="2022-09-28T02:09:00.000Z">
-<meta property="article:modified_time" content="2022-09-30T06:21:44.739Z">
+<meta property="article:modified_time" content="2022-10-27T09:07:14.319Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Pointer Networks">
 <meta property="article:tag" content="Seq2Seq">
@@ -218,7 +218,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      1.4k 字
     </span>
   
 
@@ -268,7 +268,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年9月30日 下午
+                  本文最后更新于：2022年10月27日 下午
                 
               </p>
             
@@ -293,7 +293,7 @@
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930121104.png" srcset="/img/loading.gif" lazyload alt="LSTM"></p>
 <p>下面是计算pointer的细节：</p>
 <ol>
-<li>令编码部分得到的隐藏向量为$\boldsymbol e$（长度为$n$），令解码部分每一步的隐藏向量为$\boldsymbol d_i$；</li>
+<li>令编码部分得到的隐藏向量为$\boldsymbol {e}$（长度为$n$），令解码部分每一步的隐藏向量为$\boldsymbol d_i$；</li>
 <li>计算当前步时，对n长的输入向量的，未softmax的注意力：$\boldsymbol u^i_j= \boldsymbol v^T\tanh(\boldsymbol W_1 \boldsymbol e_j+\boldsymbol W_2 \boldsymbol d_i)$；</li>
 <li>softmax后的注意力：$\boldsymbol a^i_j=softmax(\boldsymbol u^i_j)$，<strong>直接当做输出的概率分布</strong>。</li>
 </ol>
@@ -302,6 +302,9 @@
 <p>这篇文章结合了预测的概率分布和Pointer Network得出的概率分布来得到最终分布。</p>
 <p>其中$p_{gen}$是这么生成的：<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141249.png" srcset="/img/loading.gif" lazyload></p>
 <p>结合了context vector、decoder state和当前输入得到的概率，表示当前是要“生成”还是要“复制”。</p>
+<blockquote>
+<p> 结合代码和相关Issue <a target="_blank" rel="noopener" href="https://github.com/abisee/pointer-generator/issues/32">Problem of the word embedding of OOV words of decoder inputs</a>，输入文本（Source Text）中，已经在vocab中的，将会赋予对应的Embedding，不在vocab中的（即OOV词汇），将会赋予<code>[UNK]</code>对应的Embedding。通过PtrNet将会得到输入文本中各个位置的概率，若这个位置对应的是在vocab中的词，那概率加权叠加在Decoder的输出概率上，若对应的是OOV词，则会将vocab拓展一个词并加上其概率。</p>
+</blockquote>
 <blockquote>
 <p>参考文献：</p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/48959800">Pointer Networks简介及其应用 - 知乎 (zhihu.com)</a></p>

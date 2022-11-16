@@ -208,6 +208,214 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/10/11/GIT/" target="_self">
+          GIT A Generative Image-to-text Transformer for Vision and Language 论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/10/11/GIT/" target="_self">
+          
+          
+            
+          
+          Arxiv上Preprint的一篇微软的论文，结构比较简单（或者叫通俗），用Image Encoder先编码图像，然后图像和文本在一个类BERT的模型中训练，没有对视频做特别的优化，但在各个任务上都SOTA。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-11 16:35" pubdate>
+              2022-10-11
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Video-Captioning/">Video Captioning</a>
+            
+              <a href="/tags/GIT/">GIT</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/10/10/swinbert/" target="_self">
+          SwinBERT End-to-End Transformers with Sparse Attention for Video Captioning 论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/10/10/swinbert/" target="_self">
+          
+          
+            
+          
+          这是CVPR2022的一篇来自微软的论文，他们使用自家的SwinTransformer，提出了一种进行Video Captioning任务的End-to-End的网络。这个网络没有利用多模态特征，只使用了经过运动数据集预训练得到的Swin来提取特征。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-10-10 14:21" pubdate>
+              2022-10-10
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Video-Captioning/">Video Captioning</a>
+            
+              <a href="/tags/SwinBERT/">SwinBERT</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/09/30/Open-book/" target="_self">
+          Open-book Video Captioning with Retrieve-Copy-Generate Network论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/09/30/Open-book/" target="_self">
+          
+          
+            
+          
+          这是一篇CVPR2021的论文，其提出了一种参考复制语料库中句子的**open-book**模块来进行Video Captioning任务。这种机制会先进行video-to-text的跨模态检索任务，从语料库中找到接近的top-N条文本，然后通过结合类似Point Network的复制机制来生成最终的语句。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-09-30 14:22" pubdate>
+              2022-09-30
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Video-Captioning/">Video Captioning</a>
+            
+              <a href="/tags/Pointer-Networks/">Pointer Networks</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2022/09/28/Pointer%20Networks/" target="_self">
+          Pointer Networks论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/09/28/Pointer%20Networks/" target="_self">
+          
+          
+            
+          
+          这篇NIPS2015的论文主要提出了一个针对Seq2Seq结构改进的网络——**Ptr-Net**：其通过类似Seq2Seq的形式预测出一个指向之前输入的指针，并将这个位置的输入作为下一步的输入。也就是说，Ptr-Net的输出完全来源于输入，是一个copy-paste的结构。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-09-28 10:09" pubdate>
+              2022-09-28
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Pointer-Networks/">Pointer Networks</a>
+            
+              <a href="/tags/Seq2Seq/">Seq2Seq</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/09/09/%E5%9C%A8hexo%E4%B8%AD%E6%98%BE%E7%A4%BA%E4%BD%A0%E7%9A%84%E5%8F%91%E6%96%87%E6%8A%98%E7%BA%BF%E5%9B%BE/" target="_self">
           在Hexo中显示你的发文折线图
         </a>
@@ -519,228 +727,6 @@
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C/">论文写作</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/08/30/Python%E8%A7%86%E9%A2%91IO%E6%AF%94%E8%BE%83/" target="_self">
-          Python各类读取视频库的比较（OpenCV Decord MMCV pyAV）
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/08/30/Python%E8%A7%86%E9%A2%91IO%E6%AF%94%E8%BE%83/" target="_self">
-          
-          
-            
-          
-          使用Python读取视频用很多种方法可用，本文通过实验从多个方面比较各类读取视频库。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-08-30 20:00" pubdate>
-              2022-08-30
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Python/">Python</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/OpenCV/">OpenCV</a>
-            
-              <a href="/tags/Decord/">Decord</a>
-            
-              <a href="/tags/MMCV/">MMCV</a>
-            
-              <a href="/tags/pyAV/">pyAV</a>
-            
-              <a href="/tags/%E8%A7%86%E9%A2%91IO/">视频IO</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/08/30/%E8%A7%A3%E5%86%B3Windows%E4%B8%8B%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0%E9%A2%9C%E8%89%B2%E7%9C%8B%E4%B8%8D%E6%B8%85%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
-          解决Windows下Powershell命令参数颜色看不清的问题
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/08/30/%E8%A7%A3%E5%86%B3Windows%E4%B8%8B%E5%91%BD%E4%BB%A4%E5%8F%82%E6%95%B0%E9%A2%9C%E8%89%B2%E7%9C%8B%E4%B8%8D%E6%B8%85%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
-          
-          
-            
-          
-          在PyCharm中发现Terminal下的减号开头的参数颜色看不清，结果发现是PowerShell配色的问题。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-08-30 09:52" pubdate>
-              2022-08-30
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Windows/">Windows</a>
-            
-              <a href="/tags/Powershell/">Powershell</a>
-            
-              <a href="/tags/PyCharm/">PyCharm</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/07/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%97%B6%E6%9F%A5%E7%9C%8BGPU%E4%BF%A1%E6%81%AF/" target="_self">
-          查看GPU信息，监控GPU状态
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/07/21/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E6%97%B6%E6%9F%A5%E7%9C%8BGPU%E4%BF%A1%E6%81%AF/" target="_self">
-          
-          
-            
-          
-          在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-07-21 17:00" pubdate>
-              2022-07-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/Linux/">Linux</a>
-            
-              <a href="/categories/Python/">Python</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/GPU/">GPU</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/07/20/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B02/" target="_self">
-          深度学习调参笔记#2-可复现的细节（固定seed）
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/07/20/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B02/" target="_self">
-          
-          
-            
-          
-          在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-07-20 20:00" pubdate>
-              2022-07-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
-            
-              <a href="/categories/PyTorch/">PyTorch</a>
-            
-              <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-            
-              <a href="/categories/PyTorch/%E8%B0%83%E5%8F%82%E7%AC%94%E8%AE%B0/">调参笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Pytorch/">Pytorch</a>
-            
-              <a href="/tags/%E6%AD%A3%E5%88%99%E5%8C%96/">正则化</a>
             
           </div>
         
