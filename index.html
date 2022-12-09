@@ -370,6 +370,60 @@ Diffie Hellman 密钥交换
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2022/12/05/DEKCOR%20%E5%A4%96%E9%83%A8%E7%9F%A5%E8%AF%86%E7%94%A8%E6%9D%A5commonsense%20QA/" target="_self">
+          DEKCOR：使用外部知识来进行常识QA任务
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2022/12/05/DEKCOR%20%E5%A4%96%E9%83%A8%E7%9F%A5%E8%AF%86%E7%94%A8%E6%9D%A5commonsense%20QA/" target="_self">
+          
+          
+            
+          
+          本文进行常识问答任务（Commonsense Question Answering），利用了外部知识源ConceptNet和Wikitionary。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-12-05 10:27" pubdate>
+              2022-12-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/QA/">QA</a>
+            
+              <a href="/tags/ConceptNet/">ConceptNet</a>
+            
+              <a href="/tags/Wikitionary/">Wikitionary</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2022/11/16/Detic%20and%20Object%20Detection%20Review/" target="_self">
           Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）
         </a>
@@ -381,7 +435,7 @@ Diffie Hellman 密钥交换
           
             
           
-          本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习，从而实现20000多类的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，不局限于某些数据集的标注。
+          本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习（可以算是弱监督），从而实现20000多类（甚至更多）的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，可以不局限于数据集的标注，不finetune的情况下检测出新的目标。
         </a>
       </p>
 
@@ -412,6 +466,8 @@ Diffie Hellman 密钥交换
             
               <a href="/tags/Faster-RCNN/">Faster RCNN</a>
             
+              <a href="/tags/ECCV2022/">ECCV2022</a>
+            
           </div>
         
       </div>
@@ -435,7 +491,7 @@ Diffie Hellman 密钥交换
           
             
           
-          一些KG与CV结合的笔记
+          一些KG与CV结合的论文笔记，每篇论文只说清楚结合的大概方法以供参考。
         </a>
       </p>
 
@@ -465,6 +521,8 @@ Diffie Hellman 密钥交换
               <a href="/tags/GNN/">GNN</a>
             
               <a href="/tags/Graph-Neural-Network/">Graph Neural Network</a>
+            
+              <a href="/tags/ConceptNet/">ConceptNet</a>
             
           </div>
         
@@ -678,58 +736,6 @@ Diffie Hellman 密钥交换
               <a href="/tags/Remmina/">Remmina</a>
             
               <a href="/tags/WindTerm/">WindTerm</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2022/10/12/MV-GPT/" target="_self">
-          End-to-end Generative Pretraining for Multimodal Video Captioning 论文笔记
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2022/10/12/MV-GPT/" target="_self">
-          
-          
-            
-          
-          本文是一篇来自Google的CVPR2022论文， 本文提出了一个大规模多模态预训练框架，与其他基于MLM、MFM、VTM和排序的方法不同，其采用生成式任务进行预训练，这样能够更好地适配Video Captioning这样的生成式任务。具体来说本文提出的训练任务是通过视频中ASR识别的上一句来预测下一句（或相反），实验表明这种方式在多个数据集上SOTA。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2022-10-12 14:00" pubdate>
-              2022-10-12
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/Video-Captioning/">Video Captioning</a>
-            
-              <a href="/tags/MV-GPT/">MV-GPT</a>
             
           </div>
         

@@ -16,29 +16,34 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习，从而实现20000多类的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，不局限于某些数据集的标注。">
+  <meta name="description" content="本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习（可以算是弱监督），从而实现20000多类（甚至更多）的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，可以不局限于数据集的标注，不finetune的情况下检测出新的目标。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习，从而实现20000多类的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，不局限于某些数据集的标注。">
+  <meta name="description" content="本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习（可以算是弱监督），从而实现20000多类（甚至更多）的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，可以不局限于数据集的标注，不finetune的情况下检测出新的目标。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）">
 <meta property="og:url" content="http://blog.kamino.link/2022/11/16/Detic%20and%20Object%20Detection%20Review/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习，从而实现20000多类的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，不局限于某些数据集的标注。">
+<meta property="og:description" content="本文提出了一个Detic的目标检测模型，它能通过利用Image-level的监督标签学习（可以算是弱监督），从而实现20000多类（甚至更多）的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，可以不局限于数据集的标注，不finetune的情况下检测出新的目标。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116120022.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116124221.jpg">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116125234.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116154332.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116160948.gif">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117113149.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117114130.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116163344.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116165553.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117114727.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117115028.png">
 <meta property="article:published_time" content="2022-11-16T03:44:00.000Z">
-<meta property="article:modified_time" content="2022-11-16T09:15:41.086Z">
+<meta property="article:modified_time" content="2022-11-17T03:54:53.953Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Detic">
 <meta property="article:tag" content="Object Detection">
 <meta property="article:tag" content="Faster RCNN">
+<meta property="article:tag" content="ECCV2022">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116120022.png">
   
@@ -222,7 +227,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.1k 字
+      3.6k 字
     </span>
   
 
@@ -231,7 +236,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      10 分钟
+      11 分钟
     </span>
   
 
@@ -272,18 +277,18 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年11月16日 下午
+                  本文最后更新于：2022年11月17日 中午
                 
               </p>
             
             <div class="markdown-body">
-              <h1 id="Detecting-Twenty-thousand-Classes-using-Image-level-Supervision论文笔记（以及目标检测基础知识）"><a href="#Detecting-Twenty-thousand-Classes-using-Image-level-Supervision论文笔记（以及目标检测基础知识）" class="headerlink" title="Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）"></a>Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）</h1><p><strong>Detecting Twenty-thousand Classes using Image-level Supervision</strong></p>
+              <h1 id="Detecting-Twenty-thousand-Classes-using-Image-level-Supervision论文笔记（以及目标检测基础知识）"><a href="#Detecting-Twenty-thousand-Classes-using-Image-level-Supervision论文笔记（以及目标检测基础知识）" class="headerlink" title="Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）"></a>Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）</h1><p>ECCV 2022（Facebook）：<strong>Detecting Twenty-thousand Classes using Image-level Supervision</strong></p>
 <ul>
 <li>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2201.02605">Detecting Twenty-thousand Classes using Image-level Supervision (arxiv.org)</a></li>
 <li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/Detic">facebookresearch/Detic: Code release for “Detecting Twenty-thousand Classes using Image-level Supervision”. (github.com)</a></li>
 <li>Demo：<a target="_blank" rel="noopener" href="https://colab.research.google.com/drive/1QtTW9-ukX2HKZGvt0QvVGqjuqEykoZKI">Google Colab（有用）</a>、<a target="_blank" rel="noopener" href="https://huggingface.co/spaces/akhaliq/Detic">Hugging Face Space（貌似出问题了）</a>、<a target="_blank" rel="noopener" href="https://replicate.com/facebookresearch/detic">facebookresearch/detic – Run with an API on Replicate（可用，最方便）</a></li>
 </ul>
-<p>本文提出了一个Detic的<strong>目标检测</strong>模型，它能通过利用Image-level的监督标签学习，从而实现20000多类的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，不局限于某些数据集的标注。</p>
+<p>本文提出了一个Detic的<strong>目标检测</strong>模型，它能通过利用Image-level的监督标签学习（可以算是弱监督），从而实现20000多类（甚至更多）的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，可以不局限于数据集的标注，不finetune的情况下检测出新的目标。</p>
 <p>其真实检测效果如下（我随手在宿舍拍的），其检测到了宿舍里的书、台灯、电脑、人等常见物体，还检测到了柜子、抽屉、锁头（knob）等，甚至还检测到了左上角露出一个脚的玩具熊，左边露出一点点的床帘、右下角的行李箱和桌上的高达（figurine）。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116120022.png" srcset="/img/loading.gif" lazyload alt="Detic样例，建议放大查看"></p>
 <h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>由于我不是做Detection的，这里列一些目标检测的基础知识，若您已掌握可跳过。</p>
@@ -315,17 +320,28 @@
 <p>由于之前得到的region是不同长宽的，需要将其处理为固定的格式，比如Faster RCNN中的RoI Pooling，如下面这个动图，假如黑框是得到的region特征图，RoI Pooling先将这个区域取出，然后分成$h\times w$个小区域，图中是$2 \times 2$，这里并不需要每个区域完全相同大小，因为下一步就会对每个区域进行空间上的max pooling，最终得到$h \times w \times d^{feat}$的region特征向量，在Faster-RCNN中这个值是$7 \times 7 \times 512 = 25088$。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116160948.gif" srcset="/img/loading.gif" lazyload alt="RoI Pooling"></p>
 <p>之后就经过全连接层进行降维（25088维度太高），然后通过两个不同的全连预测两个目标：①接上分类器进行分类；②接上回归网络对每一个类别预测其box的4个坐标。也就是说，一个proposal region可能生成多个预测出来的box？</p>
-<h2 id="Detic模型"><a href="#Detic模型" class="headerlink" title="Detic模型"></a>Detic模型</h2><p>Detic模型保留了上述的stage1过程，对stage2进行了改进。在训练过程中，batch内有的数据是box-level的，有的是image-level的。</p>
-<p>在利用image-level的数据时，由于没有标注的box，作者想了三个方法，第一是直接使用整张图片作为box，第二是使用proposal region中object score最高的作为box，第三是用一个能包括所有proposal region的box作为box。之后结果显示第三个方法效果最好。</p>
+<h2 id="Detic模型"><a href="#Detic模型" class="headerlink" title="Detic模型"></a>Detic模型</h2><p>Detic模型将object-level的标注数据与image-level的标记数据一同进行训练。如下图，object-level标注的数据集（LVIS）包含的类别更少，每种类别的图片数量也更少，一些类（比如Pig、Coffee-cup）只有image-level的数据集（ImageNet、Conceptual Captions）包含。所以要检测更多的类别，需要好好利用image-level的标签。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117113149.png" srcset="/img/loading.gif" lazyload alt="三个数据集中不同类别的图片数量分析"></p>
+<p>在利用image-level的数据时，由于没有标注的box，作者想了三个方法，第一是直接使用整张图片作为box，第二是使用proposal region中object score最高的作为box，<strong>第三是用一个能包括所有proposal region的box作为box</strong>。之后结果显示第三个方法效果最好。作者分析，第一种方法相较于第三种方法会有更多的噪声，而第二种方法如下图在训练初期不能很好地包括要检测的物体，只有第三种方法在训练过程中比较稳定，且能包括目标，提供正确的监督信号（虽然也可能包括一些噪声）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117114130.png" srcset="/img/loading.gif" lazyload alt="image-20221117114129402"></p>
 <p>这个模型训练的最终loss如下图，当图像$\mathbf I$是有标记数据时，计算常规的loss，当是image-level的数据时，计算那个大区域的分类的loss。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116163344.png" srcset="/img/loading.gif" lazyload alt="loss"></p>
 <p>为了实现Open-vocabulary，作者将分类的目标设置为一个embedding，所有标签则通过CLIP prompt被编码成对应的embedding，要得到预测结果，即将模型得到的embedding与所有标签对应的CLIP embedding计算相似度分数，然后softmax得到每个标签的概率，再计算CE loss。</p>
+<blockquote>
+<p>Open-vocabulary大概就是指识别对象的字典是开放的，可以随时往里面加新的目标。</p>
+</blockquote>
 <blockquote>
 <p>这个方法并不是Detic原创，而是<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2104.13921.pdf">Open-vocabulary object detection via vision and language knowledge distillation</a>的方法：</p>
 <p>这个方法的好处就是，在预测的时候，不需要重新训练就能预测新的类别，如下图，inference的时候，novel categories也能通过CLIP Text Encoder得到对应的embedding，也可以与模型的embedding算相似度。</p>
 <p>但Detic的作者在文章中说道，直接这么用的效果并不好，而通过他们的方法扩充了训练时的类别，效果会更好。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116165553.png" srcset="/img/loading.gif" lazyload alt="ViLD"></p>
 </blockquote>
+<h2 id="一些些实验结果"><a href="#一些些实验结果" class="headerlink" title="一些些实验结果"></a>一些些实验结果</h2><p>实验结果太多了，由于不是这个方向的就没有细看，并且文章给出了超级多的补充材料，有兴趣可以翻论文。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117114727.png" srcset="/img/loading.gif" lazyload alt="识别结果"></p>
+<p>识别效果非常好，识别出了绿色的novel classes。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117115028.png" srcset="/img/loading.gif" lazyload alt="Text Embedding的选择"></p>
+<p>果然CLIP很强啊，用CLIP的Embedding效果最好。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Facebook开发的Detic效果真的很惊艳，而且提供了很直观好用的Demo，代码上看上去很容易复现，检测出的类别也非常多，应该能很方便用在其他的领域。</p>
 
             </div>
             <hr>
@@ -349,6 +365,8 @@
                     
                       <a class="hover-with-bg" href="/tags/Faster-RCNN/">Faster RCNN</a>
                     
+                      <a class="hover-with-bg" href="/tags/ECCV2022/">ECCV2022</a>
+                    
                   </div>
                 
               </div>
@@ -363,6 +381,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2022/12/05/DEKCOR%20%E5%A4%96%E9%83%A8%E7%9F%A5%E8%AF%86%E7%94%A8%E6%9D%A5commonsense%20QA/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">DEKCOR：使用外部知识来进行常识QA任务</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
