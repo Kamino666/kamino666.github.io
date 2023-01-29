@@ -27,7 +27,7 @@
 <meta property="og:description" content="MySQL是一个开源的关系型数据库管理系统，即RDBMS(Relational Database Management System)。使用SQL语言访问数据库。关系型数据库是依据关系模型来创建的数据库，关系模型包含“一对一、一对多、多对多”等，分别对应一本书的ISBN、一本书的作者、一个班的老师和学生。一个关系型数据库就是由二维表及其之间的练习组成的一个数据组织。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-04-05T09:00:00.000Z">
-<meta property="article:modified_time" content="2022-07-21T08:58:05.651Z">
+<meta property="article:modified_time" content="2023-01-13T03:50:14.477Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Python">
 <meta property="article:tag" content="MySQL">
@@ -213,7 +213,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      8.4k 字
+      8.8k 字
     </span>
   
 
@@ -222,7 +222,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      26 分钟
+      28 分钟
     </span>
   
 
@@ -263,7 +263,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年7月21日 下午
+                  本文最后更新于：2023年1月13日 中午
                 
               </p>
             
@@ -613,6 +613,15 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <h4 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h4><p>select中嵌入另一个select语句</p>
 <p>比如查找人群中最高的人的信息，需要select最高的人，然后select *</p>
 <p>略。</p>
+<h4 id="Union语句"><a href="#Union语句" class="headerlink" title="Union语句"></a>Union语句</h4><p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hstjbj/article/details/100775841?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-100775841-blog-126824653.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-100775841-blog-126824653.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=1">union和union all的用法_滑板不摔跤的博客-CSDN博客_union all</a></p>
+<p>SQL中Union语句能将两个select的结果作为一个整体显示，两次查询的列数量要相同，数据结构要相似。语法如下，用<code>union</code>或者<code>union all</code>夹在两个select语句中间，区别在于<code>union</code>会去重，而<code>union all</code>不去重。</p>
+<figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user1    |       <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user1<br>	<span class="hljs-keyword">union</span> 			   |		<span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user2    |       <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user2<br></code></pre></td></tr></table></figure>
+
+<h4 id="递归查询"><a href="#递归查询" class="headerlink" title="递归查询"></a>递归查询</h4><p>语法如下，<code>WITH RECURSIVE</code>定义递归形式的CTE，包含初始化和递归两部分，后者可以对当前CTE自我引用。若递归查询无法从上一次迭代中返回更多的数据，则终止递归。</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">WITH</span> <span class="hljs-keyword">RECURSIVE</span> cte_name <span class="hljs-keyword">AS</span>(<br>	cte_query_initial  <span class="hljs-comment">-- 初始化部分</span><br>    <span class="hljs-keyword">UNION</span> <span class="hljs-keyword">ALL</span><br>    cte_query_interative  <span class="hljs-comment">-- 递归部分</span><br>)<br></code></pre></td></tr></table></figure>
+
+
+
 <h2 id="Python-与-MySQL-交互"><a href="#Python-与-MySQL-交互" class="headerlink" title="Python 与 MySQL 交互"></a>Python 与 MySQL 交互</h2><pre><code class=" mermaid">graph LR
 A(开始) --&gt; B[创建connection]
 B --&gt; C[获取cursor]

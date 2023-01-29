@@ -1,0 +1,649 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="我学习图神经网络的入门学习笔记，本篇主要从图神经网络框架开始，介绍基础的图卷积神经网络（GCN），再介绍学习边注意力的图注意力网络（GAT），最后到与边种类有关的Relation-aware的图神经网络。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="我学习图神经网络的入门学习笔记，本篇主要从图神经网络框架开始，介绍基础的图卷积神经网络（GCN），再介绍学习边注意力的图注意力网络（GAT），最后到与边种类有关的Relation-aware的图神经网络。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="图神经网络学习笔记：从GCN到GAT再到Relation-aware GNN">
+<meta property="og:url" content="http://blog.kamino.link/2023/01/08/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C%EF%BC%9A%E4%BB%8EGCN%E5%88%B0GAT%E5%86%8D%E5%88%B0Relation-aware/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="我学习图神经网络的入门学习笔记，本篇主要从图神经网络框架开始，介绍基础的图卷积神经网络（GCN），再介绍学习边注意力的图注意力网络（GAT），最后到与边种类有关的Relation-aware的图神经网络。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230108111049.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230108150826.png">
+<meta property="article:published_time" content="2023-01-08T02:01:00.000Z">
+<meta property="article:modified_time" content="2023-01-08T10:45:44.910Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="图神经网络">
+<meta property="article:tag" content="GAT">
+<meta property="article:tag" content="GCN">
+<meta property="article:tag" content="Relation-aware">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230108111049.png">
+  
+  <title>图神经网络学习笔记：从GCN到GAT再到Relation-aware GNN - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="图神经网络学习笔记：从GCN到GAT再到Relation-aware GNN">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-01-08 10:01" pubdate>
+        2023年1月8日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">图神经网络学习笔记：从GCN到GAT再到Relation-aware GNN</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年1月8日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="图神经网络学习笔记：从GCN到GAT再到Relation-aware-GNN"><a href="#图神经网络学习笔记：从GCN到GAT再到Relation-aware-GNN" class="headerlink" title="图神经网络学习笔记：从GCN到GAT再到Relation-aware GNN"></a>图神经网络学习笔记：从GCN到GAT再到Relation-aware GNN</h1><p>我学习图神经网络的入门学习笔记，本篇主要从图神经网络框架开始，介绍基础的图卷积神经网络（GCN），再介绍学习边注意力的图注意力网络（GAT），最后到与边种类有关的Relation-aware的图神经网络。</p>
+<h2 id="图神经网络的一般框架"><a href="#图神经网络的一般框架" class="headerlink" title="图神经网络的一般框架"></a>图神经网络的一般框架</h2><p>图神经网络常用的基本框架是<strong>消息传递神经网络</strong>（MPNN），其基本思想是将图神经网络表示为节点间神经消息传递，有两个重要函数——<strong>消息函数（message）</strong>和<strong>更新函数（update）：</strong><br>$$<br>\displaylines{m_i^k=\sum_{i \in N(j)} \boldsymbol{M}_k(\boldsymbol{H}^{k-1}_i, \boldsymbol{H}^{k-1}<em>j, e</em>{ij}) \\ \boldsymbol{H}^k_i=\boldsymbol{U}_k(\boldsymbol{H}_i^{k-1},m_i^k)}<br>$$<br>$\boldsymbol{M}_k(\cdot,\cdot,\cdot)$表示消息函数，定义了第 $k$ 层中节点 $i$ 和节点 $j$ 的消息，其取决于第 $k-1$ 层的节点特征（$\boldsymbol{H}^{k-1}_i, \boldsymbol{H}^{k-1}<em>j$）以及这两个节点间的关系强度 $e</em>{ij}$。（$N(j)$表示节点 $j$ 的邻居节点）</p>
+<p>$\boldsymbol{U}_k(\cdot,\cdot)$是第 $k$ 层的节点更新函数，其结合节点本身的特征和邻居节点的特征进行消息聚合。</p>
+<h2 id="图卷积网络（GCN）"><a href="#图卷积网络（GCN）" class="headerlink" title="图卷积网络（GCN）"></a>图卷积网络（GCN）</h2><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1609.02907">Semi-Supervised Classification with Graph Convolutional Networks (arxiv.org)</a></p>
+<p>GCN核心公式如下：<br>$$<br>\boldsymbol{H}^k_i=\sigma(\sum_{j\in N(i)} \frac{\boldsymbol{A}<em>{ij}}{\sqrt{\boldsymbol{\tilde{D}}</em>{ii}\boldsymbol{\tilde{D}}_{jj}}}\boldsymbol{H}^{k-1}<em>j \boldsymbol{W}^k + \frac{1}{\boldsymbol{\tilde{D}}</em>{i}}\boldsymbol{H}^{k-1}_i \boldsymbol{W}^k )<br>$$<br>括号中，前一项计算节点 $i$ 的邻居传递的消息（即消息函数），后一项计算自己的消息。</p>
+<p>前一项式中$\boldsymbol{A}$是图的邻接矩阵，与特征矩阵$\boldsymbol{H}^{k-1}$叉乘之后就会得到邻居节点的特征矩阵，分母表示对特征进行标准化，参考<a target="_blank" rel="noopener" href="https://blog.csdn.net/qq_43787862/article/details/113830925">这篇博客</a>，$\boldsymbol{\tilde{D}}<em>{ii}=\sum</em>{j}\boldsymbol{\tilde{A}}_{ij}$即邻接矩阵在行上的<strong>度</strong>，表示一个节点<strong>需要将接收到的其他节点的消息取平均</strong>（假如连接了5个节点则乘1/5），另一个则是在列上的度，直观来说。<strong>GCN希望有更多邻居的节点的影响更低，有更少邻居节点的影响更高</strong>。</p>
+<p>自己和邻居的信息都经过一个可学习的参数矩阵$ \boldsymbol{W}^k$进行变换，之后在跟一个激活函数来增强拟合能力，从而得到这一层的输出$\boldsymbol{H}^k_i$。</p>
+<p>要注意的几点如下，①GCN每一层表示消息在图上传播一跳；②GCN对于不同邻居的权重仅来源于其连接的邻居数量；③GCN没有边的种类之分。</p>
+<h2 id="图注意力网络（GAT）"><a href="#图注意力网络（GAT）" class="headerlink" title="图注意力网络（GAT）"></a>图注意力网络（GAT）</h2><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1710.10903"> Graph Attention Networks (arxiv.org)</a></p>
+<p>在图中，两个节点间的强度可能并不能通过其连接数量反映出来，所以GAT对这一点进行改进，利用注意力机制，自动学习每个邻居节点的重要性。</p>
+<p>对于两个节点，GAT先测量其注意力系数：<br>$$<br>e_{ij}=a(\boldsymbol{W}\boldsymbol{H}^{k-1}<em>{i}, \boldsymbol{W}\boldsymbol{H}^{k-1}</em>{j})<br>$$<br>其中$\boldsymbol{W}$是一个共享的变换矩阵，节点特征先经过变换，然后再经过注意力函数$a$来计算注意力系数。原文中这个注意力函数被定义为一个单层前馈神经网络，即拼接输入后一个全连得到值，得到的$e_{ij}$再归一化之后成为最终的注意力$\alpha_{ij}$，如原文中图所示：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230108111049.png" srcset="/img/loading.gif" lazyload></p>
+<p>既然有了注意力机制，那也可以像Transformer一样引入多头注意力，即通过不同的变换矩阵计算出不同头的节点特征，然后求多头的平均（或者也可以用其他方式池化）。</p>
+<p>同样，要注意的几点如下：①GAT每一层表示消息在图上传播一跳；②GCN没有边的种类之分。接下来要介绍的就是Relation-aware的图神经网络，这些网络能够处理图结构中不同边对节点的影响。</p>
+<h2 id="Relational-Graph-Convolutional-Network（R-GCN）"><a href="#Relational-Graph-Convolutional-Network（R-GCN）" class="headerlink" title="Relational Graph Convolutional Network（R-GCN）"></a>Relational Graph Convolutional Network（R-GCN）</h2><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/1703.06103">Modeling Relational Data with Graph Convolutional Networks (arxiv.org)</a></p>
+<p>R-GCN就是在GCN的基础上进行改进，添加了对边种类进行建模的模型。将GCN和R-GCN的核心公式对比如下：<br>$$<br>GCN: \boldsymbol{H}^k_i=\sigma(\sum_{j\in N(i)} \frac{\boldsymbol{A}<em>{ij}}{\sqrt{\boldsymbol{\tilde{D}}</em>{ii}\boldsymbol{\tilde{D}}_{jj}}}\boldsymbol{H}^{k-1}<em>j \boldsymbol{W}^k + \frac{1}{\boldsymbol{\tilde{D}}</em>{i}}\boldsymbol{H}^{k-1}_i \boldsymbol{W}^k )<br>$$</p>
+<p>$$<br>RGCN:\boldsymbol{H}^k_i=\sigma(\sum_{r\in R} \sum_{j\in N(i)} \frac{1}{c_{i,r}} \boldsymbol{W}^{k}_r \boldsymbol{H}^{k-1}_j + \boldsymbol{W}^{k}_0 \boldsymbol{H}^{k-1}<em>i )<br>$$<br>可以发现，RGCN和GCN很像，区别在于RGCN公式上简写了标准化的常数，令其为$c</em>{i,r}$，还增加了 $r$ 这个参数，用来表示不同的边，每个边对应着不同的可学习参数$\boldsymbol {W}_r$。下图也能说明这个公式，对于rel_1这个关系，有4个in的连接和2个out的连接，所以对应着左侧前两个框，通过不同的绿色框$\boldsymbol {W}_r$得到特征，对于其他关系也是这样。特别地，对于self-loop，也有一个特殊的绿框。之后，得到的特征相加在一起，再进行激活得到这个节点的输出。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230108150826.png" srcset="/img/loading.gif" lazyload alt="RGCN"></p>
+<p>参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/532000603">这篇知乎</a>，RGCN还提出了正则化的问题，当网络中存在很多不同类型的边时，每个边对应的$\boldsymbol {W}_r$的数据量不同，可能有的边数量很少，所以会产生对于一些边的过拟合的情况。RGCN提出了basis decomposition和block diagonal decomposition两种正则化方法。</p>
+<p>原本的$\boldsymbol {W}$应该是一个<code>[num_types, in, out]</code>的矩阵，使用第一种方式，就是拆成了<code>[num_types, num_bases]</code>和<code>[num_bases, in, out]</code>两个矩阵，这样就是通过学习压缩边的个数。</p>
+<p>使用第二种方式，则是得到一个<code>[num_types, num_bases * s_in * s_out]</code>的矩阵，其中<code>s_in=in/num_bases</code></p>
+<blockquote>
+<p>这一块实在没看懂，假如有人看懂了希望能告诉我，下面是一些参考：</p>
+<p><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2107.10015.pdf">2107.10015.pdf (arxiv.org)</a> 第五页</p>
+<p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=wJQQFUcHO5U">Intro to Relational - Graph Convolutional Networks - YouTube</a></p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%9B%BE%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/">图神经网络</a>
+                    
+                      <a class="hover-with-bg" href="/tags/GAT/">GAT</a>
+                    
+                      <a class="hover-with-bg" href="/tags/GCN/">GCN</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Relation-aware/">Relation-aware</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/01/29/Multi-Grained%20Vision%20Language%20Pre-Training%20Aligning%20Texts%20with%20Visual%20Concepts/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文笔记 X-VLM Multi-Grained Vision Language Pre-Training Aligning Texts with Visual Concepts</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/03/%E7%9F%A5%E8%AF%86%E5%A2%9E%E5%BC%BA%E7%9A%84%E9%A2%84%E8%AE%AD%E7%BB%83%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E8%AE%BA%E6%96%87%E7%AE%80%E5%8D%95%E7%BF%BB%E8%AF%91/">
+                        <span class="hidden-mobile">《知识增强的预训练语言模型》论文简单翻译</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
