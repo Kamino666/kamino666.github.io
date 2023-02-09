@@ -1,0 +1,676 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="阿里巴巴达摩院于22年5月发布的大规模视觉-语言预训练模型——mPLUG，该模型在多个视觉-语言的下游任务（包括分类和生成任务）直到本文写的时间为止都处于SOTA，并且在运行速度上也有较大的提升。其主要设计了一种新的跨模态skip-connected网络。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="阿里巴巴达摩院于22年5月发布的大规模视觉-语言预训练模型——mPLUG，该模型在多个视觉-语言的下游任务（包括分类和生成任务）直到本文写的时间为止都处于SOTA，并且在运行速度上也有较大的提升。其主要设计了一种新的跨模态skip-connected网络。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections">
+<meta property="og:url" content="http://blog.kamino.link/2023/02/01/mPLUG%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="阿里巴巴达摩院于22年5月发布的大规模视觉-语言预训练模型——mPLUG，该模型在多个视觉-语言的下游任务（包括分类和生成任务）直到本文写的时间为止都处于SOTA，并且在运行速度上也有较大的提升。其主要设计了一种新的跨模态skip-connected网络。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201111138.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201133808.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201134852.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201140734.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201141758.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201143402.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201143844.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201144037.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201144619.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201144945.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145209.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145324.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145334.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145841.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145824.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201151037.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201151023.png">
+<meta property="article:published_time" content="2023-02-01T03:00:00.000Z">
+<meta property="article:modified_time" content="2023-02-02T05:55:07.433Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="多模态预训练">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201111138.png">
+  
+  <title>论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-02-01 11:00" pubdate>
+        2023年2月1日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.3k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年2月2日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1 id="论文笔记-mPLUG-Effective-and-Efficient-Vision-Language-Learning-by-Cross-modal-Skip-connections"><a href="#论文笔记-mPLUG-Effective-and-Efficient-Vision-Language-Learning-by-Cross-modal-Skip-connections" class="headerlink" title="论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections"></a>论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections</h1><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2205.12005">mPLUG: Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections (arxiv.org)</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/alibaba/AliceMind/tree/main/mPLUG">AliceMind/mPLUG at main · alibaba/AliceMind (github.com)</a></p>
+<p>阿里巴巴达摩院于22年5月发布的大规模视觉-语言预训练模型——<strong>mPLUG</strong>，该模型在多个视觉-语言的下游任务（包括分类和生成任务）直到本文写的时间为止都处于SOTA，并且在运行速度上也有较大的提升。</p>
+<p><strong>mPLUG</strong>设计了一种新的跨模态skip-connected网络，如下图，左边两个网络是传统常用的跨模态网络，（a）是类似BERT那样的Transformer Encoder，其将多个模态在时序上拼接之后进行编码，（b）则是co-attention网络，仅适用于两个模态，这两个模态会各自通过一个自注意力网络编码，然后在Cross attention中互相attend。</p>
+<p>而（c）是本文设计的网络，其能够让融合发生在不同的抽象级别，也就是先但单独编码S层后两者再进行一次融合操作，作者在此是跳过了视觉模态的许多层编码层。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201111138.png" srcset="/img/loading.gif" lazyload alt="图1"></p>
+<h2 id="简介和相关工作"><a href="#简介和相关工作" class="headerlink" title="简介和相关工作"></a>简介和相关工作</h2><p>大规模视觉-文本预训练模型最近很火，大部分方法都是将视觉和语言学两个模态进行对齐，而挑战则是在两者之间找到合理的分配方式，从而缩小两者的语义差距。Oscar、VinVL、Up-Down这些模型使用了训练好的目标检测器来检测区域并与文本的一部分来对应，<strong>这种方式极大受限于目标检测器的效果、预定义的标签和标注的质量</strong>，而且这种方式在计算上也更复杂。Pixel-BERT、ALBEF、SimVLM、ViLT、METER这些文献则没有使用目标检测器，而是通过patch来学习的，这也带来了两大问题：① 效率：自注意力层在处理长patch序列更大计算量；① 非对称信息：训练的视觉-文本对中，一般文本是更短更抽象的，而图像则包含更多的信息，这种信息的不对称也是模态融合的一个难题。</p>
+<p>视觉-语言预训练（VLP）模型粗分可以分成两类：dual encoder和fusion encoder，前者对于两个模态都有单独的编码器，然后通过简单的数学操作（如点乘）来进行模态交互，典型的有CLIP和ALIGN。然而，这些方法无法应对更复杂的视觉-语言（VL）理解任务，比如VQA需要更强的推理能力。后者则通过多层自注意力层或者交叉注意力层来进行深度融合，从而能够对细粒度的跨模态交互进行建模，典型的有UNITER、OSCAR、LXMERT、ALBEF、ERNIE-ViL，这些方法能够更好地捕捉两个模态间的关系，但导致推理速度更慢。</p>
+<p>为了提升推理速度，Pixel-BERT、E2E-VLP和ViLT分别移除了特征提取的目标检测器、通过CNN网格特征进行训练、线性映射patch，而VLMo还通过一个shared mixture-of-modality-experts Transformer统一了dual encoder和fusion encoder。<strong>本文则采用了Skip-connection的方式来提升推理速度</strong>。</p>
+<p>Skip-connection是常见的一种避免梯度爆炸或梯度消失的技巧，在ResNet和Transformer都被广泛使用，目前也有许多利用这个技巧的方法：ResNet是直接相加，highway network设计了一个transform gating function来控制输入和变化后输入的权重，DenseNet使后面的层能够重复利用前面的层的特征，Layer Normalization和recursive skip connection的使用也使模型优化更加稳定。本文则是使用Skip-connection来应对跨模态融合的问题。</p>
+<h2 id="mPLUG架构"><a href="#mPLUG架构" class="headerlink" title="mPLUG架构"></a>mPLUG架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201133808.png" srcset="/img/loading.gif" lazyload alt="图2"></p>
+<p>如上图，mPLUG先有两个单模态编码器（Visual Encoder、Text Encoder），然后是一个跨模态skip-connected网络和一个用来生成文本的解码器。</p>
+<p>Visual Encoder是基于ViT的，能够得到图像各个patch的特征和整体特征（<code>[CLS]</code>），Text Encoder也类似能够得到每个词元的特征和整体特征。跨模态skip-connected网络由<strong>N个skip-connected融合块</strong>构成，每个块又包含<strong>S个非对称Co-Attn</strong>网络和<strong>1个共同的Attn</strong>网络。这种设计的目的是利用上共同Attn网络的有效性和非对称Co-Attn的效率。</p>
+<h3 id="跨模态skip-connected网络"><a href="#跨模态skip-connected网络" class="headerlink" title="跨模态skip-connected网络"></a>跨模态skip-connected网络</h3><p>下面把Connected Attention Layer叫做连接层，Asymmetric Co-Attn叫做非对称层。</p>
+<p>非对称层是由自注意力层（SA）、交叉注意力层（CA）和前项传播网络（FFN）构成的，前一层的文本输入$l^{n-1}$首先通过SA得到$l^n_{SA}$，然后上一层的视觉特征$v^{n-1}$通过CA被注入文本特征，得到$l^n_{CA}$，最后再通过FFN得到visual-aware的文本特征$l^n$，具体公式如下（LN是Layer Norm）：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201134852.png" srcset="/img/loading.gif" lazyload alt="公式"></p>
+<p>连接层则是由SA和FFN组成，上一层的视觉特征$v^{n-1}$和S层非对称层的输出$l^{n-1}$被凭借在一起，然后通过SA和FFN得到这个块的输出。</p>
+<h3 id="预训练任务"><a href="#预训练任务" class="headerlink" title="预训练任务"></a>预训练任务</h3><p>进行四个任务：图像文本对比学习（ITC）、图像文本匹配（ITM）、掩码语言建模（MLM）、前缀语言建模（PrefixLM），前三个比较简单，ITC就是像CLIP那样，ITM就是选择hard negative的对进行分类，MLM就是BERT那样。PrefixLM有一些些不一样，这个任务要根据跨模态的上下文来预测文本段的后续，和普通Language Modeling的不同在于这个任务会给出有意义的Prefix（类似于prompt）。</p>
+<h3 id="大规模分布式学习"><a href="#大规模分布式学习" class="headerlink" title="大规模分布式学习"></a>大规模分布式学习</h3><p>本文还通过减少内存、计算时间来提升模型训练的效率。作者使用了ZeRO方式来划分参数，单个GPU的静态内存能够被大约减少到1/N，N是GPU的个数。此外作者还使用了gradient checkpoint的方式来减少运行时内存。作者还用了BF16训练，比起FP16和FP32，BF16拥有与FP32相同的表征范围，但是减少了数值上溢的风险，并确保了模型的收敛稳定性，还和FP16的计算速度相当。</p>
+<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据与初始化"><a href="#数据与初始化" class="headerlink" title="数据与初始化"></a>数据与初始化</h3><p>作者Follow了ALBEF的数据集，包含了来自MS COCO、Visual Genome、Conceptual Captions、Conceptual 12M、SBU Captions这五个数据集的14M图片文本对。</p>
+<p>作者使用1024的batchsize在16张A100上训练了30轮，Text encoder和skip-connected网络都是6层的Transformer，分别由BERT-base的前6层和后6层初始化，Decoder则是12层的Transformer，Visual Encoder是CLIP的<code>ViT-B/16</code>或者<code>ViT-L/14</code>。</p>
+<p>作者还介绍了一些学习率的分辨率的细节，请查看原文。</p>
+<h3 id="VQA实验分析"><a href="#VQA实验分析" class="headerlink" title="VQA实验分析"></a>VQA实验分析</h3><p>mPLUG将VQA看作是生成任务而不是多标签分类任务，如下表，在使用4M数据情况，mPLUG超过了同样使用CLIP的CLIP-ViL和METER（虽然超的不多），在更多数据的情况下，mPLUG也超过了SimVLM和Florence这些用了几十倍数据的模型。ALBEF和BLIP模型是只有Co-Attn的，mPLUG也超过了他们。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201140734.png" srcset="/img/loading.gif" lazyload alt="表2"></p>
+<h3 id="Image-Caption实验分析"><a href="#Image-Caption实验分析" class="headerlink" title="Image Caption实验分析"></a>Image Caption实验分析</h3><p>如表1，mPLUG使用COCO的训练集finetune，然后在COCO-test和NoCaps上测试，还提供了SCST 5轮的结果，可见mPLUG打败了使用更多数据的LEMON、SimVLM模型。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201141758.png" srcset="/img/loading.gif" lazyload alt="表1"></p>
+<h3 id="Image-Text-Retrieval实验分析"><a href="#Image-Text-Retrieval实验分析" class="headerlink" title="Image-Text Retrieval实验分析"></a>Image-Text Retrieval实验分析</h3><p>作者使用ITC和ITM进行微调，推理时，选择top-k个点乘相似度高的candidate，然后再根据ITM的分数排序。在两个方向上的检索结果如下，COCO和Flicker30K上都SOTA，也是打败了更多参数的模型。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201143402.png" srcset="/img/loading.gif" lazyload alt="表3"></p>
+<h3 id="Visual-Grounding实验分析"><a href="#Visual-Grounding实验分析" class="headerlink" title="Visual Grounding实验分析"></a>Visual Grounding实验分析</h3><p>这个任务要求定位文本描述的图像区域，本文不直接回归bbox，而是组合视觉和文本特征之后送进decoder来预测坐标。下表可以发现仍然是SOTA。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201143844.png" srcset="/img/loading.gif" lazyload alt="表4"></p>
+<h3 id="Visual-Reasoning实验分析"><a href="#Visual-Reasoning实验分析" class="headerlink" title="Visual Reasoning实验分析"></a>Visual Reasoning实验分析</h3><p>任务给定两张图片，要求分析文本是否能够描述关系。本文Follow了BLIP的方式，使用了两个CA层来处理两幅输入图片，然后将他们的输出结合并输入进FFN，最后接MLP在<code>[CLS]</code>上进行分类。这里比SOTA差了一点点，作者分析还是因为OFA和VLMo添加了大量只有文本或者只有图像的数据。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201144037.png" srcset="/img/loading.gif" lazyload alt="表5"></p>
+<h3 id="有效性和效率分析"><a href="#有效性和效率分析" class="headerlink" title="有效性和效率分析"></a>有效性和效率分析</h3><p>非对称层的那个S越大，计算时间就越短，同时性能也会有不同，如下图，为了效率，本文使用S=6进行预训练。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201144619.png" srcset="/img/loading.gif" lazyload alt="图3"></p>
+<h3 id="模态融合消融分析"><a href="#模态融合消融分析" class="headerlink" title="模态融合消融分析"></a>模态融合消融分析</h3><p>使用不同融合模块的时间和性能对比，可以发现Skip-connected效果好，而且快。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201144945.png" srcset="/img/loading.gif" lazyload alt="图4"></p>
+<h3 id="训练加速分析"><a href="#训练加速分析" class="headerlink" title="训练加速分析"></a>训练加速分析</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145209.png" srcset="/img/loading.gif" lazyload alt="表6"></p>
+<h3 id="Zero-shot迁移能力"><a href="#Zero-shot迁移能力" class="headerlink" title="Zero-shot迁移能力"></a>Zero-shot迁移能力</h3><p>如下图，在Image Captioning方面，本文直接使用预训练的模型在NoCaps上预测，结果与Oscar和VinVL接近，在COCO上微调之后，更是SOTA了。在Image-Text Retrieval方面，没有微调的方法中SOTA，微调之后同样SOTA。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145324.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145334.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<p>除了图像以外，作者还尝试将mPLUG应用在视频上，作者同样Follow了BLIP的处理方式，均匀地从视频里选取了N帧，并将其组合成单个序列来进行预测。在Video-text检索任务上，作者列出了Zero-shot和在COCO微调后的结果，可以发现，mPLUG在不利用时序信息的情况下，仍然超过了大部分用视频数据集预训练的模型。在VQA任务上，作者也是使用生成式来处理，对比下来也更好。在Caption任务上，作者使用了<code>A video of</code>的前缀，对比下来也比BLIP好。然而假如与其他Video Captioning的模型相比，这个效果非常差。</p>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145841.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201145824.png" srcset="/img/loading.gif" lazyload></div></div></div>
+
+<h2 id="开源情况"><a href="#开源情况" class="headerlink" title="开源情况"></a>开源情况</h2><p>作者开源了base（350M）、Large（600M）两个模型，Huge（1.1B）模型说coming soon。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201151037.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230201151023.png" srcset="/img/loading.gif" lazyload></p>
+<p>作者开源了fine-tune的脚本，没有开源预训练的。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E9%A2%84%E8%AE%AD%E7%BB%83/">多模态预训练</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/02/08/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0Zero-Shot%20Scene%20Graph%20Relation%20Prediction%20through%20Commonsense%20Knowledge%20Integration/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文笔记 Zero-Shot Scene Graph Relation Prediction through Commonsense Knowledge Integration</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/01/29/Multi-Grained%20Vision%20Language%20Pre-Training%20Aligning%20Texts%20with%20Visual%20Concepts/">
+                        <span class="hidden-mobile">论文笔记 X-VLM Multi-Grained Vision Language Pre-Training Aligning Texts with Visual Concepts</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- MathJax -->
+    <script>
+      MathJax = {
+        tex: {
+          inlineMath: [['$', '$'], ['\\(', '\\)']]
+        },
+        loader: {
+          
+        },
+        options: {
+          renderActions: {
+            findScript: [10, doc => {
+              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+                const display = !!node.type.match(/; *mode=display/);
+                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+                const text = document.createTextNode('');
+                node.parentNode.replaceChild(text, node);
+                math.start = { node: text, delim: '', n: 0 };
+                math.end = { node: text, delim: '', n: 0 };
+                doc.math.push(math);
+              });
+            }, '', false],
+            insertedScript: [200, () => {
+              document.querySelectorAll('mjx-container').forEach(node => {
+                let target = node.parentNode;
+                if (target.nodeName.toLowerCase() === 'li') {
+                  target.parentNode.classList.add('has-jax');
+                }
+              });
+            }, '', false]
+          }
+        }
+      };
+    </script>
+
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
+
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
