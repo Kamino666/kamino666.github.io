@@ -272,21 +272,25 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Https协议的安全性原理"><a href="#Https协议的安全性原理" class="headerlink" title="Https协议的安全性原理"></a>Https协议的安全性原理</h1><p>[TOC]</p>
+              <h1>Https协议的安全性原理</h1>
+<p>[TOC]</p>
 <p>超文本传输安全协议（常称为HTTP over SSL/TLS）是一种通过计算机网络进行安全通信的传输协议。https经由http进行通信，但利用SSL/TLS来加密数据包。https使用端口443，URL以<code>https://</code>开头，使用https的网站需要从CA那里获得证书。</p>
 <p>HTTP的数据使用TCP在互联网上明文传输，很容易被黑客截获、篡改或者冒充，而HTTPS除了ip和端口都进行了加密，并且使用了SSL/TLS的安全通信方式，所以相对来说安全。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119145805.png" srcset="/img/loading.gif" lazyload alt="what-is-https"></p>
 <blockquote>
 <p>关于SSL/TLS见我另一个博客。</p>
 </blockquote>
-<h2 id="https无法逃脱GFW监管"><a href="#https无法逃脱GFW监管" class="headerlink" title="https无法逃脱GFW监管"></a>https无法逃脱GFW监管</h2><p>这个是显而易见的hhh，毕竟现在打开浏览器输入<code>https://www.google.com</code>也上不了，因为https对对ip和端口是不加密的，而且注意是<strong>源ip、目标ip、源端口、目标端口</strong>都不加密。所以很容易就能封禁某网站的ip。</p>
-<h2 id="https中间人劫持"><a href="#https中间人劫持" class="headerlink" title="https中间人劫持"></a>https中间人劫持</h2><p>首先说明，正常情况下https是不会遭遇中间人攻击的，因为HTTPS基于的TLS协议考虑到了这种情况。</p>
+<h2 id="https无法逃脱GFW监管">https无法逃脱GFW监管</h2>
+<p>这个是显而易见的hhh，毕竟现在打开浏览器输入<code>https://www.google.com</code>也上不了，因为https对对ip和端口是不加密的，而且注意是<strong>源ip、目标ip、源端口、目标端口</strong>都不加密。所以很容易就能封禁某网站的ip。</p>
+<h2 id="https中间人劫持">https中间人劫持</h2>
+<p>首先说明，正常情况下https是不会遭遇中间人攻击的，因为HTTPS基于的TLS协议考虑到了这种情况。</p>
 <p>中间人攻击(Man in the middle attack, or MITM)指的是在密码学和计算机安全领域中是指攻击者与通讯的两端分别创建独立的联系，并交换其所收到的数据，使通讯的两端认为他们正在通过一个私密的连接与对方直接对话，但事实上整个会话都被攻击者完全控制。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119151139.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119151139.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>TLS通过数字证书来防御这种攻击，即User在访问某Web Applicaiton的时候，会先明文建立TCP连接，然后发送明文证书请求，然后某Web App会把CA认证的证书发给User，这个证书使用了CA的私钥进行加密非常安全，User收到证书之后用公钥解密验证证书的有效性，然后就会把本次TLS通讯的秘钥通过证书里的公钥加密发送给Web App。</p>
 <p>假如黑客出现，在User收到Web App发来的正确证书的时候，就已经无计可施了，所以黑客要作为一个中间人，把Web App发来的正确证书进行掉包，生成一个包含自己公钥的假证书发给用户，<strong>假如用户傻傻地不验证证书的正确性，那就会使用中间人的公钥对TLS秘钥进行加密传输，而中间人拥有私钥，于是就能得到会话的TLS秘钥，从而获取信息</strong>。问题在于，用户遇到报错会不会点下图这种“继续浏览此网站”，不点就没事！</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119152734.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="安装根证书"><a href="#安装根证书" class="headerlink" title="安装根证书"></a>安装根证书</h2><p>根证书是证明证书有效的证书。这听上去可能有点绕口，这是一种信任链，假如你信任国家这种最权威的机构，那国家授权的企业你也信任，而企业授权的证书颁发机构你也信任，证书颁发机构信任的网站你也信任，根证书就是信任的源头，它说啥就是啥。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211119152734.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="安装根证书">安装根证书</h2>
+<p>根证书是证明证书有效的证书。这听上去可能有点绕口，这是一种信任链，假如你信任国家这种最权威的机构，那国家授权的企业你也信任，而企业授权的证书颁发机构你也信任，证书颁发机构信任的网站你也信任，根证书就是信任的源头，它说啥就是啥。</p>
 <p>在操作系统内部会内置很多根证书，同时用户也可以手动安装新的根证书，这就是万恶之源，安装了不可信的根证书之后，中间人颁发的假证书就可以说是假根证书所信任的，那么你的秘钥就泄露出去了。</p>
 <p><strong>所以不要随随便便安装根证书</strong>。但是类似fiddle这样的抓包软件会让你安装根证书，因为它抓包https的技术就是作为一个可信的中间人。或者公司的防火墙也会要求安装根证书，安装之后防火墙就能监控所有的https流量内容（而不只是端口和ip）。</p>
 <blockquote>
@@ -556,43 +560,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

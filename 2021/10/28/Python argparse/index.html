@@ -268,29 +268,27 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python-Argparse"><a href="#Python-Argparse" class="headerlink" title="Python Argparse"></a>Python Argparse</h1><p>Python的Argparse库是一个内置的用来获取<strong>命令行输入参数</strong>的库。简单来说就是解析下面这条语句中python main.py后面这些参数的。</p>
+              <h1>Python Argparse</h1>
+<p>Python的Argparse库是一个内置的用来获取<strong>命令行输入参数</strong>的库。简单来说就是解析下面这条语句中python main.py后面这些参数的。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">python main.py  -v xxxx -m<br></code></pre></td></tr></table></figure>
-
-<h2 id="用法"><a href="#用法" class="headerlink" title="用法"></a>用法</h2><p>首先初始化实例，然后对实例添加参数选项，最后解析成对象。</p>
+<h2 id="用法">用法</h2>
+<p>首先初始化实例，然后对实例添加参数选项，最后解析成对象。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python">parser = argparse.ArgumentParser()<br>parser.add_argument(...)<br>args = parser.parse_args()<br><br><span class="hljs-comment"># 获取参数</span><br>args.参数名<br></code></pre></td></tr></table></figure>
-
-<h3 id="添加普通参数"><a href="#添加普通参数" class="headerlink" title="添加普通参数"></a>添加普通参数</h3><p>普通参数就是一个key一个value，最普通的参数类型</p>
+<h3 id="添加普通参数">添加普通参数</h3>
+<p>普通参数就是一个key一个value，最普通的参数类型</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&quot;-v&quot;</span>, <span class="hljs-string">&quot;--video&quot;</span>,          <span class="hljs-comment"># 一个参数key可以有两个名字</span><br>                    <span class="hljs-built_in">type</span>=<span class="hljs-built_in">str</span>,                 <span class="hljs-comment"># 类型可以是int或者str</span><br>                    required=<span class="hljs-literal">True</span>,            <span class="hljs-comment"># 是否为必选参数</span><br>                    default=<span class="hljs-string">&quot;./video1.npy&quot;</span>,   <span class="hljs-comment"># 假如非必选，默认值是</span><br>                    <span class="hljs-built_in">help</span>=<span class="hljs-string">&quot;帮助文本&quot;</span>)<br></code></pre></td></tr></table></figure>
-
-<h3 id="无值参数"><a href="#无值参数" class="headerlink" title="无值参数"></a>无值参数</h3><p>可以没有value的参数</p>
+<h3 id="无值参数">无值参数</h3>
+<p>可以没有value的参数</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&quot;-m&quot;</span>, action=<span class="hljs-string">&quot;store_true&quot;</span>)<br><span class="hljs-comment"># 假如输入有参数则会被解析为True，否则False</span><br>args.m == <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="固定值范围参数"><a href="#固定值范围参数" class="headerlink" title="固定值范围参数"></a>固定值范围参数</h3><p>就是value必须从几个选项中选择一个</p>
+<h3 id="固定值范围参数">固定值范围参数</h3>
+<p>就是value必须从几个选项中选择一个</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&quot;--feat&quot;</span>, choices=[<span class="hljs-string">&quot;resnet&quot;</span>, <span class="hljs-string">&quot;vgg&quot;</span>])<br><span class="hljs-comment"># 只能 --feat resnet 或者 --feat vgg</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="多值参数"><a href="#多值参数" class="headerlink" title="多值参数"></a>多值参数</h3><p>value可以是多个值，解析结果为列表</p>
+<h3 id="多值参数">多值参数</h3>
+<p>value可以是多个值，解析结果为列表</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">parser.add_argument(<span class="hljs-string">&#x27;--foo&#x27;</span>, nargs=<span class="hljs-string">&#x27;*&#x27;</span>)  <span class="hljs-comment"># 传递多个参数，可为0</span><br>parser.add_argument(<span class="hljs-string">&#x27;--foo&#x27;</span>, nargs=<span class="hljs-string">&#x27;+&#x27;</span>)  <span class="hljs-comment"># 至少给这个key传递一个参数</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="互斥参数"><a href="#互斥参数" class="headerlink" title="互斥参数"></a>互斥参数</h3><p>就是在某个组内的参数不允许同时出现两个及以上</p>
+<h3 id="互斥参数">互斥参数</h3>
+<p>就是在某个组内的参数不允许同时出现两个及以上</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">group = parser.add_mutually_exclusive_group()<br>group.add_argument(<span class="hljs-string">&quot;-a&quot;</span>)<br>group.add_argument(<span class="hljs-string">&quot;-b&quot;</span>)<br></code></pre></td></tr></table></figure>
-
-
-
 <blockquote>
 <p>参考文献</p>
 <p><a target="_blank" rel="noopener" href="https://docs.python.org/3/library/argparse.html">argparse — Parser for command-line options, arguments and sub-commands — Python 3.10.0 documentation</a></p>
@@ -553,43 +551,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

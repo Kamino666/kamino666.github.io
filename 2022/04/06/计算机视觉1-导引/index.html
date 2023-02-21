@@ -270,10 +270,13 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="计算机视觉学习笔记-1-导引"><a href="#计算机视觉学习笔记-1-导引" class="headerlink" title="计算机视觉学习笔记#1 导引"></a>计算机视觉学习笔记#1 导引</h1><p>计算机视觉的应用：无人驾驶中的车道线识别、火车站的人脸检测、换脸……（大家都了解就不详细列举了），虽然目前计算机视觉发展非常火热，但是仍然不够智能，未来可期。</p>
-<h2 id="计算机视觉的范围："><a href="#计算机视觉的范围：" class="headerlink" title="计算机视觉的范围："></a>计算机视觉的范围：</h2><p>Neuroscience、Cognitive science是研究人类视觉的，是理论研究基础；Algorithms、Systems是算法实现基础；Machine learning是常用的计算机视觉实现方式；Optics是视觉获取的来源；Image processing强调的是<code>图片-&gt;图片</code>，计算机视觉是<code>图片-&gt;其他</code>；Information Retrieval和Robotics是计算机视觉的应用方向；NLP、Speech（Speech是语音提取出文字，NLP是理解这句话）是和计算机视觉的并行交融，进行跨模态。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406093130.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="什么是计算机视觉"><a href="#什么是计算机视觉" class="headerlink" title="什么是计算机视觉"></a>什么是计算机视觉</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406094415.png" srcset="/img/loading.gif" lazyload alt="计算机视觉与人类视觉"></p>
+              <h1>计算机视觉学习笔记#1 导引</h1>
+<p>计算机视觉的应用：无人驾驶中的车道线识别、火车站的人脸检测、换脸……（大家都了解就不详细列举了），虽然目前计算机视觉发展非常火热，但是仍然不够智能，未来可期。</p>
+<h2 id="计算机视觉的范围：">计算机视觉的范围：</h2>
+<p>Neuroscience、Cognitive science是研究人类视觉的，是理论研究基础；Algorithms、Systems是算法实现基础；Machine learning是常用的计算机视觉实现方式；Optics是视觉获取的来源；Image processing强调的是<code>图片-&gt;图片</code>，计算机视觉是<code>图片-&gt;其他</code>；Information Retrieval和Robotics是计算机视觉的应用方向；NLP、Speech（Speech是语音提取出文字，NLP是理解这句话）是和计算机视觉的并行交融，进行跨模态。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406093130.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="什么是计算机视觉">什么是计算机视觉</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220406094415.png" srcset="/img/loading.gif" lazyload alt="计算机视觉与人类视觉"></p>
 <p>视觉传感器代替人类眼睛，计算机代替人的大脑。</p>
 <p>人类视觉效率还是挺高的，识别也很精准，会“脑补”，有直觉，但是有视觉盲区、会忽略部分信息、有视错觉。</p>
 
@@ -534,43 +537,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

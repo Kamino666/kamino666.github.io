@@ -272,35 +272,35 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux配置Clash代理"><a href="#Linux配置Clash代理" class="headerlink" title="Linux配置Clash代理"></a>Linux配置Clash代理</h1><p>这篇文章用来防止忘记怎么配Clash，干货笔记。<strong>不需要管理员权限。</strong></p>
-<h2 id="准备"><a href="#准备" class="headerlink" title="准备"></a>准备</h2><p>要准备三样东西：1. 用钱买的梯子的订阅链接   2. Clash二进制文件   3. 经常下载失败的MMDB文件</p>
+              <h1>Linux配置Clash代理</h1>
+<p>这篇文章用来防止忘记怎么配Clash，干货笔记。<strong>不需要管理员权限。</strong></p>
+<h2 id="准备">准备</h2>
+<p>要准备三样东西：1. 用钱买的梯子的订阅链接   2. Clash二进制文件   3. 经常下载失败的MMDB文件</p>
 <p>最新版本可以从Github的官方repo下载下来，从Assets中找到Linux amd64的gz文件<a target="_blank" rel="noopener" href="https://github.com/Dreamacro/clash/releases">下载地址</a>。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501181251.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>二进制文件和MMDB文件提供网盘备份：链接：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1ySpuF3JRVTEOtg0FwKNG0w?pwd=ngro">ngro</a></p>
-<h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><p>Clash基本就靠config.yaml运行，不用输入什么参数。运行clash就是在一个端口搭好了梯子，要让应用走这个梯子出去还要配置应用对应的设置。</p>
+<h2 id="安装">安装</h2>
+<p>Clash基本就靠config.yaml运行，不用输入什么参数。运行clash就是在一个端口搭好了梯子，要让应用走这个梯子出去还要配置应用对应的设置。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">gunzip xxx.gz  <span class="hljs-comment"># gunzip解压gz文件</span><br><span class="hljs-built_in">cd</span> &lt;folder&gt;  <span class="hljs-comment"># 进入有那个可执行文件的文件夹</span><br>wget -O config.yaml [订阅链接]  <span class="hljs-comment"># 下载订阅链接，或者直接把文件重命名为config.yaml</span><br>chmod +x clash  <span class="hljs-comment"># 该权限让其可执行</span><br>./clash <span class="hljs-comment"># 运行梯子</span><br>./clash -d /etc/clash   <span class="hljs-comment"># 指定config目录</span><br>./clash -f /etc/clash/config.yaml  <span class="hljs-comment"># 指定config文件</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="Ubuntu-GUI应用"><a href="#Ubuntu-GUI应用" class="headerlink" title="Ubuntu GUI应用"></a>Ubuntu GUI应用</h3><p>其他发行版应该也同理，要让桌面应用走梯子就直接在设置里找到Network下的Proxy，然后把HTTP和HTTPS的端口都设置成<code>7890</code>（默认），ip地址设置成<code>127.0.0.1</code>，要使用socks协议代理则设置端口为<code>7891</code>。一些ip不走代理，用GUI设置一般不用管。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501191729.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="Ubuntu-GUI应用">Ubuntu GUI应用</h3>
+<p>其他发行版应该也同理，要让桌面应用走梯子就直接在设置里找到Network下的Proxy，然后把HTTP和HTTPS的端口都设置成<code>7890</code>（默认），ip地址设置成<code>127.0.0.1</code>，要使用socks协议代理则设置端口为<code>7891</code>。一些ip不走代理，用GUI设置一般不用管。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501191729.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>以上步骤也可以用命令实现，如下：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash">settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.http host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https port 7890<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.https host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks port 7891<br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy.socks host <span class="hljs-string">&#x27;127.0.0.1&#x27;</span><br>gsettings <span class="hljs-built_in">set</span> org.gnome.system.proxy ignore-hosts <span class="hljs-string">&quot;[&#x27;localhost&#x27;, &#x27;127.0.0.0/8&#x27;, &#x27;::1&#x27;]&quot;</span><br><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;manual&#x27;</span>  <span class="hljs-comment"># 开启</span><br>settings <span class="hljs-built_in">set</span> org.gnome.system.proxy mode <span class="hljs-string">&#x27;none&#x27;</span>    <span class="hljs-comment"># 关闭</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="环境变量设置代理"><a href="#环境变量设置代理" class="headerlink" title="环境变量设置代理"></a>环境变量设置代理</h3><p>大多数的网络库会通过识别环境变量来走代理，要设置<code>http_proxy</code>和<code>https_proxy</code>这两项：</p>
+<h3 id="环境变量设置代理">环境变量设置代理</h3>
+<p>大多数的网络库会通过识别环境变量来走代理，要设置<code>http_proxy</code>和<code>https_proxy</code>这两项：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br><span class="hljs-built_in">export</span> http_proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890/&quot;</span><br><span class="hljs-built_in">export</span> https_proxy=<span class="hljs-string">&quot;http://127.0.0.1:7890/&quot;</span><br><span class="hljs-comment"># 关闭</span><br><span class="hljs-built_in">unset</span> http_proxy<br><span class="hljs-built_in">unset</span> https_proxy<br></code></pre></td></tr></table></figure>
-
 <p>可以写在环境变量文件<code>~/.bashrc</code>（给自己用）或<code>/etc/profile</code>（全局用），但是记得要source。</p>
-<h3 id="wget设置代理"><a href="#wget设置代理" class="headerlink" title="wget设置代理"></a>wget设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在home目录下新建这个文件，也可以直接编辑/etc/wgetrc（但是不推荐，而且要管理权限）</span><br>vi ~/.wgetrc<br><span class="hljs-comment"># 内容为以下：</span><br>https_proxy = http://127.0.0.1:7890/<br>http_proxy = http://127.0.0.1:7890/<br>use_proxy= on<br></code></pre></td></tr></table></figure>
-
+<h3 id="wget设置代理">wget设置代理</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 在home目录下新建这个文件，也可以直接编辑/etc/wgetrc（但是不推荐，而且要管理权限）</span><br>vi ~/.wgetrc<br><span class="hljs-comment"># 内容为以下：</span><br>https_proxy = http://127.0.0.1:7890/<br>http_proxy = http://127.0.0.1:7890/<br>use_proxy= on<br></code></pre></td></tr></table></figure>
 <p>设置完要<code>source ~/.wgetrc</code>。</p>
-<h3 id="Git设置代理"><a href="#Git设置代理" class="headerlink" title="Git设置代理"></a>Git设置代理</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br>git config --global http.proxy http://127.0.0.1:7890<br>git config --global https.proxy https://127.0.0.1:7890<br><span class="hljs-comment"># 关闭</span><br>git config --global --<span class="hljs-built_in">unset</span> http.proxy<br>git config --global --<span class="hljs-built_in">unset</span> https.proxy<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="管理"><a href="#管理" class="headerlink" title="管理"></a>管理</h2><p>编辑你的<code>config.yaml</code>，设置下面两项可以开启外部管理，一定要设置secret。</p>
+<h3 id="Git设置代理">Git设置代理</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 开启</span><br>git config --global http.proxy http://127.0.0.1:7890<br>git config --global https.proxy https://127.0.0.1:7890<br><span class="hljs-comment"># 关闭</span><br>git config --global --<span class="hljs-built_in">unset</span> http.proxy<br>git config --global --<span class="hljs-built_in">unset</span> https.proxy<br></code></pre></td></tr></table></figure>
+<h2 id="管理">管理</h2>
+<p>编辑你的<code>config.yaml</code>，设置下面两项可以开启外部管理，一定要设置secret。</p>
 <figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-attr">external-controller:</span> <span class="hljs-number">127.0</span><span class="hljs-number">.0</span><span class="hljs-number">.1</span><span class="hljs-string">:50040</span><br><span class="hljs-attr">secret:</span> <span class="hljs-string">&#x27;&#x27;</span><br></code></pre></td></tr></table></figure>
-
 <p>设置好了以后访问<code>http://clash.razord.top</code>，输入对应的信息就能用web来管理本地的clash啦~</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501193137.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220501193137.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <blockquote>
 <p>参考文献：</p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/369344633">Linux下安装&amp;配置Clash以实现代理上网 - 知乎 (zhihu.com)</a></p>
@@ -564,43 +564,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

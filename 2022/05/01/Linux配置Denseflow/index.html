@@ -268,20 +268,17 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux配置Denseflow"><a href="#Linux配置Denseflow" class="headerlink" title="Linux配置Denseflow"></a>Linux配置Denseflow</h1><p>Denseflow是open-mmlab开发的快速使用TV-L1方法提取光流图工具，基于CUDA、OpenCV，通过优化和并行能够大幅度提高光流图的提取速度，比Python里调opencv快得多，而且能保证效果（方法不变，只是进行了优化）。</p>
+              <h1>Linux配置Denseflow</h1>
+<p>Denseflow是open-mmlab开发的快速使用TV-L1方法提取光流图工具，基于CUDA、OpenCV，通过优化和并行能够大幅度提高光流图的提取速度，比Python里调opencv快得多，而且能保证效果（方法不变，只是进行了优化）。</p>
 <p>官方repo：<a target="_blank" rel="noopener" href="https://github.com/open-mmlab/denseflow">open-mmlab/denseflow: Extracting optical flow and frames (github.com)</a></p>
 <p>首先先把<a target="_blank" rel="noopener" href="https://github.com/innerlee/setup">这个工具库</a>clone下来，这个库包含许多setup一台新机器的便捷脚本，真的特别方便QWQ，使用方法如下，<strong>一定要先设置</strong><code>.bashrc</code>！！！！</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># configure setup path, you can put them into your `.bashrc` or `.zshrc`</span><br><span class="hljs-built_in">export</span> ZZROOT=<span class="hljs-variable">$HOME</span>/app<br><span class="hljs-built_in">export</span> PATH=<span class="hljs-variable">$ZZROOT</span>/bin:<span class="hljs-variable">$PATH</span><br><span class="hljs-built_in">export</span> LD_LIBRARY_PATH=<span class="hljs-variable">$ZZROOT</span>/lib:<span class="hljs-variable">$ZZROOT</span>/lib64:<span class="hljs-variable">$LD_LIBRARY_PATH</span><br></code></pre></td></tr></table></figure>
-
 <p>然后，把脚本文件给执行权限：<code>chmod +x *.sh</code>（有的博主就喜欢无脑chmod 777，不知道怎么想的）之后就要想要啥就有啥，先安装什么就运行对应的脚本文件。</p>
 <p>但是安装之前最好开梯子，不然下载一些东西真的很困难，假如不能开梯子，那可以把提示要下载的文件放在<code>~/app/downloads</code>里，同时可能需要重命名。</p>
 <p>接下来就正式开始装Denseflow啦：</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment">#首先是支持CUDA的OpenCV</span><br><span class="hljs-comment"># opencv depends on ffmpeg for video decoding</span><br><span class="hljs-comment"># ffmpeg depends on nasm, yasm, libx264, libx265, libvpx</span><br>./zznasm.sh<br>./zzyasm.sh<br>./zzlibx264.sh<br>./zzlibx265.sh<br>./zzlibvpx.sh<br><span class="hljs-comment"># finally install ffmpeg</span><br>./zzffmpeg.sh<br><span class="hljs-comment"># install opencv 4.3.0</span><br>./zzopencv.sh<br><span class="hljs-built_in">export</span> OpenCV_DIR=<span class="hljs-variable">$ZZROOT</span><br></code></pre></td></tr></table></figure>
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 然后是Boost</span><br><span class="hljs-comment"># install boost</span><br>./zzboost.sh<br><span class="hljs-comment"># you may put this line into your .bashrc</span><br><span class="hljs-built_in">export</span> BOOST_ROOT=<span class="hljs-variable">$ZZROOT</span><br></code></pre></td></tr></table></figure>
-
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 最后是denseflow</span><br>./zzdenseflow.sh<br></code></pre></td></tr></table></figure>
-
 <p>有的步骤可能比较耗时，可以开一局游戏等hhhh，安装denseflow最好使用脚本不要直接用repo的README里面的步骤。</p>
 
             </div>
@@ -541,43 +538,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

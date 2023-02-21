@@ -19,12 +19,12 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="配置uwsgi+flask+nginx+https由于项目需要，最近在一台腾讯云Ubuntu服务器上配置了全套的环境，实现了一个微信小程序的后端服务器，记录下这个笔记以免忘记。 整体理论架构用户使用浏览器或者微信小程序通过80&#x2F;443端口发送数据到Nginx，然后通过一个指定的端口发送到uWSGI，然后uWSGI调用我们写的Python代码，也就是Flask框架，在Flask框架中使用数据库或深度">
+  <meta name="description" content="配置uwsgi+flask+nginx+https 由于项目需要，最近在一台腾讯云Ubuntu服务器上配置了全套的环境，实现了一个微信小程序的后端服务器，记录下这个笔记以免忘记。 整体理论架构 用户使用浏览器或者微信小程序通过80&#x2F;443端口发送数据到Nginx，然后通过一个指定的端口发送到uWSGI，然后uWSGI调用我们写的Python代码，也就是Flask框架，在Flask框架中使用数据库或">
 <meta property="og:type" content="article">
 <meta property="og:title" content="配置uwsgi+flask+nginx+https">
 <meta property="og:url" content="http://blog.kamino.link/2021/03/22/%E9%85%8D%E7%BD%AEuwsgi+flask+nginx+https/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="配置uwsgi+flask+nginx+https由于项目需要，最近在一台腾讯云Ubuntu服务器上配置了全套的环境，实现了一个微信小程序的后端服务器，记录下这个笔记以免忘记。 整体理论架构用户使用浏览器或者微信小程序通过80&#x2F;443端口发送数据到Nginx，然后通过一个指定的端口发送到uWSGI，然后uWSGI调用我们写的Python代码，也就是Flask框架，在Flask框架中使用数据库或深度">
+<meta property="og:description" content="配置uwsgi+flask+nginx+https 由于项目需要，最近在一台腾讯云Ubuntu服务器上配置了全套的环境，实现了一个微信小程序的后端服务器，记录下这个笔记以免忘记。 整体理论架构 用户使用浏览器或者微信小程序通过80&#x2F;443端口发送数据到Nginx，然后通过一个指定的端口发送到uWSGI，然后uWSGI调用我们写的Python代码，也就是Flask框架，在Flask框架中使用数据库或">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-03-22T01:50:00.000Z">
 <meta property="article:modified_time" content="2022-07-21T09:12:08.127Z">
@@ -271,8 +271,10 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="配置uwsgi-flask-nginx-https"><a href="#配置uwsgi-flask-nginx-https" class="headerlink" title="配置uwsgi+flask+nginx+https"></a>配置uwsgi+flask+nginx+https</h1><p>由于项目需要，最近在一台腾讯云Ubuntu服务器上配置了全套的环境，实现了一个微信小程序的后端服务器，记录下这个笔记以免忘记。</p>
-<h2 id="整体理论架构"><a href="#整体理论架构" class="headerlink" title="整体理论架构"></a>整体理论架构</h2><p>用户使用浏览器或者微信小程序通过80/443端口发送数据到Nginx，然后通过一个指定的端口发送到uWSGI，然后uWSGI调用我们写的Python代码，也就是Flask框架，在Flask框架中使用数据库或深度学习对数据进行其他处理。</p>
+              <h1>配置uwsgi+flask+nginx+https</h1>
+<p>由于项目需要，最近在一台腾讯云Ubuntu服务器上配置了全套的环境，实现了一个微信小程序的后端服务器，记录下这个笔记以免忘记。</p>
+<h2 id="整体理论架构">整体理论架构</h2>
+<p>用户使用浏览器或者微信小程序通过80/443端口发送数据到Nginx，然后通过一个指定的端口发送到uWSGI，然后uWSGI调用我们写的Python代码，也就是Flask框架，在Flask框架中使用数据库或深度学习对数据进行其他处理。</p>
 <pre><code class=" mermaid">graph 
 A[浏览器/小程序] --HTTP/HTTPS--&gt; B[Nginx]
 B --转发请求--&gt; C[uWSGI]
@@ -281,44 +283,42 @@ D --&gt; E(Redis)
 D --&gt; F(MySQL)
 D --&gt; G(PyTorch)
 </code></pre>
-
-<h2 id="服务器初始化"><a href="#服务器初始化" class="headerlink" title="服务器初始化"></a>服务器初始化</h2><p>刚到手的服务器镜像肯定要update一下啦</p>
+<h2 id="服务器初始化">服务器初始化</h2>
+<p>刚到手的服务器镜像肯定要update一下啦</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt-get update<br>sudo apt-get upgrade<br></code></pre></td></tr></table></figure>
-
-<h2 id="配置Python环境"><a href="#配置Python环境" class="headerlink" title="配置Python环境"></a>配置Python环境</h2><p>Python虚拟环境使用virtualenv而不是conda，因为后者尝试之后，在启动uwsgi的时候会出现PYTHONHOME的Bug，很久都解决不了，换成virtualenv就好了。</p>
+<h2 id="配置Python环境">配置Python环境</h2>
+<p>Python虚拟环境使用virtualenv而不是conda，因为后者尝试之后，在启动uwsgi的时候会出现PYTHONHOME的Bug，很久都解决不了，换成virtualenv就好了。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装python3</span><br>sudo apt-get install python3<br><span class="hljs-comment"># 找到python路径</span><br><span class="hljs-built_in">which</span> python<br><span class="hljs-comment"># 安装virtualenv环境</span><br>sudo pip install virtualenvwrapper<br>sudo pip install virtualenv<br><span class="hljs-comment"># 找到virtualenvwrapper.sh路径</span><br><span class="hljs-built_in">which</span> virtualenvwrapper.sh<br>&gt; /usr/<span class="hljs-built_in">local</span>/bin/virtualenvwrapper.sh<br><span class="hljs-comment"># 创建虚拟环境的存放目录</span><br>mkdir ~/.virtualenvs<br><br><span class="hljs-comment"># 配置环境</span><br>vi ~/.bashrc<br><span class="hljs-comment"># 最后加上</span><br><span class="hljs-comment"># 第一行是添加虚拟环境的目录 第二行是指定python的目录 第三行运行虚拟环境的初始化脚本</span><br>&gt; <span class="hljs-built_in">export</span> WORKON_HOME=<span class="hljs-variable">$HOME</span>/.virtualenvs<br>&gt; VIRTUALENVWARPPER_PYTHON=/usr/bin/python<br>&gt; <span class="hljs-built_in">source</span> /usr/<span class="hljs-built_in">local</span>/bin/virtualenvwrapper.sh<br><span class="hljs-comment"># 可能需要</span><br><span class="hljs-built_in">source</span> ~/.bashrc<br><br><span class="hljs-comment"># 使用mkvirtualenv创建环境</span><br>mkvirtualenv -p [python路径] [环境名字]<br><span class="hljs-comment"># 然后就可以使用workon来切换</span><br>workon [环境名字]<br><span class="hljs-comment"># 或者退出</span><br>deactivate<br></code></pre></td></tr></table></figure>
-
 <p>然后就是安装python的一系列包了，直接用pip安装，腾讯云或者阿里云买的服务器自动用内网下载还是非常快的，这里就只列出一部分了</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bsah">pip install flask redis pymysql<br></code></pre></td></tr></table></figure>
-
-<h2 id="配置数据库"><a href="#配置数据库" class="headerlink" title="配置数据库"></a>配置数据库</h2><h3 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 比较容易安装</span><br>sudo apt-get install redis-server<br><span class="hljs-comment"># 开启服务端</span><br>redis-server<br><span class="hljs-comment"># 开启命令行</span><br>redis-cli<br></code></pre></td></tr></table></figure>
-
-<h3 id="MySQL"><a href="#MySQL" class="headerlink" title="MySQL"></a>MySQL</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt-get install mysql-server<br><span class="hljs-comment"># 初始化配置 会问你一些问题 并且设置密码</span><br>sudo mysql_secure_installation<br><span class="hljs-comment"># 检查服务状态 假如有绿色active就正常</span><br>systemctl status mysql.service<br></code></pre></td></tr></table></figure>
-
+<h2 id="配置数据库">配置数据库</h2>
+<h3 id="Redis">Redis</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 比较容易安装</span><br>sudo apt-get install redis-server<br><span class="hljs-comment"># 开启服务端</span><br>redis-server<br><span class="hljs-comment"># 开启命令行</span><br>redis-cli<br></code></pre></td></tr></table></figure>
+<h3 id="MySQL">MySQL</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">sudo apt-get install mysql-server<br><span class="hljs-comment"># 初始化配置 会问你一些问题 并且设置密码</span><br>sudo mysql_secure_installation<br><span class="hljs-comment"># 检查服务状态 假如有绿色active就正常</span><br>systemctl status mysql.service<br></code></pre></td></tr></table></figure>
 <p>为了用pymysql操作数据库，需要确定能用密码登录</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># root是默认用户名 输入这行命令之后输入密码</span><br>mysql -u root -p<br><span class="hljs-comment"># 假如无法进入（报错1045 1698），则进行以下步骤</span><br>sudo mysql<br>mysql&gt; USE mysql;<br>mysql&gt; UPDATE user SET plugin=<span class="hljs-string">&#x27;mysql_native_password&#x27;</span> WHERE User=<span class="hljs-string">&#x27;root&#x27;</span>;<br>mysql&gt; ALTER USER <span class="hljs-string">&#x27;root&#x27;</span>@<span class="hljs-string">&#x27;localhost&#x27;</span> IDENTIFIED WITH mysql_native_password BY <span class="hljs-string">&#x27;你的密码&#x27;</span>;<br>mysql&gt; FLUSH PRIVILEGES;<br>mysql&gt; <span class="hljs-built_in">exit</span>;<br>service mysql restart<br><br></code></pre></td></tr></table></figure>
-
 <p>配置完这些之后，可以写一些代码来测试是否可用</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># python代码</span><br><span class="hljs-keyword">import</span> redis<br>redis_pool = redis.ConnectionPool(host=<span class="hljs-string">&#x27;localhost&#x27;</span>, port=<span class="hljs-number">6379</span>, decode_responses=<span class="hljs-literal">True</span>)<br>r = redis.Redis(connection_pool=redis_pool)<br><br><span class="hljs-keyword">import</span> pymysql<br>db = pymysql.connect(<br>    host=<span class="hljs-string">&#x27;localhost&#x27;</span>,<br>    port=<span class="hljs-number">3306</span>,<br>    user=<span class="hljs-string">&#x27;root&#x27;</span>,<br>    password=<span class="hljs-string">&#x27;密码&#x27;</span>,<br>    database=<span class="hljs-string">&#x27;数据库&#x27;</span>,<br>    charset=<span class="hljs-string">&#x27;utf8&#x27;</span><br>)<br></code></pre></td></tr></table></figure>
-
-<h2 id="配置uWSGI"><a href="#配置uWSGI" class="headerlink" title="配置uWSGI"></a>配置uWSGI</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装uwsgi 假如出现了很多红色的编译错误，则搜索报错的头文件并安装对应的库</span><br>pip install uwsgi<br></code></pre></td></tr></table></figure>
-
+<h2 id="配置uWSGI">配置uWSGI</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装uwsgi 假如出现了很多红色的编译错误，则搜索报错的头文件并安装对应的库</span><br>pip install uwsgi<br></code></pre></td></tr></table></figure>
 <p>然后找一个地方来保存uWSGI的配置文件，后缀名为<code>.ini</code>。</p>
 <figure class="highlight ini"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs ini"><span class="hljs-section">[uwsgi]</span><br><br><span class="hljs-comment"># master 不知道是啥，写成true</span><br><span class="hljs-attr">master</span> = <span class="hljs-literal">true</span><br><span class="hljs-comment"># 就是flask应用运行的那个py文件名</span><br><span class="hljs-attr">wsgi-file</span> = app.py<br><span class="hljs-comment"># flask应用的工程目录</span><br><span class="hljs-attr">chdir</span> = /home/ubuntu/dev/Myproj<br><span class="hljs-comment"># 与nginx进行通信的端口，指定一个不被占用的就行，记住有个冒号</span><br><span class="hljs-attr">socket</span> = :<span class="hljs-number">5200</span><br><span class="hljs-comment"># flask中的应用名字，假如没有指定就是文件名</span><br><span class="hljs-attr">callable</span> = app<br><span class="hljs-comment"># 处理器数量和线程数</span><br><span class="hljs-attr">processes</span> = <span class="hljs-number">4</span><br><span class="hljs-attr">threads</span> = <span class="hljs-number">10</span><br><span class="hljs-comment"># 日志保存目录，自动新建</span><br><span class="hljs-attr">daemonize</span> = logs/uwsgi.log<br><span class="hljs-comment"># python的环境</span><br><span class="hljs-attr">home</span> = /home/ubuntu/.virtualenvs/test<br><span class="hljs-comment"># pid文件，自动新建，用来确定启动的进程pid</span><br><span class="hljs-attr">pidfile</span> = uwsgi.pid<br></code></pre></td></tr></table></figure>
-
 <p>配置好之后，通过下面命令来管理</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 启动</span><br>uwsgi --ini ini文件名.ini<br><span class="hljs-comment"># 可以查看日志文件是否运行成功</span><br>vi logs/uwsgi.log<br><span class="hljs-comment"># 停止运行</span><br>uwsgi --stop uwsgi.pid<br><span class="hljs-comment"># 假如停止失败，手动查询然后杀死进程</span><br>ps ax|grep uwsgi<br><span class="hljs-built_in">kill</span> -9 [pid]<br></code></pre></td></tr></table></figure>
-
-<h2 id="配置nginx"><a href="#配置nginx" class="headerlink" title="配置nginx"></a>配置nginx</h2><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 直接安装</span><br>sudo apt-get install nginx<br><span class="hljs-comment"># 查看运行是否正常，有绿色active就是正常</span><br>systemctl status nginx<br></code></pre></td></tr></table></figure>
-
+<h2 id="配置nginx">配置nginx</h2>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 直接安装</span><br>sudo apt-get install nginx<br><span class="hljs-comment"># 查看运行是否正常，有绿色active就是正常</span><br>systemctl status nginx<br></code></pre></td></tr></table></figure>
 <p>假如一切正常，这个时候用浏览器访问ip应该就能Nginx的欢迎页面了（也可能出现要备案的信息）</p>
-<h2 id="HTTPS"><a href="#HTTPS" class="headerlink" title="HTTPS"></a>HTTPS</h2><p>微信小程序需要后端是https，所以去腾讯云买一个SSL证书，然后下载nginx格式可以得到四个文件：<code>.csr</code> <code>.key</code> <code>.crt</code> <code>.pem</code> 。把crt和key上传到服务器，找一个地方保存下来，之后要用到。</p>
-<h2 id="Nginx与uWSGI打通"><a href="#Nginx与uWSGI打通" class="headerlink" title="Nginx与uWSGI打通"></a>Nginx与uWSGI打通</h2><p>找到nginx的安装目录，我的在<code>/etc/nginx</code>。然后找到<code>nginx.conf</code>这个文件，在http字段下添加下述信息。</p>
+<h2 id="HTTPS">HTTPS</h2>
+<p>微信小程序需要后端是https，所以去腾讯云买一个SSL证书，然后下载nginx格式可以得到四个文件：<code>.csr</code> <code>.key</code> <code>.crt</code> <code>.pem</code> 。把crt和key上传到服务器，找一个地方保存下来，之后要用到。</p>
+<h2 id="Nginx与uWSGI打通">Nginx与uWSGI打通</h2>
+<p>找到nginx的安装目录，我的在<code>/etc/nginx</code>。然后找到<code>nginx.conf</code>这个文件，在http字段下添加下述信息。</p>
 <figure class="highlight crmsh"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs crmsh"><span class="hljs-comment">##</span><br><span class="hljs-comment"># flask uWSGI</span><br><span class="hljs-comment">##</span><br>upstream flask &#123;<br>	server <span class="hljs-number">0.0</span>.<span class="hljs-number">0.0</span>:<span class="hljs-number">5200</span>;<br>&#125;<br>server &#123;<br>    listen <span class="hljs-number">443</span> ssl;<br>    server_name 网站域名;<br>    ssl_certificate crt文件路径;<br>    ssl_certificate_key key文件路径;<br>    下面的<span class="hljs-number">4</span>个要根据证书类型填写<br>    ssl_session_timeout <span class="hljs-number">5m</span>;<br>    ssl_protocols TLSv1.<span class="hljs-number">2</span> TLSv1.<span class="hljs-number">3</span>;<br>    ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;<br>    ssl_prefer_server_ciphers on;<br><br>    charset utf-<span class="hljs-number">8</span>;<br>    client_max_body_size <span class="hljs-number">75M</span>;<br>    <span class="hljs-keyword">location</span> <span class="hljs-title">/static</span>/(.*) &#123;<br>    	alias 静态网页存放路径;<br>    &#125;<br>    <span class="hljs-keyword">location</span> <span class="hljs-title">/ &#123;</span><br><span class="hljs-title">        uwsgi_pass</span> flask;<br>        include /etc/nginx/uwsgi_params;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
-
-<h2 id="重要！uWSGI的多进程说明"><a href="#重要！uWSGI的多进程说明" class="headerlink" title="重要！uWSGI的多进程说明"></a>重要！uWSGI的多进程说明</h2><p>uWSGI默认是采用一个master process来初始化application，然后把它复制到其他的工作进程中。也就是说，在app.py里面加载的深度学习模型或者初始化的数据库连接，只会加载一次。</p>
+<h2 id="重要！uWSGI的多进程说明">重要！uWSGI的多进程说明</h2>
+<p>uWSGI默认是采用一个master process来初始化application，然后把它复制到其他的工作进程中。也就是说，在app.py里面加载的深度学习模型或者初始化的数据库连接，只会加载一次。</p>
 <p>若不想要这种模式，则在ini文件中指定<code>lazy-apps = true</code>。</p>
-<h2 id="坑！uWSGI调用flask不会执行if-name-39-main-39"><a href="#坑！uWSGI调用flask不会执行if-name-39-main-39" class="headerlink" title="坑！uWSGI调用flask不会执行if __name__ == &#39;__main__&#39;"></a>坑！uWSGI调用flask不会执行<code>if __name__ == &#39;__main__&#39;</code></h2><p>因为uWSGI自动调用flask，<code>__name__</code>的值发生变化，在我这里是<code>uwsgi_file_app</code>.</p>
+<h2 id="坑！uWSGI调用flask不会执行if-name-main">坑！uWSGI调用flask不会执行<code>if __name__ == '__main__'</code></h2>
+<p>因为uWSGI自动调用flask，<code>__name__</code>的值发生变化，在我这里是<code>uwsgi_file_app</code>.</p>
 <p>所以用uWSGI的时候也不需要<code>app.run()</code>。</p>
 
             </div>
@@ -584,43 +584,8 @@ D --&gt; G(PyTorch)
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

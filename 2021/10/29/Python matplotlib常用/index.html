@@ -270,19 +270,17 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python-Matplotlib"><a href="#Python-Matplotlib" class="headerlink" title="Python Matplotlib"></a>Python Matplotlib</h1><p>[TOC]</p>
-<h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>Figure</strong>是一个Matplotlib窗口显示的图的整体概念，就是最大的单位；一个Figure可以包含多个<strong>Axes</strong>子图，Axes是一幅图的最小单位，使用<code>plt.plot()</code>等函数是绘制在Axes上而不是figure上。</p>
+              <h1>Python Matplotlib</h1>
+<p>[TOC]</p>
+<h2 id="基本概念">基本概念</h2>
+<p><strong>Figure</strong>是一个Matplotlib窗口显示的图的整体概念，就是最大的单位；一个Figure可以包含多个<strong>Axes</strong>子图，Axes是一幅图的最小单位，使用<code>plt.plot()</code>等函数是绘制在Axes上而不是figure上。</p>
 <p>对于一个Axes有下图这些元素，其中注意坐标轴是<code>axis</code>，容易和<code>Axes</code>弄混，两个都翻译成“轴”。</p>
 <p><strong>Matplotlib</strong>有两种使用方式，一种是面向对象的方式，另一种是MATLAB风格的基于状态的方式，按道理在Python中应该多使用面向对象的方式，但是实际上大家都习惯混着用。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211201154523.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="面向对象的基本使用方式"><a href="#面向对象的基本使用方式" class="headerlink" title="面向对象的基本使用方式"></a>面向对象的基本使用方式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用plt.subplots()创建figure和ax，假如用这个创建多子图的figure则会返回ax数组</span><br>fig, ax = plt.subplots()<br><span class="hljs-comment"># 绘图是在axes上绘图，不是在figure上</span><br><span class="hljs-comment"># 在一个axes上可以叠加多个绘制</span><br>ax.plot([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>])<br>ax.plot([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>], color=<span class="hljs-string">&#x27;r&#x27;</span>)<br><span class="hljs-comment"># 绘制完之后保存的是figure</span><br>fig.savefig(<span class="hljs-string">&#x27;example.png&#x27;</span>)<br><span class="hljs-comment"># 绘制完之后展示figure</span><br>fig.show()<br></code></pre></td></tr></table></figure>
-
-<h2 id="面向状态的基本使用方式"><a href="#面向状态的基本使用方式" class="headerlink" title="面向状态的基本使用方式"></a>面向状态的基本使用方式</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">plt.plot([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>plt.ylabel(<span class="hljs-string">&#x27;some numbers&#x27;</span>)<br>plt.savefig(<span class="hljs-string">&#x27;example.png&#x27;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
-
-
-
-
-
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211201154523.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="面向对象的基本使用方式">面向对象的基本使用方式</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用plt.subplots()创建figure和ax，假如用这个创建多子图的figure则会返回ax数组</span><br>fig, ax = plt.subplots()<br><span class="hljs-comment"># 绘图是在axes上绘图，不是在figure上</span><br><span class="hljs-comment"># 在一个axes上可以叠加多个绘制</span><br>ax.plot([<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>])<br>ax.plot([<span class="hljs-number">1</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">1</span>,<span class="hljs-number">2</span>], color=<span class="hljs-string">&#x27;r&#x27;</span>)<br><span class="hljs-comment"># 绘制完之后保存的是figure</span><br>fig.savefig(<span class="hljs-string">&#x27;example.png&#x27;</span>)<br><span class="hljs-comment"># 绘制完之后展示figure</span><br>fig.show()<br></code></pre></td></tr></table></figure>
+<h2 id="面向状态的基本使用方式">面向状态的基本使用方式</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">plt.plot([<span class="hljs-number">1</span>, <span class="hljs-number">2</span>, <span class="hljs-number">3</span>, <span class="hljs-number">4</span>])<br>plt.ylabel(<span class="hljs-string">&#x27;some numbers&#x27;</span>)<br>plt.savefig(<span class="hljs-string">&#x27;example.png&#x27;</span>)<br>plt.show()<br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>参考文献：</p>
 <p><a target="_blank" rel="noopener" href="https://matplotlib.org/stable/tutorials/introductory/usage.html#sphx-glr-tutorials-introductory-usage-py">Usage Guide — Matplotlib 3.5.0 documentation</a></p>
@@ -545,43 +543,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -38,8 +38,8 @@
 <meta property="article:modified_time" content="2022-07-21T08:53:34.874Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="机器学习">
 <meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112335.png">
   
@@ -278,9 +278,11 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Video-Captioning相关论文调查"><a href="#Video-Captioning相关论文调查" class="headerlink" title="Video Captioning相关论文调查"></a>Video Captioning相关论文调查</h1><p>不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。</p>
+              <h1>Video Captioning相关论文调查</h1>
+<p>不是一个综述，不会全面解析论文，只是一个调查笔记，而且本人水平不高，部分地方可能有错误。</p>
 <p>对目前基于深度学习的Video Captioning(视频描述)的论文进行调查，统计现在得到的最好结果。</p>
-<h2 id="S2VT"><a href="#S2VT" class="headerlink" title="S2VT"></a>S2VT</h2><p><em>S. Venugopalan, M. Rohrbach, J. Donahue, R. J. Mooney, T. Darrell, and K. Saenko. Sequence to sequence - video to text. In ICCV, 2015</em></p>
+<h2 id="S2VT">S2VT</h2>
+<p><em>S. Venugopalan, M. Rohrbach, J. Donahue, R. J. Mooney, T. Darrell, and K. Saenko. Sequence to sequence - video to text. In ICCV, 2015</em></p>
 <p><strong>代码实现</strong>：</p>
 <ul>
 <li>官方caffe：<a target="_blank" rel="noopener" href="https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt">https://github.com/vsubhashini/caffe/tree/recurrent/examples/s2vt</a></li>
@@ -289,7 +291,6 @@
 </ul>
 <p><strong>论文简介</strong>：</p>
 <img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112335.png" srcset="/img/loading.gif" lazyload alt="image-20210301112335348" style="zoom:50%;" />
-
 <p>大概结构如图，对于视频图像，使用预训练的CNN网络，对视频的每一帧进行特征的提取，每个视频会得到一个[len, feat_dim]的特征，其中每个视频的len不相同。视频的图像输入，可以是RGB图像也可以是光流图。论文中RGB用VGG16，光流图用AlexNet提取feature。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301112655.png" srcset="/img/loading.gif" lazyload alt="红色为图像层，绿色为文字层"></p>
 <p>训练时，之前由CNN提取的不定长的feature，在编码阶段逐步送进图像层，在图像输入结束后，给文字层提供<code>&lt;BOS&gt;</code>标志开始预测文字，预测到文字层输出<code>&lt;EOS&gt;</code>结束。这样实现了输入和输出都能不定长度。文字层的输入由图像层的输出结合文字输入得到（这里的结合是在hid之前那个维度上的拼接）。</p>
@@ -297,14 +298,15 @@
 <p>注意实现的时候这两层的输入大小不同，得分成两个CNN。</p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 29.8%，M-VAD数据集 METEOR 6.7%，MPII-MD数据集 METEOR 7.1%。</p>
-<h2 id="Multimodal-Memory-Modelling"><a href="#Multimodal-Memory-Modelling" class="headerlink" title="Multimodal Memory Modelling"></a>Multimodal Memory Modelling</h2><p><em>Wang J, Wang W, Huang Y, et al. M3: Multimodal memory modelling for video captioning. CVPR, IEEE 2018</em></p>
+<h2 id="Multimodal-Memory-Modelling">Multimodal Memory Modelling</h2>
+<p><em>Wang J, Wang W, Huang Y, et al. M3: Multimodal memory modelling for video captioning. CVPR, IEEE 2018</em></p>
 <p><strong>论文简介</strong>：</p>
 <img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301113305.png" srcset="/img/loading.gif" lazyload alt="image-20210301090931120" style="zoom: 67%;" />
-
 <p>对记忆建模（Memory Modeling），主要处理长视频，比较复杂，没深入研究。</p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 33.3%，MSR-VTT数据集 METEOR 26.58%。</p>
-<h2 id="MRS（Multi-Representation-Switching）"><a href="#MRS（Multi-Representation-Switching）" class="headerlink" title="MRS（Multi-Representation Switching）"></a>MRS（Multi-Representation Switching）</h2><p><em>Heechan Kim, Soowon Lee. A Video Captioning Method Based on Multi-Representation Switching for Sustainable Computing. Sustainability 2021</em></p>
+<h2 id="MRS（Multi-Representation-Switching）">MRS（Multi-Representation Switching）</h2>
+<p><em>Heechan Kim, Soowon Lee. A Video Captioning Method Based on Multi-Representation Switching for Sustainable Computing. Sustainability 2021</em></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301115135.png" srcset="/img/loading.gif" lazyload alt="image-20210301115135156"></p>
 <p>比较新的一篇论文，在Sustainability上发的，所以注重可持续计算，网络不大。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120022.png" srcset="/img/loading.gif" lazyload alt="image-20210301120022647"></p>
@@ -312,7 +314,8 @@
 <p>所以作者分别弄了行为特征模块和文字特征模块，通过一个switcher来学习使用哪个模块。</p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 34.0%。</p>
-<h2 id="RecNet"><a href="#RecNet" class="headerlink" title="RecNet"></a>RecNet</h2><p><em>Bairui Wang, Lin Ma, Wei Zhang, Wei Liu. Reconstruction Network for Video Captioning. arxiv 1803.11438</em></p>
+<h2 id="RecNet">RecNet</h2>
+<p><em>Bairui Wang, Lin Ma, Wei Zhang, Wei Liu. Reconstruction Network for Video Captioning. arxiv 1803.11438</em></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/79810631">Reconstruction Network for Video Captioning - 知乎 (zhihu.com)</a></p>
 <p><strong>论文简介</strong></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301120712.png" srcset="/img/loading.gif" lazyload alt="image-20210301120712622"></p>
@@ -321,43 +324,49 @@
 <p>（这一部分还待更仔细看一看论文，预计会专门写一篇感想。）</p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 34.1%。</p>
-<h2 id="OA-BTG"><a href="#OA-BTG" class="headerlink" title="OA-BTG"></a>OA-BTG</h2><p><em>Junchao Zhang and Yuxin Peng, Object-aware Aggregation with Bidirectional Temporal Graph for Video Captioning, 2019 CVPR.</em> </p>
+<h2 id="OA-BTG">OA-BTG</h2>
+<p><em>Junchao Zhang and Yuxin Peng, Object-aware Aggregation with Bidirectional Temporal Graph for Video Captioning, 2019 CVPR.</em></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/73935242">使用双向时空图做视频描述(video captioning) - 知乎 (zhihu.com)</a></p>
 <p><strong>论文简介</strong>：</p>
 <p>太复杂了，不适用于我目前的研究。但是这篇论文是目前找到的效果最好的。(但是有点作弊的是它输入数据还手动分隔了对象的区域)</p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 36.2%， MSR-VTT数据集 METEOR 28.2%。</p>
-<h2 id="multirate-GRU"><a href="#multirate-GRU" class="headerlink" title="multirate GRU"></a>multirate GRU</h2><p><em>Linchao Zhu, Zhongwen Xu, Yi Yang. Bidirectional Multirate Reconstruction for Temporal Modeling in Videos. 2016, arxiv 1611.09053v1.</em></p>
+<h2 id="multirate-GRU">multirate GRU</h2>
+<p><em>Linchao Zhu, Zhongwen Xu, Yi Yang. Bidirectional Multirate Reconstruction for Temporal Modeling in Videos. 2016, arxiv 1611.09053v1.</em></p>
 <p><strong>论文简介</strong>：</p>
 <p>不是专门弄video caption的，论文中提到的很少。论文主要是用到了多速率GRU的技术，即让GRU有的一个一个读，有的隔一个读，有的隔两个，这样形成不同的速率。没有仔细读这篇论文，仅记录下效果。</p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 33.4%</p>
-<h2 id="GRU-EVE"><a href="#GRU-EVE" class="headerlink" title="GRU-EVE"></a>GRU-EVE</h2><p><em>Nayyer Aafaq, Naveed Akhtar et. Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning. 2019, arxiv 1902.10322v2.</em></p>
+<h2 id="GRU-EVE">GRU-EVE</h2>
+<p><em>Nayyer Aafaq, Naveed Akhtar et. Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning. 2019, arxiv 1902.10322v2.</em></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/chr1991/article/details/103806439">论文介绍–Spatio-Temporal Dynamics and Semantic Attribute Enriched Visual Encoding for Video Captioning_信道者-CSDN博客 </a></p>
 <p><strong>论文简介</strong>：</p>
 <p>挺复杂的，结合了2D-CNN 3D-CNN和对象识别三个数据来源，还用了一个什么傅里叶变换.第一就是用层级的短时傅里叶变换对卷积网络提取出来的特征进行浓缩，把时间信息融入其中；第二就是用物体检测模型从视频中提取高层的语义信息，丰富编码器提炼的视频表示。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301130437.png" srcset="/img/loading.gif" lazyload alt="image-20210301090845060"></p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 35.0%， MSR-VTT数据集 METEOR 28.4%</p>
-<h2 id="SibNet"><a href="#SibNet" class="headerlink" title="SibNet"></a>SibNet</h2><p><em>Sheng Liu, Zhou Ren, Junsong Yuan. SibNet: Sibling Convolutional Encoder for Video Captioning. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3240508.3240667">https://doi.org/10.1145/3240508.3240667</a></em></p>
+<h2 id="SibNet">SibNet</h2>
+<p><em>Sheng Liu, Zhou Ren, Junsong Yuan. SibNet: Sibling Convolutional Encoder for Video Captioning. <a target="_blank" rel="noopener" href="https://doi.org/10.1145/3240508.3240667">https://doi.org/10.1145/3240508.3240667</a></em></p>
 <p><strong>论文简介</strong>：</p>
 <p>重点在于encode videos。编码分成两部分，一部分用自编码器，另一部分用一种视觉语义互相组合embed的编码（目前理解也是非监督学习）。然后这两个编码再解码生成caption，这三部分都有train_loss。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210301131059.png" srcset="/img/loading.gif" lazyload alt="image-20210301090803104"></p>
 <p><strong>实验结果</strong>：</p>
 <p>MSVD数据集 METEOR 34.8%， MSR-VTT数据集 METEOR 27.5%</p>
-<h1 id="MSVD数据集汇总"><a href="#MSVD数据集汇总" class="headerlink" title="MSVD数据集汇总"></a>MSVD数据集汇总</h1><table>
+<h1>MSVD数据集汇总</h1>
+<table>
 <thead>
 <tr>
 <th>模型名字</th>
 <th>METEOR</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>S2VT</td>
 <td>29.8</td>
 </tr>
 <tr>
-<td>M^3^-C3D+InceptionV3</td>
+<td>M<sup>3</sup>-C3D+InceptionV3</td>
 <td>33.3</td>
 </tr>
 <tr>
@@ -365,7 +374,7 @@
 <td>34.0</td>
 </tr>
 <tr>
-<td>RecNet<del>local</del>(SA-LSTM)</td>
+<td>RecNet<sub>local</sub>(SA-LSTM)</td>
 <td>34.1</td>
 </tr>
 <tr>
@@ -384,16 +393,19 @@
 <td>SibNet</td>
 <td>34.8</td>
 </tr>
-</tbody></table>
-<h1 id="MSR-VTT数据集汇总"><a href="#MSR-VTT数据集汇总" class="headerlink" title="MSR-VTT数据集汇总"></a>MSR-VTT数据集汇总</h1><table>
+</tbody>
+</table>
+<h1>MSR-VTT数据集汇总</h1>
+<table>
 <thead>
 <tr>
 <th>模型名字</th>
 <th>METEOR</th>
 </tr>
 </thead>
-<tbody><tr>
-<td>M^3^</td>
+<tbody>
+<tr>
+<td>M<sup>3</sup></td>
 <td>26.6</td>
 </tr>
 <tr>
@@ -408,7 +420,8 @@
 <td>GRU-EVE</td>
 <td>28.4</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 
             </div>
             <hr>
@@ -428,9 +441,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
-                    
                       <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
                     
                   </div>
                 
@@ -669,43 +682,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

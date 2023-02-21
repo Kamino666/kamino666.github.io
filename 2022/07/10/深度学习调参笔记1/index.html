@@ -216,7 +216,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.9k 字
+      2k 字
     </span>
   
 
@@ -271,16 +271,16 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="深度学习调参笔记-1-正则化（weight-decay）"><a href="#深度学习调参笔记-1-正则化（weight-decay）" class="headerlink" title="深度学习调参笔记#1-正则化（weight decay）"></a>深度学习调参笔记#1-正则化（weight decay）</h1><p>在模型过拟合的时候，总是会想着添加正则化，在PyTorch中常用的添加正则化的方法，就是在优化器中添加<code>weight_decay</code>参数，然而，调参过程中也有一些细节需要注意。</p>
-<p>首先要弄明白正则化的目的，《深度学习》书的第七章中提到，<strong>正则化旨在减少泛化误差而不是训练误差</strong>，其中最常用的一个方式就是<strong>参数范数惩罚</strong>。这个方法简单来说就是在损失函数中添加一项$\alpha\Omega(\theta)$，$\alpha$表示惩罚强度、$\Omega(\theta)$表示模型的复杂度。添加这个之后，就会倾向于学习更简单的网络。</p>
+              <h1>深度学习调参笔记#1-正则化（weight decay）</h1>
+<p>在模型过拟合的时候，总是会想着添加正则化，在PyTorch中常用的添加正则化的方法，就是在优化器中添加<code>weight_decay</code>参数，然而，调参过程中也有一些细节需要注意。</p>
+<p>首先要弄明白正则化的目的，《深度学习》书的第七章中提到，<strong>正则化旨在减少泛化误差而不是训练误差</strong>，其中最常用的一个方式就是<strong>参数范数惩罚</strong>。这个方法简单来说就是在损失函数中添加一项<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi><mi mathvariant="normal">Ω</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\alpha\Omega(\theta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="mord">Ω</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>表示惩罚强度、<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Ω</mi><mo stretchy="false">(</mo><mi>θ</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\Omega(\theta)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">Ω</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mclose">)</span></span></span></span>表示模型的复杂度。添加这个之后，就会倾向于学习更简单的网络。</p>
 <p>要注意的点就是，通常只<strong>对权重(weight)<strong>做惩罚而</strong>不对偏置(bias)<strong>做正则惩罚。过拟合实际上是模型对于轻微的输入改变，产生剧烈的输出改变，而输出结果</strong>主要</strong>取决于权重而不是偏置，所以权重的L2更能起到表示模型复杂度的作用。偏置对模型复杂度贡献较低，但是对最终结果有一定影响，假如惩罚了偏置，可能会导致欠拟合。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220710204253.png" srcset="/img/loading.gif" lazyload alt="Overfitted_Data"></p>
-<h2 id="那么在PyTorch中如何只对权重做惩罚呢？"><a href="#那么在PyTorch中如何只对权重做惩罚呢？" class="headerlink" title="那么在PyTorch中如何只对权重做惩罚呢？"></a>那么在PyTorch中如何只对权重做惩罚呢？</h2><p>参考<a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5/blob/master/train.py#L153-L171">yolov5代码</a>，下面为了排版有部分删减：</p>
+<h2 id="那么在PyTorch中如何只对权重做惩罚呢？">那么在PyTorch中如何只对权重做惩罚呢？</h2>
+<p>参考<a target="_blank" rel="noopener" href="https://github.com/ultralytics/yolov5/blob/master/train.py#L153-L171">yolov5代码</a>，下面为了排版有部分删减：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python">g = [], [], []  <span class="hljs-comment"># optimizer parameter groups</span><br>bn = <span class="hljs-built_in">tuple</span>(v <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> nn.__dict__.items() <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;Norm&#x27;</span> <span class="hljs-keyword">in</span> k)  <span class="hljs-comment"># normalization layers, i.e. BatchNorm2d()</span><br><span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> model.modules():<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(v, <span class="hljs-string">&#x27;bias&#x27;</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(v.bias, nn.Parameter):<br>        g[<span class="hljs-number">2</span>].append(v.bias)    <span class="hljs-comment"># 所有偏置不decay</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(v, bn):  <br>        g[<span class="hljs-number">1</span>].append(v.weight)  <span class="hljs-comment"># 权重中Normalization层不decay</span><br>    <span class="hljs-keyword">elif</span> <span class="hljs-built_in">hasattr</span>(v, <span class="hljs-string">&#x27;weight&#x27;</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">isinstance</span>(v.weight, nn.Parameter):  <br>        g[<span class="hljs-number">0</span>].append(v.weight)  <span class="hljs-comment"># 除此以外的才decay</span><br><br><span class="hljs-keyword">if</span> opt.optimizer == <span class="hljs-string">&#x27;Adam&#x27;</span>: <span class="hljs-comment"># adjust beta1 to momentum</span><br>	optimizer = Adam(g[<span class="hljs-number">2</span>], lr=hyp[<span class="hljs-string">&#x27;lr0&#x27;</span>], betas=(hyp[<span class="hljs-string">&#x27;momentum&#x27;</span>], <span class="hljs-number">0.999</span>))  <br><span class="hljs-keyword">elif</span> opt.optimizer == <span class="hljs-string">&#x27;AdamW&#x27;</span>: <span class="hljs-comment"># adjust beta1 to momentum</span><br>	optimizer = AdamW(g[<span class="hljs-number">2</span>], lr=hyp[<span class="hljs-string">&#x27;lr0&#x27;</span>], betas=(hyp[<span class="hljs-string">&#x27;momentum&#x27;</span>], <span class="hljs-number">0.999</span>))  <br><br>optimizer.add_param_group(&#123;<span class="hljs-string">&#x27;params&#x27;</span>: g[<span class="hljs-number">0</span>], <span class="hljs-string">&#x27;weight_decay&#x27;</span>:hyp[<span class="hljs-string">&#x27;weight_decay&#x27;</span>]&#125;)  <span class="hljs-comment"># add g0 with weight_decay</span><br>optimizer.add_param_group(&#123;<span class="hljs-string">&#x27;params&#x27;</span>: g[<span class="hljs-number">1</span>]&#125;)  <span class="hljs-comment"># add g1 (BatchNorm2d weights)</span><br></code></pre></td></tr></table></figure>
-
 <p>也可以参考<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/mae/blob/efb2a8062c206524e35e47d04501ed4f544c0ae8/main_pretrain.py#L178-L180">MAE代码</a>，使用timm库的一个函数来设置（新版本有改动，没对应函数了）</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> timm<br><span class="hljs-keyword">assert</span> timm.__version__ == <span class="hljs-string">&quot;0.3.2&quot;</span>  <span class="hljs-comment"># version check</span><br><span class="hljs-keyword">import</span> timm.optim.optim_factory <span class="hljs-keyword">as</span> optim_factory<br><span class="hljs-comment"># following timm: set wd as 0 for bias and norm layers</span><br>param_groups = optim_factory.add_weight_decay(model_without_ddp, args.weight_decay)<br>optimizer = torch.optim.AdamW(param_groups, lr=args.lr, betas=(<span class="hljs-number">0.9</span>, <span class="hljs-number">0.95</span>))<br></code></pre></td></tr></table></figure>
-
 <p>timm中每一层的<code>weight_decay</code>还不一样：<a target="_blank" rel="noopener" href="https://github.com/rwightman/pytorch-image-models/blob/master/timm/optim/optim_factory.py#L89">pytorch-image-models/optim_factory.py at master · rwightman/pytorch-image-models (github.com)</a></p>
 <blockquote>
 <p>参考资料：</p>
@@ -553,43 +553,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

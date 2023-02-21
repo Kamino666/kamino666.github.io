@@ -269,7 +269,8 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="One-Class-Classification算法简单介绍"><a href="#One-Class-Classification算法简单介绍" class="headerlink" title="One Class Classification算法简单介绍"></a>One Class Classification算法简单介绍</h1><p><strong>One Class Classification (OCC)</strong> 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。</p>
+              <h1>One Class Classification算法简单介绍</h1>
+<p><strong>One Class Classification (OCC)</strong> 是异常检测 (anomaly detection) 的一种常用方法，其只使用正常的数据来训练，训练后能够区分正常值和非正常值 (outlier)。</p>
 <p>异常检测任务的特点是<strong>数据极其不均衡</strong>，异常情况通常来说较少，所以当做二分类问题可能效果不佳。而OCC只需要正常数据，其能学习到正常数据的边界，并以此分类。</p>
 <p>如下图，传统的分类就是比如区分苹果和梨，红点是苹果，蓝点是梨，黑色实线就是学习到的分类器。而OCC就是区分“苹果与梨”和其它，虚线就是学习到的OCC分类器，一个苹果商标就处于外面，属于异常数据。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220904194106.png" srcset="/img/loading.gif" lazyload alt="image-20220904194058232"></p>
@@ -535,43 +536,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

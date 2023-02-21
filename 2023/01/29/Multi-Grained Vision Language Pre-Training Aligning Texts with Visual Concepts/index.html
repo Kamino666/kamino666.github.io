@@ -279,41 +279,59 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="论文笔记-X-VLM-Multi-Grained-Vision-Language-Pre-Training-Aligning-Texts-with-Visual-Concepts"><a href="#论文笔记-X-VLM-Multi-Grained-Vision-Language-Pre-Training-Aligning-Texts-with-Visual-Concepts" class="headerlink" title="论文笔记 X-VLM Multi-Grained Vision Language Pre-Training Aligning Texts with Visual Concepts"></a>论文笔记 X-VLM Multi-Grained Vision Language Pre-Training Aligning Texts with Visual Concepts</h1><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2111.08276">Multi-Grained Vision Language Pre-Training: Aligning Texts with Visual Concepts (arxiv.org)</a></p>
+              <h1>论文笔记 X-VLM Multi-Grained Vision Language Pre-Training Aligning Texts with Visual Concepts</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2111.08276">Multi-Grained Vision Language Pre-Training: Aligning Texts with Visual Concepts (arxiv.org)</a></p>
 <p>代码开源：<a target="_blank" rel="noopener" href="https://github.com/zengyan-97/X-VLM">zengyan-97/X-VLM: X-VLM: Multi-Grained Vision Language Pre-Training (ICML 2022) (github.com)</a></p>
-<p>来自字节跳动的发布于ICML2022上的一个多模态的视觉-语言预训练模型：<strong>X-VLM</strong>，其将图像中的视觉概念与文本以不同粒度关联起来，如图1，其他方法要不然就像(a)那样依赖于目标检测模型，要不然就像(b)那样将文本与整副图像关联，而X-VLM则是(c)这样将不同文本关联到图像的不同位置上，并且<strong>不需要预训练的目标检测模型</strong>。</p>
+<p>来自字节跳动的发布于ICML2022上的一个多模态的视觉-语言预训练模型：<strong>X-VLM</strong>，其将图像中的视觉概念与文本以不同粒度关联起来，如图1，其他方法要不然就像(a)那样依赖于目标检测模型，要不然就像(b)那样将文本与整副图像关联，而X-VLM则是©这样将不同文本关联到图像的不同位置上，并且<strong>不需要预训练的目标检测模型</strong>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129095205.png" srcset="/img/loading.gif" lazyload alt="图1"></p>
-<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129100728.png" srcset="/img/loading.gif" lazyload alt="图2 模型架构"></p>
-<p>如图，X-VLM由一个Image Encoder、一个Text Encoder和一个Cross-modal Encoder组成，其中Image Encoder提取图像的整体特征（$I$）和其中概念的局部特征（$V$），Text Encoder提取对应的文本特征（$T$）。</p>
+<h2 id="模型架构">模型架构</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129100728.png" srcset="/img/loading.gif" lazyload alt="图2 模型架构"></p>
+<p>如图，X-VLM由一个Image Encoder、一个Text Encoder和一个Cross-modal Encoder组成，其中Image Encoder提取图像的整体特征（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span>）和其中概念的局部特征（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>V</mi></mrow><annotation encoding="application/x-tex">V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span></span></span></span>），Text Encoder提取对应的文本特征（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>T</mi></mrow><annotation encoding="application/x-tex">T</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span></span></span></span>）。</p>
 <p>首先，得到的这些特征先像CLIP一样进行对比学习，视觉概念和对应的文本组成对，batch内其他对都是反例。其次，图2左上预测出每个文本对应的Bounding Box作为Bounding Box Prediction任务。最后，图2右上预测一个视觉概念-文本对是否匹配，并进行Mask Language Modeling。</p>
-<h3 id="数据处理"><a href="#数据处理" class="headerlink" title="数据处理"></a>数据处理</h3><p>一项数据为$(I,T,{(V^j,T^j)}^N)$，包含图像特征和其对应文本特征，以及N个从图像中提取出来的视觉概念特征和对应的文本特征。</p>
-<h3 id="Image-Encoder"><a href="#Image-Encoder" class="headerlink" title="Image Encoder"></a>Image Encoder</h3><p>基于ViT，224的图像使用32的patch size能得到49个patch特征（$\boldsymbol{v}$），为了得到某个区域的特征，这些区域的patch将平均池化得到<code>[CLS]</code>的整体特征，同时patch将Reshape成序列的特征，再和<code>&#39;[CLS]&#39;</code>特征组合在一起。最后的特征长度为<code>该区域覆盖的patch数量 + 1</code>。</p>
+<h3 id="数据处理">数据处理</h3>
+<p>一项数据为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mi>I</mi><mo separator="true">,</mo><mi>T</mi><mo separator="true">,</mo><msup><mrow><mo stretchy="false">(</mo><msup><mi>V</mi><mi>j</mi></msup><mo separator="true">,</mo><msup><mi>T</mi><mi>j</mi></msup><mo stretchy="false">)</mo></mrow><mi>N</mi></msup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(I,T,{(V^j,T^j)}^N)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.3059em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord"><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span><span class="mclose">)</span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.0559em;"><span style="top:-3.2776em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，包含图像特征和其对应文本特征，以及N个从图像中提取出来的视觉概念特征和对应的文本特征。</p>
+<h3 id="Image-Encoder">Image Encoder</h3>
+<p>基于ViT，224的图像使用32的patch size能得到49个patch特征（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">v</mi></mrow><annotation encoding="application/x-tex">\boldsymbol{v}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4444em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.03704em;">v</span></span></span></span></span></span>），为了得到某个区域的特征，这些区域的patch将平均池化得到<code>[CLS]</code>的整体特征，同时patch将Reshape成序列的特征，再和<code>'[CLS]'</code>特征组合在一起。最后的特征长度为<code>该区域覆盖的patch数量 + 1</code>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129102154.png" srcset="/img/loading.gif" lazyload alt="图3 Image Encoder"></p>
-<h3 id="Bounding-Box-Prediction"><a href="#Bounding-Box-Prediction" class="headerlink" title="Bounding Box Prediction"></a>Bounding Box Prediction</h3><p>一个Transformer的Decoder将图像的整体特征$I$和文本特征$T^j$进行编码，最后利用<code>[CLS]</code>位置的特征输入MLP再sigmoid归一化后输出box。TransformerDecoder中cross-attend的是图像特征，这里每一个图像都会进行多次预测，因为有多种粒度的概念-文本对。</p>
+<h3 id="Bounding-Box-Prediction">Bounding Box Prediction</h3>
+<p>一个Transformer的Decoder将图像的整体特征<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi></mrow><annotation encoding="application/x-tex">I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span></span></span></span>和文本特征<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>T</mi><mi>j</mi></msup></mrow><annotation encoding="application/x-tex">T^j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8247em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span></span></span></span>进行编码，最后利用<code>[CLS]</code>位置的特征输入MLP再sigmoid归一化后输出box。TransformerDecoder中cross-attend的是图像特征，这里每一个图像都会进行多次预测，因为有多种粒度的概念-文本对。</p>
 <p>损失函数则是IOU和常用的L1相加。</p>
-<h3 id="Contrastive-Learning"><a href="#Contrastive-Learning" class="headerlink" title="Contrastive Learning"></a>Contrastive Learning</h3><p>使用视觉概念和文本的<code>[CLS]</code>位置的特征，像CLIP那样计算vision-to-text和text-to-vision两个方向的batch损失。</p>
+<h3 id="Contrastive-Learning">Contrastive Learning</h3>
+<p>使用视觉概念和文本的<code>[CLS]</code>位置的特征，像CLIP那样计算vision-to-text和text-to-vision两个方向的batch损失。</p>
 <p>这里仍然由于一个图像会有多个视觉概念，这个batch会更大一些。</p>
-<h3 id="Matching-Prediction"><a href="#Matching-Prediction" class="headerlink" title="Matching Prediction"></a>Matching Prediction</h3><p>此处会选择hard negative（困难负样本）的对来进行判断，在对比学习的时候会计算每个视觉概念与所有文本的相似性，选择最高的那个用来预测。假如相似度最高却不是一对，那这个任务就能将其区分开来。</p>
-<h3 id="MLM"><a href="#MLM" class="headerlink" title="MLM"></a>MLM</h3><p>25%的几率进行mask，其中10%替换成随机token，10%不变，80%为<code>[MASK]</code>。</p>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><h3 id="数据集"><a href="#数据集" class="headerlink" title="数据集"></a>数据集</h3><p>本文制作了4M和16M的两个数据集，如表1所示，4M的数据集从COCO、Visual Genome、SBU Captions和Conceptual Captions四个数据集中混合而来，16M的数据集还添加了Objects365、OpenImages数据集，16M的数据集包含更多噪声的数据。</p>
+<h3 id="Matching-Prediction">Matching Prediction</h3>
+<p>此处会选择hard negative（困难负样本）的对来进行判断，在对比学习的时候会计算每个视觉概念与所有文本的相似性，选择最高的那个用来预测。假如相似度最高却不是一对，那这个任务就能将其区分开来。</p>
+<h3 id="MLM">MLM</h3>
+<p>25%的几率进行mask，其中10%替换成随机token，10%不变，80%为<code>[MASK]</code>。</p>
+<h2 id="实验">实验</h2>
+<h3 id="数据集">数据集</h3>
+<p>本文制作了4M和16M的两个数据集，如表1所示，4M的数据集从COCO、Visual Genome、SBU Captions和Conceptual Captions四个数据集中混合而来，16M的数据集还添加了Objects365、OpenImages数据集，16M的数据集包含更多噪声的数据。</p>
 <p>其中，用来目标检测的VG、Objects365、OpenImages是目标检测数据集，有区域的标注；用来Image Captioning的SBU、CC则有Captions的标注；而COCO两种标注都有。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129105107.png" srcset="/img/loading.gif" lazyload alt="表1"></p>
-<h3 id="模型细节"><a href="#模型细节" class="headerlink" title="模型细节"></a>模型细节</h3><p>Image Encoder是Swin-Base，Text Encoder是BERT-base的前6层，Cross是BERT-base的后6层，X-VLM总共有215.6M的参数，使用224的输入图片和最大30的文本长度。微调时使用384的图片，通过positional embedding插值适配。</p>
-<h3 id="图文检索（跨模态检索）任务实验"><a href="#图文检索（跨模态检索）任务实验" class="headerlink" title="图文检索（跨模态检索）任务实验"></a>图文检索（跨模态检索）任务实验</h3><p>本文由于match和对比学习两个可以用来检索的任务，所以预测时先通过对比学习那路计算相似度top-k的candidate，再通过match来计算相似概率来排名。</p>
+<h3 id="模型细节">模型细节</h3>
+<p>Image Encoder是Swin-Base，Text Encoder是BERT-base的前6层，Cross是BERT-base的后6层，X-VLM总共有215.6M的参数，使用224的输入图片和最大30的文本长度。微调时使用384的图片，通过positional embedding插值适配。</p>
+<h3 id="图文检索（跨模态检索）任务实验">图文检索（跨模态检索）任务实验</h3>
+<p>本文由于match和对比学习两个可以用来检索的任务，所以预测时先通过对比学习那路计算相似度top-k的candidate，再通过match来计算相似概率来排名。</p>
 <p>如下表，表2是微调结果，表6是Zero-shot结果。表2上普遍是SOTA，超过了使用目标检测特征的UNITER和VinVL，也超过了将不同粒度文本分配给整个图像的ALIGN、METER、ALBEF。Zero-shot结果也很好。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129105932.png" srcset="/img/loading.gif" lazyload alt="表2"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129110012.png" srcset="/img/loading.gif" lazyload alt="表6"></p>
-<h3 id="VQA任务实验"><a href="#VQA任务实验" class="headerlink" title="VQA任务实验"></a>VQA任务实验</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129110540.png" srcset="/img/loading.gif" lazyload alt="表3"></p>
+<h3 id="VQA任务实验">VQA任务实验</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129110540.png" srcset="/img/loading.gif" lazyload alt="表3"></p>
 <p>如表3的VQA一栏，本文额外加上6层的Transformer Decoder来生成answer（又加6层？？？！）</p>
-<h3 id="Natural-Language-for-Visual-Reasoning"><a href="#Natural-Language-for-Visual-Reasoning" class="headerlink" title="Natural Language for Visual Reasoning"></a>Natural Language for Visual Reasoning</h3><p>这个任务判断一句话是否能够描述两张图片的关系，本文跟随ALBEF，扩展了cross-modal encoder，给定两个图片和一个文本，模型将文本分配给其中一种图片或者不分配。指标有明显的提升。</p>
-<h3 id="Visual-Grounding"><a href="#Visual-Grounding" class="headerlink" title="Visual Grounding"></a>Visual Grounding</h3><p>通过文本描述来定位图中的一块区域。其他方法都是通过RPN网络，而X-VLM直接有对应的任务。指标有明显的提升。</p>
-<h3 id="Image-Captioning"><a href="#Image-Captioning" class="headerlink" title="Image Captioning"></a>Image Captioning</h3><p>图像描述任务，将MLM改成Language Modeling loss就可以训练了。</p>
+<h3 id="Natural-Language-for-Visual-Reasoning">Natural Language for Visual Reasoning</h3>
+<p>这个任务判断一句话是否能够描述两张图片的关系，本文跟随ALBEF，扩展了cross-modal encoder，给定两个图片和一个文本，模型将文本分配给其中一种图片或者不分配。指标有明显的提升。</p>
+<h3 id="Visual-Grounding">Visual Grounding</h3>
+<p>通过文本描述来定位图中的一块区域。其他方法都是通过RPN网络，而X-VLM直接有对应的任务。指标有明显的提升。</p>
+<h3 id="Image-Captioning">Image Captioning</h3>
+<p>图像描述任务，将MLM改成Language Modeling loss就可以训练了。</p>
 <p>虽然表中没有比较，但是和GIT模型在相同参数时差不多，GIT在扩展了参数量和数据量之后效果更好。</p>
-<h3 id="消融实验"><a href="#消融实验" class="headerlink" title="消融实验"></a>消融实验</h3><p>如表4所示，在去掉object后，除了Visual Grounding任务都出现了下降，去掉region下降的则更多。Bounding box Prediction是这个模型非常重要的一部分，去掉之后虽然数据不变但是性能下降很多。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129153648.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="可视化"><a href="#可视化" class="headerlink" title="可视化"></a>可视化</h3><p>利用Grad-CAM和Bounding Box Prediction任务，可以进行一定的可视化，结果如下：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129154448.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129154745.png" srcset="/img/loading.gif" lazyload></p>
+<h3 id="消融实验">消融实验</h3>
+<p>如表4所示，在去掉object后，除了Visual Grounding任务都出现了下降，去掉region下降的则更多。Bounding box Prediction是这个模型非常重要的一部分，去掉之后虽然数据不变但是性能下降很多。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129153648.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="可视化">可视化</h3>
+<p>利用Grad-CAM和Bounding Box Prediction任务，可以进行一定的可视化，结果如下：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129154448.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230129154745.png" srcset="/img/loading.gif" lazyload alt=""></p>
 
             </div>
             <hr>
@@ -572,43 +590,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

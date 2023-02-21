@@ -221,7 +221,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      9 分钟
+      10 分钟
     </span>
   
 
@@ -267,7 +267,9 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="深度学习方向如何写论文的笔记【未完成】"><a href="#深度学习方向如何写论文的笔记【未完成】" class="headerlink" title="深度学习方向如何写论文的笔记【未完成】"></a>深度学习方向如何写论文的笔记【未完成】</h1><h2 id="写作顺序"><a href="#写作顺序" class="headerlink" title="写作顺序"></a>写作顺序</h2><pre><code class=" mermaid">graph TB
+              <h1>深度学习方向如何写论文的笔记【未完成】</h1>
+<h2 id="写作顺序">写作顺序</h2>
+<pre><code class=" mermaid">graph TB
 	A[*进行试验] --&gt; B[写Methods]
 	B --&gt; C[写Results]
 	C --&gt; D[基于Results写Discussion]
@@ -276,19 +278,22 @@
 	F --&gt; G[写Abstract]
 	G --&gt; H[Implementation]
 </code></pre>
-
 <p>整体思路：<strong>先有事实，再进行分析，然后总结，最后附上试验细节</strong>。</p>
-<h2 id="论文各部分的写法"><a href="#论文各部分的写法" class="headerlink" title="论文各部分的写法"></a>论文各部分的写法</h2><h3 id="Abstract-摘要"><a href="#Abstract-摘要" class="headerlink" title="Abstract 摘要"></a>Abstract 摘要</h3><ul>
-<li><strong>位置：</strong>标题之后，正文之前。在其他人看到论文之前会先看到摘要（比如需要付费的期刊，会提供免费的摘要）。</li>
-<li><strong>作用：</strong>1. 让读者大概了解这篇文章的<strong>精华</strong>，吸引读者兴趣。 2. 通过给出关键点来帮助读者理解正文中的信息。</li>
-<li><strong>内容：</strong><ol>
+<h2 id="论文各部分的写法">论文各部分的写法</h2>
+<h3 id="Abstract-摘要">Abstract 摘要</h3>
+<ul>
+<li>**位置：**标题之后，正文之前。在其他人看到论文之前会先看到摘要（比如需要付费的期刊，会提供免费的摘要）。</li>
+<li><strong>作用：<strong>1. 让读者大概了解这篇文章的</strong>精华</strong>，吸引读者兴趣。 2. 通过给出关键点来帮助读者理解正文中的信息。</li>
+<li><strong>内容：</strong>
+<ol>
 <li>介绍研究的任务和研究其的必要性。也许需要与之前的方法进行对比，或者提到基于的方法，或者提出现有方法的局限。</li>
 <li>介绍本文的方法。介绍本文干了什么，介绍提出的模型解决的问题。</li>
 <li>介绍研究最重要的发现、结论、或者实验结果，证明成果的重要性。</li>
 <li>*开源代码</li>
 </ol>
 </li>
-<li><strong>注意点</strong>：<ul>
+<li><strong>注意点</strong>：
+<ul>
 <li>不要介绍太多其他的任务，<strong>重点在于自己的任务</strong>。假如自己任务是专门基于一个已有模型的改进，那就只需要提这个模型；否则就不用提具体模型的名字。</li>
 <li>谨慎使用<strong>缩写</strong>，假如有缩写需要解释，让外行人能看懂缩写。</li>
 <li>不管后面让不让填关键词，摘要中要出现易于搜索的<strong>关键词</strong>。</li>
@@ -297,35 +302,41 @@
 </ul>
 </li>
 </ul>
-<h3 id="Introduction-介绍"><a href="#Introduction-介绍" class="headerlink" title="Introduction 介绍"></a>Introduction 介绍</h3><ul>
-<li><strong>位置：</strong>正文的第一节。</li>
-<li><strong>作用：</strong>讲述研究故事。1. 你的idea怎么来的（来源于challenge或者其他论文），要解决什么问题，有什么意义 2. 你准备通过什么方法来解决问题。 3. 你如何证明你解决了问题。</li>
-<li><strong>内容：</strong><ol>
+<h3 id="Introduction-介绍">Introduction 介绍</h3>
+<ul>
+<li>**位置：**正文的第一节。</li>
+<li>**作用：**讲述研究故事。1. 你的idea怎么来的（来源于challenge或者其他论文），要解决什么问题，有什么意义 2. 你准备通过什么方法来解决问题。 3. 你如何证明你解决了问题。</li>
+<li><strong>内容：</strong>
+<ol>
 <li>和Abstract的第一点差不多，需要更加详细并引用文献。要说研究的任务、其重要性、challenge和局限。</li>
 <li>分段写创新点。假如是偏实验类的文章就分点得出结论。可以针对上面提到的challenge对应着写，或者通过与其他文献对比着写。</li>
 <li>最后总结贡献点（假如通过创新点看不出流程的话，需要在之前总结一下流程）。</li>
 </ol>
 </li>
-<li><strong>注意点：</strong><ul>
+<li><strong>注意点：</strong>
+<ul>
 <li>看完Introduction要让人顺着你的故事走。</li>
 </ul>
 </li>
 </ul>
 <p><strong>未完待续</strong></p>
-<h2 id="句式大全"><a href="#句式大全" class="headerlink" title="句式大全"></a>句式大全</h2><p><a target="_blank" rel="noopener" href="https://www.phrasebank.manchester.ac.uk/using-cautious-language/">Academic Phrasebank | Being cautious - Academic Phrasebank (manchester.ac.uk)</a></p>
+<h2 id="句式大全">句式大全</h2>
+<p><a target="_blank" rel="noopener" href="https://www.phrasebank.manchester.ac.uk/using-cautious-language/">Academic Phrasebank | Being cautious - Academic Phrasebank (manchester.ac.uk)</a></p>
 <p><a target="_blank" rel="noopener" href="https://pan.baidu.com/s/1LjeOpxODd7ceD41NWCR5fw?pwd=51uc">Academic Phrasebank pdf</a></p>
-<h3 id="介绍任务"><a href="#介绍任务" class="headerlink" title="介绍任务"></a>介绍任务</h3><figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs applescript">XXXX aims <span class="hljs-keyword">to</span> ...<br>XXXX <span class="hljs-keyword">is</span> a challenging task <span class="hljs-keyword">in</span> ..., <span class="hljs-keyword">since</span> ...<br>XXXX <span class="hljs-keyword">is</span> a task <span class="hljs-keyword">of</span> ...<br>XXXX plays an essential role <span class="hljs-keyword">in</span> xxx research <span class="hljs-keyword">and</span> has been widely used <span class="hljs-keyword">in</span> many <span class="hljs-built_in">real</span>-world applications (, such <span class="hljs-keyword">as</span>).<br></code></pre></td></tr></table></figure>
-
-<h3 id="挑战与局限"><a href="#挑战与局限" class="headerlink" title="挑战与局限"></a>挑战与局限</h3><figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs lasso">Existing/Recent methods mainly tackle this task <span class="hljs-keyword">by</span> doing <span class="hljs-params">...</span>, however, <span class="hljs-params">...</span><br>Previous studies generally employ <span class="hljs-params">...</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">do</span> <span class="hljs-params">...</span>, however, <span class="hljs-params">...</span><br>Recent applications of <span class="hljs-params">...</span> have shown promises/(great potential) of xx for xxx. However, <span class="hljs-params">...</span><br>Recent works show/(have found) that <span class="hljs-params">...</span> . Based <span class="hljs-keyword">on</span> this observation, <span class="hljs-params">...</span><br>Challenges <span class="hljs-keyword">in</span> doing <span class="hljs-params">...</span> arise from <span class="hljs-params">...</span>, such as <span class="hljs-params">...</span><br>There are two main challenges <span class="hljs-keyword">in</span> <span class="hljs-params">...</span> : <span class="hljs-number">1</span>) xxx; <span class="hljs-number">2</span>) xxx.<br>Existing models lack <span class="hljs-params">...</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="转折到本文方法"><a href="#转折到本文方法" class="headerlink" title="转折到本文方法"></a>转折到本文方法</h3><table>
+<h3 id="介绍任务">介绍任务</h3>
+<figure class="highlight applescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs applescript">XXXX aims <span class="hljs-keyword">to</span> ...<br>XXXX <span class="hljs-keyword">is</span> a challenging task <span class="hljs-keyword">in</span> ..., <span class="hljs-keyword">since</span> ...<br>XXXX <span class="hljs-keyword">is</span> a task <span class="hljs-keyword">of</span> ...<br>XXXX plays an essential role <span class="hljs-keyword">in</span> xxx research <span class="hljs-keyword">and</span> has been widely used <span class="hljs-keyword">in</span> many <span class="hljs-built_in">real</span>-world applications (, such <span class="hljs-keyword">as</span>).<br></code></pre></td></tr></table></figure>
+<h3 id="挑战与局限">挑战与局限</h3>
+<figure class="highlight lasso"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs lasso">Existing/Recent methods mainly tackle this task <span class="hljs-keyword">by</span> doing <span class="hljs-params">...</span>, however, <span class="hljs-params">...</span><br>Previous studies generally employ <span class="hljs-params">...</span> <span class="hljs-keyword">to</span> <span class="hljs-keyword">do</span> <span class="hljs-params">...</span>, however, <span class="hljs-params">...</span><br>Recent applications of <span class="hljs-params">...</span> have shown promises/(great potential) of xx for xxx. However, <span class="hljs-params">...</span><br>Recent works show/(have found) that <span class="hljs-params">...</span> . Based <span class="hljs-keyword">on</span> this observation, <span class="hljs-params">...</span><br>Challenges <span class="hljs-keyword">in</span> doing <span class="hljs-params">...</span> arise from <span class="hljs-params">...</span>, such as <span class="hljs-params">...</span><br>There are two main challenges <span class="hljs-keyword">in</span> <span class="hljs-params">...</span> : <span class="hljs-number">1</span>) xxx; <span class="hljs-number">2</span>) xxx.<br>Existing models lack <span class="hljs-params">...</span><br></code></pre></td></tr></table></figure>
+<h3 id="转折到本文方法">转折到本文方法</h3>
+<table>
 <thead>
 <tr>
 <th></th>
 <th></th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>To bridge this gap,</td>
 <td>We propose a xxx module to do sth.</td>
 </tr>
@@ -345,19 +356,18 @@
 <td></td>
 <td>We introduce xxx which …</td>
 </tr>
-</tbody></table>
-<h3 id="对本文方法各个模块的描述"><a href="#对本文方法各个模块的描述" class="headerlink" title="对本文方法各个模块的描述"></a>对本文方法各个模块的描述</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs oxygene"><span class="hljs-keyword">Out</span> architecture/<span class="hljs-function"><span class="hljs-keyword">method</span>/<span class="hljs-title">model</span> <span class="hljs-title">includes</span> <span class="hljs-title">x</span> <span class="hljs-title">main</span> <span class="hljs-title">components</span>/<span class="hljs-title">modules</span>.</span><br><span class="hljs-function"><span class="hljs-title">xxx</span> <span class="hljs-title">comprises</span> <span class="hljs-title">of</span> ...</span><br></code></pre></td></tr></table></figure>
-
-<h3 id="实验证明"><a href="#实验证明" class="headerlink" title="实验证明"></a>实验证明</h3><figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">Experimental results demonstrate the effectiveness <span class="hljs-keyword">of</span> our <span class="hljs-function"><span class="hljs-keyword">method</span> <span class="hljs-title">on</span> <span class="hljs-title">xxx</span>:</span> <br>We successfully achieve state-<span class="hljs-keyword">of</span>-the-art performance <span class="hljs-keyword">on</span> two widely known datasets:<br>Extensive experiments <span class="hljs-keyword">on</span> three <span class="hljs-keyword">public</span> benchmarks demonstrate the (significance <span class="hljs-keyword">of</span> xxx) / (superiority <span class="hljs-keyword">of</span> xxx)<br>Experiments <span class="hljs-keyword">on</span> xxx tasks show these models <span class="hljs-keyword">to</span> be superior <span class="hljs-keyword">in</span> xxx<br>Experimental results present that ...<br></code></pre></td></tr></table></figure>
-
-<h3 id="结果比较"><a href="#结果比较" class="headerlink" title="结果比较"></a>结果比较</h3><figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pf"><span class="hljs-comment"># 比较的具体句式 by是上升了多少 to是上升到多少</span><br>xxx achieves <span class="hljs-variable">&lt;数字+指标&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集/比赛/任务&gt;</span>, improving over the existing best results by over <span class="hljs-variable">&lt;数字+指标&gt;</span><br>On xxx, our method achieves an <span class="hljs-variable">&lt;百分比&gt;</span> improvement <span class="hljs-keyword">in</span> <span class="hljs-variable">&lt;指标&gt;</span><br>Its performance surpasses the previous state-of-the-art by <span class="hljs-variable">&lt;数字+指标&gt;</span> <span class="hljs-keyword">on</span> xxx.<br>On xxx, our method achieve a new state-of-the-art result with a gain of up <span class="hljs-keyword">to</span> <span class="hljs-variable">&lt;数字&gt;</span> <span class="hljs-keyword">in</span> <span class="hljs-variable">&lt;指标&gt;</span><br><span class="hljs-comment"># 如果有很多数据集</span><br>The model achieves results of <span class="hljs-variable">&lt;数字1(+指标)&gt;</span> with <span class="hljs-variable">&lt;使用模块或者模型的版本&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集1&gt;</span>, <span class="hljs-variable">&lt;数字2(+指标)&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集2&gt;</span>, <span class="hljs-variable">&lt;数字3(+指标)&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集3&gt;</span>.<br></code></pre></td></tr></table></figure>
-
-<h3 id="放代码"><a href="#放代码" class="headerlink" title="放代码"></a>放代码</h3><figure class="highlight mercury"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mercury">The code <span class="hljs-keyword">is</span> available at ...<br>Our code <span class="hljs-keyword">is</span> available: ...<br>We release our code at ...<br></code></pre></td></tr></table></figure>
-
-<h3 id="贡献点"><a href="#贡献点" class="headerlink" title="贡献点"></a>贡献点</h3><figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">We summarize the contributions of <span class="hljs-keyword">this</span> paper <span class="hljs-keyword">as</span> follows: ...<br>The main contributions of <span class="hljs-keyword">this</span> work are summarized <span class="hljs-keyword">as</span> follows: ...<br>The main contributions of <span class="hljs-keyword">this</span> article can be summarized <span class="hljs-keyword">as</span> follows: ...<br>We can conclude the following insights from our extensive experiments: ...<br></code></pre></td></tr></table></figure>
-
-
-
+</tbody>
+</table>
+<h3 id="对本文方法各个模块的描述">对本文方法各个模块的描述</h3>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs oxygene"><span class="hljs-keyword">Out</span> architecture/<span class="hljs-function"><span class="hljs-keyword">method</span>/<span class="hljs-title">model</span> <span class="hljs-title">includes</span> <span class="hljs-title">x</span> <span class="hljs-title">main</span> <span class="hljs-title">components</span>/<span class="hljs-title">modules</span>.</span><br><span class="hljs-function"><span class="hljs-title">xxx</span> <span class="hljs-title">comprises</span> <span class="hljs-title">of</span> ...</span><br></code></pre></td></tr></table></figure>
+<h3 id="实验证明">实验证明</h3>
+<figure class="highlight oxygene"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs oxygene">Experimental results demonstrate the effectiveness <span class="hljs-keyword">of</span> our <span class="hljs-function"><span class="hljs-keyword">method</span> <span class="hljs-title">on</span> <span class="hljs-title">xxx</span>:</span> <br>We successfully achieve state-<span class="hljs-keyword">of</span>-the-art performance <span class="hljs-keyword">on</span> two widely known datasets:<br>Extensive experiments <span class="hljs-keyword">on</span> three <span class="hljs-keyword">public</span> benchmarks demonstrate the (significance <span class="hljs-keyword">of</span> xxx) / (superiority <span class="hljs-keyword">of</span> xxx)<br>Experiments <span class="hljs-keyword">on</span> xxx tasks show these models <span class="hljs-keyword">to</span> be superior <span class="hljs-keyword">in</span> xxx<br>Experimental results present that ...<br></code></pre></td></tr></table></figure>
+<h3 id="结果比较">结果比较</h3>
+<figure class="highlight pf"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs pf"><span class="hljs-comment"># 比较的具体句式 by是上升了多少 to是上升到多少</span><br>xxx achieves <span class="hljs-variable">&lt;数字+指标&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集/比赛/任务&gt;</span>, improving over the existing best results by over <span class="hljs-variable">&lt;数字+指标&gt;</span><br>On xxx, our method achieves an <span class="hljs-variable">&lt;百分比&gt;</span> improvement <span class="hljs-keyword">in</span> <span class="hljs-variable">&lt;指标&gt;</span><br>Its performance surpasses the previous state-of-the-art by <span class="hljs-variable">&lt;数字+指标&gt;</span> <span class="hljs-keyword">on</span> xxx.<br>On xxx, our method achieve a new state-of-the-art result with a gain of up <span class="hljs-keyword">to</span> <span class="hljs-variable">&lt;数字&gt;</span> <span class="hljs-keyword">in</span> <span class="hljs-variable">&lt;指标&gt;</span><br><span class="hljs-comment"># 如果有很多数据集</span><br>The model achieves results of <span class="hljs-variable">&lt;数字1(+指标)&gt;</span> with <span class="hljs-variable">&lt;使用模块或者模型的版本&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集1&gt;</span>, <span class="hljs-variable">&lt;数字2(+指标)&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集2&gt;</span>, <span class="hljs-variable">&lt;数字3(+指标)&gt;</span> <span class="hljs-keyword">on</span> <span class="hljs-variable">&lt;数据集3&gt;</span>.<br></code></pre></td></tr></table></figure>
+<h3 id="放代码">放代码</h3>
+<figure class="highlight mercury"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs mercury">The code <span class="hljs-keyword">is</span> available at ...<br>Our code <span class="hljs-keyword">is</span> available: ...<br>We release our code at ...<br></code></pre></td></tr></table></figure>
+<h3 id="贡献点">贡献点</h3>
+<figure class="highlight kotlin"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs kotlin">We summarize the contributions of <span class="hljs-keyword">this</span> paper <span class="hljs-keyword">as</span> follows: ...<br>The main contributions of <span class="hljs-keyword">this</span> work are summarized <span class="hljs-keyword">as</span> follows: ...<br>The main contributions of <span class="hljs-keyword">this</span> article can be summarized <span class="hljs-keyword">as</span> follows: ...<br>We can conclude the following insights from our extensive experiments: ...<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -614,43 +624,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

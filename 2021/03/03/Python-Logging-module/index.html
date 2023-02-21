@@ -271,7 +271,8 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python-Logging类"><a href="#Python-Logging类" class="headerlink" title="Python Logging类"></a>Python Logging类</h1><p>Python的Logging类是专门成立程序日志的类，能够方便的输出日志到屏幕、文件等多个地方，能够方便控制如何输出，还能够设置消息级别。</p>
+              <h1>Python Logging类</h1>
+<p>Python的Logging类是专门成立程序日志的类，能够方便的输出日志到屏幕、文件等多个地方，能够方便控制如何输出，还能够设置消息级别。</p>
 <ul>
 <li>Logging.Logger：Logger是Logging模块的主体，为程序提供记录日志接口、判断级别、分配给handler。这个对象<strong>不能实例</strong>，应该通过getLogger()来获取。</li>
 <li>Logging.Handler：Handler基于日志级别对日志进行分发，如设置为WARNING级别的Handler只会处理WARNING及以上级别的日志。</li>
@@ -279,27 +280,24 @@
 <li>Logging.Formatter: 这个类处理输出格式</li>
 </ul>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/486223_1_En_27_Figa_HTML.png" srcset="/img/loading.gif" lazyload alt="Logging的结构图"></p>
-<h2 id="日志级别"><a href="#日志级别" class="headerlink" title="日志级别"></a>日志级别</h2><p><strong>级别排序:  CRITICAL &gt; ERROR &gt; WARNING &gt; INFO &gt; DEBUG</strong></p>
+<h2 id="日志级别">日志级别</h2>
+<p><strong>级别排序:  CRITICAL &gt; ERROR &gt; WARNING &gt; INFO &gt; DEBUG</strong></p>
 <p>使用方法如下</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> logging<br>logging.debug(<span class="hljs-string">&quot;张三&quot;</span>)<br>logging.info(<span class="hljs-string">&quot;李四&quot;</span>)<br>logging.warning(<span class="hljs-string">&quot;王五&quot;</span>)<br>logging.error(<span class="hljs-string">&quot;小明&quot;</span>)<br>logging.critical(<span class="hljs-string">&quot;小红&quot;</span>)<br></code></pre></td></tr></table></figure>
-
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/QQ%E6%88%AA%E5%9B%BE20200427181133.png" srcset="/img/loading.gif" lazyload alt="log在控制台的输出"></p>
 <p>默认只显示WARING级别以上。下面代码实现自定义输出级别：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">logging.basicConfig(level=logging.NOTSET)  <span class="hljs-comment"># NOTSET是最低等级</span><br></code></pre></td></tr></table></figure>
-
 <p>注意！：This function does nothing if the root logger already has handlers configured, unless the keyword argument <em>force</em> is set to <code>True</code>.</p>
 <p>若不使用force参数，则设置输出级别只有第一次有效。<code>force=true</code>能在执行其他参数指定的配置之前，将移除并关闭附加到根记录器的所有现有处理器。</p>
 <p>有一个特殊的日志输出：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python">logger.exception(<span class="hljs-string">&quot;Failed to open sklearn.txt from logger.exception&quot;</span>)<br><span class="hljs-comment"># 这个的输出是traceback的信息</span><br><span class="hljs-comment">#Failed to open sklearn.txt from logger.exception</span><br><span class="hljs-comment">#Traceback (most recent call last):</span><br><span class="hljs-comment">#  File &quot;G:\zhb7627\Code\Eclipse WorkSpace\PythonTest\test.py&quot;, line 23, in &lt;module&gt;</span><br><span class="hljs-comment">#    open(&quot;sklearn.txt&quot;,&quot;rb&quot;)</span><br><span class="hljs-comment">#IOError: [Errno 2] No such file or directory: &#x27;sklearn.txt&#x27;</span><br><br><span class="hljs-comment"># 也可以通过指定参数实现</span><br><span class="hljs-comment"># 下面这条语句和上面等价</span><br>logger.error(<span class="hljs-string">&quot;Faild to open sklearn.txt from logger.error&quot;</span>,exc_info = <span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="设置输出格式"><a href="#设置输出格式" class="headerlink" title="设置输出格式"></a>设置输出格式</h2><p>格式有以下几种</p>
+<h2 id="设置输出格式">设置输出格式</h2>
+<p>格式有以下几种</p>
 <ul>
 <li>%(levelno)s: 打印日志级别的数值</li>
 <li>%(levelname)s: 打印日志级别名称</li>
 <li>%(pathname)s: 打印当前执行程序的路径，其实就是sys.argv[0]</li>
-<li>%(filename)s: 打印当前执行程序名，如：login.py</li>
+<li>%(filename)s: 打印当前执行程序名，如：<a target="_blank" rel="noopener" href="http://login.py">login.py</a></li>
 <li>%(funcName)s: 打印日志的当前函数</li>
 <li>%(lineno)d: 打印日志的当前行号,在第几行打印的日志</li>
 <li>%(asctime)s: 打印日志的时间</li>
@@ -309,37 +307,44 @@
 <li>%(message)s: 打印日志信息</li>
 </ul>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 通过basicConfig来设置格式</span><br><span class="hljs-comment"># basicConfig是默认配置</span><br><span class="hljs-comment"># format是上面的格式字符串</span><br><span class="hljs-comment"># datefmt是和time.strftime()一样的格式字符串</span><br>logging.basicConfig(<br>    <span class="hljs-built_in">format</span>=<span class="hljs-string">&#x27;%(asctime)s - %(filename)s[line:%(lineno)d] - %(levelname)s: %(message)s&#x27;</span>，<br>	datefmt=<span class="hljs-string">&#x27;%a, %d %b %Y %H:%M:%S&#x27;</span>，<br>)<br></code></pre></td></tr></table></figure>
-
 <p>注意输出格式在Windows下和Linux下都要符合命名规则。</p>
-<h2 id="日志输出到文件和控制台"><a href="#日志输出到文件和控制台" class="headerlink" title="日志输出到文件和控制台"></a>日志输出到文件和控制台</h2><p>接下来是高级用法</p>
+<h2 id="日志输出到文件和控制台">日志输出到文件和控制台</h2>
+<p>接下来是高级用法</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> logging  <span class="hljs-comment"># 引入logging模块</span><br><span class="hljs-comment"># 第一步，创建一个logger</span><br>logger = logging.getLogger()<br>logger.setLevel(logging.INFO)   <span class="hljs-comment"># Log等级总开关</span><br><span class="hljs-comment"># 第二步，创建一个FileHandler，用于写入日志文件</span><br>handler = logging.FileHandler(<span class="hljs-string">&quot;log.txt&quot;</span>)  <span class="hljs-comment"># 文件名字</span><br>handler.setLevel(logging.INFO)  <span class="hljs-comment"># 单独handler的log等级设置 </span><br><span class="hljs-comment"># 第三步，设置filehandler的格式</span><br>formatter = logging.Formatter(<span class="hljs-string">&#x27;%(asctime)s - %(name)s - %(levelname)s - %(message)s&#x27;</span>)<br>handler.setFormatter(formatter)<br><span class="hljs-comment"># 第四步，创建StreamHandler，用于输出到控制台</span><br>console = logging.StreamHandler()<br>console.setLevel(logging.INFO)  <span class="hljs-comment"># 单独handler的log等级设置</span><br><span class="hljs-comment"># 第六步，设置StreamHandler的格式</span><br>console.setFormatter(formatter)<br><span class="hljs-comment"># 第五步，添加handler到logger</span><br>logger.addHandler(handler)<br>logger.addHandler(console)<br><br><span class="hljs-comment"># 日志</span><br>logger.debug(<span class="hljs-string">&#x27;this is a logger debug message&#x27;</span>)<br>logger.info(<span class="hljs-string">&#x27;this is a logger info message&#x27;</span>)<br>logger.warning(<span class="hljs-string">&#x27;this is a logger warning message&#x27;</span>)<br>logger.error(<span class="hljs-string">&#x27;this is a logger error message&#x27;</span>)<br>logger.critical(<span class="hljs-string">&#x27;this is a logger critical message&#x27;</span>)<br></code></pre></td></tr></table></figure>
-
-<h2 id="logging-getLogger"><a href="#logging-getLogger" class="headerlink" title="logging.getLogger()"></a>logging.getLogger()</h2><p>这个方法返回一个Logger对象，参数是Logger的名字，get相同名字会返回相同的logger，在不同模块要调用logger的时候永远都不需要传递logger参数，只需要使用这个方法即可。</p>
+<h2 id="logging-getLogger">logging.getLogger()</h2>
+<p>这个方法返回一个Logger对象，参数是Logger的名字，get相同名字会返回相同的logger，在不同模块要调用logger的时候永远都不需要传递logger参数，只需要使用这个方法即可。</p>
 <p>示例：<code>logging,getLogger(&quot;hahahaha&quot;)</code></p>
 <p>Logger的名字可以体现继承关系，用<code>.</code>来分隔，子logger继承父logger的配置。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">logging.getLogger(<span class="hljs-string">&quot;PythonApp&quot;</span>)<br><br>logging.getLogger(<span class="hljs-string">&quot;PythonApp.Core&quot;</span>)  <span class="hljs-comment"># 继承PythonApp的配置</span><br>logging.getLogger(<span class="hljs-string">&quot;PythonApp.Web&quot;</span>)<br></code></pre></td></tr></table></figure>
-
-<h2 id="logging-Filter"><a href="#logging-Filter" class="headerlink" title="logging.Filter"></a>logging.Filter</h2><p>需要定义一个新的类来自定义过滤规则</p>
+<h2 id="logging-Filter">logging.Filter</h2>
+<p>需要定义一个新的类来自定义过滤规则</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">NoParsingFilter</span>(<span class="hljs-params">logging.Filter</span>):</span>  <span class="hljs-comment"># 继承logging.Filter</span><br>  <span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">filter</span>(<span class="hljs-params">self, record</span>):</span>  <span class="hljs-comment"># 重写filter</span><br>    <span class="hljs-keyword">if</span> record.name == <span class="hljs-string">&#x27;PythonApp&#x27;</span> <span class="hljs-keyword">and</span> record.levelno == logging.INFO:<br>      <span class="hljs-keyword">return</span> <span class="hljs-literal">False</span>  <span class="hljs-comment"># 返回True False来控制是否过滤</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br><br>logger = logging.getLogger(<span class="hljs-string">&#x27;PythonApp&#x27;</span>)<br>logger.addFilter(NoParsingFilter())<br>logger.info(<span class="hljs-string">&quot;info&quot;</span>)<br>logger.error(<span class="hljs-string">&quot;error&quot;</span>)<br></code></pre></td></tr></table></figure>
-
 <p>record是logging.LogRecord类，有以下属性：</p>
 <ul>
-<li><p>name logger的名字</p>
+<li>
+<p>name logger的名字</p>
 </li>
-<li><p>levelno是级别</p>
+<li>
+<p>levelno是级别</p>
 </li>
-<li><p>levelname是级别的字符串</p>
+<li>
+<p>levelname是级别的字符串</p>
 </li>
-<li><p>pathname 是哪个文件输出的这行日志</p>
+<li>
+<p>pathname 是哪个文件输出的这行日志</p>
 </li>
-<li><p>lineno 是行号</p>
+<li>
+<p>lineno 是行号</p>
 </li>
-<li><p>msg 是日志本身</p>
+<li>
+<p>msg 是日志本身</p>
 </li>
-<li><p>除此以外还有formatter格式化字符串的所有属性</p>
+<li>
+<p>除此以外还有formatter格式化字符串的所有属性</p>
 </li>
 </ul>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xianyulouie/p/11041777.html">python中logging日志模块详解 - 咸鱼也是有梦想的 - 博客园 (cnblogs.com)</a></p>
+<h2 id="参考资料">参考资料</h2>
+<p><a target="_blank" rel="noopener" href="https://www.cnblogs.com/xianyulouie/p/11041777.html">python中logging日志模块详解 - 咸鱼也是有梦想的 - 博客园 (cnblogs.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.jb51.net/article/165534.htm">使用Filter过滤python中的日志输出的实现方法</a></p>
 
             </div>
@@ -599,43 +604,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -267,9 +267,12 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="JavaScript速通"><a href="#JavaScript速通" class="headerlink" title="JavaScript速通"></a>JavaScript速通</h1><p>[TOC]</p>
+              <h1>JavaScript速通</h1>
+<p>[TOC]</p>
 <p>JavaScript（简称JS）是用于网页的脚本语言，控制了网页的行为，它的标准用ECMA命名。要使用JS非常简单，比Python、C++简单很多，只需要在html页面中的<code>&lt;script&gt;</code>标签内写入JS代码，然后用浏览器运行即可。</p>
-<h2 id="基础语法"><a href="#基础语法" class="headerlink" title="基础语法"></a>基础语法</h2><h3 id="数据类型"><a href="#数据类型" class="headerlink" title="数据类型"></a>数据类型</h3><table>
+<h2 id="基础语法">基础语法</h2>
+<h3 id="数据类型">数据类型</h3>
+<table>
 <thead>
 <tr>
 <th>数据类型</th>
@@ -277,14 +280,15 @@
 <th>说明</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>数字Number</td>
 <td>3.4、33e5</td>
 <td>直接写</td>
 </tr>
 <tr>
 <td>字符串String</td>
-<td>“yes”、’no’</td>
+<td>“yes”、‘no’</td>
 <td>用单引号或者双引号（和Python一样）</td>
 </tr>
 <tr>
@@ -317,46 +321,57 @@
 <td></td>
 <td>和上面差不多</td>
 </tr>
-</tbody></table>
-<h3 id="变量"><a href="#变量" class="headerlink" title="变量"></a>变量</h3><p>变量用<code>var</code>关键字声明，比其他语言能多用<code>$</code>这个字符命名。</p>
+</tbody>
+</table>
+<h3 id="变量">变量</h3>
+<p>变量用<code>var</code>关键字声明，比其他语言能多用<code>$</code>这个字符命名。</p>
 <p>在ECMA2015中添加了<code>let</code>和<code>const</code>关键字，<code>let</code>声明一个只在代码块<code>&#123;&#125;</code>内有效的变量，<code>const</code>声明一个只读常量。</p>
-<h3 id="布尔比较"><a href="#布尔比较" class="headerlink" title="布尔比较"></a>布尔比较</h3><ol>
+<h3 id="布尔比较">布尔比较</h3>
+<ol>
 <li><code>&amp;&amp;</code>与 、<code>||</code>或、<code>!</code>非</li>
 <li><code>&gt; &lt; &gt;= &lt;=</code>比大小</li>
 <li><code>==</code>转换数据类型再比较，一般用得少 <code>===</code>不转换数据类型比较，假如类型不同返回false。</li>
 <li><code>NaN</code>是特殊的Number，用它比较始终为false，用isNan()函数验证。<strong>（不能if(a===NaN)）</strong></li>
 <li>比较浮点数最好算差的绝对值小于某个很小的数</li>
 </ol>
-<h3 id="字符串（ES6）"><a href="#字符串（ES6）" class="headerlink" title="字符串（ES6）"></a>字符串（ES6）</h3><ol>
-<li><p>用<code>\</code>转义</p>
+<h3 id="字符串（ES6）">字符串（ES6）</h3>
+<ol>
+<li>
+<p>用<code>\</code>转义</p>
 </li>
-<li><p>用波浪号下面的反斜杠来表示多行字符串</p>
+<li>
+<p>用波浪号下面的反斜杠来表示多行字符串</p>
 </li>
-<li><p>用<code>+</code>连接字符串，或者用模板字符串（如同python里的<code>f&quot;&#123;&#125;&quot;</code>）。</p>
-<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> age = <span class="hljs-number">10</span>;<br><span class="hljs-keyword">var</span> message = <span class="hljs-string">&quot;我$&#123;age&#125;岁了&quot;</span><br></code></pre></td></tr></table></figure></li>
-<li><p>用索引访问、<code>.length</code>获取长度、<code>.toUpperCase()</code>变大写等等</p>
+<li>
+<p>用<code>+</code>连接字符串，或者用模板字符串（如同python里的<code>f&quot;&#123;&#125;&quot;</code>）。</p>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> age = <span class="hljs-number">10</span>;<br><span class="hljs-keyword">var</span> message = <span class="hljs-string">&quot;我$&#123;age&#125;岁了&quot;</span><br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>用索引访问、<code>.length</code>获取长度、<code>.toUpperCase()</code>变大写等等</p>
 </li>
 </ol>
-<h3 id="条件"><a href="#条件" class="headerlink" title="条件"></a>条件</h3><p>用<code>if ... else if ... else ...</code>。</p>
-<h3 id="循环"><a href="#循环" class="headerlink" title="循环"></a>循环</h3><ol>
+<h3 id="条件">条件</h3>
+<p>用<code>if ... else if ... else ...</code>。</p>
+<h3 id="循环">循环</h3>
+<ol>
 <li>用c++那样的<code>for(;;)</code></li>
 <li>用<code>for ... in ...</code>列出对象的所有属性</li>
 <li>用<code>while</code>和<code>do...while</code></li>
 </ol>
-<h3 id="函数"><a href="#函数" class="headerlink" title="函数"></a>函数</h3><p>函数用<code>function</code>关键字定义，假如没有return就返回<code>undefined</code>。也可以把函数赋值给一个变量。</p>
+<h3 id="函数">函数</h3>
+<p>函数用<code>function</code>关键字定义，假如没有return就返回<code>undefined</code>。也可以把函数赋值给一个变量。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fun</span>(<span class="hljs-params">x</span>)</span>&#123;...&#125;<br><span class="hljs-comment">// 等于</span><br><span class="hljs-keyword">var</span> fun = <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">x</span>)</span>&#123;...&#125;<br></code></pre></td></tr></table></figure>
-
 <p>调用函数时，可以随意传入参数，比定义的多和少都没关系，假如参数少了那未知的会变成<code>undefined</code>。</p>
 <p>在函数内有个特殊的变量<code>arguments</code>，是一个类似数组的东西，内容是传入的所有参数。</p>
 <p>ES6引入了类似Python中<code>*args</code>这样的语法，即<code>rest</code></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">//rest前面用三个点， rest的值是额外的参数</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">fun</span>(<span class="hljs-params">a, b, ...rest</span>)</span>&#123;...&#125; <br></code></pre></td></tr></table></figure>
-
-<h2 id="高级用法"><a href="#高级用法" class="headerlink" title="高级用法"></a>高级用法</h2><h3 id="ES6-解构赋值"><a href="#ES6-解构赋值" class="headerlink" title="ES6 解构赋值"></a>ES6 解构赋值</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> [x, y, z] = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-string">&#x27;JavaScript&#x27;</span>, <span class="hljs-string">&#x27;ES6&#x27;</span>];<br><span class="hljs-keyword">var</span> [, , z] = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-string">&#x27;JavaScript&#x27;</span>, <span class="hljs-string">&#x27;ES6&#x27;</span>];  <span class="hljs-comment">// 可以忽略</span><br><span class="hljs-comment">// 对象的嵌套解构赋值</span><br><span class="hljs-keyword">var</span> person = &#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;小明&#x27;</span>,<br>    <span class="hljs-attr">age</span>: <span class="hljs-number">20</span>,<br>    <span class="hljs-attr">gender</span>: <span class="hljs-string">&#x27;male&#x27;</span>,<br>    <span class="hljs-attr">passport</span>: <span class="hljs-string">&#x27;G-12345678&#x27;</span>,<br>    <span class="hljs-attr">school</span>: <span class="hljs-string">&#x27;No.4 middle school&#x27;</span>,<br>    <span class="hljs-attr">address</span>: &#123;<br>        <span class="hljs-attr">city</span>: <span class="hljs-string">&#x27;Beijing&#x27;</span>,<br>        <span class="hljs-attr">street</span>: <span class="hljs-string">&#x27;No.1 Road&#x27;</span>,<br>        <span class="hljs-attr">zipcode</span>: <span class="hljs-string">&#x27;100001&#x27;</span><br>    &#125;<br>&#125;;<br><span class="hljs-keyword">var</span> &#123;name, <span class="hljs-attr">address</span>: &#123;city, zip&#125;&#125; = person;<br><span class="hljs-comment">// 交换</span><br><span class="hljs-keyword">var</span> x=<span class="hljs-number">1</span>, y=<span class="hljs-number">2</span>;<br>[x, y] = [y, x]<br></code></pre></td></tr></table></figure>
-
-<h3 id="对象方法"><a href="#对象方法" class="headerlink" title="对象方法"></a>对象方法</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> xiaoming = &#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;小明&#x27;</span>,<br>    <span class="hljs-attr">birth</span>: <span class="hljs-number">1990</span>,<br>    <span class="hljs-attr">age</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;<br>        <span class="hljs-keyword">var</span> y = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getFullYear();<br>        <span class="hljs-keyword">return</span> y - <span class="hljs-built_in">this</span>.birth;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
-
-<h3 id="箭头函数"><a href="#箭头函数" class="headerlink" title="箭头函数"></a>箭头函数</h3><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">x =&gt; x*x<br><span class="hljs-comment">// 相当于</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> x * x;<br>&#125;<br></code></pre></td></tr></table></figure>
-
+<h2 id="高级用法">高级用法</h2>
+<h3 id="ES6-解构赋值">ES6 解构赋值</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> [x, y, z] = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-string">&#x27;JavaScript&#x27;</span>, <span class="hljs-string">&#x27;ES6&#x27;</span>];<br><span class="hljs-keyword">var</span> [, , z] = [<span class="hljs-string">&#x27;hello&#x27;</span>, <span class="hljs-string">&#x27;JavaScript&#x27;</span>, <span class="hljs-string">&#x27;ES6&#x27;</span>];  <span class="hljs-comment">// 可以忽略</span><br><span class="hljs-comment">// 对象的嵌套解构赋值</span><br><span class="hljs-keyword">var</span> person = &#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;小明&#x27;</span>,<br>    <span class="hljs-attr">age</span>: <span class="hljs-number">20</span>,<br>    <span class="hljs-attr">gender</span>: <span class="hljs-string">&#x27;male&#x27;</span>,<br>    <span class="hljs-attr">passport</span>: <span class="hljs-string">&#x27;G-12345678&#x27;</span>,<br>    <span class="hljs-attr">school</span>: <span class="hljs-string">&#x27;No.4 middle school&#x27;</span>,<br>    <span class="hljs-attr">address</span>: &#123;<br>        <span class="hljs-attr">city</span>: <span class="hljs-string">&#x27;Beijing&#x27;</span>,<br>        <span class="hljs-attr">street</span>: <span class="hljs-string">&#x27;No.1 Road&#x27;</span>,<br>        <span class="hljs-attr">zipcode</span>: <span class="hljs-string">&#x27;100001&#x27;</span><br>    &#125;<br>&#125;;<br><span class="hljs-keyword">var</span> &#123;name, <span class="hljs-attr">address</span>: &#123;city, zip&#125;&#125; = person;<br><span class="hljs-comment">// 交换</span><br><span class="hljs-keyword">var</span> x=<span class="hljs-number">1</span>, y=<span class="hljs-number">2</span>;<br>[x, y] = [y, x]<br></code></pre></td></tr></table></figure>
+<h3 id="对象方法">对象方法</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> xiaoming = &#123;<br>    <span class="hljs-attr">name</span>: <span class="hljs-string">&#x27;小明&#x27;</span>,<br>    <span class="hljs-attr">birth</span>: <span class="hljs-number">1990</span>,<br>    <span class="hljs-attr">age</span>: <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>&#123;<br>        <span class="hljs-keyword">var</span> y = <span class="hljs-keyword">new</span> <span class="hljs-built_in">Date</span>().getFullYear();<br>        <span class="hljs-keyword">return</span> y - <span class="hljs-built_in">this</span>.birth;<br>    &#125;<br>&#125;;<br></code></pre></td></tr></table></figure>
+<h3 id="箭头函数">箭头函数</h3>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs javascript">x =&gt; x*x<br><span class="hljs-comment">// 相当于</span><br><span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">x</span>) </span>&#123;<br>    <span class="hljs-keyword">return</span> x * x;<br>&#125;<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -608,43 +623,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

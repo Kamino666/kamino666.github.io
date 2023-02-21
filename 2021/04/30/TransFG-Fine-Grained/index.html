@@ -42,8 +42,8 @@
 <meta property="article:modified_time" content="2022-07-21T08:56:45.306Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Transformer">
-<meta property="article:tag" content="机器学习">
 <meta property="article:tag" content="深度学习">
+<meta property="article:tag" content="机器学习">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210426224957.png">
   
@@ -227,7 +227,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.1k 字
+      1.2k 字
     </span>
   
 
@@ -282,14 +282,16 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="TransFG"><a href="#TransFG" class="headerlink" title="TransFG"></a>TransFG</h1><p><code>TransFG: A Transformer Architecture for Fine-grained Recognition</code></p>
+              <h1>TransFG</h1>
+<p><code>TransFG: A Transformer Architecture for Fine-grained Recognition</code></p>
 <p>关键词：计算机视觉、Transformer、细粒度分类、ViT</p>
-<h2 id="（前置）ViT：Vision-Transformer"><a href="#（前置）ViT：Vision-Transformer" class="headerlink" title="（前置）ViT：Vision Transformer"></a>（前置）ViT：Vision Transformer</h2><p>用来取代CNN，优点是节约计算资源。其适合在超大规模数据集（14M~300M）上训练。</p>
+<h2 id="（前置）ViT：Vision-Transformer">（前置）ViT：Vision Transformer</h2>
+<p>用来取代CNN，优点是节约计算资源。其适合在超大规模数据集（14M~300M）上训练。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210426224957.png" srcset="/img/loading.gif" lazyload alt="img"></p>
 <p>输入由于要是序列，就将图像切分成一系列patch。</p>
 <blockquote>
 <p>pretrained model命名：</p>
-<p>B：base 参数最少    L：Large 参数多    H：Huge 参数最多</p>
+<p>B：base 参数最少	L：Large 参数多	H：Huge 参数最多</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210426231155.png" srcset="/img/loading.gif" lazyload alt="image-20210426231155245"></p>
 <p>一些可能用到的术语：</p>
 <ul>
@@ -298,27 +300,30 @@
 <li>BiT：改动的ResNet，用来做对比的</li>
 </ul>
 </blockquote>
-<h2 id="论文要解决的问题"><a href="#论文要解决的问题" class="headerlink" title="论文要解决的问题"></a>论文要解决的问题</h2><p>传统的计算Fine-grained的方法是将图像的特定区域过CNN后区分，并且可能需要额外标注。</p>
+<h2 id="论文要解决的问题">论文要解决的问题</h2>
+<p>传统的计算Fine-grained的方法是将图像的特定区域过CNN后区分，并且可能需要额外标注。</p>
 <p>TransFG可以减少复杂度，提高性能。（减少复杂度……然鹅这模型还是很大）</p>
 <p>率先尝试使用Vision Transformer来解决细粒度分类问题。</p>
-<h2 id="模型主体架构"><a href="#模型主体架构" class="headerlink" title="模型主体架构"></a>模型主体架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429133624.png" srcset="/img/loading.gif" lazyload alt="image-20210429133616028"></p>
+<h2 id="模型主体架构">模型主体架构</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429133624.png" srcset="/img/loading.gif" lazyload alt="image-20210429133616028"></p>
 <p>这里面每一个Transformer Layer都是下面这种多头self-attention，作者通过加载ViT的权重使用预训练模型，不冻结权重。（论文图是12 Layer）</p>
 <img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429133906.png" srcset="/img/loading.gif" lazyload alt="image-20210429133906473" style="zoom: 50%;" />
-
-
-
-<h2 id="作者针对Fine-Grained做出的优化"><a href="#作者针对Fine-Grained做出的优化" class="headerlink" title="作者针对Fine-Grained做出的优化"></a>作者针对Fine-Grained做出的优化</h2><ol>
-<li><p>原ViT是粗暴的切分原图像成16patch，作者增加了重叠部分<strong>overlap</strong>，设置超参数S来控制重叠的多少。S越小效果越好但耗算力越多。</p>
+<h2 id="作者针对Fine-Grained做出的优化">作者针对Fine-Grained做出的优化</h2>
+<ol>
+<li>
+<p>原ViT是粗暴的切分原图像成16patch，作者增加了重叠部分<strong>overlap</strong>，设置超参数S来控制重叠的多少。S越小效果越好但耗算力越多。</p>
 </li>
-<li><p><strong>PSM(Part Selection Module)</strong> 选择模块。作者在前11层提取每一层输出的<code>α</code>，然后在Layer的维度相乘</p>
+<li>
+<p><strong>PSM(Part Selection Module)</strong> 选择模块。作者在前11层提取每一层输出的<code>α</code>，然后在Layer的维度相乘</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429143058.png" srcset="/img/loading.gif" lazyload alt="image-20210429143058723"></p>
-<p>得到了Seq个$\alpha_{final}$，$\alpha_{final}$获取了所有层对信息的注意力。</p>
-<p>然后选择$\alpha_{final}$最大的K个（Multi-head的个数）信息$A_k$作为下一层的输入。</p>
+<p>得到了Seq个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mrow><mi>f</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\alpha_{final}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mrow><mi>f</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\alpha_{final}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>获取了所有层对信息的注意力。</p>
+<p>然后选择<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>α</mi><mrow><mi>f</mi><mi>i</mi><mi>n</mi><mi>a</mi><mi>l</mi></mrow></msub></mrow><annotation encoding="application/x-tex">\alpha_{final}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.0037em;">α</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.0037em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">ina</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>最大的K个（Multi-head的个数）信息<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>k</mi></msub></mrow><annotation encoding="application/x-tex">A_k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03148em;">k</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>作为下一层的输入。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429144508.png" srcset="/img/loading.gif" lazyload alt="image-20210429144430161"></p>
 <p>原本ViT会在0位置新加一个额外的Token，叫做classification token，用来保存总信息。</p>
 <p>所以用PSM之后，最后一层attention变得hard了起来，之前层的总体信息保存在0号token中，而每一个patch对应的特征则经过选择之后再送入最后一层。</p>
 </li>
-<li><p>Contrastive feature learning 对比特征学习</p>
+<li>
+<p>Contrastive feature learning 对比特征学习</p>
 <p>作者认为交叉熵不够，还加入了<code>Contrastive Loss</code>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429174308.png" srcset="/img/loading.gif" lazyload alt="image-20210429174303822"></p>
 <p>详见笔记Contrastive Loss与Triplet Loss</p>
@@ -328,16 +333,20 @@
 </blockquote>
 </li>
 </ol>
-<h2 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429195454.png" srcset="/img/loading.gif" lazyload alt="image-20210429195416444"></p>
+<h2 id="实验">实验</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429195454.png" srcset="/img/loading.gif" lazyload alt="image-20210429195416444"></p>
 <p>除此以外还有iNat2017、Dogs、NABirds等数据集，都是state of art。</p>
 <ul>
-<li><p>重叠patch的提升</p>
+<li>
+<p>重叠patch的提升</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429195559.png" srcset="/img/loading.gif" lazyload alt="image-20210429195556264"></p>
 </li>
-<li><p>PSM的提升</p>
+<li>
+<p>PSM的提升</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429195614.png" srcset="/img/loading.gif" lazyload alt="image-20210429195610172"></p>
 </li>
-<li><p>Contrastive的提升</p>
+<li>
+<p>Contrastive的提升</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210429195648.png" srcset="/img/loading.gif" lazyload alt="image-20210429195648035"></p>
 </li>
 </ul>
@@ -360,9 +369,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Transformer/">Transformer</a>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
-                    
                       <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0/">机器学习</a>
                     
                   </div>
                 
@@ -601,43 +610,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

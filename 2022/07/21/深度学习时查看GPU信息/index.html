@@ -272,16 +272,21 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="查看GPU信息，监控GPU状态的方法"><a href="#查看GPU信息，监控GPU状态的方法" class="headerlink" title="查看GPU信息，监控GPU状态的方法"></a>查看GPU信息，监控GPU状态的方法</h1><p>在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。</p>
-<h2 id="nvidia-smi"><a href="#nvidia-smi" class="headerlink" title="nvidia-smi"></a>nvidia-smi</h2><p>这可能是最常用的查看GPU信息的方法，在命令行敲下<code>nvidia-smi</code>就行了，如下图，可以看到GPU的显存占用情况、有几个GPU、负载情况、谁在用GPU等等</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173005.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173137.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="lspci"><a href="#lspci" class="headerlink" title="lspci"></a>lspci</h2><p><code>lspci</code>是linux下查看PCI总线上的设备的命令，显卡自然也连在PCI总线上，可以查到信息</p>
+              <h1>查看GPU信息，监控GPU状态的方法</h1>
+<p>在进行深度学习的时候经常需要关注GPU的使用情况，尤其是在共用服务器的时候，本文介绍几个查看GPU信息，监控GPU状态的方法。</p>
+<h2 id="nvidia-smi">nvidia-smi</h2>
+<p>这可能是最常用的查看GPU信息的方法，在命令行敲下<code>nvidia-smi</code>就行了，如下图，可以看到GPU的显存占用情况、有几个GPU、负载情况、谁在用GPU等等</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173005.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173137.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="lspci">lspci</h2>
+<p><code>lspci</code>是linux下查看PCI总线上的设备的命令，显卡自然也连在PCI总线上，可以查到信息</p>
 <p>如下图，可以看到有几个GPU和GPU的全称（nvidia-smi可能看不到）</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173425.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="gpustat"><a href="#gpustat" class="headerlink" title="gpustat"></a>gpustat</h2><p>这是一个基于nvidia-smi的工具，可以通过<code>pip install gpustat</code>直接安装，能够更直观显示GPU的信息，使用时<code>gpustat</code>可以查看当前状态，加上<code>-i</code>参数可以实时监测</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173702.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="显存被占用但是以上方法都找不到占用进程"><a href="#显存被占用但是以上方法都找不到占用进程" class="headerlink" title="显存被占用但是以上方法都找不到占用进程"></a>显存被占用但是以上方法都找不到占用进程</h2><p>输入<code>fuser -v /dev/nvidia*</code>可以查到占用显卡的进程ID，然后<code>kill -9 &lt;pid&gt;</code>来结束它。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173425.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="gpustat">gpustat</h2>
+<p>这是一个基于nvidia-smi的工具，可以通过<code>pip install gpustat</code>直接安装，能够更直观显示GPU的信息，使用时<code>gpustat</code>可以查看当前状态，加上<code>-i</code>参数可以实时监测</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220721173702.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="显存被占用但是以上方法都找不到占用进程">显存被占用但是以上方法都找不到占用进程</h2>
+<p>输入<code>fuser -v /dev/nvidia*</code>可以查到占用显卡的进程ID，然后<code>kill -9 &lt;pid&gt;</code>来结束它。</p>
 <p><code>fuser</code>是一个由文件找出占用该文件的程序，linux下dev目录是存储硬件信息的目录，下面nvidia0、nvidia1等就是显卡。</p>
 
             </div>
@@ -541,43 +546,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -268,16 +268,16 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="深度学习调参笔记-2-可复现的细节（固定seed）"><a href="#深度学习调参笔记-2-可复现的细节（固定seed）" class="headerlink" title="深度学习调参笔记#2-可复现的细节（固定seed）"></a>深度学习调参笔记#2-可复现的细节（固定seed）</h1><p>在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。</p>
-<h2 id="固定种子-seed"><a href="#固定种子-seed" class="headerlink" title="固定种子 seed"></a>固定种子 seed</h2><p>模型训练中，参数的初始化、数据的顺序等都具有一定的不确定性，而计算机通过种子生成伪随机数，所以固定种子还是十分有必要的。（但是固定一个神奇的种子来表面提升学习效果是不可取的）</p>
+              <h1>深度学习调参笔记#2-可复现的细节（固定seed）</h1>
+<p>在深度学习中，要想让你的结果可完美复现出来，避免每次运行都看运气，那就要尽量避免不确定因素，本文以PyTorch为例，介绍相关的设置。</p>
+<h2 id="固定种子-seed">固定种子 seed</h2>
+<p>模型训练中，参数的初始化、数据的顺序等都具有一定的不确定性，而计算机通过种子生成伪随机数，所以固定种子还是十分有必要的。（但是固定一个神奇的种子来表面提升学习效果是不可取的）</p>
 <p>下面这几项参考<code>pytorch_lightning</code>的种子设置：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">random.seed(seed)  <span class="hljs-comment"># 配置Python random库的随机种子</span><br>np.random.seed(seed)  <span class="hljs-comment"># 配置Numpy库的随机种子</span><br>torch.manual_seed(seed)  <span class="hljs-comment"># 配置torch的随机种子</span><br>torch.cuda.manual_seed(seed)  <span class="hljs-comment"># 配置单个GPU上的种子</span><br>torch.cuda.manual_seed_all(seed)  <span class="hljs-comment"># 配置所有GPU上的种子</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="配置使用确定性操作"><a href="#配置使用确定性操作" class="headerlink" title="配置使用确定性操作"></a>配置使用确定性操作</h2><p>即使固定了种子，算法的结果在不同设备（或者不同平台）上可能还是不同，所以假如对复现有很高要求，还要配置使用确定性操作。要注意的是，使用确定性操作往往会让算法变慢，需要进行速度和复现性的取舍。</p>
+<h2 id="配置使用确定性操作">配置使用确定性操作</h2>
+<p>即使固定了种子，算法的结果在不同设备（或者不同平台）上可能还是不同，所以假如对复现有很高要求，还要配置使用确定性操作。要注意的是，使用确定性操作往往会让算法变慢，需要进行速度和复现性的取舍。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 将benchmark设置为False会让cudnn在有多种算法可选的情况下选择固定的一种</span><br><span class="hljs-comment"># 假如是True的话，cudnn会对多种算法进行测试，找到在你硬件上运行最快的那个算法，</span><br><span class="hljs-comment"># 然后再固定使用这个算法进行计算。</span><br><span class="hljs-comment"># 假如模型输入不会变化，比较规则，那设置成True可能会提高性能</span><br><span class="hljs-comment"># 假如模型输入会变化，那设置成True反而可能导致性能降低</span><br><span class="hljs-comment"># 不过要复现那还是设置成False吧~</span><br>torch.backends.cudnn.benchmark = <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
-
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># benchmark=False让选择的算法是固定的，然而这个算法本身可能还是non-deterministic的</span><br><span class="hljs-comment"># 所以设置deterministic=True可以让torch选择可确定的算法</span><br>torch.backends.cudnn.deterministic = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
-
 <blockquote>
 <p>参考资料：</p>
 <p><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.manual_seed.html">torch.manual_seed — PyTorch 1.12 documentation</a></p>
@@ -547,43 +547,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

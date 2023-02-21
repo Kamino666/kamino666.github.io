@@ -43,8 +43,8 @@
 <meta property="article:published_time" content="2022-03-17T01:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-21T09:03:53.087Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Python">
 <meta property="article:tag" content="密码学">
+<meta property="article:tag" content="Python">
 <meta property="article:tag" content="Feistel">
 <meta property="article:tag" content="DES">
 <meta name="twitter:card" content="summary_large_image">
@@ -230,7 +230,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      1.3k 字
     </span>
   
 
@@ -285,33 +285,40 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Feistel密码结构与DES加密算法"><a href="#Feistel密码结构与DES加密算法" class="headerlink" title="Feistel密码结构与DES加密算法"></a>Feistel密码结构与DES加密算法</h1><h2 id="Feistel"><a href="#Feistel" class="headerlink" title="Feistel"></a>Feistel</h2><p>Feistel是现代密码学常用的分组密码结构，1973年，Horst Feistel提出了基于可逆乘积加密器概念的Feistel Cipher。</p>
-<p>其将输入分组成左半和右半两部分（$L_0,R_0$），每轮加密把右半放到左边，然后把左半结合子密钥进行计算：$R_i=L_{i-1}\oplus F(R_{i-1},K_i)$，<strong>其中$K_i$是由密钥$K$得到第$i$轮的子密钥，$F()$是轮函数，可以随意设计，只要对于一个输入有一个固定的输出就可以了（假如不考虑安全性）</strong>。</p>
+              <h1>Feistel密码结构与DES加密算法</h1>
+<h2 id="Feistel">Feistel</h2>
+<p>Feistel是现代密码学常用的分组密码结构，1973年，Horst Feistel提出了基于可逆乘积加密器概念的Feistel Cipher。</p>
+<p>其将输入分组成左半和右半两部分（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mn>0</mn></msub><mo separator="true">,</mo><msub><mi>R</mi><mn>0</mn></msub></mrow><annotation encoding="application/x-tex">L_0,R_0</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">0</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>），每轮加密把右半放到左边，然后把左半结合子密钥进行计算：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mi>i</mi></msub><mo>=</mo><msub><mi>L</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>⊕</mo><mi>F</mi><mo stretchy="false">(</mo><msub><mi>R</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub><mo separator="true">,</mo><msub><mi>K</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">R_i=L_{i-1}\oplus F(R_{i-1},K_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8917em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⊕</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，<strong>其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>K</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">K_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是由密钥<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi></mrow><annotation encoding="application/x-tex">K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span></span></span></span>得到第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi></mrow><annotation encoding="application/x-tex">i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6595em;"></span><span class="mord mathnormal">i</span></span></span></span>轮的子密钥，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi><mo stretchy="false">(</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">F()</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mopen">(</span><span class="mclose">)</span></span></span></span>是轮函数，可以随意设计，只要对于一个输入有一个固定的输出就可以了（假如不考虑安全性）</strong>。</p>
 <p>一般来说，分组越长、密钥越长、迭代轮次越多，安全性也越高，但是算法速度就会越低。同时轮函数的设计对安全性也很重要，需要做到非线性、混乱性、雪崩性（改动1bit就会影响很多个bit）。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317105228.png" srcset="/img/loading.gif" lazyload alt="Feistel Cipher"></p>
 <p>使用这种结构的好处是，加密和解密过程是对称的，只要将密文作为算法的输入，以相反的次序使用子密钥就能解密，以两个round为例子：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317110652.jpg" srcset="/img/loading.gif" lazyload></p>
-<h2 id="DES"><a href="#DES" class="headerlink" title="DES"></a>DES</h2><p>DES使用64bit分组，56bit秘钥（使用时是64bit，其中8bit没有用），进行16轮加密变换。DES的F函数如下，$R_{i-1}$先经过一个将32bit映射为48bit的E table，再与密钥异或，再进入S-box映射回32bit，最后进行P置换。除此以外，DES还在最初和结束时额外进行了一次置换，称为IP和FP，其中FP是IP的反函数。DES还有一种使用56bit秘钥生成16个48bit的子密钥的算法。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317110652.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="DES">DES</h2>
+<p>DES使用64bit分组，56bit秘钥（使用时是64bit，其中8bit没有用），进行16轮加密变换。DES的F函数如下，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>R</mi><mrow><mi>i</mi><mo>−</mo><mn>1</mn></mrow></msub></mrow><annotation encoding="application/x-tex">R_{i-1}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8917em;vertical-align:-0.2083em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0077em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span></span></span></span>先经过一个将32bit映射为48bit的E table，再与密钥异或，再进入S-box映射回32bit，最后进行P置换。除此以外，DES还在最初和结束时额外进行了一次置换，称为IP和FP，其中FP是IP的反函数。DES还有一种使用56bit秘钥生成16个48bit的子密钥的算法。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317113246.jpeg" srcset="/img/loading.gif" lazyload alt="DES总体预览"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317111237.png" srcset="/img/loading.gif" lazyload alt="DES的F函数"></p>
-<h3 id="E-table"><a href="#E-table" class="headerlink" title="E table"></a>E table</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317111910.jpeg" srcset="/img/loading.gif" lazyload alt="Permutation Logic"></p>
+<h3 id="E-table">E table</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317111910.jpeg" srcset="/img/loading.gif" lazyload alt="Permutation Logic"></p>
 <p>多出来的16bit通过上图所示得到，没进行什么计算，也可以画成下面这个表</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317112040.jpeg" srcset="/img/loading.gif" lazyload alt="DES Specification"></p>
-<h3 id="S-box"><a href="#S-box" class="headerlink" title="S-box"></a>S-box</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317112255.jpg" srcset="/img/loading.gif" lazyload alt="s-boxes"></p>
+<h3 id="S-box">S-box</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317112255.jpg" srcset="/img/loading.gif" lazyload alt="s-boxes"></p>
 <p>如上图，对于每6bit进行一个计算得到4bit，从而把多出来的16bit弄掉，具体规则如下图，bit2到5组成一个4位的二进制数，选择0到15的一个数，而bit1和bit6选择0到3的一个数，然后通过一个固定的S-box table得到那4个输出bit。S-box的table每一轮是一样的，但是同一轮中每6个bit组是不一样的。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317112334.jpeg" srcset="/img/loading.gif" lazyload alt="S-box Rule"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317112752.jpg" srcset="/img/loading.gif" lazyload alt="DES_S-box table"></p>
-<h3 id="P置换"><a href="#P置换" class="headerlink" title="P置换"></a>P置换</h3><p>就是一个简单的映射，每一轮都一样，对于开始和结束的IP和FP（也叫做IP^-1^）也是一个表格，如图可以看到IP的1是第40个，也就是<code>40-&gt;1</code>，而FP是<code>1-&gt;40</code>。</p>
+<h3 id="P置换">P置换</h3>
+<p>就是一个简单的映射，每一轮都一样，对于开始和结束的IP和FP（也叫做IP<sup>-1</sup>）也是一个表格，如图可以看到IP的1是第40个，也就是<code>40-&gt;1</code>，而FP是<code>1-&gt;40</code>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317112918.png" srcset="/img/loading.gif" lazyload alt="P置换"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317113018.png" srcset="/img/loading.gif" lazyload alt="IP和FP"></p>
-<h3 id="子密钥"><a href="#子密钥" class="headerlink" title="子密钥"></a>子密钥</h3><p>如图，64bit密钥先进行PC1（置换1），PC1将密钥的64bit的第$n*8$个bit丢弃，然后重排顺序得到两个28bit。之后每一轮左移k个bit（第1 2 9 16轮k=1，其余k=2）（没找到资料，应该是循环左移？）。然后每一轮执行PC2（置换2）得到子密钥。</p>
+<h3 id="子密钥">子密钥</h3>
+<p>如图，64bit密钥先进行PC1（置换1），PC1将密钥的64bit的第<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>∗</mo><mn>8</mn></mrow><annotation encoding="application/x-tex">n*8</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4653em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">∗</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">8</span></span></span></span>个bit丢弃，然后重排顺序得到两个28bit。之后每一轮左移k个bit（第1 2 9 16轮k=1，其余k=2）（没找到资料，应该是循环左移？）。然后每一轮执行PC2（置换2）得到子密钥。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317113712.png" srcset="/img/loading.gif" lazyload alt="DES-key-schedule"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317113736.png" srcset="/img/loading.gif" lazyload alt="PC1"></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220317113752.png" srcset="/img/loading.gif" lazyload alt="PC2"></p>
 <blockquote>
 <p>参考文献：</p>
 <p>田老师的PPT！</p>
-<p><a target="_blank" rel="noopener" href="https://crypto.stackexchange.com/questions/1352/are-there-any-specific-requirements-for-the-function-f-in-a-feistel-cipher">algorithm design - Are there any specific requirements for the function $F$ in a Feistel cipher? - Cryptography Stack Exchange</a></p>
+<p><a target="_blank" rel="noopener" href="https://crypto.stackexchange.com/questions/1352/are-there-any-specific-requirements-for-the-function-f-in-a-feistel-cipher">algorithm design - Are there any specific requirements for the function <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>F</mi></mrow><annotation encoding="application/x-tex">F</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">F</span></span></span></span> in a Feistel cipher? - Cryptography Stack Exchange</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.tutorialspoint.com/cryptography/data_encryption_standard.htm">Data Encryption Standard (tutorialspoint.com)</a></p>
 </blockquote>
 
@@ -333,9 +340,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
-                    
                       <a class="hover-with-bg" href="/tags/%E5%AF%86%E7%A0%81%E5%AD%A6/">密码学</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Python/">Python</a>
                     
                       <a class="hover-with-bg" href="/tags/Feistel/">Feistel</a>
                     
@@ -578,43 +585,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

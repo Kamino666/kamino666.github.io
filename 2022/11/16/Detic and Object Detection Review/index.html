@@ -227,7 +227,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.6k 字
+      3.7k 字
     </span>
   
 
@@ -236,7 +236,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      11 分钟
+      12 分钟
     </span>
   
 
@@ -282,7 +282,8 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Detecting-Twenty-thousand-Classes-using-Image-level-Supervision论文笔记（以及目标检测基础知识）"><a href="#Detecting-Twenty-thousand-Classes-using-Image-level-Supervision论文笔记（以及目标检测基础知识）" class="headerlink" title="Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）"></a>Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）</h1><p>ECCV 2022（Facebook）：<strong>Detecting Twenty-thousand Classes using Image-level Supervision</strong></p>
+              <h1>Detecting Twenty-thousand Classes using Image-level Supervision论文笔记（以及目标检测基础知识）</h1>
+<p>ECCV 2022（Facebook）：<strong>Detecting Twenty-thousand Classes using Image-level Supervision</strong></p>
 <ul>
 <li>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2201.02605">Detecting Twenty-thousand Classes using Image-level Supervision (arxiv.org)</a></li>
 <li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/Detic">facebookresearch/Detic: Code release for “Detecting Twenty-thousand Classes using Image-level Supervision”. (github.com)</a></li>
@@ -291,9 +292,11 @@
 <p>本文提出了一个Detic的<strong>目标检测</strong>模型，它能通过利用Image-level的监督标签学习（可以算是弱监督），从而实现20000多类（甚至更多）的检测，并且这种模式能够简单应用于其他检测架构或套用其他backbone。同时，Detic实现的还是open-vocabulary的检测，可以不局限于数据集的标注，不finetune的情况下检测出新的目标。</p>
 <p>其真实检测效果如下（我随手在宿舍拍的），其检测到了宿舍里的书、台灯、电脑、人等常见物体，还检测到了柜子、抽屉、锁头（knob）等，甚至还检测到了左上角露出一个脚的玩具熊，左边露出一点点的床帘、右下角的行李箱和桌上的高达（figurine）。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116120022.png" srcset="/img/loading.gif" lazyload alt="Detic样例，建议放大查看"></p>
-<h2 id="前置知识"><a href="#前置知识" class="headerlink" title="前置知识"></a>前置知识</h2><p>由于我不是做Detection的，这里列一些目标检测的基础知识，若您已掌握可跳过。</p>
+<h2 id="前置知识">前置知识</h2>
+<p>由于我不是做Detection的，这里列一些目标检测的基础知识，若您已掌握可跳过。</p>
 <p>传统目标检测通常分为两个阶段——Region Proposal Network(RPN)阶段和目标分类阶段。</p>
-<h3 id="Stage1：RPN网络"><a href="#Stage1：RPN网络" class="headerlink" title="Stage1：RPN网络"></a>Stage1：RPN网络</h3><blockquote>
+<h3 id="Stage1：RPN网络">Stage1：RPN网络</h3>
+<blockquote>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=0tBhRfEzUWs">quarter CNN: Region Proposal Network (RPN) - YouTube</a></li>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/391562984">RPN-区域生成网络-Region Proposal Network（Faster-RCNN） - 知乎 (zhihu.com)</a></li>
@@ -307,24 +310,26 @@
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116124221.jpg" srcset="/img/loading.gif" lazyload alt="RPN anchors"></p>
 <p>在生成好anchors后，特征图先进行一个3x3卷积（这个并不重要），然后分成两条路线，上路是区域是否包含目标的分类任务，下路是anchor相较于ground truth box(GT)的回归任务。</p>
 <p>上路通过1x1卷积，得到深度为18的特征，18表示对于每个点有9个anchor和2种分类（positive和negative）。下路则通过1x1卷积，得到深度为36的特征，36表示9个anchor和4个偏移操作，一个box可以用中心点的xy坐标以及box的高和宽这4个数字表示，而anchor box与GT的偏移就可以用xy坐标的移动以及高宽的缩放这4个数字来表示，所以是4个偏移操作。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116125234.png" srcset="/img/loading.gif" lazyload></p>
-<p>然而，实际上我们还要把anchor与GT对应起来，我们会通过IoU来区分，如下图，IoU是交集面积除以并集面积，衡量两个box重合程度。当anchor与任何GT的$IoU \ge 0.7$时标记为positive；或者anchor与某个GT满足$0.3 &lt; IoU \le 0.7$且是这个GT的最大的$IoU$，则也标记为positive；而当anchor与所有GT的$IoU &lt; 0.3$时标记为negative；其他情况标记为border（边界）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116125234.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>然而，实际上我们还要把anchor与GT对应起来，我们会通过IoU来区分，如下图，IoU是交集面积除以并集面积，衡量两个box重合程度。当anchor与任何GT的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>o</mi><mi>U</mi><mo>≥</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">IoU \ge 0.7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≥</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.7</span></span></span></span>时标记为positive；或者anchor与某个GT满足<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>0.3</mn><mo>&lt;</mo><mi>I</mi><mi>o</mi><mi>U</mi><mo>≤</mo><mn>0.7</mn></mrow><annotation encoding="application/x-tex">0.3 &lt; IoU \le 0.7</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6835em;vertical-align:-0.0391em;"></span><span class="mord">0.3</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≤</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.7</span></span></span></span>且是这个GT的最大的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>o</mi><mi>U</mi></mrow><annotation encoding="application/x-tex">IoU</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span></span></span></span>，则也标记为positive；而当anchor与所有GT的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>I</mi><mi>o</mi><mi>U</mi><mo>&lt;</mo><mn>0.3</mn></mrow><annotation encoding="application/x-tex">IoU &lt; 0.3</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7224em;vertical-align:-0.0391em;"></span><span class="mord mathnormal" style="margin-right:0.07847em;">I</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10903em;">U</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&lt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">0.3</span></span></span></span>时标记为negative；其他情况标记为border（边界）。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116154332.png" srcset="/img/loading.gif" lazyload alt="IoU"></p>
-<p>在计算loss时，$L_{RPN}=L_{cls}+L_{loc}$，前者分类算交叉熵，后者算smooth后的L1距离。</p>
-<h3 id="Stage2：目标分类"><a href="#Stage2：目标分类" class="headerlink" title="Stage2：目标分类"></a>Stage2：目标分类</h3><blockquote>
+<p>在计算loss时，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>L</mi><mrow><mi>R</mi><mi>P</mi><mi>N</mi></mrow></msub><mo>=</mo><msub><mi>L</mi><mrow><mi>c</mi><mi>l</mi><mi>s</mi></mrow></msub><mo>+</mo><msub><mi>L</mi><mrow><mi>l</mi><mi>o</mi><mi>c</mi></mrow></msub></mrow><annotation encoding="application/x-tex">L_{RPN}=L_{cls}+L_{loc}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">RPN</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">c</span><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">s</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.01968em;">l</span><span class="mord mathnormal mtight">oc</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，前者分类算交叉熵，后者算smooth后的L1距离。</p>
+<h3 id="Stage2：目标分类">Stage2：目标分类</h3>
+<blockquote>
 <ul>
 <li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/65423423">卷积神经网络（四，ROI Pooling） - 知乎 (zhihu.com)</a></li>
 </ul>
 </blockquote>
 <p>在这个阶段，模型将对之前提出的proposal region进行<strong>分类</strong>和<strong>进一步的回归</strong>。</p>
-<p>由于之前得到的region是不同长宽的，需要将其处理为固定的格式，比如Faster RCNN中的RoI Pooling，如下面这个动图，假如黑框是得到的region特征图，RoI Pooling先将这个区域取出，然后分成$h\times w$个小区域，图中是$2 \times 2$，这里并不需要每个区域完全相同大小，因为下一步就会对每个区域进行空间上的max pooling，最终得到$h \times w \times d^{feat}$的region特征向量，在Faster-RCNN中这个值是$7 \times 7 \times 512 = 25088$。</p>
+<p>由于之前得到的region是不同长宽的，需要将其处理为固定的格式，比如Faster RCNN中的RoI Pooling，如下面这个动图，假如黑框是得到的region特征图，RoI Pooling先将这个区域取出，然后分成<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>×</mo><mi>w</mi></mrow><annotation encoding="application/x-tex">h\times w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7778em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span>个小区域，图中是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>2</mn><mo>×</mo><mn>2</mn></mrow><annotation encoding="application/x-tex">2 \times 2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">2</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">2</span></span></span></span>，这里并不需要每个区域完全相同大小，因为下一步就会对每个区域进行空间上的max pooling，最终得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi><mo>×</mo><mi>w</mi><mo>×</mo><msup><mi>d</mi><mrow><mi>f</mi><mi>e</mi><mi>a</mi><mi>t</mi></mrow></msup></mrow><annotation encoding="application/x-tex">h \times w \times d^{feat}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7778em;vertical-align:-0.0833em;"></span><span class="mord mathnormal">h</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8491em;"></span><span class="mord"><span class="mord mathnormal">d</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8491em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">a</span><span class="mord mathnormal mtight">t</span></span></span></span></span></span></span></span></span></span></span></span>的region特征向量，在Faster-RCNN中这个值是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mn>7</mn><mo>×</mo><mn>7</mn><mo>×</mo><mn>512</mn><mo>=</mo><mn>25088</mn></mrow><annotation encoding="application/x-tex">7 \times 7 \times 512 = 25088</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.7278em;vertical-align:-0.0833em;"></span><span class="mord">7</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">512</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">25088</span></span></span></span>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116160948.gif" srcset="/img/loading.gif" lazyload alt="RoI Pooling"></p>
 <p>之后就经过全连接层进行降维（25088维度太高），然后通过两个不同的全连预测两个目标：①接上分类器进行分类；②接上回归网络对每一个类别预测其box的4个坐标。也就是说，一个proposal region可能生成多个预测出来的box？</p>
-<h2 id="Detic模型"><a href="#Detic模型" class="headerlink" title="Detic模型"></a>Detic模型</h2><p>Detic模型将object-level的标注数据与image-level的标记数据一同进行训练。如下图，object-level标注的数据集（LVIS）包含的类别更少，每种类别的图片数量也更少，一些类（比如Pig、Coffee-cup）只有image-level的数据集（ImageNet、Conceptual Captions）包含。所以要检测更多的类别，需要好好利用image-level的标签。</p>
+<h2 id="Detic模型">Detic模型</h2>
+<p>Detic模型将object-level的标注数据与image-level的标记数据一同进行训练。如下图，object-level标注的数据集（LVIS）包含的类别更少，每种类别的图片数量也更少，一些类（比如Pig、Coffee-cup）只有image-level的数据集（ImageNet、Conceptual Captions）包含。所以要检测更多的类别，需要好好利用image-level的标签。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117113149.png" srcset="/img/loading.gif" lazyload alt="三个数据集中不同类别的图片数量分析"></p>
 <p>在利用image-level的数据时，由于没有标注的box，作者想了三个方法，第一是直接使用整张图片作为box，第二是使用proposal region中object score最高的作为box，<strong>第三是用一个能包括所有proposal region的box作为box</strong>。之后结果显示第三个方法效果最好。作者分析，第一种方法相较于第三种方法会有更多的噪声，而第二种方法如下图在训练初期不能很好地包括要检测的物体，只有第三种方法在训练过程中比较稳定，且能包括目标，提供正确的监督信号（虽然也可能包括一些噪声）。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117114130.png" srcset="/img/loading.gif" lazyload alt="image-20221117114129402"></p>
-<p>这个模型训练的最终loss如下图，当图像$\mathbf I$是有标记数据时，计算常规的loss，当是image-level的数据时，计算那个大区域的分类的loss。</p>
+<p>这个模型训练的最终loss如下图，当图像<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold">I</mi></mrow><annotation encoding="application/x-tex">\mathbf I</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord mathbf">I</span></span></span></span>是有标记数据时，计算常规的loss，当是image-level的数据时，计算那个大区域的分类的loss。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116163344.png" srcset="/img/loading.gif" lazyload alt="loss"></p>
 <p>为了实现Open-vocabulary，作者将分类的目标设置为一个embedding，所有标签则通过CLIP prompt被编码成对应的embedding，要得到预测结果，即将模型得到的embedding与所有标签对应的CLIP embedding计算相似度分数，然后softmax得到每个标签的概率，再计算CE loss。</p>
 <blockquote>
@@ -336,12 +341,14 @@
 <p>但Detic的作者在文章中说道，直接这么用的效果并不好，而通过他们的方法扩充了训练时的类别，效果会更好。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221116165553.png" srcset="/img/loading.gif" lazyload alt="ViLD"></p>
 </blockquote>
-<h2 id="一些些实验结果"><a href="#一些些实验结果" class="headerlink" title="一些些实验结果"></a>一些些实验结果</h2><p>实验结果太多了，由于不是这个方向的就没有细看，并且文章给出了超级多的补充材料，有兴趣可以翻论文。</p>
+<h2 id="一些些实验结果">一些些实验结果</h2>
+<p>实验结果太多了，由于不是这个方向的就没有细看，并且文章给出了超级多的补充材料，有兴趣可以翻论文。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117114727.png" srcset="/img/loading.gif" lazyload alt="识别结果"></p>
 <p>识别效果非常好，识别出了绿色的novel classes。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221117115028.png" srcset="/img/loading.gif" lazyload alt="Text Embedding的选择"></p>
 <p>果然CLIP很强啊，用CLIP的Embedding效果最好。</p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Facebook开发的Detic效果真的很惊艳，而且提供了很直观好用的Demo，代码上看上去很容易复现，检测出的类别也非常多，应该能很方便用在其他的领域。</p>
+<h2 id="总结">总结</h2>
+<p>Facebook开发的Detic效果真的很惊艳，而且提供了很直观好用的Demo，代码上看上去很容易复现，检测出的类别也非常多，应该能很方便用在其他的领域。</p>
 
             </div>
             <hr>
@@ -604,43 +611,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

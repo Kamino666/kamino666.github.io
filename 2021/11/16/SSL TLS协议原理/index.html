@@ -270,10 +270,13 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="SSL-TLS协议原理"><a href="#SSL-TLS协议原理" class="headerlink" title="SSL/TLS协议原理"></a>SSL/TLS协议原理</h1><p>SSL(Secore Socket Layer)是安全套接层，TLS(Transport Layer Security)是SSL的高级版本，一般叫做SSL/TLS，是<strong>计算机网络应用层的一种安全通信协议</strong>。SSL/TLS工作在TCP之上，HTTPS等应用之下，通过采用机密性、数据完整性、服务器鉴别和客户鉴别来解决安全问题。</p>
-<h2 id="基本原理"><a href="#基本原理" class="headerlink" title="基本原理"></a>基本原理</h2><p>SSL有三个阶段：<strong>握手、秘钥导出、数据传输</strong>。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211116195440.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="握手"><a href="#握手" class="headerlink" title="握手"></a>握手</h3><p>首先，蓝色部分是建立（不安全的）TCP连接的过程，这一部分就是TCP的三次握手，这一部分有的时候可能被忽略。</p>
+              <h1>SSL/TLS协议原理</h1>
+<p>SSL(Secore Socket Layer)是安全套接层，TLS(Transport Layer Security)是SSL的高级版本，一般叫做SSL/TLS，是<strong>计算机网络应用层的一种安全通信协议</strong>。SSL/TLS工作在TCP之上，HTTPS等应用之下，通过采用机密性、数据完整性、服务器鉴别和客户鉴别来解决安全问题。</p>
+<h2 id="基本原理">基本原理</h2>
+<p>SSL有三个阶段：<strong>握手、秘钥导出、数据传输</strong>。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211116195440.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="握手">握手</h3>
+<p>首先，蓝色部分是建立（不安全的）TCP连接的过程，这一部分就是TCP的三次握手，这一部分有的时候可能被忽略。</p>
 <p>在建立TCP连接后，客户端向服务端传输一个包含一些基本信息的hello报文<code>Client Hello</code>。基本信息即SSL版本、会话ID、加密四件套列表、客户端随机数等。（图中未包含随机数）</p>
 <p>之后，服务端从客户端支持的加密四件套中选择一种，然后把选择+CA证书+服务端随机数+SSL版本+会话ID组合成<code>Server Hello</code>返回给客户端。客户端收到证书之后验证证书，若验证成功，则客户端可确信服务端。</p>
 <p>之后，客户端生成一个前主密钥（Pre Master Secret），再从证书中用服务端选择的方法提取服务端公钥，用服务端公钥加密PMS后传输给服务端。<strong>此时，双方都获得了此次SSL通话的前主密钥，即握手成功。</strong></p>
@@ -281,17 +284,19 @@
 <p><strong>加密四件套：</strong></p>
 <p>例<code>ECDH-ECDSA-AES128-SHA256 </code>：ECDH是秘钥交换算法、ECDS是证书算法（非对称密码）、AES128是数据加密算法（对称密码）、SHA256是MAC算法（Hash）。</p>
 </blockquote>
-<h2 id="秘钥导出"><a href="#秘钥导出" class="headerlink" title="秘钥导出"></a>秘钥导出</h2><p>PMS包含的不只是1个秘钥，而是4个秘钥，服务端和客户端能通过之前生成的两个随机数（客户端随机数和服务端随机数）各自用秘钥导出函数<strong>独立</strong>计算出主密钥（Master Secret），而MS可以分片成4个秘钥分别是客户端加密秘钥、客户端MAC秘钥、服务端加密秘钥、服务端MAC秘钥，这个过程叫做秘钥导出。</p>
+<h2 id="秘钥导出">秘钥导出</h2>
+<p>PMS包含的不只是1个秘钥，而是4个秘钥，服务端和客户端能通过之前生成的两个随机数（客户端随机数和服务端随机数）各自用秘钥导出函数<strong>独立</strong>计算出主密钥（Master Secret），而MS可以分片成4个秘钥分别是客户端加密秘钥、客户端MAC秘钥、服务端加密秘钥、服务端MAC秘钥，这个过程叫做秘钥导出。</p>
 <blockquote>
 <p><strong>注意此处的MAC指的是Message Authentication Code，即消息认证码</strong>。MAC需要发送者和接收者共享一个MAC秘钥，发送者根据发送数据计算MAC值，将数据和MAC发给对方。接收者收到数据之后也计算MAC值，然后比对收到的MAC值，从而判断消息是否被改动。</p>
 </blockquote>
 <p>在客户端和服务端都能计算出MAC后，客户端会立马发送所有握手报文的MAC值给服务端，而服务端收到后进行验证，也会发送所有握手报文的MAC值给客户端。</p>
 <blockquote>
 <p><strong>为什么最后还要互相传一次MAC</strong>：这两步使握手报文不被篡改，因为<code>CLIENT HELLO</code>和<code>SERVER HELLO</code>这两个报文都是明文传输，假如没有这两步，那么可能会有人将客户端支持的加密算法改成较弱的算法，或者把SSL改成更弱的早期版本。</p>
-<p><strong>不直接传输MS的原因：</strong>通过PMS各自独立计算MS，不将其放在信道进行传输，可以从根源上防止MS泄露，保证其安全性。</p>
-<p><strong>添加随机数的原因：</strong>可以防止“连接重放攻击”：假如别人截取了你昨天在淘宝买东西的报文，然后今天重新发这个报文100次，没有随机数参与的话，那这个报文就是完全正确的了，你就会再买这个东西100次啦。</p>
+<p>**不直接传输MS的原因：**通过PMS各自独立计算MS，不将其放在信道进行传输，可以从根源上防止MS泄露，保证其安全性。</p>
+<p>**添加随机数的原因：**可以防止“连接重放攻击”：假如别人截取了你昨天在淘宝买东西的报文，然后今天重新发这个报文100次，没有随机数参与的话，那这个报文就是完全正确的了，你就会再买这个东西100次啦。</p>
 </blockquote>
-<h2 id="数据传输"><a href="#数据传输" class="headerlink" title="数据传输"></a>数据传输</h2><p>SSL将数据流分割成<strong>记录</strong>，对每个记录附加一个MAC，然后加密<code>记录+MAC</code>进行传输。对于MAC的计算，发送者将通过<code>记录+序号hash</code>计算MAC，序号初始为0，每发一个记录，序号就+1。这样就能防止中间人的重排序和重放报文。</p>
+<h2 id="数据传输">数据传输</h2>
+<p>SSL将数据流分割成<strong>记录</strong>，对每个记录附加一个MAC，然后加密<code>记录+MAC</code>进行传输。对于MAC的计算，发送者将通过<code>记录+序号hash</code>计算MAC，序号初始为0，每发一个记录，序号就+1。这样就能防止中间人的重排序和重放报文。</p>
 <blockquote>
 <p><strong>参考文献</strong></p>
 <p>计算机网络：自顶向下方法（第7版） 机械工业出版社</p>
@@ -560,43 +565,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

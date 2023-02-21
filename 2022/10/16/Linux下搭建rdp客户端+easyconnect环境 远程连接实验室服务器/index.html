@@ -274,38 +274,49 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux下搭建rdp-ssh客户端-easyconnect环境-远程连接实验室服务器"><a href="#Linux下搭建rdp-ssh客户端-easyconnect环境-远程连接实验室服务器" class="headerlink" title="Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器"></a>Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器</h1><p>为了学习Linux以及方便开发，在电脑上装了Ubuntu系统，但是平常也需要连接到实验室的多卡服务器上跑代码，所以配置了Ubuntu上通过RDP远程连接和SSH连接的环境。配置之后还发现，校园网一直都慢慢的，也不一定连得上，不如通过代理连接，我学校用的是EasyConnect，于是也花了几天都将其配置好了，记录如下。</p>
+              <h1>Linux下搭建rdp/ssh客户端+easyconnect环境 远程连接实验室服务器</h1>
+<p>为了学习Linux以及方便开发，在电脑上装了Ubuntu系统，但是平常也需要连接到实验室的多卡服务器上跑代码，所以配置了Ubuntu上通过RDP远程连接和SSH连接的环境。配置之后还发现，校园网一直都慢慢的，也不一定连得上，不如通过代理连接，我学校用的是EasyConnect，于是也花了几天都将其配置好了，记录如下。</p>
 <p>（本文不包括服务器端的设置~）</p>
-<h2 id="RDP客户端"><a href="#RDP客户端" class="headerlink" title="RDP客户端"></a>RDP客户端</h2><p>这里使用Linux上功能强大又好看的<strong>Remmina</strong>，在<a target="_blank" rel="noopener" href="https://remmina.org/how-to-install-remmina/">官网</a>上就能找到不同系统的多种安装方法，这个地方应该没有什么障碍，在Ubuntu上，最简单的可能就是在Snap商店上点击安装了hhhh</p>
+<h2 id="RDP客户端">RDP客户端</h2>
+<p>这里使用Linux上功能强大又好看的<strong>Remmina</strong>，在<a target="_blank" rel="noopener" href="https://remmina.org/how-to-install-remmina/">官网</a>上就能找到不同系统的多种安装方法，这个地方应该没有什么障碍，在Ubuntu上，最简单的可能就是在Snap商店上点击安装了hhhh</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016160400.png" srcset="/img/loading.gif" lazyload alt="Remmina"></p>
 <p>假如本身网络能直接连接校园网，那就打开Remmina，点击左上角新建，选择RDP协议，在<code>服务器</code>填写对应的IP，然后<code>用户名</code>和<code>密码</code>可填可不填，不填的话之后会有单独界面让你填写。</p>
 <p>接下来有一点很<strong>重要</strong>：点击<code>高级</code>选项卡，翻到最下面，打开<code>Relax Order检查</code>和<code>字形缓存</code>，不然连不上。</p>
-<h2 id="SSH客户端"><a href="#SSH客户端" class="headerlink" title="SSH客户端"></a>SSH客户端</h2><p>Windows下Xshell、MobaXterm甚至pycharm都很好用，但还有一款跨平台的开源免费ssh客户端很好用，那就是——<strong>WindTerm.</strong></p>
+<h2 id="SSH客户端">SSH客户端</h2>
+<p>Windows下Xshell、MobaXterm甚至pycharm都很好用，但还有一款跨平台的开源免费ssh客户端很好用，那就是——<strong>WindTerm.</strong></p>
 <p>官网连接：<a target="_blank" rel="noopener" href="https://github.com/kingToolbox/WindTerm">kingToolbox/WindTerm: A professional cross-platform SSH/Sftp/Shell/Telnet/Serial terminal. (github.com)</a></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016164106.png" srcset="/img/loading.gif" lazyload alt="WindTerm"></p>
 <p>选择WindTerm还有很重要的一点原因，那就是它发布的是Protable版！不需要sudo，不需要安装，不需要处理烦人的环境，下载点开即可使用。（对于小白来说记得chmod）</p>
-<p>这里放出百度网盘的备份：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/18ugpIj7ZJ8ILlqpxRipFMg?pwd=9hc7">https://pan.baidu.com/s/18ugpIj7ZJ8ILlqpxRipFMg?pwd=9hc7</a> </p>
-<h2 id="配置EasyConnect"><a href="#配置EasyConnect" class="headerlink" title="配置EasyConnect"></a>配置EasyConnect</h2><p>为了能在校外访问校内服务器，需要配置EasyConnect走代理来连接，这里不推荐直接安装在系统上，而是通过运行在Docker中。这里Docker作为一个沙盒，不让EasyConnect作妖（用这个软件有被监控的风险）。</p>
+<p>这里放出百度网盘的备份：<a target="_blank" rel="noopener" href="https://pan.baidu.com/s/18ugpIj7ZJ8ILlqpxRipFMg?pwd=9hc7">https://pan.baidu.com/s/18ugpIj7ZJ8ILlqpxRipFMg?pwd=9hc7</a></p>
+<h2 id="配置EasyConnect">配置EasyConnect</h2>
+<p>为了能在校外访问校内服务器，需要配置EasyConnect走代理来连接，这里不推荐直接安装在系统上，而是通过运行在Docker中。这里Docker作为一个沙盒，不让EasyConnect作妖（用这个软件有被监控的风险）。</p>
 <p>GitHub上已经有大佬做好了对应的镜像：<a target="_blank" rel="noopener" href="https://github.com/Hagb/docker-easyconnect">Hagb/docker-easyconnect</a></p>
 <p>这里介绍一下我用的版本和安装步骤：</p>
 <ol>
-<li><p>安装Docker</p>
+<li>
+<p>安装Docker</p>
 </li>
-<li><p>拉取镜像<code>docker pull hagb/docker-easyconnect:cli</code>（使用命令行版本，毕竟要图形也没啥用）</p>
+<li>
+<p>拉取镜像<code>docker pull hagb/docker-easyconnect:cli</code>（使用命令行版本，毕竟要图形也没啥用）</p>
 </li>
-<li><p>输入运行命令</p>
+<li>
+<p>输入运行命令</p>
 <p>下面把vpnaddress、username、password提前写好就能直接启动了</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run \<br>  --device /dev/net/tun --cap-add NET_ADMIN -ti \<br>  -p 127.0.0.1:1080:1080 \ <span class="hljs-comment"># 配置SOCKS5代理端口</span><br>  -p 127.0.0.1:8888:8888 \ <span class="hljs-comment"># 配置HTTP代理端口</span><br>  -e EC_VER=7.6.3 \ <span class="hljs-comment"># EasyConnect的版本</span><br>  -e CLI_OPTS=<span class="hljs-string">&quot;-d vpnaddress -u username -p password&quot;</span> \  <span class="hljs-comment"># 账户信息</span><br>  hagb/docker-easyconnect:cli<br></code></pre></td></tr></table></figure></li>
-<li><p>查看代理情况</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">docker run \<br>  --device /dev/net/tun --cap-add NET_ADMIN -ti \<br>  -p 127.0.0.1:1080:1080 \ <span class="hljs-comment"># 配置SOCKS5代理端口</span><br>  -p 127.0.0.1:8888:8888 \ <span class="hljs-comment"># 配置HTTP代理端口</span><br>  -e EC_VER=7.6.3 \ <span class="hljs-comment"># EasyConnect的版本</span><br>  -e CLI_OPTS=<span class="hljs-string">&quot;-d vpnaddress -u username -p password&quot;</span> \  <span class="hljs-comment"># 账户信息</span><br>  hagb/docker-easyconnect:cli<br></code></pre></td></tr></table></figure>
+</li>
+<li>
+<p>查看代理情况</p>
 <p>假如上面直接显示<code>user &quot;xxx&quot; login successfully!</code>那就应该没问题，为了保险再查看一下本机的端口情况：</p>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ sudo netstat -ap | grep 8888<br>tcp 0 0 localhost:8888 0.0.0.0:* LISTEN 6325/docker-proxy<br>$ sudo netstat -ap | grep socks<br>tcp 0 0 localhost:socks 0.0.0.0:* LISTEN 6385/docker-proxy<br></code></pre></td></tr></table></figure></li>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ sudo netstat -ap | grep 8888<br>tcp 0 0 localhost:8888 0.0.0.0:* LISTEN 6325/docker-proxy<br>$ sudo netstat -ap | grep socks<br>tcp 0 0 localhost:socks 0.0.0.0:* LISTEN 6385/docker-proxy<br></code></pre></td></tr></table></figure>
+</li>
 </ol>
-<h2 id="让Remmina走代理连接"><a href="#让Remmina走代理连接" class="headerlink" title="让Remmina走代理连接"></a>让Remmina走代理连接</h2><p>Remmina的GUI里面好像没有专门的设置，但是可以通过修改配置文件得到</p>
+<h2 id="让Remmina走代理连接">让Remmina走代理连接</h2>
+<p>Remmina的GUI里面好像没有专门的设置，但是可以通过修改配置文件得到</p>
 <p>打开Remmina，选中之前建立的链接，在窗口下面会有一个路径（<code>.remmina</code>），这是配置文件，打开它，在末尾加上：</p>
 <figure class="highlight routeros"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs routeros"><span class="hljs-attribute">proxy_hostname</span>=localhost<br><span class="hljs-attribute">proxy_type</span>=socks5<br>proxy_post-1080<br></code></pre></td></tr></table></figure>
-
-<h2 id="让WindTerm走代理连接"><a href="#让WindTerm走代理连接" class="headerlink" title="让WindTerm走代理连接"></a>让WindTerm走代理连接</h2><p>左上角新建会话，在SSH-&gt;代理 中填写相关信息，不用用户和密码。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016165117.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="让WindTerm走代理连接">让WindTerm走代理连接</h2>
+<p>左上角新建会话，在SSH-&gt;代理 中填写相关信息，不用用户和密码。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221016165117.png" srcset="/img/loading.gif" lazyload alt=""></p>
 
             </div>
             <hr>
@@ -561,43 +572,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

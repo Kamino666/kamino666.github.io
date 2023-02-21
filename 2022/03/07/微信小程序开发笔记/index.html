@@ -19,12 +19,12 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="微信小程序开发学习笔记[TOC] 目录结构12345678910111213miniprogram- app.js  整个项目可用的js代码- app.json  整个项目的配置（在这里指定小程序的页面）- sitemap.json  搜索优化- statics  静态资源文件夹，用来放图片等- pages  页面文件夹	- index 一个文件夹对应一个页面		- index.js    单个页">
+  <meta name="description" content="微信小程序开发学习笔记 [TOC] 目录结构 12345678910111213miniprogram- app.js  整个项目可用的js代码- app.json  整个项目的配置（在这里指定小程序的页面）- sitemap.json  搜索优化- statics  静态资源文件夹，用来放图片等- pages  页面文件夹	- index 一个文件夹对应一个页面		- index.js    单">
 <meta property="og:type" content="article">
 <meta property="og:title" content="微信小程序开发学习笔记">
 <meta property="og:url" content="http://blog.kamino.link/2022/03/07/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BC%80%E5%8F%91%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="微信小程序开发学习笔记[TOC] 目录结构12345678910111213miniprogram- app.js  整个项目可用的js代码- app.json  整个项目的配置（在这里指定小程序的页面）- sitemap.json  搜索优化- statics  静态资源文件夹，用来放图片等- pages  页面文件夹	- index 一个文件夹对应一个页面		- index.js    单个页">
+<meta property="og:description" content="微信小程序开发学习笔记 [TOC] 目录结构 12345678910111213miniprogram- app.js  整个项目可用的js代码- app.json  整个项目的配置（在这里指定小程序的页面）- sitemap.json  搜索优化- statics  静态资源文件夹，用来放图片等- pages  页面文件夹	- index 一个文件夹对应一个页面		- index.js    单">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-03-07T07:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-21T09:11:13.250Z">
@@ -267,37 +267,41 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="微信小程序开发学习笔记"><a href="#微信小程序开发学习笔记" class="headerlink" title="微信小程序开发学习笔记"></a>微信小程序开发学习笔记</h1><p>[TOC]</p>
-<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs markdown">miniprogram<br><span class="hljs-bullet">-</span> app.js  整个项目可用的js代码<br><span class="hljs-bullet">-</span> app.json  整个项目的配置（在这里指定小程序的页面）<br><span class="hljs-bullet">-</span> sitemap.json  搜索优化<br><span class="hljs-bullet">-</span> statics  静态资源文件夹，用来放图片等<br><span class="hljs-bullet">-</span> pages  页面文件夹<br><span class="hljs-bullet">	-</span> index 一个文件夹对应一个页面<br><span class="hljs-bullet">		-</span> index.js    单个页面的js代码<br><span class="hljs-bullet">		-</span> index.json  单个页面的配置<br><span class="hljs-bullet">		-</span> index.wxml  微信用的类似html代码<br><span class="hljs-bullet">		-</span> index.wxss  微信用的类似css代码<br><span class="hljs-bullet">	-</span> page2<br><span class="hljs-bullet">	-</span> page3<br></code></pre></td></tr></table></figure>
-
-<h2 id="Wxml"><a href="#Wxml" class="headerlink" title="Wxml"></a>Wxml</h2><ul>
+              <h1>微信小程序开发学习笔记</h1>
+<p>[TOC]</p>
+<h2 id="目录结构">目录结构</h2>
+<figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs markdown">miniprogram<br><span class="hljs-bullet">-</span> app.js  整个项目可用的js代码<br><span class="hljs-bullet">-</span> app.json  整个项目的配置（在这里指定小程序的页面）<br><span class="hljs-bullet">-</span> sitemap.json  搜索优化<br><span class="hljs-bullet">-</span> statics  静态资源文件夹，用来放图片等<br><span class="hljs-bullet">-</span> pages  页面文件夹<br><span class="hljs-bullet">	-</span> index 一个文件夹对应一个页面<br><span class="hljs-bullet">		-</span> index.js    单个页面的js代码<br><span class="hljs-bullet">		-</span> index.json  单个页面的配置<br><span class="hljs-bullet">		-</span> index.wxml  微信用的类似html代码<br><span class="hljs-bullet">		-</span> index.wxss  微信用的类似css代码<br><span class="hljs-bullet">	-</span> page2<br><span class="hljs-bullet">	-</span> page3<br></code></pre></td></tr></table></figure>
+<h2 id="Wxml">Wxml</h2>
+<ul>
 <li><code>&lt;view&gt;</code>：类似html中的<code>&lt;div&gt;</code></li>
 <li><code>&lt;image&gt;</code>：类似html中的<code>&lt;img&gt;</code></li>
 <li><code>&lt;text&gt;</code>：类似html中的<code>&lt;span&gt;</code></li>
 <li><code>&lt;button&gt;</code>：一个按钮</li>
 <li><code>rpx</code>：微信中用来代替px像素的单位</li>
 </ul>
-<h2 id="Wxss"><a href="#Wxss" class="headerlink" title="Wxss"></a>Wxss</h2><p>建议使用flex布局：<a target="_blank" rel="noopener" href="http://static.vgee.cn/static/index.html">Flex 布局示例 (vgee.cn)</a></p>
-<h2 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h2><p>在wxml代码中写双大括号代表是变量：<code>&#123;&#123;message&#125;&#125;</code>，然后在这一页的js代码中的<code>data</code>字典中添加对应的键（如<code>message: &quot;value&quot;</code>）。</p>
+<h2 id="Wxss">Wxss</h2>
+<p>建议使用flex布局：<a target="_blank" rel="noopener" href="http://static.vgee.cn/static/index.html">Flex 布局示例 (vgee.cn)</a></p>
+<h2 id="数据绑定">数据绑定</h2>
+<p>在wxml代码中写双大括号代表是变量：<code>&#123;&#123;message&#125;&#125;</code>，然后在这一页的js代码中的<code>data</code>字典中添加对应的键（如<code>message: &quot;value&quot;</code>）。</p>
 <p>若要在js代码中获取变量值，则<code>this.data.message</code>即可；若要改变变量值，不能直接赋值，要<code>this.setData(&#123; message: &quot;newvalue&quot; &#125;);</code>。</p>
 <p>假如message是一个字典：<code>message=&#123;a: 50, b: &quot;apple&quot;&#125;</code>，要改动apple为banana，使用<code>this.setData(&#123; [&quot;message.b&quot;]: &quot;banana&quot; &#125;)</code>。即假如key比较复杂，那就用方括号和引号括起来。</p>
 <p>同上，假如不在乎性能，也可以先把旧的message保存在变量里，然后改动这个变量，再<code>setData</code>整个字典。</p>
-<h2 id="事件"><a href="#事件" class="headerlink" title="事件"></a>事件</h2><p>假如要在text标签中绑定一个点击事件，则在wxml标签中写：<code>&lt;text bindtap=&quot;func_name&quot; data-id=123&gt;点我&lt;/text&gt;</code>。其中，<code>data-id</code>是参数，会以<code>id</code>作为名字给到<code>func_name</code>函数中，调用形式是<code>e.currentTarget.dataset.id</code>。</p>
-<h2 id="JavaScript闭包"><a href="#JavaScript闭包" class="headerlink" title="JavaScript闭包"></a>JavaScript闭包</h2><figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;alex&quot;</span>, <span class="hljs-string">&quot;bob&quot;</span>, <span class="hljs-string">&quot;charley&quot;</span>])&#123;<br>    <span class="hljs-comment">// js中每一轮i是索引</span><br>    wx.request(&#123;<br>        <span class="hljs-attr">url</span>: <span class="hljs-string">&quot;xxxx&quot;</span>,<br>        <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>)</span>&#123;<br>			<span class="hljs-built_in">console</span>.log(i);  <span class="hljs-comment">// 此处有bug</span><br>        &#125;<br>    &#125;)<br>&#125;<br></code></pre></td></tr></table></figure>
-
+<h2 id="事件">事件</h2>
+<p>假如要在text标签中绑定一个点击事件，则在wxml标签中写：<code>&lt;text bindtap=&quot;func_name&quot; data-id=123&gt;点我&lt;/text&gt;</code>。其中，<code>data-id</code>是参数，会以<code>id</code>作为名字给到<code>func_name</code>函数中，调用形式是<code>e.currentTarget.dataset.id</code>。</p>
+<h2 id="JavaScript闭包">JavaScript闭包</h2>
+<figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;alex&quot;</span>, <span class="hljs-string">&quot;bob&quot;</span>, <span class="hljs-string">&quot;charley&quot;</span>])&#123;<br>    <span class="hljs-comment">// js中每一轮i是索引</span><br>    wx.request(&#123;<br>        <span class="hljs-attr">url</span>: <span class="hljs-string">&quot;xxxx&quot;</span>,<br>        <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>)</span>&#123;<br>			<span class="hljs-built_in">console</span>.log(i);  <span class="hljs-comment">// 此处有bug</span><br>        &#125;<br>    &#125;)<br>&#125;<br></code></pre></td></tr></table></figure>
 <p>如图，我们想用<code>wx.request</code>在每一轮发起一次请求，假如成功就输出索引。然而，<code>wx.request</code>是一个异步请求，发生在循环结束之后，而结束后变量<code>i</code>的值会变成2，所以这个代码结果会输出三个2。</p>
 <p>解决方法就是对变量进行闭包，即把<code>i</code>变成局部变量：</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;alex&quot;</span>, <span class="hljs-string">&quot;bob&quot;</span>, <span class="hljs-string">&quot;charley&quot;</span>])&#123;<br>    <span class="hljs-comment">// js中每一轮i是索引</span><br>    <span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">func</span>(<span class="hljs-params">data</span>)</span>&#123;<br>     	wx.request(&#123;<br>            <span class="hljs-attr">url</span>: <span class="hljs-string">&quot;xxxx&quot;</span>,<br>            <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>)</span>&#123;<span class="hljs-built_in">console</span>.log(i);&#125;<br>        &#125;)   <br>    &#125;<br>    func(i);<br>&#125;<br><span class="hljs-comment">// 或者使用更简洁的语法</span><br><span class="hljs-keyword">for</span> (<span class="hljs-keyword">var</span> i <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;alex&quot;</span>, <span class="hljs-string">&quot;bob&quot;</span>, <span class="hljs-string">&quot;charley&quot;</span>])&#123;<br>    (<span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">data</span>)</span>&#123;wx.request(...)&#125;)(i)<br>&#125;<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="微信的一些函数"><a href="#微信的一些函数" class="headerlink" title="微信的一些函数"></a>微信的一些函数</h2><h3 id="wx-navigateTo"><a href="#wx-navigateTo" class="headerlink" title="wx.navigateTo"></a>wx.navigateTo</h3><p>跳转到不是tab_bar的页面。</p>
+<h2 id="微信的一些函数">微信的一些函数</h2>
+<h3 id="wx-navigateTo">wx.navigateTo</h3>
+<p>跳转到不是tab_bar的页面。</p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-comment">// 跳转</span><br>wx.navigateTo(&#123;<br>    <span class="hljs-attr">url</span>: <span class="hljs-string">&#x27;/pages/redirect/redirect&#x27;</span>,<br>&#125;)<br></code></pre></td></tr></table></figure>
-
-<h3 id="wx-getUserProfile"><a href="#wx-getUserProfile" class="headerlink" title="wx.getUserProfile"></a>wx.getUserProfile</h3><p>获取用户信息。<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html">wx.getUserProfile(Object object) | 微信开放文档 (qq.com)</a></p>
+<h3 id="wx-getUserProfile">wx.getUserProfile</h3>
+<p>获取用户信息。<a target="_blank" rel="noopener" href="https://developers.weixin.qq.com/miniprogram/dev/api/open-api/user-info/wx.getUserProfile.html">wx.getUserProfile(Object object) | 微信开放文档 (qq.com)</a></p>
 <figure class="highlight javascript"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs javascript"><span class="hljs-keyword">var</span> home = <span class="hljs-built_in">this</span>;<br>wx.getUserProfile(&#123;<br>    <span class="hljs-attr">success</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>)</span>&#123;<br>        <span class="hljs-built_in">console</span>.log(res.userInfo);<br>        home.setData(&#123; <span class="hljs-attr">user_id</span>: res.userInfo.nickName,<br>                      <span class="hljs-attr">user_avator</span>: res.userInfo.avatarUrl&#125;)<br>    &#125;,<br>    <span class="hljs-attr">fail</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">res</span>)</span>&#123;<br>    	<span class="hljs-built_in">console</span>.log(<span class="hljs-string">&quot;获取用户信息失败&quot;</span>, res);<br>    &#125;,<br>    <span class="hljs-attr">desc</span>: <span class="hljs-string">&quot;测试使用&quot;</span><br>&#125;)<br></code></pre></td></tr></table></figure>
-
-<h3 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h3><ul>
+<h3 id="登陆">登陆</h3>
+<ul>
 <li>openId：针对一个小程序的每一个用户都不同的ID。一个用户对于不同小程序会有不同的id。</li>
 <li>session_key：这个用户和你的session的密钥，可能在一定时间后过期（不能在wx中用），这个过期时间也可以开发者自己再定一个。</li>
 </ul>
@@ -557,43 +561,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

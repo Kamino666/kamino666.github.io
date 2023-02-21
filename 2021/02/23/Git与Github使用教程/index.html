@@ -38,8 +38,8 @@
 <meta property="article:published_time" content="2021-02-23T07:10:00.000Z">
 <meta property="article:modified_time" content="2022-07-21T09:17:54.967Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Git">
 <meta property="article:tag" content="GitHub">
+<meta property="article:tag" content="Git">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150705.png">
   
@@ -278,18 +278,21 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Git与GitHub使用教程"><a href="#Git与GitHub使用教程" class="headerlink" title="Git与GitHub使用教程"></a>Git与GitHub使用教程</h1><p>这篇文章是我的学习笔记，借鉴了各种博主的资料和自己的理解整理而成。</p>
+              <h1>Git与GitHub使用教程</h1>
+<p>这篇文章是我的学习笔记，借鉴了各种博主的资料和自己的理解整理而成。</p>
 <p>本文从0开始完整介绍Git和GitHub，所以比较长，请灵活运用大纲和搜索功能。</p>
-<h1 id="Git"><a href="#Git" class="headerlink" title="Git"></a>Git</h1><h2 id="Git是什么？"><a href="#Git是什么？" class="headerlink" title="Git是什么？"></a>Git是什么？</h2><p><a target="_blank" rel="noopener" href="https://www.runoob.com/manual/git-guide/">参考</a></p>
+<h1>Git</h1>
+<h2 id="Git是什么？">Git是什么？</h2>
+<p><a target="_blank" rel="noopener" href="https://www.runoob.com/manual/git-guide/">参考</a></p>
 <p>Git是目前世界上最先进的<strong>分布式版本控制系统</strong>。</p>
 <p>版本控制的目录叫做一个<strong>仓库(repository)</strong></p>
 <p>你的本地仓库由 Git 维护的三棵“树”组成。第一个是你的 <strong>工作目录</strong>，它持有实际文件；第二个是 <strong>暂存区（Index）</strong>，它像个缓存区域，临时保存你的改动；最后是 <strong>HEAD</strong>，它指向你最后一次提交的结果。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150705.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150705.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>使用Git的工作流程如下：</p>
 <p>在本地修改、保存之后，通过 <strong>推送(Push)</strong> 操作来提交到远程仓库。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150713.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150713.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>与其他版本控制系统一样，Git还提供 <strong>分支(branch)</strong> 功能，该功能允许你从开发仓库的主线上分离出一个版本，然后在不影响主线的情况下继续工作。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150717.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150717.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <blockquote>
 <p>版本控制系统：</p>
 <p>小明正在写一篇文章，他想删除一个段落，过了一会后，他突然发现他想要回这个段落，于是他苦逼地再打了一遍。</p>
@@ -300,51 +303,58 @@
 <p>分布式：</p>
 <p><a target="_blank" rel="noopener" href="https://www.liaoxuefeng.com/wiki/896043488029600/896202780297248">参考资料</a></p>
 <p>下图是集中式系统，中央服务器就好比是一个图书馆，你要改一本书，必须先从图书馆借出来，然后回到家自己改，改完了，再放回图书馆。集中式版本控制系统最大的毛病就是必须联网才能工作，如果在局域网内还好，带宽够大，速度够快，可如果在互联网上，遇到网速慢的话，可能提交一个10M的文件就需要5分钟，这还不得把人给憋死啊。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150726.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150726.jpeg" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>下图是分布式系统，首先，分布式版本控制系统根本没有“中央服务器”，每个人的电脑上都是一个完整的版本库，这样，你工作的时候，就不需要联网了，因为版本库就在你自己的电脑上。既然每个人电脑上都有一个完整的版本库，那多个人如何协作呢？比方说你在自己电脑上改了文件A，你的同事也在他的电脑上改了文件A，这时，你们俩之间只需把各自的修改推送给对方，就可以互相看到对方的修改了。</p>
 <p>分布式版本控制系统通常也有一台充当“中央服务器”的电脑，但这个服务器的作用仅仅是用来方便“交换”大家的修改，没有它大家也一样干活，只是交换修改不方便而已。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150727.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150727.jpeg" srcset="/img/loading.gif" lazyload alt=""></p>
 </blockquote>
-<h2 id="使用Git"><a href="#使用Git" class="headerlink" title="使用Git"></a>使用Git</h2><h3 id="使用之前"><a href="#使用之前" class="headerlink" title="使用之前"></a>使用之前</h3><p>Git是一个跨平台的开源软件。<a target="_blank" rel="noopener" href="https://git-scm.com/">官网</a>没有被墙而且速度很快，直接下载安装即可。</p>
+<h2 id="使用Git">使用Git</h2>
+<h3 id="使用之前">使用之前</h3>
+<p>Git是一个跨平台的开源软件。<a target="_blank" rel="noopener" href="https://git-scm.com/">官网</a>没有被墙而且速度很快，直接下载安装即可。</p>
 <p>Linux系统可以使用<code>sudo apt-get install git</code>安装</p>
 <p>下载安装后，打开终端或Git Bash，我们接下来要配置Git。</p>
 <p>配置要设置你的身份，身份由用户名和邮箱组成，通过一下命令设置：</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">$</span><span class="bash"> git config --global user.name <span class="hljs-string">&quot;你的名字&quot;</span></span><br><span class="hljs-meta">$</span><span class="bash"> git config --global user.email <span class="hljs-string">&quot;你的邮箱&quot;</span></span><br></code></pre></td></tr></table></figure>
-
-<h3 id="命令介绍"><a href="#命令介绍" class="headerlink" title="命令介绍"></a>命令介绍</h3><p>最常用的命令是<code>push</code> <code>commit</code> <code>pull</code> <code>clone</code></p>
+<h3 id="命令介绍">命令介绍</h3>
+<p>最常用的命令是<code>push</code> <code>commit</code> <code>pull</code> <code>clone</code></p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs shell">git init  # 初始化一个仓库，在此命令之前要从终端进入你想记录更改的那个工作目标里<br><br>git clone &lt;repo&gt;  # 克隆一个仓库 repo是仓库地址<br>git clone &lt;repo&gt; &lt;path&gt; # 克隆一个仓库 path是本地保存路径<br>git clone https://github.com/sample/hello.git  # 克隆github上一个仓库的写法<br><br>git add &lt;文件名&gt;  # 添加某个文件到仓库缓存区<br>git add *  # 添加所有文件<br><br>git commit -m &quot;代码提交备注信息&quot;  # 提交你的代码附带一段备注，你的改动只提交到了HEAD而不是远程仓库。<br><br>git push origin &lt;分支名字&gt;  # 将本地HEAD提交到远程仓库，这个操作叫做push<br>git push origin master  # 每个仓库有一条主线分支叫做master<br><br>git remote add origin &lt;server&gt;  # 假如你不是通过clone来创建仓库的，那么你需要用这个命令来连接到某个远程服务器<br><br>git log  # 查看修改的日志<br><br>git checkout -b &lt;分支名字&gt;  # 创建一个分支并切换过去，分支也要push才能在远程仓库中被看见<br>git checkout &lt;分支名字&gt;   # 切换分支<br>git branch -d &lt;分支名字&gt;  # 删除分支<br><br>git pull  # 更新你的本地仓库，这个操作叫做pull<br>git merge &lt;分支名字&gt;  # 将其他分支合并到你的分支<br><br>git checkout -- &lt;文件名&gt;  # 将尚未commit的内容放弃退回到上一个版本<br>git reset --hard HEAD^  # 退回到上一个版本 HEAD^^为上上个版本 HEAD~n 为上n个版本<br>git reset --hard &lt;commit id&gt;  # 每一次commit有一个单独的ID，通过此命令到相应版本<br><span class="hljs-meta">#</span><span class="bash"> 这两个命令让你放弃所有尚未push的内容，并获取远程仓库上最新的版本</span><br>git fetch origin<br>git reset --hard origin/master<br></code></pre></td></tr></table></figure>
-
 <p><a target="_blank" rel="noopener" href="https://www.runoob.com/git/git-basic-operations.html">更多操作</a></p>
-<h1 id="GitHub"><a href="#GitHub" class="headerlink" title="GitHub"></a>GitHub</h1><p>GitHub是一个面向开源及私有软件项目的托管平台。也就是远程仓库存放的地方。18年被微软收购，目前微软、谷歌以及很多开源项目的代码都托管在改平台。GitHub是最好的代码托管平台。</p>
+<h1>GitHub</h1>
+<p>GitHub是一个面向开源及私有软件项目的托管平台。也就是远程仓库存放的地方。18年被微软收购，目前微软、谷歌以及很多开源项目的代码都托管在改平台。GitHub是最好的代码托管平台。</p>
 <p>界面大概长这样23333</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150732.webp" srcset="/img/loading.gif" lazyload alt="个人界面"></p>
-<h2 id="使用之前-1"><a href="#使用之前-1" class="headerlink" title="使用之前"></a>使用之前</h2><p>你得先注册一个GitHub账号。<a target="_blank" rel="noopener" href="https://github.com/">官网</a></p>
+<h2 id="使用之前-v2">使用之前</h2>
+<p>你得先注册一个GitHub账号。<a target="_blank" rel="noopener" href="https://github.com">官网</a></p>
 <p>然后你要创建一个<strong>SSH Key</strong>，这个秘钥用来保证没有别人来瞎改你的仓库，是你的凭证。</p>
 <p>打开终端（git bash）输入下面代码</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh-keygen -t rsa -C <span class="hljs-string">&quot;你的邮箱&quot;</span><br></code></pre></td></tr></table></figure>
-
 <p>然后在你的用户主目录(Windows下是C:\users\你的用户名)下找到.ssh目录。</p>
 <p>里面有<code>id_rsa</code>和<code>id_rsa.pub</code>两个文件，公钥是<code>.pub</code>，打开它，复制里面的内容。</p>
 <p>打开Github的Account settings，在SSH keys里面粘贴。然后添加Key。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150738.webp" srcset="/img/loading.gif" lazyload></p>
-<h2 id="创建远程仓库-repo"><a href="#创建远程仓库-repo" class="headerlink" title="创建远程仓库(repo)"></a>创建远程仓库(repo)</h2><p>在你的用户界面下的Repositories点new。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223152527.webp" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150742.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150738.webp" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="创建远程仓库-repo">创建远程仓库(repo)</h2>
+<p>在你的用户界面下的Repositories点new。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223152527.webp" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223150742.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>Repository name是你仓库的名字。之后是对仓库的描述以及可见性，现在Github上私有库已经免费了，所以这两个随便选。其他暂时默认，点击创建。</p>
 <p>然后你就有了一个远程仓库！</p>
 <p>此时网页会写的很清楚这个仓库的地址，之后你就可以用命令行来git了！</p>
-<h2 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h2><p>GitHub有客户端，搜索下载就行了，然后登陆，这样你就不用手动输入命令了。</p>
-<h2 id="README-md"><a href="#README-md" class="headerlink" title="README.md"></a>README.md</h2><p>别人从网页打开你的仓库会有一个初始化文档，让别人知道你这个仓库是用来干什么的，要如何使用你的代码。这些通常用markdown格式书写，并且命名为README.md放在根目录。这个文件会在网站上自动显示。<a target="_blank" rel="noopener" href="https://guides.github.com/features/mastering-markdown/">github官方教程</a></p>
+<h2 id="客户端">客户端</h2>
+<p>GitHub有客户端，搜索下载就行了，然后登陆，这样你就不用手动输入命令了。</p>
+<h2 id="README-md"><a target="_blank" rel="noopener" href="http://README.md">README.md</a></h2>
+<p>别人从网页打开你的仓库会有一个初始化文档，让别人知道你这个仓库是用来干什么的，要如何使用你的代码。这些通常用markdown格式书写，并且命名为README.md放在根目录。这个文件会在网站上自动显示。<a target="_blank" rel="noopener" href="https://guides.github.com/features/mastering-markdown/">github官方教程</a></p>
 <p>GitHub支持拓展语法：</p>
-<p><strong>emoji</strong>：<code>:blush:</code>:blush:</p>
+<p><strong>emoji</strong>：<code>:blush:</code>😊</p>
 <p><a target="_blank" rel="noopener" href="https://www.webfx.com/tools/emoji-cheat-sheet/">所有emoji代码</a></p>
 <p><strong>@用户</strong>：<code>@username</code>可以@别的用户</p>
-<p><strong>badge</strong>：项目徽章。<a target="_blank" rel="noopener" href="http://www.cocoachina.com/articles/19256">教程</a>   <a target="_blank" rel="noopener" href="https://shields.io/">Shield.io</a> </p>
+<p><strong>badge</strong>：项目徽章。<a target="_blank" rel="noopener" href="http://www.cocoachina.com/articles/19256">教程</a>   <a target="_blank" rel="noopener" href="https://shields.io/">Shield.io</a></p>
 <p><strong>标准写法</strong>：<a target="_blank" rel="noopener" href="https://github.com/RichardLitt/standard-readme">Standard Readme</a></p>
-<h2 id="issues"><a href="#issues" class="headerlink" title="issues"></a>issues</h2><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Wuzihui___/article/details/79952068">教程</a></p>
+<h2 id="issues">issues</h2>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/Wuzihui___/article/details/79952068">教程</a></p>
 <p>GitHub为开发者提供了许多便于开发的功能，其中，issues功能被用来追踪各种想法，增强功能，任务，bug等。</p>
 <p>项目维护者可以通过Issues来组织需要完成的任务，例如增加新特性或者审计一个已经上线的功能。同时，还可以将Issues关联某些pull request，一旦合并了某个pull request，这个issue会被自动关闭。同时，你可以将issues添加到看板，也可以将看板的任务转化为issue。</p>
-<h2 id="commit-log"><a href="#commit-log" class="headerlink" title="commit log"></a>commit log</h2><p>feat: 新功能</p>
+<h2 id="commit-log">commit log</h2>
+<p>feat: 新功能</p>
 <p>change：需求变更</p>
 <p>fix：缺陷修复</p>
 <p>test：修改测试代码</p>
@@ -368,9 +378,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Git/">Git</a>
-                    
                       <a class="hover-with-bg" href="/tags/GitHub/">GitHub</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Git/">Git</a>
                     
                   </div>
                 
@@ -609,43 +619,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

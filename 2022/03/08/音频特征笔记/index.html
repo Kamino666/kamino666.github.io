@@ -19,12 +19,12 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="基本频率 - 维基百科，自由的百科全书 (wikipedia.org) Fundamental Frequency - YouTube  乐音特征基音频率 (Fundamental frequency)指的是自然声音中频率最低的正弦波。自然声能被分解为许多正弦波，而频率最低的叫做基音，它是区别音高的主要元素，决定了旋律。例如下面这张图是三个音标的波形，在0~.01区间和.01~.02区间波形是差">
+  <meta name="description" content="基本频率 - 维基百科，自由的百科全书 (wikipedia.org) Fundamental Frequency - YouTube  乐音特征 基音频率 (Fundamental frequency)指的是自然声音中频率最低的正弦波。自然声能被分解为许多正弦波，而频率最低的叫做基音，它是区别音高的主要元素，决定了旋律。例如下面这张图是三个音标的波形，在0~.01区间和.01~.02区间波形是">
 <meta property="og:type" content="article">
 <meta property="og:title" content="音频特征笔记">
 <meta property="og:url" content="http://blog.kamino.link/2022/03/08/%E9%9F%B3%E9%A2%91%E7%89%B9%E5%BE%81%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="基本频率 - 维基百科，自由的百科全书 (wikipedia.org) Fundamental Frequency - YouTube  乐音特征基音频率 (Fundamental frequency)指的是自然声音中频率最低的正弦波。自然声能被分解为许多正弦波，而频率最低的叫做基音，它是区别音高的主要元素，决定了旋律。例如下面这张图是三个音标的波形，在0~.01区间和.01~.02区间波形是差">
+<meta property="og:description" content="基本频率 - 维基百科，自由的百科全书 (wikipedia.org) Fundamental Frequency - YouTube  乐音特征 基音频率 (Fundamental frequency)指的是自然声音中频率最低的正弦波。自然声能被分解为许多正弦波，而频率最低的叫做基音，它是区别音高的主要元素，决定了旋律。例如下面这张图是三个音标的波形，在0~.01区间和.01~.02区间波形是">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220308114316.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220308115933.png">
@@ -274,11 +274,12 @@
 <p><a target="_blank" rel="noopener" href="https://zh.wikipedia.org/wiki/%E5%9F%BA%E6%9C%AC%E9%A0%BB%E7%8E%87">基本频率 - 维基百科，自由的百科全书 (wikipedia.org)</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=Zt5Fip_ALM4">Fundamental Frequency - YouTube</a></p>
 </blockquote>
-<h1 id="乐音特征"><a href="#乐音特征" class="headerlink" title="乐音特征"></a>乐音特征</h1><p>基音频率 (Fundamental frequency)指的是自然声音中频率最低的正弦波。自然声能被分解为许多正弦波，而频率最低的叫做基音，它是区别音高的主要元素，决定了旋律。例如下面这张图是三个音标的波形，在<code>0~.01</code>区间和<code>.01~.02</code>区间波形是差不多的，所以基音频率为100Hz。</p>
+<h1>乐音特征</h1>
+<p>基音频率 (Fundamental frequency)指的是自然声音中频率最低的正弦波。自然声能被分解为许多正弦波，而频率最低的叫做基音，它是区别音高的主要元素，决定了旋律。例如下面这张图是三个音标的波形，在<code>0~.01</code>区间和<code>.01~.02</code>区间波形是差不多的，所以基音频率为100Hz。</p>
 <p>失谐度 (Inharmonicity) 是指泛音频率偏离基频的整数倍的程度。把音频分成很多正弦波之后，除了基音频率都是泛音频率。</p>
 <p>乐音特征主要用来分析乐器、对乐器进行调音。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220308114316.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220308115933.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220308114316.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220308115933.png" srcset="/img/loading.gif" lazyload alt=""></p>
 
             </div>
             <hr>
@@ -537,43 +538,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

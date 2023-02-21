@@ -267,20 +267,17 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Linux常用打包、压缩、解压指令"><a href="#Linux常用打包、压缩、解压指令" class="headerlink" title="Linux常用打包、压缩、解压指令"></a>Linux常用打包、压缩、解压指令</h1><h2 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h2><p><strong>打包</strong>是指将一大堆文件或目录打包为一个文件。</p>
+              <h1>Linux常用打包、压缩、解压指令</h1>
+<h2 id="基本概念">基本概念</h2>
+<p><strong>打包</strong>是指将一大堆文件或目录打包为一个文件。</p>
 <p><strong>压缩</strong>是将一个大文件通过某些压缩算法压缩为一个更小的文件。</p>
 <p>Linux很多压缩程序只能针对一个文件进行压缩，要压缩很多文件时，要<strong>先打包再压缩。</strong></p>
-<h2 id="tar命令"><a href="#tar命令" class="headerlink" title="tar命令"></a>tar命令</h2><p>tar命令可以为Linux的文件和目录创建档案。tar可以进行打包、压缩、解压三种操作。</p>
+<h2 id="tar命令">tar命令</h2>
+<p>tar命令可以为Linux的文件和目录创建档案。tar可以进行打包、压缩、解压三种操作。</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># tar命令基本格式</span></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment"># 必须包含-f 以及解包或者打包或者查看的指令</span></span><br>tar [指令] [参数（若需要）] <br><span class="hljs-meta">   #</span><span class="bash"><span class="hljs-comment"># 下面这两行命令是等价的</span></span><br>tar -c -v -f new.tar /home/tmp/file/<br>tar -cvf new.tar /home/tmp/file/<br></code></pre></td></tr></table></figure>
-
-
-
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## 常用参数</span></span> <br>-c  # create 建立新文件（打包或者压缩）<br>-x  # extract 解压，解包<br>-t  # list 列出备份文件内容<br>-r  # renew 添加文件到已经压缩的文件<br>-f  # file 作为最后一个参数 ，表示新建的文件名，可以随意指定后缀名，但最好用指定的名字。Linux不根据后缀名识别文件类型。<br><br>-v  # verbose 打包或者解压时显示详细信息<br>-C  # 大写的C 解压、解包到某特定目录<br><span class="hljs-meta"></span><br><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## 压缩参数</span></span><br>-z  # 用gzip命令处理  .tar.gz<br>-j  # 用bzip2命令处理  .tar.bz2<br><br>tar -cvf new.tar ./file/  # 将./file/目录下所有文件打包为new.tar，并保存在当前目录，过程显示详细信息<br>tar -cvf new.tar ./file1/ ./file2/  # 可以一次包含多个目录<br>tar -tvf new.tar  # 不解包的情况下查看包内文件信息<br>tar -xvf new.tar -C ./file3/ # 解压new,tar到另一个目录<br>tar -rvf new.tar ./file4/  # 向new.tar中加入新的目录<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="其他压缩命令"><a href="#其他压缩命令" class="headerlink" title="其他压缩命令"></a>其他压缩命令</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## zip .zip</span></span><br>zip new.zip ./file  # 压缩<br>-m  # 压缩后删除源文件<br>-q  # 安静模式<br>-o  # 将文件最新变动时间更新<br>-r  # 压缩目录<br>-S  # 大写S 包含系统和隐藏文件<br>-[1-9]  # 压缩效率 1表示最快<br>unzip new.zip  # 解压<br>-n  # 解压时不覆盖原有文件<br>-o  # 解压后覆盖原有文件<br>-q  # 安静模式<br>-P [密码]  # 解压密码<br>-d [目录]  # 选择解压目录<br><br>gunzip xxx.gz  # gunzip解压gz文件<br></code></pre></td></tr></table></figure>
-
+<h2 id="其他压缩命令">其他压缩命令</h2>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"><span class="hljs-comment">## zip .zip</span></span><br>zip new.zip ./file  # 压缩<br>-m  # 压缩后删除源文件<br>-q  # 安静模式<br>-o  # 将文件最新变动时间更新<br>-r  # 压缩目录<br>-S  # 大写S 包含系统和隐藏文件<br>-[1-9]  # 压缩效率 1表示最快<br>unzip new.zip  # 解压<br>-n  # 解压时不覆盖原有文件<br>-o  # 解压后覆盖原有文件<br>-q  # 安静模式<br>-P [密码]  # 解压密码<br>-d [目录]  # 选择解压目录<br><br>gunzip xxx.gz  # gunzip解压gz文件<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -537,43 +534,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -1,0 +1,664 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="使用Stable Diffusion的各种方法、资源、技巧，尽在【魔咒百科】。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="使用Stable Diffusion的各种方法、资源、技巧，尽在【魔咒百科】。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Stable Diffusion 魔咒百科">
+<meta property="og:url" content="http://blog.kamino.link/2023/02/19/Stable%20Diffusion%E9%AD%94%E5%AF%BC%E4%B9%A6/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="使用Stable Diffusion的各种方法、资源、技巧，尽在【魔咒百科】。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://github.com/AUTOMATIC1111/stable-diffusion-webui/raw/master/screenshot.png">
+<meta property="og:image" content="c:%5CUsers%5CKamino%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20230219145949189.png">
+<meta property="article:published_time" content="2023-02-19T06:06:00.000Z">
+<meta property="article:modified_time" content="2023-02-19T07:50:00.245Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="AIGC">
+<meta property="article:tag" content="AI绘画">
+<meta property="article:tag" content="Stable Diffusion">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://github.com/AUTOMATIC1111/stable-diffusion-webui/raw/master/screenshot.png">
+  
+  <title>Stable Diffusion 魔咒百科 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="Stable Diffusion 魔咒百科">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-02-19 14:06" pubdate>
+        2023年2月19日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">Stable Diffusion 魔咒百科</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年2月19日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>Stable Diffusion 魔咒百科</h1>
+<p>使用Stable Diffusion的各种方法、资源、技巧，尽在【魔咒百科】。</p>
+<h2 id="WebUI安装">WebUI安装</h2>
+<p>WebUI是基于Gradio开发的浏览器应用，是目前本地搭建AI绘画环境的<strong>首选</strong>。这个库在GitHub上开源：<a target="_blank" rel="noopener" href="https://github.com/AUTOMATIC1111/stable-diffusion-webui">AUTOMATIC1111/stable-diffusion-webui</a>，</p>
+<p>假如你是用自己的电脑，那B站的<code>秋叶aaaki</code>佛祖提供了Windows下的全套安装教程（完全面向小白，甚至不需要会科学上网）：</p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17d4y1C73R/?spm_id_from=333.999.0.0&amp;vd_source=a7630bff3dbc42209b062be4caa9c503">包含各种东西的整合包</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1ne4y1V7QU/?spm_id_from=333.999.0.0&amp;vd_source=a7630bff3dbc42209b062be4caa9c503">拥有图形界面的启动器</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1Wo4y1i77v/?spm_id_from=333.999.0.0&amp;vd_source=a7630bff3dbc42209b062be4caa9c503">ControlNet插件安装</a></li>
+</ol>
+<p>假如你是租服务器之类使用的是Linux环境，那么会稍微麻烦一些，不适合小白，最开始务必准备好科学上网的环境，可以看我另一篇博客<a href="https://blog.kamino.link/2022/05/01/Linux%E9%85%8D%E7%BD%AEClash/">Linux配置Clash代理 - Kamino’s Blog</a>。</p>
+<ol>
+<li>
+<p>首先也是下载秋叶的整合包【<a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV17d4y1C73R/?spm_id_from=333.999.0.0&amp;vd_source=a7630bff3dbc42209b062be4caa9c503">包含各种东西的整合包</a>】，由于WebUI会持续更新，需要先更新一下库<code>git pull</code>。</p>
+<blockquote>
+<p>git没有就装一个……</p>
+</blockquote>
+</li>
+<li>
+<p>然后使用<strong>virtualenv</strong>创建一个Python3.10.6的虚拟环境，然后手动安装好PyTorch的GPU版本。</p>
+<blockquote>
+<p>我用conda虚拟环境安装时会有mkl的报错无法解决</p>
+<p>PyTorch手动安装更不会出现识别不到GPU的bug</p>
+<p>Python要3.10！</p>
+<p>虚拟环境位置随意</p>
+<p>可以趁机配置好pip的清华源</p>
+</blockquote>
+</li>
+<li>
+<p>接下来配置并安装WebUI所需的各种包。</p>
+<p>点开<code>webui-user.sh</code>，修改其中python_cmd参数为虚拟环境的python路径，比如<code>venv/bin/python</code>，并修改venv_dir参数为python的环境路径，比如<code>venv</code>。</p>
+<p>点开<code>webui.sh</code>，在<code>export GIT=&quot;git&quot;</code>这边后面随便新起一行，输入下面这两回行来配置代理。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GIT&#125;</span>&quot;</span> config --global http.proxy http://127.0.0.1:7890<br><span class="hljs-string">&quot;<span class="hljs-variable">$&#123;GIT&#125;</span>&quot;</span> config --global https.proxy https://127.0.0.1:7890<br></code></pre></td></tr></table></figure>
+<p>运行<code>webui.sh</code>（这一块忘了最后是会怎么样了，好像假如一切顺利就会启动）。</p>
+</li>
+<li>
+<p>自定义启动脚本</p>
+<p>新建一个脚本<code>start_script.sh</code>，写入下面这些代码：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">export</span> TRANSFORMERS_CACHE=.cache/huggingface/transformers<br><span class="hljs-built_in">export</span> XDG_CACHE_HOME=.cache<br><span class="hljs-built_in">export</span> MATPLOTLIBRC=.cache<br><br><span class="hljs-built_in">export</span> GIT=/usr/bin/git<br><span class="hljs-built_in">export</span> GIT_PYTHON_GIT_EXECUTABLE=/usr/bin/git<br><span class="hljs-built_in">export</span> PYTHON=venv/bin/python<br><span class="hljs-built_in">export</span> COMMANDLINE_ARGS=<span class="hljs-string">&quot;--deepdanbooru&quot;</span><br><br>CUDA_VISIBLE_DEVICES=3 <span class="hljs-variable">$PYTHON</span> launch.py<br></code></pre></td></tr></table></figure>
+<p>其中GIT开头的是是git的路径，我直接用了机器自带的，PYTHON是虚拟环境的python路径，COMMANDLINE_ARGS是额外的启动参数，CUDA_VISIBLE_DEVICES是指定用的显卡ID。</p>
+</li>
+</ol>
+<p>假如一切顺利的话，点开就类似于下面这个状态啦（应该会是汉化过的界面），随便输一点prompt点击生成试试会不会报错吧~</p>
+<p><img src="https://github.com/AUTOMATIC1111/stable-diffusion-webui/raw/master/screenshot.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="界面功能解释">界面功能解释</h2>
+<p><img src="C:%5CUsers%5CKamino%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20230219145949189.png" srcset="/img/loading.gif" lazyload alt="image-20230219145949189"></p>
+<p>如上图所示，是WebUI的开始界面</p>
+<p>假如在本机部署，那最顶上的ip就应该是<code>127.0.0.1:7890</code>。</p>
+<p>之后往下是选择Stable Diffusion模型的地方，模型路径为<code>model/Stable-diffusion</code></p>
+<p>接下来的选项卡有很多，文生图、图生图等，接下来对重要的进行介绍：</p>
+<ol>
+<li>文生图、图生图：常用的功能，无需多解释</li>
+<li>更多：原文Extra，感觉有点翻译错了，应该是超分辨率的意思</li>
+<li>图片信息：生成的图片中会包含一些元信息，在这里可以加载解析</li>
+<li>模型合并、训练、创建美术风格：（高级用法）</li>
+<li>图库浏览器：看图的</li>
+<li>词元分析器：分析prompt的Embedding的</li>
+<li>设置：WebUI的各种详细的设置</li>
+<li>扩展：插件</li>
+</ol>
+<p>文生图界面下面有各种参数可以调，最开始的提示词和反向提示词相信大家都听过，把想要的词放进提示词的框，不想要的放进反向提示词的框，也就是<code>咒语</code>23333。右边生成按钮下面有五个</p>
+<h2 id="资源汇总">资源汇总</h2>
+<h3 id="模型、Embedding、LoRA等下载">模型、Embedding、LoRA等下载</h3>
+<ul>
+<li>国外专门的社区（面向一般用户）：<a target="_blank" rel="noopener" href="https://civitai.com/">Civitai</a></li>
+<li>HuggingFace的Text2Image模型区（面向开发人员）：<a target="_blank" rel="noopener" href="https://huggingface.co/models?pipeline_tag=text-to-image&amp;sort=downloads">Models - Hugging Face</a></li>
+<li>Reddit论坛的SD专区：<a target="_blank" rel="noopener" href="https://www.reddit.com/r/StableDiffusion/">StableDiffusion (reddit.com)</a></li>
+<li>国内AI绘画分享社区（凉了）：<a target="_blank" rel="noopener" href="https://www.aivisual.cn/">AI Visual——AI 绘画分享社区</a></li>
+</ul>
+<h3 id="Tag生成（魔导书）">Tag生成（魔导书）</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://thereisnospon.github.io/NovelAiTag/">NovelAI魔导书 (thereisnospon.github.io)</a></li>
+<li><a target="_blank" rel="noopener" href="https://wolfchen.top/tag/">NovelAI tag在线生成器 (wolfchen.top)</a></li>
+<li><a target="_blank" rel="noopener" href="https://docs.qq.com/doc/DWHl3am5Zb05QbGVs?dver=">元素法典——Novel AI 元素魔法全收录 (qq.com)</a></li>
+</ul>
+<h3 id="其他工具">其他工具</h3>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://spell.novelai.dev/">Stable Diffusion 法术解析 (novelai.dev)</a></li>
+</ul>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/AIGC/">AIGC</a>
+                    
+                      <a class="hover-with-bg" href="/tags/AI%E7%BB%98%E7%94%BB/">AI绘画</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Stable-Diffusion/">Stable Diffusion</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/02/21/Stable%20Diffusion%E5%8E%9F%E7%90%86%E8%A7%A3%E6%9E%90/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Stable Diffusion 扩散模型 由浅入深 原理解析+公式推导</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/02/18/Stable%20Diffusion/">
+                        <span class="hidden-mobile">Stable Diffusion 扩散模型原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

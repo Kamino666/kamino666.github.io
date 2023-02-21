@@ -215,7 +215,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.2k 字
+      1.3k 字
     </span>
   
 
@@ -270,18 +270,19 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="背包密码学"><a href="#背包密码学" class="headerlink" title="背包密码学"></a>背包密码学</h1><blockquote>
+              <h1>背包密码学</h1>
+<blockquote>
 <p>参考文献：</p>
 <p><a target="_blank" rel="noopener" href="https://www.geeksforgeeks.org/knapsack-encryption-algorithm-in-cryptography/">Knapsack Encryption Algorithm in Cryptography - GeeksforGeeks</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv11259465">密码学——公钥密码体系之背包算法1 - 哔哩哔哩 (bilibili.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://www.zhihu.com/question/372300485">谁能用通俗语言解释一下NP完全问题？ - 知乎 (zhihu.com)</a></p>
 <p>假如不太懂模运算可以参考我的另外一篇博客<a href="https://blog.kamino.link/2022/03/23/rsa/">RSA加密算法 - Kamino’s Blog</a></p>
 </blockquote>
-<p>在密码学领域，于1978年由<strong>Ralph Merkle</strong> 和<strong>Mertin Hellman</strong>发明的<strong>背包加密算法（Knapsack Encryption Algorithm）</strong>是第一个通用的公钥加密算法。这个算法基于一个NP完全问题——背包问题，虽然后面发现这个算法并不安全，但是仍然值得我们学习。</p>
+<p>在密码学领域，于1978年由<strong>Ralph Merkle</strong> 和<strong>Mertin Hellman</strong>发明的**背包加密算法（Knapsack Encryption Algorithm）**是第一个通用的公钥加密算法。这个算法基于一个NP完全问题——背包问题，虽然后面发现这个算法并不安全，但是仍然值得我们学习。</p>
 <blockquote>
 <p>先科普一下什么是NP完全问题：</p>
 <p><strong>P问题</strong>是一类可以在多项式时间内求解的问题，<strong>NP问题</strong>是一类可以在多项式时间内验证解是否正确的问题。</p>
-<p>显然$P \subseteq NP$，但是目前人们想知道的是$P=NP \ ?$</p>
+<p>显然<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>⊆</mo><mi>N</mi><mi>P</mi></mrow><annotation encoding="application/x-tex">P \subseteq NP</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8193em;vertical-align:-0.136em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">⊆</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">NP</span></span></span></span>，但是目前人们想知道的是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mi>N</mi><mi>P</mi><mtext> </mtext><mo stretchy="false">?</mo></mrow><annotation encoding="application/x-tex">P=NP \ ?</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">NP</span><span class="mspace"> </span><span class="mclose">?</span></span></span></span></p>
 <p><strong>NP-C或NP完全问题</strong>指的是“多项式复杂程度的非确定性问题”，所有的NP问题都可以约化到NP-C问题（即可以用NP-C问题的解法来解决NP问题，但NP-C问题的解法可能时间复杂度更高）。</p>
 </blockquote>
 <p>背包问题指的是：<strong>给定一批不同体积的物品和一个背包容积，能够将物品中的几件放进这个背包，使背包刚好装满。</strong></p>
@@ -298,7 +299,8 @@
 <th>1</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>背包/秘钥</td>
 <td>1</td>
 <td>4</td>
@@ -316,18 +318,19 @@
 <td>0+</td>
 <td>20=38</td>
 </tr>
-</tbody></table>
-<p>容易解决的背包问题就是使用<strong>超递增序列</strong>，这种<strong>序列的每一项都大于它之前所有项之和</strong>，即$a_j&gt;\sum^{j-1}_{i=1}a_i$。比如上面的<code>1 4 7 10 17 20</code>就不是，而<code>2 3 6 13 27 52</code>就是。使用这种序列的话，只需要逐渐取最大的物品放进背包即可。例如总容量70的背包，则先放52，然后发现27放不了，就放13，然后发现6放不了，就放3，最后放2。</p>
+</tbody>
+</table>
+<p>容易解决的背包问题就是使用<strong>超递增序列</strong>，这种<strong>序列的每一项都大于它之前所有项之和</strong>，即<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>j</mi></msub><mo>&gt;</mo><msubsup><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mrow><mi>j</mi><mo>−</mo><mn>1</mn></mrow></msubsup><msub><mi>a</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">a_j&gt;\sum^{j-1}_{i=1}a_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8252em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">&gt;</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2643em;vertical-align:-0.2997em;"></span><span class="mop"><span class="mop op-symbol small-op" style="position:relative;top:0em;">∑</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.9646em;"><span style="top:-2.4003em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.2029em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2997em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。比如上面的<code>1 4 7 10 17 20</code>就不是，而<code>2 3 6 13 27 52</code>就是。使用这种序列的话，只需要逐渐取最大的物品放进背包即可。例如总容量70的背包，则先放52，然后发现27放不了，就放13，然后发现6放不了，就放3，最后放2。</p>
 <p>下面介绍背包加密算法的具体流程：</p>
 <ol>
 <li>取一个递增序列作为私钥：(<code>2 3 6 13 27 52</code>)</li>
-<li>取一个与序列中所有数互质的整数$n$，再取一个大于所有数的整数$m$（$n=31,m=105$）</li>
-<li>计算$a_in\ mod\ m$，得到一个新序列作为公钥（<code>62 93 81 88 102 37</code>）</li>
+<li>取一个与序列中所有数互质的整数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>，再取一个大于所有数的整数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span>（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><mo>=</mo><mn>31</mn><mo separator="true">,</mo><mi>m</mi><mo>=</mo><mn>105</mn></mrow><annotation encoding="application/x-tex">n=31,m=105</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8389em;vertical-align:-0.1944em;"></span><span class="mord">31</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">m</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">105</span></span></span></span>）</li>
+<li>计算<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>a</mi><mi>i</mi></msub><mi>n</mi><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>m</mi></mrow><annotation encoding="application/x-tex">a_in\ mod\ m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">a</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathnormal">n</span><span class="mspace"> </span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mspace"> </span><span class="mord mathnormal">m</span></span></span></span>，得到一个新序列作为公钥（<code>62 93 81 88 102 37</code>）</li>
 <li>背包长度为6，所以二进制明文按照6bit分组，1表示存在，0表示不存在，然后计算总体积（明文<code>101101</code>，则公钥加密密文为<code>268</code>）</li>
-<li>计算n的乘法逆元$nn^{-1}\equiv1(mod\ 105)$。（$n^{-1}=61$）</li>
-<li>计算$密文\times n^{-1}\ mod\ m$，然后解背包问题得到明文。（<code>73=52+13+6+2(101101)</code>）</li>
+<li>计算n的乘法逆元<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi><msup><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>≡</mo><mn>1</mn><mo stretchy="false">(</mo><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mn>105</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">nn^{-1}\equiv1(mod\ 105)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord mathnormal">n</span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">≡</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">1</span><span class="mopen">(</span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mspace"> </span><span class="mord">105</span><span class="mclose">)</span></span></span></span>。（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mo>=</mo><mn>61</mn></mrow><annotation encoding="application/x-tex">n^{-1}=61</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">61</span></span></span></span>）</li>
+<li>计算<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mtext>密文</mtext><mo>×</mo><msup><mi>n</mi><mrow><mo>−</mo><mn>1</mn></mrow></msup><mtext> </mtext><mi>m</mi><mi>o</mi><mi>d</mi><mtext> </mtext><mi>m</mi></mrow><annotation encoding="application/x-tex">密文\times n^{-1}\ mod\ m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord cjk_fallback">密文</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span class="mord mathnormal">n</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mspace"> </span><span class="mord mathnormal">m</span><span class="mord mathnormal">o</span><span class="mord mathnormal">d</span><span class="mspace"> </span><span class="mord mathnormal">m</span></span></span></span>，然后解背包问题得到明文。（<code>73=52+13+6+2(101101)</code>）</li>
 </ol>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220403150728.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220403150728.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
 
             </div>
             <hr>
@@ -588,43 +591,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

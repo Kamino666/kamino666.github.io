@@ -267,40 +267,35 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="MakeFile入门笔记"><a href="#MakeFile入门笔记" class="headerlink" title="MakeFile入门笔记"></a>MakeFile入门笔记</h1><p>平时开发和配置环境时有时会需要编译c，就经常遇见这个东西，刚好上课也学这个东西，就稍微学一些MakeFile。因为也是入门，所以可能比较乱。</p>
+              <h1>MakeFile入门笔记</h1>
+<p>平时开发和配置环境时有时会需要编译c，就经常遇见这个东西，刚好上课也学这个东西，就稍微学一些MakeFile。因为也是入门，所以可能比较乱。</p>
 <blockquote>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/350297509">快速的理解MakeFile+读懂一个MakeFile - 知乎 (zhihu.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://blog.csdn.net/ZBraveHeart/article/details/123187908">Makefile入门(超详细一文读懂)_晨曦艾米的博客-CSDN博客_makefile</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/442028798">make命令和makefile文件 - 知乎 (zhihu.com)</a></p>
 <p><a target="_blank" rel="noopener" href="https://seisman.github.io/how-to-write-makefile/introduction.html">makefile介绍 — 跟我一起写Makefile 1.0 文档 (seisman.github.io)</a></p>
 </blockquote>
-<h2 id="MakeFile是什么"><a href="#MakeFile是什么" class="headerlink" title="MakeFile是什么"></a>MakeFile是什么</h2><p>MakeFile是用来编译C/C++的工具，他能通过自身的语法连接C/C++开发过程中写的各类<code>.cpp</code>、<code>.h</code>、<code>.o</code>文件，最终生成可执行文件。直观来说，是“<strong>编译、链接、删除、移动</strong>”的整个过程。</p>
-<h2 id="MakeFile语法"><a href="#MakeFile语法" class="headerlink" title="MakeFile语法"></a>MakeFile语法</h2><p>MakeFile的基本模式如下：</p>
+<h2 id="MakeFile是什么">MakeFile是什么</h2>
+<p>MakeFile是用来编译C/C<ins>的工具，他能通过自身的语法连接C/C</ins>开发过程中写的各类<code>.cpp</code>、<code>.h</code>、<code>.o</code>文件，最终生成可执行文件。直观来说，是“<strong>编译、链接、删除、移动</strong>”的整个过程。</p>
+<h2 id="MakeFile语法">MakeFile语法</h2>
+<p>MakeFile的基本模式如下：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs makefile">target... : prerequisites ...<br>	command1<br>	command2<br>	......<br></code></pre></td></tr></table></figure>
-
 <p>在编译程序时，需要定义目标target以及其依赖文件prerequisite，然后执行的各种命令，表示我们将通过命令利用依赖文件来达成目标。默认MakeFile的第一个target是最终的target，并且命令的缩进是一个<code>Tab</code>而不是4个空格。特殊地，可以指定目标为<code>ALL</code>来指定需要生成的多个目标文件。</p>
 <p>MakeFile中的变量和Shell相似，使用<code>$</code>表示取变量，当变量名多余1个字符时要加上<code>()</code>，除此以外也有一些特殊的变量：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs makefile">$a<br><span class="hljs-variable">$(abc)</span><br><span class="hljs-variable">$^</span>  <span class="hljs-comment">#  所有的依赖文件</span><br><span class="hljs-variable">$@</span>  <span class="hljs-comment">#  生成的目标文件</span><br><span class="hljs-variable">$&lt;</span>  <span class="hljs-comment">#  第一个依赖文件</span><br></code></pre></td></tr></table></figure>
-
 <p>MakeFile的变量赋值会有一些奇怪，使用等号<code>=</code>和冒号等号<code>:=</code>是不一样的，此外<code>?=</code>表示如果变量未赋值那么赋予一个值，有一种<code>a = 1 if a is None else a</code>这种感觉。</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># 结果VIR_B是&quot;AA B&quot; 因为普通等号是赋予最后的值</span><br>VIR_A = A<br>VIR_B = <span class="hljs-variable">$(VIR_A)</span> B<br>VIR_A = AA<br><span class="hljs-comment"># :=的结果是比较直观的赋值，VIR_B是&quot;A B&quot;</span><br>VIR_A := A<br>VIR_B := <span class="hljs-variable">$(VIR_A)</span> B<br>VIR_A := AA<br></code></pre></td></tr></table></figure>
-
 <p>MakeFile有一些预定义变量，比如CC是指定c编译器的名称，默认是cc</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs makefile">CC = gcc<br></code></pre></td></tr></table></figure>
-
 <p>MakeFile函数比较特殊：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-comment"># wildcard 使用通配符匹配所有.c文件，赋值给SRC变量</span><br>SRC = <span class="hljs-variable">$(<span class="hljs-built_in">wildcard</span> ./*.c)</span><br><span class="hljs-comment"># patsubst 改$(SRC)变量中的后缀，.c都改成.o</span><br>OBJ = <span class="hljs-variable">$(<span class="hljs-built_in">patsubst</span> %.c, %.o, <span class="hljs-variable">$(SRC)</span>)</span><br></code></pre></td></tr></table></figure>
-
 <p>还有一个比较费解的伪目标<code>.PHONY</code>，这个会定义一些target，这些target不会与目录下的文件产生关系，所以每次都需要进行构建。比如下面这个例子，将所有<code>.c</code>文件编译成<code>.o</code>文件，然后又把<code>.o</code>编译成<code>.out</code>文件，假如<code>make clean</code>，那就会删除这个<code>.out</code>。</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs makefile">SRC = <span class="hljs-variable">$(<span class="hljs-built_in">wildcard</span> *.c)</span><br>OBJ = <span class="hljs-variable">$(<span class="hljs-built_in">patsubst</span> %.c, %.o, <span class="hljs-variable">$(SRC)</span>)</span><br> <br><span class="hljs-section">ALL: hello.out</span><br> <br><span class="hljs-section">hello.out: <span class="hljs-variable">$(OBJ)</span></span><br>        gcc <span class="hljs-variable">$&lt;</span> -o <span class="hljs-variable">$@</span><br> <br><span class="hljs-variable">$(OBJ)</span>: <span class="hljs-variable">$(SRC)</span><br>        gcc -c <span class="hljs-variable">$&lt;</span> -o <span class="hljs-variable">$@</span><br> <br><span class="hljs-section">clean:</span><br>        rm -rf <span class="hljs-variable">$(OBJ)</span> hello.out<br> <br><span class="hljs-meta"><span class="hljs-meta-keyword">.PHONY</span>: clean ALL</span><br></code></pre></td></tr></table></figure>
-
 <p>一般还经常会指定头文件路径，也就是编译时在gcc中通过<code>-I</code>参数指定某个<code>include</code>目录，在MakeFile中，经常这么写：</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs makefile">CFLAGS=-I /home/develop/<span class="hljs-keyword">include</span><br><span class="hljs-section">yourapp:*.c</span><br>    gcc <span class="hljs-variable">$(CFLAGS)</span> -o yourapp<br></code></pre></td></tr></table></figure>
-
 <p>那库文件（lib）也是类似的写法，不过是<code>-L</code>参数。</p>
 <p>实际使用的时候经常是<code>make clean</code>、<code>make</code>、<code>make install</code>，那加上参数其实就是特别编译MakeFile中指定的target，如下，<code>install</code>目标就是把编译出来的可执行文件复制到固定的目录。</p>
 <figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><code class="hljs makefile"><span class="hljs-section">all: myapp</span><br><br><span class="hljs-comment"># Which complier</span><br>CC = gcc<br><br><span class="hljs-comment"># Where to install</span><br>INSTDIR = /usr/local/bin<br><br><span class="hljs-comment"># Where are include files kept</span><br>INCLUDE = .<br><br><span class="hljs-comment"># Options for development</span><br>CFLAGS = -g -Wall -ansi<br><br><span class="hljs-comment"># Options for release</span><br><span class="hljs-comment"># CFLAGS = -O -Wall -ansi</span><br><br><span class="hljs-section">myapp: main.o 2.o 3.o</span><br>    <span class="hljs-variable">$(CC)</span> -o myapp main.o 2.o 3.o<br><span class="hljs-section">main.o: main.c a.h</span><br>    <span class="hljs-variable">$(CC)</span> -I<span class="hljs-variable">$(INCLUDE)</span>  <span class="hljs-variable">$(CFLAGS)</span> -c mian.c<br><span class="hljs-section">2.o: 2.c a.h b.h</span><br>    <span class="hljs-variable">$(CC)</span> -I<span class="hljs-variable">$(INCLUDE)</span>  <span class="hljs-variable">$(CFLAGS)</span> -c 2.c<br><span class="hljs-section">3.o: 3.c b.h c.h</span><br>    <span class="hljs-variable">$(CC)</span> -I<span class="hljs-variable">$(INCLUDE)</span>  <span class="hljs-variable">$(CFLAGS)</span> -c 2.c<br><br><span class="hljs-section">clean:</span><br>   -rm main.o 2.o 3.o<br><br><span class="hljs-section">install: myapp</span><br>   @if [-d <span class="hljs-variable">$(INSTDIR)</span>];\<br>       then \<br>       cp myapp <span class="hljs-variable">$(INSTDIR)</span>;\<br>       chmod a+x <span class="hljs-variable">$(INSTDIR)</span>/myapp;\<br>       chmod og-w <span class="hljs-variable">$(INSTDIR)</span>/myapp;\<br>       echo <span class="hljs-string">&quot;Installed in <span class="hljs-variable">$(INSTDIR)</span>&quot;</span>;\<br>   <span class="hljs-keyword">else</span> \<br>       echo <span class="hljs-string">&quot;Sorry, <span class="hljs-variable">$(INSTDIR)</span> dose not exist&quot;</span>;\<br>   fi<br></code></pre></td></tr></table></figure>
-
 
             </div>
             <hr>
@@ -310,9 +305,9 @@
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
-                    
                       <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
                     
                   </div>
                 
@@ -559,43 +554,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

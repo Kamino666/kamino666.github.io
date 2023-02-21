@@ -216,7 +216,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      189 字
+      193 字
     </span>
   
 
@@ -271,10 +271,10 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python各类读取视频库的比较（OpenCV-Decord-MMCV-pyAV）"><a href="#Python各类读取视频库的比较（OpenCV-Decord-MMCV-pyAV）" class="headerlink" title="Python各类读取视频库的比较（OpenCV Decord MMCV pyAV）"></a>Python各类读取视频库的比较（OpenCV Decord MMCV pyAV）</h1><p>使用Python读取视频用很多种方法可用，本文通过实验从多个方面比较各类读取视频库。</p>
-<p><strong>太长不看的结论：</strong>假如要高效处理数据量大的视频，选用<code>Decord</code>的GPU版本。假如项目中其他地方会用到<code>mmcv</code>，那就用mmcv的VideoReader。其他情况假如想代码更易懂，则使用<code>Decord</code>，否则使用<code>OpenCV</code>。</p>
+              <h1>Python各类读取视频库的比较（OpenCV Decord MMCV pyAV）</h1>
+<p>使用Python读取视频用很多种方法可用，本文通过实验从多个方面比较各类读取视频库。</p>
+<p>**太长不看的结论：**假如要高效处理数据量大的视频，选用<code>Decord</code>的GPU版本。假如项目中其他地方会用到<code>mmcv</code>，那就用mmcv的VideoReader。其他情况假如想代码更易懂，则使用<code>Decord</code>，否则使用<code>OpenCV</code>。</p>
 <script src="https://gist.github.com/Kamino666/09f878289e1e6dc13b0a3b2b508d68a5.js"></script>
-
 
             </div>
             <hr>
@@ -539,43 +539,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

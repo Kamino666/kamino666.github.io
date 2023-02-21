@@ -218,7 +218,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.4k 字
+      1.5k 字
     </span>
   
 
@@ -227,7 +227,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      4 分钟
+      5 分钟
     </span>
   
 
@@ -273,37 +273,43 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Pointer-Networks论文笔记"><a href="#Pointer-Networks论文笔记" class="headerlink" title="Pointer Networks论文笔记"></a>Pointer Networks论文笔记</h1><p>NIPS 2015的论文<a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2015/hash/29921001f2f04bd3baee84a12e98098f-Abstract.html">Pointer Networks (neurips.cc)</a></p>
+              <h1>Pointer Networks论文笔记</h1>
+<p>NIPS 2015的论文<a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper/2015/hash/29921001f2f04bd3baee84a12e98098f-Abstract.html">Pointer Networks (neurips.cc)</a></p>
 <p>这篇论文主要提出了一个针对Seq2Seq结构改进的网络——<strong>Ptr-Net</strong>：其通过类似Seq2Seq的形式预测出一个指向之前输入的指针，并将这个位置的输入作为下一步的输入。也就是说，Ptr-Net的输出完全来源于输入，是一个copy-paste的结构。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220928103407.png" srcset="/img/loading.gif" lazyload alt="Seq2Seq VS Ptr-Net"></p>
 <p>这里使用原文的模型图来解释说明，但不用原文的例子（感觉更不好理解）。如图(a)，Seq2Seq模型在输入了一系列数据之后，再输入一个<code>=&gt;</code>的特殊开始token，就开始进行预测。预测的结果一般是一个固定大小词汇表（比如10000）的概率分布，然后出来的向量经过softmax之后作为输出和下一步的输入。而如图(b)，在输入<code>=&gt;</code>之后，预测的并不是词汇表的概率分布，而是与输入的长度有关。假如如图输入长度是5（加上一个结束的token<code>&lt;=</code>），那输出的结果就是这5个token的概率分布，所以说输出完全来源于输入。</p>
 <p>这样处理的优点就是：</p>
 <ol>
-<li><p>避免OOV问题</p>
+<li>
+<p>避免OOV问题</p>
 <p>因为输出就是输入的重新组合，所以不会有OOV</p>
 </li>
-<li><p>可控</p>
+<li>
+<p>可控</p>
 <p>同样因为上面这个原因，不会出现乱七八糟的输出</p>
 </li>
-<li><p>对于摘要生成等任务很适应</p>
+<li>
+<p>对于摘要生成等任务很适应</p>
 <p>同样还是因为上面这个原因，摘要生成就是从输入中找到概括性的词</p>
 </li>
 </ol>
-<h2 id="细节"><a href="#细节" class="headerlink" title="细节"></a>细节</h2><p>快速回顾一下LSTM网络，LSTM每一步(t)会得到hidden向量$h_t$和cell向量$C_t$，其中$h_t$变化地更快而$C_t$变化地更慢，一般都是用$h_t$。</p>
+<h2 id="细节">细节</h2>
+<p>快速回顾一下LSTM网络，LSTM每一步(t)会得到hidden向量<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">h_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和cell向量<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">C_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">h_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>变化地更快而<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>C</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">C_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.0715em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>变化地更慢，一般都是用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mi>t</mi></msub></mrow><annotation encoding="application/x-tex">h_t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">h</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930121104.png" srcset="/img/loading.gif" lazyload alt="LSTM"></p>
 <p>下面是计算pointer的细节：</p>
 <ol>
-<li>令编码部分得到的隐藏向量为$\boldsymbol {e}$（长度为$n$），令解码部分每一步的隐藏向量为$\boldsymbol d_i$；</li>
-<li>计算当前步时，对n长的输入向量的，未softmax的注意力：$\boldsymbol u^i_j= \boldsymbol v^T\tanh(\boldsymbol W_1 \boldsymbol e_j+\boldsymbol W_2 \boldsymbol d_i)$；</li>
-<li>softmax后的注意力：$\boldsymbol a^i_j=softmax(\boldsymbol u^i_j)$，<strong>直接当做输出的概率分布</strong>。</li>
+<li>令编码部分得到的隐藏向量为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">e</mi></mrow><annotation encoding="application/x-tex">\boldsymbol {e}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4444em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol">e</span></span></span></span></span></span>（长度为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>），令解码部分每一步的隐藏向量为<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">d</mi><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\boldsymbol d_i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">d</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>；</li>
+<li>计算当前步时，对n长的输入向量的，未softmax的注意力：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="bold-italic">u</mi><mi>j</mi><mi>i</mi></msubsup><mo>=</mo><msup><mi mathvariant="bold-italic">v</mi><mi>T</mi></msup><mi>tanh</mi><mo>⁡</mo><mo stretchy="false">(</mo><msub><mi mathvariant="bold-italic">W</mi><mn>1</mn></msub><msub><mi mathvariant="bold-italic">e</mi><mi>j</mi></msub><mo>+</mo><msub><mi mathvariant="bold-italic">W</mi><mn>2</mn></msub><msub><mi mathvariant="bold-italic">d</mi><mi>i</mi></msub><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\boldsymbol u^i_j= \boldsymbol v^T\tanh(\boldsymbol W_1 \boldsymbol e_j+\boldsymbol W_2 \boldsymbol d_i)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2194em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">u</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-2.4413em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1274em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.03704em;">v</span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop">tanh</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.15972em;">W</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">e</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.15972em;">W</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">d</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>；</li>
+<li>softmax后的注意力：<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi mathvariant="bold-italic">a</mi><mi>j</mi><mi>i</mi></msubsup><mo>=</mo><mi>s</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><msubsup><mi mathvariant="bold-italic">u</mi><mi>j</mi><mi>i</mi></msubsup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\boldsymbol a^i_j=softmax(\boldsymbol u^i_j)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2194em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">a</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-2.4413em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2194em;vertical-align:-0.3948em;"></span><span class="mord mathnormal">so</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ma</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">u</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-2.4413em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span>，<strong>直接当做输出的概率分布</strong>。</li>
 </ol>
-<h2 id="应用1：结合Pointer-Network来进行文本摘要任务"><a href="#应用1：结合Pointer-Network来进行文本摘要任务" class="headerlink" title="应用1：结合Pointer Network来进行文本摘要任务"></a>应用1：结合Pointer Network来进行文本摘要任务</h2><p>论文：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1704.04368.pdf">Get To The Point: Summarization with Pointer-Generator Networks</a></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141105.png" srcset="/img/loading.gif" lazyload></p>
+<h2 id="应用1：结合Pointer-Network来进行文本摘要任务">应用1：结合Pointer Network来进行文本摘要任务</h2>
+<p>论文：<a target="_blank" rel="noopener" href="https://arxiv.org/pdf/1704.04368.pdf">Get To The Point: Summarization with Pointer-Generator Networks</a></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141105.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>这篇文章结合了预测的概率分布和Pointer Network得出的概率分布来得到最终分布。</p>
-<p>其中$p_{gen}$是这么生成的：<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141249.png" srcset="/img/loading.gif" lazyload></p>
+<p>其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mrow><mi>g</mi><mi>e</mi><mi>n</mi></mrow></msub></mrow><annotation encoding="application/x-tex">p_{gen}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span><span class="mord mathnormal mtight">e</span><span class="mord mathnormal mtight">n</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>是这么生成的：<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220930141249.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>结合了context vector、decoder state和当前输入得到的概率，表示当前是要“生成”还是要“复制”。</p>
 <blockquote>
-<p> 结合代码和相关Issue <a target="_blank" rel="noopener" href="https://github.com/abisee/pointer-generator/issues/32">Problem of the word embedding of OOV words of decoder inputs</a>，输入文本（Source Text）中，已经在vocab中的，将会赋予对应的Embedding，不在vocab中的（即OOV词汇），将会赋予<code>[UNK]</code>对应的Embedding。通过PtrNet将会得到输入文本中各个位置的概率，若这个位置对应的是在vocab中的词，那概率加权叠加在Decoder的输出概率上，若对应的是OOV词，则会将vocab拓展一个词并加上其概率。</p>
+<p>结合代码和相关Issue <a target="_blank" rel="noopener" href="https://github.com/abisee/pointer-generator/issues/32">Problem of the word embedding of OOV words of decoder inputs</a>，输入文本（Source Text）中，已经在vocab中的，将会赋予对应的Embedding，不在vocab中的（即OOV词汇），将会赋予<code>[UNK]</code>对应的Embedding。通过PtrNet将会得到输入文本中各个位置的概率，若这个位置对应的是在vocab中的词，那概率加权叠加在Decoder的输出概率上，若对应的是OOV词，则会将vocab拓展一个词并加上其概率。</p>
 </blockquote>
 <blockquote>
 <p>参考文献：</p>
@@ -567,43 +573,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -275,20 +275,22 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="SmallCap：Lightweight-Image-Captioning-Prompted-with-Retrieval-Augmentation-论文笔记"><a href="#SmallCap：Lightweight-Image-Captioning-Prompted-with-Retrieval-Augmentation-论文笔记" class="headerlink" title="SmallCap：Lightweight Image Captioning Prompted with Retrieval Augmentation 论文笔记"></a>SmallCap：Lightweight Image Captioning Prompted with Retrieval Augmentation 论文笔记</h1><p>本文是22年9月底的一篇新论文，提出了一个轻量的Image Captioning模型，其包括1.8M/3.6M/7M 三个拥有不同可训练参数版本的小模型，相较于其他轻量模型，SmallCap更轻且效果和其它有可比性甚至超越。其通过Image-text检索，从数据库中检索出与图片相近的句子，然后通过Prompt的方式输入一个语言模型来得到最终的Caption。</p>
+              <h1>SmallCap：Lightweight Image Captioning Prompted with Retrieval Augmentation 论文笔记</h1>
+<p>本文是22年9月底的一篇新论文，提出了一个轻量的Image Captioning模型，其包括1.8M/3.6M/7M 三个拥有不同可训练参数版本的小模型，相较于其他轻量模型，SmallCap更轻且效果和其它有可比性甚至超越。其通过Image-text检索，从数据库中检索出与图片相近的句子，然后通过Prompt的方式输入一个语言模型来得到最终的Caption。</p>
 <ul>
 <li>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2209.15323#">SmallCap: Lightweight Image Captioning Prompted with Retrieval Augmentation (arxiv.org)</a></li>
 <li>开源代码：<a target="_blank" rel="noopener" href="https://github.com/RitaRamo/smallcap">RitaRamo/smallcap</a></li>
 </ul>
-<h2 id="基本方法"><a href="#基本方法" class="headerlink" title="基本方法"></a>基本方法</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221027171858.png" srcset="/img/loading.gif" lazyload alt="模型大图"></p>
+<h2 id="基本方法">基本方法</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221027171858.png" srcset="/img/loading.gif" lazyload alt="模型大图"></p>
 <p>如图，模型的图像编码器使用<strong>CLIP的视觉部分</strong>，语言解码器采用<strong>GPT-2</strong>。输入的图像通过CLIP得到特征之后，通过在GPT-2上添加<strong>Cross-Attention</strong>来将图像信息参与到解码过程中，这里的参数就是模型唯一需要学习的参数，其余参数均不参与训练。Cross-Attention就是Transformer里面那个，这一部分的隐藏维度可以是与GPT-2不一样的，作者将GPT-2的768除以了4/8/16从而得到了三个不同大小的模型。</p>
 <p>同时，图像和文本分别也通过CLIP模型提取各自的Embedding，然后针对输入的图像检索出前k个相近的文本，当做GPT-2的输入的一部分。要注意的是，这里的用来检索的CLIP模型实际上和上一段用来提取图像特征的模型使用的是不同参数的CLIP。提取图像特征使用<code>CLIP-ViT-B/32</code>这个更大的模型，做检索时则使用的是<code>CLIP-ResNet50x64</code>这个模型。</p>
 <p>作者认为这个模型在更换Datastore之后可以不用训练就可适应新域数据：作者的基本思路是在COCO上训练好一个模型，然后要用在其他数据集上时，只需更换Datastore来检索出不同的Task demonstration，并不用进行训练或者finetune。</p>
 <p>GPT-2输入的模版如上图，通过告诉模型Similar images的文本，来让其生成This image shows之后的结果。预测结果使用beam size为3的beam search来优化输出，image-text检索上使用FAISS进行更高效率的检索。</p>
-<h2 id="实验分析"><a href="#实验分析" class="headerlink" title="实验分析"></a>实验分析</h2><div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221027173256.png" srcset="/img/loading.gif" lazyload></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221027174144.png" srcset="/img/loading.gif" lazyload></div></div></div>
-
+<h2 id="实验分析">实验分析</h2>
+<div class="group-image-container"><div class="group-image-row"><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221027173256.png" srcset="/img/loading.gif" lazyload alt=""></div><div class="group-image-wrap"><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221027174144.png" srcset="/img/loading.gif" lazyload alt=""></div></div></div>
 <p>如左边的图所示，模型虽然效果不是特别出众，但是参数量上大大减少。右边的图则说明Retrieval的作用显著，增加了CIDEr上6个点左右。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221028100838.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221028100838.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>上图是先在COCO数据集上训练，然后在不同数据集下只更换datastore的效果，上面数据集使用了三种，其中MSR-VTT是Video Captioning的数据集，作者简单的平均取4帧，然后空间上拼接成一张图片进行Image Captioning。</p>
 <p>通过第2、3行（包括表头）可以发现datastore更贴近数据集会带来更好的效果。之后则尝试加入语料库，Web指的是来自互联网的大规模的语料，但是质量更差，Human-labeled指的是小规模的高质量的语料。通过第5-7行可以发现，在In-domain的基础上增加语料库基本都提升了效果，但是VizWiz数据集上提升不多，作者分析是这个数据集的文本分布比较特殊。然而，同时使用W和H并不会带来更多的提升。</p>
 <p>然而In-domain的标注可能不一定存在，所以作者还研究了Domain-agnostic的情况，发现图片数据集能通过更大规模更多样的Web语料上得到更多的提升，而MSR-VTT更倾向于Human-labeled的高质量。</p>
@@ -296,14 +298,16 @@
 <p>对其他两个数据集不太了解，但是MSR-VTT上和别的比效果并不是很好</p>
 </blockquote>
 <p>下面是一些定性的分析：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221028103357.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>这篇文章的核心贡献是使用Retrieval+GPT prompt的方法实现极少可训练参数的Image Captioning。然而，既然可训练参数已经很少了，那在新的数据集上时，finetune应该也不是什么难事，但作者却把重点放在了新数据集也不用训练这一块，我认为有些矛盾。若不是那么强调训练参数，也许可以将GPT-2一块进行训练，100多M的参数应该也还是能接受的。另外，GPT-2的效果相较于GPT-3来说并不是特别好，采用prompt的方式提升可能无法非常有效地利用检索出的文本（毕竟吹的最多是GPT-3，但是它不开源）。</p>
-<h2 id="Extra：通过添加Cross-attention连接Encoder和GPT-2"><a href="#Extra：通过添加Cross-attention连接Encoder和GPT-2" class="headerlink" title="Extra：通过添加Cross-attention连接Encoder和GPT-2"></a>Extra：通过添加Cross-attention连接Encoder和GPT-2</h2><p>这个并不是这篇文章的原创，但是这个方法也比较有趣，在网上搜到了一个很好的教程，通过Hugging Face的API能轻松构建这样的模型：<a target="_blank" rel="noopener" href="https://sachinruk.github.io/blog/pytorch/huggingface/2021/12/28/vit-to-gpt2-encoder-decoder-model.html">Generating captions with ViT and GPT2 using 🤗 Transformers | DeepSchool (sachinruk.github.io)</a></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221028103357.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="总结">总结</h2>
+<p>这篇文章的核心贡献是使用Retrieval+GPT prompt的方法实现极少可训练参数的Image Captioning。然而，既然可训练参数已经很少了，那在新的数据集上时，finetune应该也不是什么难事，但作者却把重点放在了新数据集也不用训练这一块，我认为有些矛盾。若不是那么强调训练参数，也许可以将GPT-2一块进行训练，100多M的参数应该也还是能接受的。另外，GPT-2的效果相较于GPT-3来说并不是特别好，采用prompt的方式提升可能无法非常有效地利用检索出的文本（毕竟吹的最多是GPT-3，但是它不开源）。</p>
+<h2 id="Extra：通过添加Cross-attention连接Encoder和GPT-2">Extra：通过添加Cross-attention连接Encoder和GPT-2</h2>
+<p>这个并不是这篇文章的原创，但是这个方法也比较有趣，在网上搜到了一个很好的教程，通过Hugging Face的API能轻松构建这样的模型：<a target="_blank" rel="noopener" href="https://sachinruk.github.io/blog/pytorch/huggingface/2021/12/28/vit-to-gpt2-encoder-decoder-model.html">Generating captions with ViT and GPT2 using 🤗 Transformers | DeepSchool (sachinruk.github.io)</a></p>
 <p>官方文档🤗：<a target="_blank" rel="noopener" href="https://huggingface.co/docs/transformers/main/en/model_doc/encoder-decoder#transformers.EncoderDecoderModel">Encoder Decoder Models (huggingface.co)</a></p>
 <p>官方示例：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> transformers <span class="hljs-keyword">import</span> EncoderDecoderModel, BertTokenizer<br><span class="hljs-keyword">import</span> torch<br><br>tokenizer = BertTokenizer.from_pretrained(<span class="hljs-string">&quot;bert-base-uncased&quot;</span>)<br><span class="hljs-comment"># 只需下面这一句，就能组合编码器和解码器来构建一个模型！！</span><br><span class="hljs-comment"># 假如是SmallCap，那就是&quot;openai/clip-vit-base-patch16&quot;, &quot;gpt2&quot;</span><br>model = EncoderDecoderModel.from_encoder_decoder_pretrained(<br>    <span class="hljs-string">&quot;bert-base-uncased&quot;</span>, <span class="hljs-string">&quot;bert-base-uncased&quot;</span><br>)  <span class="hljs-comment"># initialize Bert2Bert from pre-trained checkpoints</span><br><br><span class="hljs-comment"># training</span><br>model.config.decoder_start_token_id = tokenizer.cls_token_id<br>model.config.pad_token_id = tokenizer.pad_token_id<br>model.config.vocab_size = model.config.decoder.vocab_size<br><br>input_ids = tokenizer(<span class="hljs-string">&quot;This is a really long text&quot;</span>, return_tensors=<span class="hljs-string">&quot;pt&quot;</span>).input_ids<br>labels = tokenizer(<span class="hljs-string">&quot;This is the corresponding summary&quot;</span>, return_tensors=<span class="hljs-string">&quot;pt&quot;</span>).input_ids<br>outputs = model(input_ids=input_ids, labels=input_ids)<br>loss, logits = outputs.loss, outputs.logits<br><br><span class="hljs-comment"># save and load from pretrained</span><br>model.save_pretrained(<span class="hljs-string">&quot;bert2bert&quot;</span>)<br>model = EncoderDecoderModel.from_pretrained(<span class="hljs-string">&quot;bert2bert&quot;</span>)<br><br><span class="hljs-comment"># generation</span><br>generated = model.generate(input_ids)<br></code></pre></td></tr></table></figure>
-
-<h2 id="Extra：Faiss用来检索相似向量"><a href="#Extra：Faiss用来检索相似向量" class="headerlink" title="Extra：Faiss用来检索相似向量"></a>Extra：Faiss用来检索相似向量</h2><p><code>Faiss</code>是一个用C++开发，提供Python接口的用来进行向量检索的<strong>高性能</strong>库。它既提供完全准确的检索，也提供模糊的检索。</p>
+<h2 id="Extra：Faiss用来检索相似向量">Extra：Faiss用来检索相似向量</h2>
+<p><code>Faiss</code>是一个用C++开发，提供Python接口的用来进行向量检索的<strong>高性能</strong>库。它既提供完全准确的检索，也提供模糊的检索。</p>
 <p>官方文档：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/faiss/wiki/Getting-started">Getting started · facebookresearch/faiss Wiki (github.com)</a></p>
 <p>知乎入门介绍：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/357414033">Faiss入门及应用经验记录 - 知乎 (zhihu.com)</a></p>
 
@@ -566,43 +570,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

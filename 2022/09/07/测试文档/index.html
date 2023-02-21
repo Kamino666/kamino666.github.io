@@ -19,12 +19,12 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="测试      $.getJSON(&quot;https:&#x2F;&#x2F;service-g1uu2m8a-1301950526.gz.apigw.tencentcs.com&#x2F;release&#x2F;github&#x2F;Kamino666&#x2F;kamino666.github.io&quot;, function(api_data){     const ctx &#x3D; document.getElementById(&#39;myChart&#39;).getC">
+  <meta name="description" content="测试       $.getJSON(&quot;https:&#x2F;&#x2F;service-g1uu2m8a-1301950526.gz.apigw.tencentcs.com&#x2F;release&#x2F;github&#x2F;Kamino666&#x2F;kamino666.github.io&quot;, function(api_data){     const ctx &#x3D; document.getElementById(&#39;myChart&#39;).get">
 <meta property="og:type" content="article">
 <meta property="og:title" content="测试">
 <meta property="og:url" content="http://blog.kamino.link/2022/09/07/%E6%B5%8B%E8%AF%95%E6%96%87%E6%A1%A3/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="测试      $.getJSON(&quot;https:&#x2F;&#x2F;service-g1uu2m8a-1301950526.gz.apigw.tencentcs.com&#x2F;release&#x2F;github&#x2F;Kamino666&#x2F;kamino666.github.io&quot;, function(api_data){     const ctx &#x3D; document.getElementById(&#39;myChart&#39;).getC">
+<meta property="og:description" content="测试       $.getJSON(&quot;https:&#x2F;&#x2F;service-g1uu2m8a-1301950526.gz.apigw.tencentcs.com&#x2F;release&#x2F;github&#x2F;Kamino666&#x2F;kamino666.github.io&quot;, function(api_data){     const ctx &#x3D; document.getElementById(&#39;myChart&#39;).get">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2022-09-07T14:42:00.000Z">
 <meta property="article:modified_time" content="2022-09-09T04:55:21.782Z">
@@ -267,7 +267,8 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h1><div class="chart-container" style="position: relative; height:80%; width:100%">
+              <h1>测试</h1>
+<div class="chart-container" style="position: relative; height:80%; width:100%">
   <canvas id="myChart"></canvas>
 </div>
 <script>
@@ -531,43 +532,8 @@ $.getJSON("https://service-g1uu2m8a-1301950526.gz.apigw.tencentcs.com/release/gi
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

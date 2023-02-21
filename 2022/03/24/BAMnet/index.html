@@ -19,12 +19,12 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases Input module把输入问题Q通过word embedding表示成词向量序列 Memory module 通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案 对于候选答案，用三种信息表示">
+  <meta name="description" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases  Input module 把输入问题Q通过word embedding表示成词向量序列 Memory module  通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案 对于候选答案，用三种信">
 <meta property="og:type" content="article">
 <meta property="og:title" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases">
 <meta property="og:url" content="http://blog.kamino.link/2022/03/24/BAMnet/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases Input module把输入问题Q通过word embedding表示成词向量序列 Memory module 通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案 对于候选答案，用三种信息表示">
+<meta property="og:description" content="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases  Input module 把输入问题Q通过word embedding表示成词向量序列 Memory module  通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案 对于候选答案，用三种信">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324155759.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324160234.png">
@@ -272,18 +272,24 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="论文笔记-Bidirectional-Attentive-Memory-Networks-for-Question-Answering-over-Knowledge-Bases"><a href="#论文笔记-Bidirectional-Attentive-Memory-Networks-for-Question-Answering-over-Knowledge-Bases" class="headerlink" title="论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases"></a>论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases</h1><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324155759.png" srcset="/img/loading.gif" lazyload alt="BAMnet"></p>
-<h2 id="Input-module"><a href="#Input-module" class="headerlink" title="Input module"></a>Input module</h2><p>把输入问题Q通过word embedding表示成词向量序列</p>
-<h2 id="Memory-module"><a href="#Memory-module" class="headerlink" title="Memory module"></a>Memory module</h2><ol>
+              <h1>论文笔记 Bidirectional Attentive Memory Networks for Question Answering over Knowledge Bases</h1>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324155759.png" srcset="/img/loading.gif" lazyload alt="BAMnet"></p>
+<h2 id="Input-module">Input module</h2>
+<p>把输入问题Q通过word embedding表示成词向量序列</p>
+<h2 id="Memory-module">Memory module</h2>
+<ol>
 <li>通过现有网络提取出Q的topic，然后根据topic筛选出知识图谱中的候选答案</li>
 <li>对于候选答案，用三种信息表示：type, path, context</li>
 <li>使用记忆神经网络对三种信息分别进行编码</li>
 </ol>
-<h2 id="KB-aware-attention-module"><a href="#KB-aware-attention-module" class="headerlink" title="KB-aware attention module"></a>KB-aware attention module</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324160234.png" srcset="/img/loading.gif" lazyload></p>
-<p>问题输入先经过一个SA，再作为query对记忆网络的三种信息进行注意力分布，然后三种信息组合在一起得到$m$，$m$是KB summary，即知识图谱的摘要向量。</p>
-<p>然后，用$H^Q$乘上$m$，即$[words,hid]\times [hid,memories]$，得到$[words,memories]$形状的张量，表示每个单词对于记忆中的信息，然后进行最大池化，表示选择一个word对应最强的那个信息。</p>
-<h2 id="importance-module"><a href="#importance-module" class="headerlink" title="importance module"></a>importance module</h2><p>首先用问题乘记忆矩阵得到$A^{QM}$，表示问题对于回答的重要性。</p>
-<h2 id="enhancing-module"><a href="#enhancing-module" class="headerlink" title="enhancing module"></a>enhancing module</h2><p>利用双向注意力进一步增强</p>
+<h2 id="KB-aware-attention-module">KB-aware attention module</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220324160234.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>问题输入先经过一个SA，再作为query对记忆网络的三种信息进行注意力分布，然后三种信息组合在一起得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span>，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span>是KB summary，即知识图谱的摘要向量。</p>
+<p>然后，用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>H</mi><mi>Q</mi></msup></mrow><annotation encoding="application/x-tex">H^Q</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8413em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.08125em;">H</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">Q</span></span></span></span></span></span></span></span></span></span></span>乘上<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi></mrow><annotation encoding="application/x-tex">m</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">m</span></span></span></span>，即<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>w</mi><mi>o</mi><mi>r</mi><mi>d</mi><mi>s</mi><mo separator="true">,</mo><mi>h</mi><mi>i</mi><mi>d</mi><mo stretchy="false">]</mo><mo>×</mo><mo stretchy="false">[</mo><mi>h</mi><mi>i</mi><mi>d</mi><mo separator="true">,</mo><mi>m</mi><mi>e</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>i</mi><mi>e</mi><mi>s</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[words,hid]\times [hid,memories]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal" style="margin-right:0.02778em;">or</span><span class="mord mathnormal">d</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">hi</span><span class="mord mathnormal">d</span><span class="mclose">]</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal">hi</span><span class="mord mathnormal">d</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">m</span><span class="mord mathnormal" style="margin-right:0.02778em;">or</span><span class="mord mathnormal">i</span><span class="mord mathnormal">es</span><span class="mclose">]</span></span></span></span>，得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">[</mo><mi>w</mi><mi>o</mi><mi>r</mi><mi>d</mi><mi>s</mi><mo separator="true">,</mo><mi>m</mi><mi>e</mi><mi>m</mi><mi>o</mi><mi>r</mi><mi>i</mi><mi>e</mi><mi>s</mi><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">[words,memories]</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">[</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span><span class="mord mathnormal" style="margin-right:0.02778em;">or</span><span class="mord mathnormal">d</span><span class="mord mathnormal">s</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">m</span><span class="mord mathnormal" style="margin-right:0.02778em;">or</span><span class="mord mathnormal">i</span><span class="mord mathnormal">es</span><span class="mclose">]</span></span></span></span>形状的张量，表示每个单词对于记忆中的信息，然后进行最大池化，表示选择一个word对应最强的那个信息。</p>
+<h2 id="importance-module">importance module</h2>
+<p>首先用问题乘记忆矩阵得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi>A</mi><mrow><mi>Q</mi><mi>M</mi></mrow></msup></mrow><annotation encoding="application/x-tex">A^{QM}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8413em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">QM</span></span></span></span></span></span></span></span></span></span></span></span>，表示问题对于回答的重要性。</p>
+<h2 id="enhancing-module">enhancing module</h2>
+<p>利用双向注意力进一步增强</p>
 <p>目前存在的食物推荐方法大多基于菜谱内容、用户之前的行为、食物偏好、标签偏好。而pFoodReq考虑了营养并且可以以自然语言提问。</p>
 <p>pfoodreq的任务是根据食物知识图谱进行的受限的问题回答，并充分考虑用户偏好个性化和营养。</p>
 <p>输入：自然语言的问题、饮食偏好、营养指南</p>
@@ -527,43 +533,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

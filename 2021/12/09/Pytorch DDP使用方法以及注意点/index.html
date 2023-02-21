@@ -30,9 +30,9 @@
 <meta property="article:published_time" content="2021-12-09T13:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-21T09:09:28.426Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="深度学习">
 <meta property="article:tag" content="Pytorch">
 <meta property="article:tag" content="DDP">
+<meta property="article:tag" content="深度学习">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211209210301.png">
   
@@ -216,7 +216,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      4k 字
+      4.1k 字
     </span>
   
 
@@ -271,12 +271,15 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Pytorch-DDP使用方法以及注意点"><a href="#Pytorch-DDP使用方法以及注意点" class="headerlink" title="Pytorch DDP使用方法以及注意点"></a>Pytorch DDP使用方法以及注意点</h1><p>[TOC]</p>
+              <h1>Pytorch DDP使用方法以及注意点</h1>
+<p>[TOC]</p>
 <p>Pytorch的DDP指的是<code>DistributedDataParallel</code>，位于<code>torch.nn.parallel</code>中，用于多GPU的模型训练。相比于之前的DP，DDP的速度快了很多。DDP支持多卡多机器，但我没有多机器，所以本文针对最常用的单机器多卡。</p>
-<h2 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h2><p>DDP加速的原理是通过启动多个<strong>进程</strong>，提高同时训练的<strong>batch size</strong>来增加并行度的，每一个进程都会加载一个模型，用<strong>不同的数据</strong>进行训练之后得到各自的梯度，然后通过<strong>Ring-Reduce</strong>算法获得所有进程的梯度，然后进行相同的梯度下降。注意在训练前和训练后，所有进程的模型参数都是同步了的。</p>
-<p>Ring-Reduce是很简单理解的一个算法：每个进程都从左手边获得一份梯度，然后从右手发送一份梯度（一份指的是一个GPU得出的梯度），经过$n$次迭代之后，所有进程都获得了相同的完整的梯度。如下图，假设梯度$\nabla w$是GPU0算出来的，第一次$\nabla w$被发送到GPU1，第二次被GPU1发送到GPU2，第三次被GPU2发送到GPU3，第四次被发送到GPU4，第五次被发回给GPU0。这样每个进程都只需要接收一个，发送一个，而且能够清楚知道什么时候结束。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211209210301.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="基础概念"><a href="#基础概念" class="headerlink" title="基础概念"></a>基础概念</h2><p>先来了解基础概念：</p>
+<h2 id="原理">原理</h2>
+<p>DDP加速的原理是通过启动多个<strong>进程</strong>，提高同时训练的<strong>batch size</strong>来增加并行度的，每一个进程都会加载一个模型，用<strong>不同的数据</strong>进行训练之后得到各自的梯度，然后通过<strong>Ring-Reduce</strong>算法获得所有进程的梯度，然后进行相同的梯度下降。注意在训练前和训练后，所有进程的模型参数都是同步了的。</p>
+<p>Ring-Reduce是很简单理解的一个算法：每个进程都从左手边获得一份梯度，然后从右手发送一份梯度（一份指的是一个GPU得出的梯度），经过<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>次迭代之后，所有进程都获得了相同的完整的梯度。如下图，假设梯度<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∇</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">\nabla w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">∇</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span>是GPU0算出来的，第一次<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">∇</mi><mi>w</mi></mrow><annotation encoding="application/x-tex">\nabla w</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">∇</span><span class="mord mathnormal" style="margin-right:0.02691em;">w</span></span></span></span>被发送到GPU1，第二次被GPU1发送到GPU2，第三次被GPU2发送到GPU3，第四次被发送到GPU4，第五次被发回给GPU0。这样每个进程都只需要接收一个，发送一个，而且能够清楚知道什么时候结束。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211209210301.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="基础概念">基础概念</h2>
+<p>先来了解基础概念：</p>
 <ul>
 <li><code>world_size</code>：并行数，即总共用的卡数。</li>
 <li><code>rank</code>：当前进程全局序号，范围0~world_size。</li>
@@ -284,7 +287,8 @@
 <li><code>master_port</code>：DDP需要进程间传递数据，所以需要使用端口。</li>
 <li><code>master_address</code>：同上，需要使用IP地址。</li>
 </ul>
-<h2 id="使用方法"><a href="#使用方法" class="headerlink" title="使用方法"></a>使用方法</h2><p>基本逻辑是这样：</p>
+<h2 id="使用方法">使用方法</h2>
+<p>基本逻辑是这样：</p>
 <pre><code class=" mermaid">graph
 A[初始化多进程并获取rank号]--&gt;B[使用DistributedSampler提供数据]
 B --&gt; C[将数据和模型都放在GPU上]
@@ -293,38 +297,39 @@ D --&gt; E[训练]
 E --&gt; F[loss.backward同步梯度]
 F --&gt; G[保存参数]
 </code></pre>
-
-<h3 id="初始化多进程、获取rank号"><a href="#初始化多进程、获取rank号" class="headerlink" title="初始化多进程、获取rank号"></a>初始化多进程、获取rank号</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用这种方法获取local_rank</span><br><span class="hljs-comment"># 其他获取local_rank的方法已经被弃用</span><br>local_rank = <span class="hljs-built_in">int</span>(os.environ[<span class="hljs-string">&quot;LOCAL_RANK&quot;</span>])<br><span class="hljs-comment"># 设置device</span><br>torch.cuda.set_device(local_rank)<br><span class="hljs-comment"># 用nccl后端初始化多进程，一般都用这个</span><br>dist.init_process_group(backend=<span class="hljs-string">&#x27;nccl&#x27;</span>)<br><span class="hljs-comment"># 获取device，之后的模型和张量都.to(device)</span><br>device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span>, local_rank)<br></code></pre></td></tr></table></figure>
-
-<h3 id="数据"><a href="#数据" class="headerlink" title="数据"></a>数据</h3><p>对于$n$张卡上的$n$个模型，我们当然希望将数据分成不同的$n$部分，分别送给它们训练，所以需要使用<code>torch.utils.data.distributed.DistributedSampler</code>帮助我们自动分配数据。</p>
+<h3 id="初始化多进程、获取rank号">初始化多进程、获取rank号</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 使用这种方法获取local_rank</span><br><span class="hljs-comment"># 其他获取local_rank的方法已经被弃用</span><br>local_rank = <span class="hljs-built_in">int</span>(os.environ[<span class="hljs-string">&quot;LOCAL_RANK&quot;</span>])<br><span class="hljs-comment"># 设置device</span><br>torch.cuda.set_device(local_rank)<br><span class="hljs-comment"># 用nccl后端初始化多进程，一般都用这个</span><br>dist.init_process_group(backend=<span class="hljs-string">&#x27;nccl&#x27;</span>)<br><span class="hljs-comment"># 获取device，之后的模型和张量都.to(device)</span><br>device = torch.device(<span class="hljs-string">&quot;cuda&quot;</span>, local_rank)<br></code></pre></td></tr></table></figure>
+<h3 id="数据">数据</h3>
+<p>对于<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>张卡上的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>个模型，我们当然希望将数据分成不同的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>部分，分别送给它们训练，所以需要使用<code>torch.utils.data.distributed.DistributedSampler</code>帮助我们自动分配数据。</p>
 <blockquote>
-<p><strong>注意！只有训练集才要用Sampler！</strong>在train之后，经常使用验证集对数据集进行验证得到validation_loss，此时没有必要使用多卡，只需要在一个进程上进行验证。</p>
+<p>**注意！只有训练集才要用Sampler！**在train之后，经常使用验证集对数据集进行验证得到validation_loss，此时没有必要使用多卡，只需要在一个进程上进行验证。</p>
 <p>在多卡模式下要进行只在一个进程上的操作，通过<code>model.module(inputs)</code>而不是<code>model(inputs)</code>来调用<code>forward()</code>前向传播，而其他进程通过<code>torch.distributed.barrier()</code>来等待主进程完成validate操作。</p>
 <p>假如要多卡推理，参考这篇文章写一个新的sampler[<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/250471767">原创][深度][PyTorch] DDP系列第三篇：实战与技巧 - 知乎 (zhihu.com)</a></p>
 </blockquote>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">train_dataset = MyDataset()<br><span class="hljs-comment"># shuffle不在dataloader中设置，而是在sampler中设置</span><br>train_sampler = DistributedSampler(train_dataset, shuffle=<span class="hljs-literal">True</span>)<br><span class="hljs-comment"># batch_size指的是一张卡上的batch_size，总batch_size应该是要乘并行数</span><br>train_loader = torch.utils.data.DataLoader(train_dataset, <br>                                           batch_size=<span class="hljs-number">64</span>, <br>                                           sampler=train_sampler)<br><br><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(EPOCHS):<br>    <span class="hljs-comment"># 每轮开始前需要调用这个方法进行正确的数据shuffle</span><br>    <span class="hljs-comment"># 否则每一轮用的都是相同的顺序</span><br>    train_sampler.set_epoch(epoch)<br>    ...<br></code></pre></td></tr></table></figure>
-
-<h3 id="把数据和模型放在GPU上"><a href="#把数据和模型放在GPU上" class="headerlink" title="把数据和模型放在GPU上"></a>把数据和模型放在GPU上</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 直接to(device)即可，注意要收到返回值</span><br>model = YourModel()<br>model = model.to(device)<br>your_data = your_data.to(device)<br></code></pre></td></tr></table></figure>
-
-<h3 id="把模型用DDP包裹"><a href="#把模型用DDP包裹" class="headerlink" title="把模型用DDP包裹"></a>把模型用DDP包裹</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># local_rank就是进程号</span><br><span class="hljs-comment"># 从此之后，调用model()就是用DDP模式的前向传播</span><br><span class="hljs-comment"># 要使用原始的前向传播，需要model.module()</span><br>model = DDP(model, device_ids=[local_rank], output_device=local_rank)<br></code></pre></td></tr></table></figure>
-
-<h3 id="训练、同步梯度"><a href="#训练、同步梯度" class="headerlink" title="训练、同步梯度"></a>训练、同步梯度</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 仍然可以直接调用模型的train()方法</span><br><span class="hljs-comment"># 但是假如要调用其他你自己写的方法，就得model.module.func()</span><br>model.train()<br><span class="hljs-keyword">for</span> data <span class="hljs-keyword">in</span> dataloader:<br>    loss = model(data)<br>    optimizer.zero_grad()<br>    loss.backward()  <span class="hljs-comment"># 这个操作自动同步梯度</span><br>    optimizer.step()<br>    <span class="hljs-comment"># 但是仍然需要累加得到所有进程loss的值的和</span><br>    dist.all_reduce(loss, op=dist.ReduceOp.SUM)<br>    <span class="hljs-comment"># 然后除以并行数，就是这个batch的loss值了</span><br>    loss /= world_size<br></code></pre></td></tr></table></figure>
-
-<h3 id="保存参数"><a href="#保存参数" class="headerlink" title="保存参数"></a>保存参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 保存的是参数，不需要DDP包裹</span><br>torch.save(model.module.state_dict())<br></code></pre></td></tr></table></figure>
-
-<h3 id="运行"><a href="#运行" class="headerlink" title="运行"></a>运行</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 通过外部命令运行</span> <br><span class="hljs-meta">#</span><span class="bash"> 通过CUDA_VISIBLE_DEVICES控制可见的卡数</span><br><span class="hljs-meta">#</span><span class="bash"> 通过--nproc_per_node确定使用多少卡</span><br>CUDA_VISIBLE_DEVICES=&quot;0,1,2,3&quot; python -m torch.distributed.run --nproc_per_node 4 train.py <br></code></pre></td></tr></table></figure>
-
-<h2 id="DDP注意点复习！"><a href="#DDP注意点复习！" class="headerlink" title="DDP注意点复习！"></a>DDP注意点复习！</h2><ol>
+<h3 id="把数据和模型放在GPU上">把数据和模型放在GPU上</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 直接to(device)即可，注意要收到返回值</span><br>model = YourModel()<br>model = model.to(device)<br>your_data = your_data.to(device)<br></code></pre></td></tr></table></figure>
+<h3 id="把模型用DDP包裹">把模型用DDP包裹</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># local_rank就是进程号</span><br><span class="hljs-comment"># 从此之后，调用model()就是用DDP模式的前向传播</span><br><span class="hljs-comment"># 要使用原始的前向传播，需要model.module()</span><br>model = DDP(model, device_ids=[local_rank], output_device=local_rank)<br></code></pre></td></tr></table></figure>
+<h3 id="训练、同步梯度">训练、同步梯度</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 仍然可以直接调用模型的train()方法</span><br><span class="hljs-comment"># 但是假如要调用其他你自己写的方法，就得model.module.func()</span><br>model.train()<br><span class="hljs-keyword">for</span> data <span class="hljs-keyword">in</span> dataloader:<br>    loss = model(data)<br>    optimizer.zero_grad()<br>    loss.backward()  <span class="hljs-comment"># 这个操作自动同步梯度</span><br>    optimizer.step()<br>    <span class="hljs-comment"># 但是仍然需要累加得到所有进程loss的值的和</span><br>    dist.all_reduce(loss, op=dist.ReduceOp.SUM)<br>    <span class="hljs-comment"># 然后除以并行数，就是这个batch的loss值了</span><br>    loss /= world_size<br></code></pre></td></tr></table></figure>
+<h3 id="保存参数">保存参数</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 保存的是参数，不需要DDP包裹</span><br>torch.save(model.module.state_dict())<br></code></pre></td></tr></table></figure>
+<h3 id="运行">运行</h3>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta">#</span><span class="bash"> 通过外部命令运行</span> <br><span class="hljs-meta">#</span><span class="bash"> 通过CUDA_VISIBLE_DEVICES控制可见的卡数</span><br><span class="hljs-meta">#</span><span class="bash"> 通过--nproc_per_node确定使用多少卡</span><br>CUDA_VISIBLE_DEVICES=&quot;0,1,2,3&quot; python -m torch.distributed.run --nproc_per_node 4 train.py <br></code></pre></td></tr></table></figure>
+<h2 id="DDP注意点复习！">DDP注意点复习！</h2>
+<ol>
 <li>要把模型和数据放在进程对应的那张卡上</li>
 <li>要使用Sampler来分发训练数据，并且shuffle不设置在Dataloder中而是Sampler中，每个epoch还需要调用Sampler的<code>set_epoch()</code>方法。</li>
 <li>训练和验证区分较大，验证一般在主进程中进行一次验证即可，不需要sampler，操作和单卡一样，之后将数据同步给其他进程。</li>
 <li>在多卡时要调用模型的其他方法或者使用单卡的模式，需要用<code>model.module</code>来获得原始模型，同样保存参数时也保存的是<code>model.module</code>的参数而不是DDP包裹的。</li>
 </ol>
-<h2 id="DDP小技巧"><a href="#DDP小技巧" class="headerlink" title="DDP小技巧"></a>DDP小技巧</h2><h3 id="数据同步"><a href="#数据同步" class="headerlink" title="数据同步"></a>数据同步</h3><p>使用<code>dist.all_reduce(loss, op=dist.ReduceOp.SUM)</code>可以同步tensor的数据，由于算法限制，要算平均值只能用求和运算<code>dist.ReduceOp.SUM</code>之后再除以<code>world_size</code>。</p>
+<h2 id="DDP小技巧">DDP小技巧</h2>
+<h3 id="数据同步">数据同步</h3>
+<p>使用<code>dist.all_reduce(loss, op=dist.ReduceOp.SUM)</code>可以同步tensor的数据，由于算法限制，要算平均值只能用求和运算<code>dist.ReduceOp.SUM</code>之后再除以<code>world_size</code>。</p>
 <p>假如要同步的不是tensor，可以创建Tensor然后<strong>放进对应的GPU</strong>，再同步。</p>
 <p>假如需要获得每个进程的某个tensor的值（即有n个GPU就获得n个值），那么使用<code>dist.all_gather</code>可以获得tensor列表。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 官网API文档</span><br><span class="hljs-comment"># All tensors below are of torch.int64 dtype.</span><br><span class="hljs-comment"># We have 2 process groups, 2 ranks.</span><br>tensor_list = [torch.zeros(<span class="hljs-number">2</span>, dtype=torch.int64) <span class="hljs-keyword">for</span> _ <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">2</span>)]<br>tensor_list<br><span class="hljs-comment"># [tensor([0, 0]), tensor([0, 0])] # Rank 0 and 1</span><br>tensor = torch.arange(<span class="hljs-number">2</span>, dtype=torch.int64) + <span class="hljs-number">1</span> + <span class="hljs-number">2</span> * rank<br>tensor<br><span class="hljs-comment"># tensor([1, 2]) # Rank 0</span><br><span class="hljs-comment"># tensor([3, 4]) # Rank 1</span><br>dist.all_gather(tensor_list, tensor)<br>tensor_list<br><span class="hljs-comment"># [tensor([1, 2]), tensor([3, 4])] # Rank 0</span><br><span class="hljs-comment"># [tensor([1, 2]), tensor([3, 4])] # Rank 1</span><br></code></pre></td></tr></table></figure>
-
 <p>同步数据时假如要控制所有进程同时，可以使用<code>torch.distributed.barrier()</code>，让快的进程等一下慢的进程，假如timeout了，可以看看代码是否能优化，或者在运行之前提供参数提高timeout的值。</p>
 <p><strong>假如dist.barrier()失效，可能是这种情况</strong><a target="_blank" rel="noopener" href="https://discuss.pytorch.org/t/distributeddataparallel-barrier-doesnt-work-as-expected-during-evaluation/99867">DistributedDataParallel barrier doesn’t work as expected during evaluation - distributed - PyTorch Forums</a></p>
 <blockquote>
@@ -350,11 +355,11 @@ F --&gt; G[保存参数]
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
-                    
                       <a class="hover-with-bg" href="/tags/Pytorch/">Pytorch</a>
                     
                       <a class="hover-with-bg" href="/tags/DDP/">DDP</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a>
                     
                   </div>
                 
@@ -593,43 +598,8 @@ F --&gt; G[保存参数]
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

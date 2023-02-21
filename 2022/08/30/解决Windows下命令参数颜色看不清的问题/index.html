@@ -217,7 +217,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      725 字
+      717 字
     </span>
   
 
@@ -272,7 +272,8 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="解决Windows下Powershell命令参数颜色看不清的问题"><a href="#解决Windows下Powershell命令参数颜色看不清的问题" class="headerlink" title="解决Windows下Powershell命令参数颜色看不清的问题"></a>解决Windows下Powershell命令参数颜色看不清的问题</h1><p>刚开始遇到的问题：在PyCharm的Terminal（终端）下，发现输入<code>ffmpeg -version</code>中的<code>-version</code>颜色 是黑色，由于我PyCharm主题也是黑色，所以看不清。</p>
+              <h1>解决Windows下Powershell命令参数颜色看不清的问题</h1>
+<p>刚开始遇到的问题：在PyCharm的Terminal（终端）下，发现输入<code>ffmpeg -version</code>中的<code>-version</code>颜色 是黑色，由于我PyCharm主题也是黑色，所以看不清。</p>
 <p>所以在先在PyCharm的设置中找到<code>Editor -&gt; Color Scheme -&gt; Console Colors</code>，但是<strong>更改没有效果</strong>。后面发现PowerShell本身输出的参数就是这个颜色，所以应该是PowerShell的问题。</p>
 <p>所以核心问题应该是：在PowerShell中，当用户输入<code>-</code>开头的参数时，配色方案为黑色，当背景为深色时很可能看不清楚。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220830100906.png" srcset="/img/loading.gif" lazyload alt="改之前"></p>
@@ -280,9 +281,9 @@
 <p>💚问题解决（解决方法参考[1]）：</p>
 <ol>
 <li>在PowerShell中输入<code>$profile</code>获取PS的配置文件的路径，假如这个文件不存在则手动新建，或者输入<code>invoke-item $profile</code>新建[2]。</li>
-<li>在文件中添加这一行：<code>Set-PSReadLineOption -Colors @&#123; Parameter = &#39;Green&#39; &#125;</code>，其中Parameter表示要更改颜色的对象，Green是具体颜色。详细配置可查看官方文档[3]。</li>
+<li>在文件中添加这一行：<code>Set-PSReadLineOption -Colors @&#123; Parameter = 'Green' &#125;</code>，其中Parameter表示要更改颜色的对象，Green是具体颜色。详细配置可查看官方文档[3]。</li>
 </ol>
-<p> 💛参考：</p>
+<p>💛参考：</p>
 <p>[1] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/44978897/powershell-hyphen-argument-color">Powershell hyphen argument color - Stack Overflow</a></p>
 <p>[2] <a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/72951955/changing-powershell-default-colors-not-saved-after-restart-set-readable-colors">Changing PowerShell default colors not saved after restart, set readable colors permanently? - Stack Overflow</a></p>
 <p>[3] <a target="_blank" rel="noopener" href="https://docs.microsoft.com/en-us/powershell/module/psreadline/set-psreadlineoption?view=powershell-7.2">Set-PSReadLineOption (PSReadLine) - PowerShell | Microsoft Docs</a></p>
@@ -546,43 +547,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

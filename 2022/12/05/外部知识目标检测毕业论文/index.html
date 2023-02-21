@@ -274,18 +274,21 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="外部知识目标检测毕业论文笔记"><a href="#外部知识目标检测毕业论文笔记" class="headerlink" title="外部知识目标检测毕业论文笔记"></a>外部知识目标检测毕业论文笔记</h1><p>Baseline如下，有IKEM和EKEM两个模块。其中IKEM是内部知识嵌入模块，通过画面内部初步检测到的<strong>区域之间特征的联系</strong>来增强特征。EKEM是外部知识嵌入模块，通过<strong>外部知识</strong>来确定画面内部初步检测到的区域之间的关系。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205130528.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="IKEM"><a href="#IKEM" class="headerlink" title="IKEM"></a>IKEM</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205131749.png" srcset="/img/loading.gif" lazyload></p>
+              <h1>外部知识目标检测毕业论文笔记</h1>
+<p>Baseline如下，有IKEM和EKEM两个模块。其中IKEM是内部知识嵌入模块，通过画面内部初步检测到的<strong>区域之间特征的联系</strong>来增强特征。EKEM是外部知识嵌入模块，通过<strong>外部知识</strong>来确定画面内部初步检测到的区域之间的关系。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205130528.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="IKEM">IKEM</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205131749.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>先通过分类器权重构建图的节点，然后通过节点间点乘的相似性构建边，然后通过GCN学习更新，得到节点的新特征用于下一步。</p>
 <p>构建节点如下图所示，因为各种原因采用backbone的分类器权重作为特征，就是还没softmax的logits。softmax+平滑之后再乘回去，就能得到一个更平滑的权重特征。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205132322.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205132322.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>构建边如下图所示，区域特征相乘之后选择最大的t个保留。这里很像[Object Relational Graph with Teacher Recommended Learning for Video Captioning论文笔记 - Kamino’s Blog](<a href="https://blog.kamino.link/2021/12/04/ORG">https://blog.kamino.link/2021/12/04/ORG</a> TRL论文笔记/)提到的ORG。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205132630.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="EKEM"><a href="#EKEM" class="headerlink" title="EKEM"></a>EKEM</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205133053.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205132630.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="EKEM">EKEM</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205133053.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>和上面IKEM基本相同，这里构建边的方式不一样。构建边是通过Visual Genome提供的Relationship得到的，VG里面Rel比较简单，是两个物体和之间的联系，这里不深入探究是什么样的联系，而是统计两个物体共现的频率，之后进行归一化得到边。</p>
 <p>之后不使用GCN，通过下面这个操作来更新特征：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205133723.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20221205133723.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>首先图像特征通过squeeze-and-excitation操作得到一个针对一个节点的权重，然后与其特征进行乘。</p>
 <p>最后和IKEM一样进行软映射之后再变个维度得到最终特征。</p>
 
@@ -521,43 +524,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

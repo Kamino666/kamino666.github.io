@@ -19,12 +19,12 @@
   <meta name="description" content="Kamino&#39;s Blog">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Python Type HintsPython是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。 Type Hints指的是在Python中显式提示某个变量的类型，可以翻译为类型提示，假如用错了类型，IDE就会有提示，能够让开发者更加方便地找到错误。">
+  <meta name="description" content="Python Type Hints Python是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。 Type Hints指的是在Python中显式提示某个变量的类型，可以翻译为类型提示，假如用错了类型，IDE就会有提示，能够让开发者更加方便地找到错误。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Python Type Hints">
 <meta property="og:url" content="http://blog.kamino.link/2021/10/24/Python%20type%20hint/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Python Type HintsPython是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。 Type Hints指的是在Python中显式提示某个变量的类型，可以翻译为类型提示，假如用错了类型，IDE就会有提示，能够让开发者更加方便地找到错误。">
+<meta property="og:description" content="Python Type Hints Python是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。 Type Hints指的是在Python中显式提示某个变量的类型，可以翻译为类型提示，假如用错了类型，IDE就会有提示，能够让开发者更加方便地找到错误。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-10-24T05:00:00.000Z">
 <meta property="article:modified_time" content="2022-07-21T08:59:43.011Z">
@@ -268,11 +268,11 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python-Type-Hints"><a href="#Python-Type-Hints" class="headerlink" title="Python Type Hints"></a>Python Type Hints</h1><p>Python是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。</p>
+              <h1>Python Type Hints</h1>
+<p>Python是一门不注重类型转换的语言，不像C++那样需要进行显式类型声明，这样在程序编写的过程中或许会更方便，但是在debug的时候就可能会很麻烦了，所以Python在3.5版本中引入了Type Hints。</p>
 <p>Type Hints指的是在Python中显式提示某个变量的类型，可以翻译为<strong>类型提示</strong>，假如用错了类型，IDE就会有提示，能够让开发者更加方便地找到错误。</p>
 <p>Type Hints的写法如下：</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">变量名: 类型  <span class="hljs-comment"># 1</span><br>变量名: 类型 = 值  <span class="hljs-comment"># 2</span><br><span class="hljs-comment"># 例子：</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">f</span>(<span class="hljs-params">x: <span class="hljs-built_in">int</span> = <span class="hljs-number">1</span>, y: <span class="hljs-built_in">str</span> = <span class="hljs-number">2</span></span>):</span><br>    <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
-
 <p>对于类型，可以是基本类型、自定义类型、容器类型、可选……，可见下表</p>
 <table>
 <thead>
@@ -282,7 +282,8 @@
 <th>备注</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td><code>int</code>,<code>str</code>,<code>list</code>,<code>dict</code></td>
 <td>可以直接使用的基本类型</td>
 <td></td>
@@ -322,10 +323,10 @@
 <td>接受可调用类型</td>
 <td>要from typing import</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>假如类型太长了，可以使用别名</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">config: <span class="hljs-type">List</span>[<span class="hljs-type">Tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">int</span>], <span class="hljs-type">Dict</span>[<span class="hljs-built_in">int</span>, <span class="hljs-built_in">int</span>]] = [...]<br><span class="hljs-comment"># 上面这条语句和下面这条等价</span><br>Config = <span class="hljs-type">List</span>[<span class="hljs-type">Tuple</span>[<span class="hljs-built_in">str</span>, <span class="hljs-built_in">int</span>], <span class="hljs-type">Dict</span>[<span class="hljs-built_in">int</span>, <span class="hljs-built_in">int</span>]]<br>config: Config = [...]<br></code></pre></td></tr></table></figure>
-
 <blockquote>
 <p>参考文献</p>
 <p><a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/CbZYOkaY0z1Brw4W5coG3w">Python Type Hints 从入门到实践 (qq.com)</a></p>
@@ -588,43 +589,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

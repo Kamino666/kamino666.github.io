@@ -279,14 +279,17 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="网络爬虫进化史，原来你是这样的爬虫：第3期"><a href="#网络爬虫进化史，原来你是这样的爬虫：第3期" class="headerlink" title="网络爬虫进化史，原来你是这样的爬虫：第3期"></a>网络爬虫进化史，原来你是这样的爬虫：第3期</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>上一期，万维网经历了发展最迅速的时期，也经历了泡沫破裂的时期，而爬虫却在背地里偷偷壮大起来，仅仅1994这一年，爬虫的爬取能力就扩大了好几倍，而随着Google的天才工程师们的加入，爬虫也学会团结在一起集体行动。</p>
+              <h1>网络爬虫进化史，原来你是这样的爬虫：第3期</h1>
+<h2 id="前言">前言</h2>
+<p>上一期，万维网经历了发展最迅速的时期，也经历了泡沫破裂的时期，而爬虫却在背地里偷偷壮大起来，仅仅1994这一年，爬虫的爬取能力就扩大了好几倍，而随着Google的天才工程师们的加入，爬虫也学会团结在一起集体行动。</p>
 <p>不知道读者们还记不记得第一期的“常胜将军”</p>
 <blockquote>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153701.png" srcset="/img/loading.gif" lazyload alt="传统爬虫结构"></p>
 <p>我们可以把爬虫想象为一位攻城掠地的常胜将军，他带着初始的补给去攻打一个个城池，每攻下一个城池就能获得新的补给，然后他就带着新的补给去攻打新的城池……直到他征服了全世界。</p>
 </blockquote>
 <p>在经过几年的磨砺之后，常胜将军手下的军队越来越强大，他的脑袋也越来越灵活，他已经能够率领军队同时进攻几个城池，在新的世纪到来之时，世界的变化越来越大，城池越来越坚固，将军是否还能经受住考验呢？</p>
-<h2 id="Mercator"><a href="#Mercator" class="headerlink" title="Mercator"></a>Mercator</h2><p>Google爬虫是20世纪的王者，而它并不是完美的，假如说Google爬虫是为了Google搜索而生的专业搜索引擎爬虫，那么诞生于1999年的Mercator就是能为各类人员所用的万金油。</p>
+<h2 id="Mercator">Mercator</h2>
+<p>Google爬虫是20世纪的王者，而它并不是完美的，假如说Google爬虫是为了Google搜索而生的专业搜索引擎爬虫，那么诞生于1999年的Mercator就是能为各类人员所用的万金油。</p>
 <p>在上世纪90年代的程序设计界，Java和C++是最热门的两门计算机编程语言，而他们的共同特点就是OOP(Object Oriented Programming)，也就是面向对象，而面向对象又常伴随着模块化编程，模块化编程，是强调将计算机程序的功能分离成独立的、可相互改变的“模块”的软件设计技术，它使得每个模块都包含着执行预期功能的一个唯一方面所必需的所有东西。</p>
 <p>我们要介绍的<strong>Mercator</strong>爬虫就是采用模块化设计思维，由Java语言实现的<strong>可拓展性</strong>爬虫。Mercator为爬虫领域带来了模块化设计，现在热门的Scrapy就是一个高度模块化的爬虫框架，当我们使用这种模块化设计的爬虫来进行某个爬取任务时，我们只要改动某一个模块的几十行代码就可以实现，并不需要动爬虫的核心(core)代码。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153706.png" srcset="/img/loading.gif" lazyload alt="Mercator爬虫的各个模块"></p>
@@ -298,13 +301,14 @@
 <li>Mercator具有可移植性，由于它是用Java实现的，所以它可以轻松地运行在任何装有Java虚拟机的系统上。</li>
 </ol>
 <p>这些优点让Mercator变得非常热门，再加上Mercator是当时公开信息和技术最多的爬虫，有非常多的人使用Mercator来进行研究，AltaVista搜索引擎就将它整合进去用来为美国和欧洲提供服务，还有人用它爬取了全网超过12TB的数据，甚至还有人用它来监控调查2000年美国总统选举时的与选举有关的网站。</p>
-<h2 id="Polybot"><a href="#Polybot" class="headerlink" title="Polybot"></a>Polybot</h2><p>虽然Mercator靠着它的可拓展性红极一时，但是它有着一个很大的缺点——对硬件的需求高。Mercator虽然是个模块化的爬虫，但是要扩大规模就必须要多台相同的高性能机器一起运行多个Mercator程序，并且在Java尚未得到充足优化的时代，用Java写的程序普遍比C/C++更慢且占用内存更多，这使得使用Mercator的门槛很高。</p>
+<h2 id="Polybot">Polybot</h2>
+<p>虽然Mercator靠着它的可拓展性红极一时，但是它有着一个很大的缺点——对硬件的需求高。Mercator虽然是个模块化的爬虫，但是要扩大规模就必须要多台相同的高性能机器一起运行多个Mercator程序，并且在Java尚未得到充足优化的时代，用Java写的程序普遍比C/C++更慢且占用内存更多，这使得使用Mercator的门槛很高。</p>
 <p>2002年，另一个爬虫Polybot横空出世，它专门为低端机器进行了优化。</p>
 <img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153713.png" srcset="/img/loading.gif" lazyload alt="image-20210121134837559" style="zoom:50%;" />
-
 <p>Polybot也是精心使用模块化设计的爬虫，比起Mercator，它的模块化程度显然更高，Mercator虽然能在多台机器上同时进行爬虫任务来提高效率，但是每台机器都运行的是同样复杂的任务，包括下载、提取、DNS解析等等，而Polybot则将它的每个模块完全分开，下载模块和DNS解析模块可以运行在不同的机器上，通过网络来交流和分配任务，这种方式让每台实体机器所负担的任务量大大减少，所以Polybot的使用者可以用更多台低成本机器来提升效率。</p>
 <p>既然机器增多了，可能的故障也增多了，Polybot采用断点(checkpoint)技术来避免机器出问题导致爬取要从头开始。在开发者进行爬取试验的时候，由于各种因素程序崩溃了很多次，但是之后Polybot读取断点又继续进行任务了，实验结束后，Polybot总共在18天内爬取到了超过1.2亿个页面。</p>
-<h2 id="P2P"><a href="#P2P" class="headerlink" title="P2P"></a>P2P</h2><p>在1999年5月的美国东北大学(NEU)，一个叫做Napster的软件免费软件在学生中流行起来，音乐爱好者们不用再担心没有钱去商店里买他们最喜欢的歌手的专辑了，Napster可以让他们互相分享MP3歌曲，在最火的时候，Napster拥有高达8000万的注册用户，无论是歌曲的数量还是下载速度，Napster都远远超过了他的竞争者们。</p>
+<h2 id="P2P">P2P</h2>
+<p>在1999年5月的美国东北大学(NEU)，一个叫做Napster的软件免费软件在学生中流行起来，音乐爱好者们不用再担心没有钱去商店里买他们最喜欢的歌手的专辑了，Napster可以让他们互相分享MP3歌曲，在最火的时候，Napster拥有高达8000万的注册用户，无论是歌曲的数量还是下载速度，Napster都远远超过了他的竞争者们。</p>
 <p>Napster的主要技术就是P2P(peer-to-peer)，也就是点对点网络或者对等网络。这种网络的特点就是没有中心服务器，仅依靠用户群来交换数据的互联网。这种网络的优点就是用户越多，效率越高，而且其中任何一个节点（用户）掉线了也不会影响整个网络。QQ、Skype（即时通话app）、SETI@home（利用全球各地计算机提供算力来寻找地外文明的项目）、BT下载（包括迅雷等）和比特币都使用了P2P技术。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153715.jpg" srcset="/img/loading.gif" lazyload alt="Screengrab of the Napster program"></p>
 <p>P2P的成功也引起了爬虫开发人员的注意，在2002年UbiCrawler爬虫率先使用了P2P网络来进行爬取任务。UbiCrawler和Mercator一样都是100%使用Java来实现的爬虫，然而UbiCrawler出色的设计让Java运行速度慢的劣势消失了，它在使用五台普通个人电脑的情况下，就实现了1000万每日的页面爬取量。</p>
@@ -313,7 +317,8 @@
 <p>在之后有很多研究团队在UbiCrawler的基础上进行了改进，pSearch项目采用分布式哈希表(Distributed Hash Tables)来进一步提升P2P爬虫的性能，随着P2P的节点遍布全球，还有人通过考虑节点的地理位置来分配任务从而提升效率。</p>
 <p>除了分布式爬虫，也有一些特立独行的爬虫只在一台机器上运行并发挥最大效率，比如2008年的IRLbot，在一台装有四核AMD皓龙处理器的服务器上，用41.27天爬取到了超过63亿个页面！</p>
 <blockquote>
-<h2 id="Wayback-Machine"><a href="#Wayback-Machine" class="headerlink" title="Wayback Machine"></a>Wayback Machine</h2><p>爬虫能做什么？从第一期到现在，开发爬虫的目的好像无非就是构建搜索引擎和对万维网进行规模研究，然而有一个组织使用爬虫制造了一个网站时光机，允许用户“回到过去”，这就是<a target="_blank" rel="noopener" href="https://web.archive.org/">Wayback Machine</a>。</p>
+<h2 id="Wayback-Machine">Wayback Machine</h2>
+<p>爬虫能做什么？从第一期到现在，开发爬虫的目的好像无非就是构建搜索引擎和对万维网进行规模研究，然而有一个组织使用爬虫制造了一个网站时光机，允许用户“回到过去”，这就是<a target="_blank" rel="noopener" href="https://web.archive.org/">Wayback Machine</a>。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153719.png" srcset="/img/loading.gif" lazyload alt="File:Wayback Machine logo 2010.svg"></p>
 <p>这个时光机通过爬虫将从万维网上爬取到的页面存档下来，创始人Kahle和Gilliat希望以此能为整个互联网“普及所有知识”。时光机于1996年开始存档网页，在2001年正式公开时，它已经存档了超过100亿个页面，截止2018年9月，时光机已经存有了超过25PB的数据。</p>
 <p>这是一个很有趣的网站，我们可以在上面找到很多网页之前的样子，比如B站在2011年的样子</p>
@@ -323,7 +328,8 @@
 <p>还有2009年的steam</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153728.png" srcset="/img/loading.gif" lazyload alt="image-20210122102958463"></p>
 </blockquote>
-<h2 id="接下来？"><a href="#接下来？" class="headerlink" title="接下来？"></a>接下来？</h2><p>这一期，我们的爬虫不仅开始成群结队了起来，而且他们的阵型变得更加灵活，我们的常胜将军带领的爬虫大军既能分散作战，用庞大的数量攻略城池，也能派出名将用高效的数据结构和算法来攻略城池，就算有几位将军倒下了，也会有其他将军顶替……纵使万维网的页面从最开始的一个页面发展到几百万几亿个页面，成千上万个站点，也避免不了爬虫爬取到每个角落。</p>
+<h2 id="接下来？">接下来？</h2>
+<p>这一期，我们的爬虫不仅开始成群结队了起来，而且他们的阵型变得更加灵活，我们的常胜将军带领的爬虫大军既能分散作战，用庞大的数量攻略城池，也能派出名将用高效的数据结构和算法来攻略城池，就算有几位将军倒下了，也会有其他将军顶替……纵使万维网的页面从最开始的一个页面发展到几百万几亿个页面，成千上万个站点，也避免不了爬虫爬取到每个角落。</p>
 <p>然而，万维网并不是只在数字上有增长，当这些爬虫兴奋地在网上爬来爬去时，殊不知万维网已经成了一座冰山，掩盖在海底的不可见数据越来越多，这让传统的爬虫束手无策，他们需要进一步的升级才能看清水底的数据……</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210405153730.png" srcset="/img/loading.gif" lazyload alt="What is Dark Web and Why You Should Access it Carefully! - GeeksforGeeks"></p>
 <div class="note note-info">
@@ -586,43 +592,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

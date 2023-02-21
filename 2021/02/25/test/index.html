@@ -267,11 +267,10 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="用来技术性测试的文章"><a href="#用来技术性测试的文章" class="headerlink" title="用来技术性测试的文章"></a>用来技术性测试的文章</h1><iframe src="//player.bilibili.com/player.html?aid=378644422&bvid=BV1ef4y1g7i3&cid=429106866&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height=500 width="100%"> </iframe>
-
+              <h1>用来技术性测试的文章</h1>
+<iframe src="//player.bilibili.com/player.html?aid=378644422&bvid=BV1ef4y1g7i3&cid=429106866&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" height=500 width="100%"> </iframe>
 <script id="infogram_0_aab2b449-6220-4807-b2a6-d604ca443166" title="test" src="https://e.infogram.com/js/dist/embed.js?k0R" type="text/javascript"></script>
 <div style="padding:8px 0;font-family:Arial!important;font-size:13px!important;line-height:15px!important;text-align:center;border-top:1px solid #dadada;margin:0 30px"><a href="https://infogram.com/aab2b449-6220-4807-b2a6-d604ca443166" style="color:#989898!important;text-decoration:none!important;" target="_blank">test</a><br><a href="https://infogram.com" style="color:#989898!important;text-decoration:none!important;" target="_blank" rel="nofollow">Infogram</a></div>
-
 
             </div>
             <hr>
@@ -491,43 +490,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

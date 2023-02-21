@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217140102.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217141118.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217141518.png">
-<meta property="og:image" content="c:/Users/Kamino/AppData/Roaming/Typora/typora-user-images/image-20230217141800222.png">
+<meta property="og:image" content="c:%5CUsers%5CKamino%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20230217141800222.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217142319.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217142655.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217143527.png">
@@ -278,16 +278,20 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="论文笔记-BLIP-2-Bootstrapping-Language-Image-Pre-training-with-Frozen-Image-Encoders-and-Large-Language-Models"><a href="#论文笔记-BLIP-2-Bootstrapping-Language-Image-Pre-training-with-Frozen-Image-Encoders-and-Large-Language-Models" class="headerlink" title="论文笔记 BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models"></a>论文笔记 BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models</h1><p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.12597">BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models (arxiv.org)</a></p>
+              <h1>论文笔记 BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.12597">BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models (arxiv.org)</a></p>
 <p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/salesforce/LAVIS/tree/main/projects/blip2">LAVIS/projects/blip2 at main · salesforce/LAVIS (github.com)</a></p>
 <p>Demo：<a target="_blank" rel="noopener" href="https://huggingface.co/spaces/Salesforce/BLIP2">HuggingFace</a>、<a target="_blank" rel="noopener" href="https://colab.research.google.com/github/salesforce/LAVIS/blob/main/examples/blip2_instructed_generation.ipynb">Colab（免费资源不够直接运行）</a></p>
-<p><strong>Salesforce</strong>团队于2023年1月发布的大规模视觉-语言预训练模型，在前作<a target="_blank" rel="noopener" href="https://proceedings.mlr.press/v162/li22n.html">BLIP</a>的基础上发展而来，BLIP2展示了一种<strong>利用已有的大型图像编码器（如CLIP）和大型语言模型（如OPT、GPT）</strong>的训练方式，其中这两个模型<strong>在训练时均不更新参数，而是只学习连接两者的一个仅有100M参数的Q-Former</strong>。这种架构能够适应并利用如今的各种图像编码器和语言模型，并且由于冻结了大部分参数，在计算上也有巨大优势。BLIP2最终在各个方面都取得了SOTA的表现，并且优秀的架构设计能适应更多种的应用。</p>
-<h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>近年来视觉-语言预训练（VLP）的研究发展迅速，CLIP、ALBEF、BLIP、SimVLM、BEiT、Flamingo等都是很优秀的模型，然而在预训练中的复杂计算仍然是一个问题。视觉-语言的研究正如其名是联系视觉和语言的研究，所以很自然会想到：能不能将视觉上的单模态模型和语言上的单模态模型结合在一起？</p>
+<p><strong>Salesforce</strong>团队于2023年1月发布的大规模视觉-语言预训练模型，在前作<a target="_blank" rel="noopener" href="https://proceedings.mlr.press/v162/li22n.html">BLIP</a>的基础上发展而来，BLIP2展示了一种<strong>利用已有的大型图像编码器（如CLIP）和大型语言模型（如OPT、GPT）<strong>的训练方式，其中这两个模型</strong>在训练时均不更新参数，而是只学习连接两者的一个仅有100M参数的Q-Former</strong>。这种架构能够适应并利用如今的各种图像编码器和语言模型，并且由于冻结了大部分参数，在计算上也有巨大优势。BLIP2最终在各个方面都取得了SOTA的表现，并且优秀的架构设计能适应更多种的应用。</p>
+<h2 id="介绍">介绍</h2>
+<p>近年来视觉-语言预训练（VLP）的研究发展迅速，CLIP、ALBEF、BLIP、SimVLM、BEiT、Flamingo等都是很优秀的模型，然而在预训练中的复杂计算仍然是一个问题。视觉-语言的研究正如其名是联系视觉和语言的研究，所以很自然会想到：能不能将视觉上的单模态模型和语言上的单模态模型结合在一起？</p>
 <p>BLIP2就是结合两个方面各自的单模态模型的一个工作，具有<strong>高通用性</strong>和<strong>高计算效率</strong>的特点。</p>
 <p>众所周知，跨模态训练中跨模态对齐很重要，然而由于计划将语言模型参数冻结，而其并没有见到过视觉的数据，所以这种对齐变得十分困难。已有的方法（Frozen、Flamingo）使用了图像到文本的生成损失，本文认为这不足以弥补模态差距。</p>
-<h2 id="模型架构"><a href="#模型架构" class="headerlink" title="模型架构"></a>模型架构</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124428.png" srcset="/img/loading.gif" lazyload alt="BLIP2"></p>
+<h2 id="模型架构">模型架构</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124428.png" srcset="/img/loading.gif" lazyload alt="BLIP2"></p>
 <p>上图为BLIP-2的架构，BLIP-2在冻结的图像编码器和语言模型间加入了一个Querying Transformer，训练也被分成了两个阶段，第一阶段是利用预训练图像编码器的视觉-语言表征学习，第二阶段是利用两个冻结模型的视觉-语言生成学习。</p>
-<h3 id="Q-Former"><a href="#Q-Former" class="headerlink" title="Q-Former"></a>Q-Former</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124647.png" srcset="/img/loading.gif" lazyload alt="BLIP2"></p>
+<h3 id="Q-Former">Q-Former</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124647.png" srcset="/img/loading.gif" lazyload alt="BLIP2"></p>
 <p>Q-Former的具体结构如上图，其包含了一个<strong>共享参数的Self-Attention</strong>、一个Cross-Attention和<strong>两个不同的前向传播层</strong>，类似的结构在前作BLIP中也有体现，他们发现在Transformer中，不同模态的SA层可以共享，而前向传播层分开更好。</p>
 <p>模型会学习32个768维的Query，即输入进Q-Former左边SA层的数据，这些token将通过CA层获取到视觉信息，并通过SA层于语言进行交互。从下往上叙述，SA层就是普通的SA，但是使用了三种Attention Mask：双向mask、多模态因果mask、单模态mask。</p>
 <ol>
@@ -298,33 +302,42 @@
 <p>CA层query将会学习到图像的知识，此时原本图像的很长的token序列将会被减少到32个，在这个层面也浓缩了信息，降低了计算复杂度。</p>
 <p>Feed Forward层根据BLIP之前的研究包含了主要的参数，所以每个模态用独立的前向层更优。</p>
 <p><strong>算上32个768维的query，总共有188M可学习参数。</strong></p>
-<h3 id="第一阶段训练：视觉-语言表征学习"><a href="#第一阶段训练：视觉-语言表征学习" class="headerlink" title="第一阶段训练：视觉-语言表征学习"></a>第一阶段训练：视觉-语言表征学习</h3><p>此阶段进行三个任务：</p>
+<h3 id="第一阶段训练：视觉-语言表征学习">第一阶段训练：视觉-语言表征学习</h3>
+<p>此阶段进行三个任务：</p>
 <ol>
 <li>Image-Text Contrastive Learning（ITC）和CLIP类似，视觉侧通过单模态mask来避免了信息泄露，由于视觉测没有<code>[CLS]</code>token，所以会选择32个query中与文本<code>[CLS]</code>相似度最高的那个来进行对比学习。</li>
 <li>Image-grounded Text Generation（ITG）是生成式的训练，这里用到的多模态因果mask和UniLM的设计类似，文本的输入额外添加一个<code>[DEC]</code>token来表示解码开始。</li>
 <li>Image-Text Matching（ITM）是细粒度的对齐，判断图像和文本是否匹配的二分类任务，这个过程中32个query会得到多模态的信息，然后每个query通过一个二分类线性分类器得到logit，再平均32个得到最终的分数。这里和其他文献一样会采用hard negative mining策略。</li>
 </ol>
-<h3 id="第二阶段训练：视觉-语言生成学习"><a href="#第二阶段训练：视觉-语言生成学习" class="headerlink" title="第二阶段训练：视觉-语言生成学习"></a>第二阶段训练：视觉-语言生成学习</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217140102.png" srcset="/img/loading.gif" lazyload alt="BLIP2第二阶段训练"></p>
+<h3 id="第二阶段训练：视觉-语言生成学习">第二阶段训练：视觉-语言生成学习</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217140102.png" srcset="/img/loading.gif" lazyload alt="BLIP2第二阶段训练"></p>
 <p>第二阶段还会引入一个冻结参数的LLM，目前的LLM分成只使用解码器的（GPT）和编解码器都用了的（T5）模型，如图是两种训练的方法。对于基于解码器的LLM，经过Q-Former的query通过全连转换维度，然后进行LM训练；对于基于编解码器的LLM，全连后进行前缀LM训练，就是会额外添加前缀文本。</p>
 <p>这个阶段中，之前学习到的query被当做了LLM的soft visual prompts，用来控制LLM的输出。</p>
-<h2 id="模型训练"><a href="#模型训练" class="headerlink" title="模型训练"></a>模型训练</h2><p>训练的数据集使用了129M的图像数据，数据处理和前作BLIP一样，并利用前作的方法来过滤数据。</p>
+<h2 id="模型训练">模型训练</h2>
+<p>训练的数据集使用了129M的图像数据，数据处理和前作BLIP一样，并利用前作的方法来过滤数据。</p>
 <p>Q-Former使用BERT-base初始化，图像编码器使用了CLIP和EVA-CLIP（提取特征时，去掉了ViT的最后一层），语言模型使用了OPT（仅解码器）和FlanT5（编解码器）。</p>
 <p>使用16张A100（40G），最大的模型在第一阶段训练6天，第二阶段训练3天。</p>
-<h3 id="实验分析"><a href="#实验分析" class="headerlink" title="实验分析"></a>实验分析</h3><h3 id="Zero-shot"><a href="#Zero-shot" class="headerlink" title="Zero-shot"></a>Zero-shot</h3><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217141118.png" srcset="/img/loading.gif" lazyload alt="表1"></p>
+<h3 id="实验分析">实验分析</h3>
+<h3 id="Zero-shot">Zero-shot</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217141118.png" srcset="/img/loading.gif" lazyload alt="表1"></p>
 <p>如图，BLIP-2既开源、效果又好，而且徐娜林参数还特别少（特别是和边上那个10.2B相比）。BLIP-2全面支持prompt的应用方式，文本的prompt就添加在LLM的visual prompt后面就行：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217141518.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217141518.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>上图这些示例的效果还是很不错的，可以在HuggingFace和Notebook中自己尝试，实测速度还是很快的。</p>
-<p><img src="C:\Users\Kamino\AppData\Roaming\Typora\typora-user-images\image-20230217141800222.png" srcset="/img/loading.gif" lazyload alt="消融"></p>
+<p><img src="C:%5CUsers%5CKamino%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20230217141800222.png" srcset="/img/loading.gif" lazyload alt="消融"></p>
 <p>替换视觉编码器和语言模型的结果如上，实验说明更优秀的视觉编码器和语言模型能够带来更好的效果，OK-VQA数据集上的效果没必过Flamingo80B的原因应该是其使用的70B参数的Chinchilla语言模型有更多的知识。</p>
-<h3 id="Image-Captioning"><a href="#Image-Captioning" class="headerlink" title="Image Captioning"></a>Image Captioning</h3><p>进行图像描述时，本文微调了图像编码器和Q-Former来得到最好的效果，这一块在NoCaps上表现不错，但是在COCO上不是最好，但也没差多少。Finetune的成本还是略高。</p>
+<h3 id="Image-Captioning">Image Captioning</h3>
+<p>进行图像描述时，本文微调了图像编码器和Q-Former来得到最好的效果，这一块在NoCaps上表现不错，但是在COCO上不是最好，但也没差多少。Finetune的成本还是略高。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217142319.png" srcset="/img/loading.gif" lazyload alt="image-20230217142316652"></p>
-<h3 id="VQA"><a href="#VQA" class="headerlink" title="VQA"></a>VQA</h3><p>同样微调图像编码器和Q-Former，和其他牛逼模型一样，将VQA看作是生成式任务，效果很不错，但能微调语言模型的那些模型更好一点，可能是因为数据集的限制，生成的文本要完全符合才算上正确率。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217142655.png" srcset="/img/loading.gif" lazyload></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217143527.png" srcset="/img/loading.gif" lazyload></p>
-<h3 id="跨模态检索"><a href="#跨模态检索" class="headerlink" title="跨模态检索"></a>跨模态检索</h3><p>跨模态检索不需要语言模型，所以使用图像编码器和Q-former进行微调。和其他使用了ITC、ITM的方法一样，先ITC选出前k个，然后使用ITM来进一步判断。</p>
+<h3 id="VQA">VQA</h3>
+<p>同样微调图像编码器和Q-Former，和其他牛逼模型一样，将VQA看作是生成式任务，效果很不错，但能微调语言模型的那些模型更好一点，可能是因为数据集的限制，生成的文本要完全符合才算上正确率。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217142655.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217143527.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="跨模态检索">跨模态检索</h3>
+<p>跨模态检索不需要语言模型，所以使用图像编码器和Q-former进行微调。和其他使用了ITC、ITM的方法一样，先ITC选出前k个，然后使用ITM来进一步判断。</p>
 <p>微调时进行了ITC+ITM+ITG三个任务，虽然用不到ITG，但是消融实验证明加上ITG效果更好。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217143108.png" srcset="/img/loading.gif" lazyload></p>
-<h2 id="BLIP-2的限制"><a href="#BLIP-2的限制" class="headerlink" title="BLIP-2的限制"></a>BLIP-2的限制</h2><p>BLIP-2对于in-context的VQA性能不佳，可能是因为训练数据集缺少类似数据。作者说未来会建立个和Flamingo的M3W数据集类似的数据集。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217143108.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="BLIP-2的限制">BLIP-2的限制</h2>
+<p>BLIP-2对于in-context的VQA性能不佳，可能是因为训练数据集缺少类似数据。作者说未来会建立个和Flamingo的M3W数据集类似的数据集。</p>
 <blockquote>
 <p>in-context就是考虑上下文的VQA，会考虑之前的提问和回答。</p>
 </blockquote>
@@ -364,6 +377,12 @@
                 <div class="post-prevnext">
                   <article class="post-prev col-6">
                     
+                    
+                      <a href="/2023/02/18/Stable%20Diffusion/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Stable Diffusion 扩散模型原理</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
                     
                   </article>
                   <article class="post-next col-6">
@@ -581,43 +600,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -219,7 +219,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.8k 字
+      3k 字
     </span>
   
 
@@ -274,13 +274,16 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="我的机器学习课笔记-1-绪论与模型评估"><a href="#我的机器学习课笔记-1-绪论与模型评估" class="headerlink" title="我的机器学习课笔记 #1-绪论与模型评估"></a>我的机器学习课笔记 #1-绪论与模型评估</h1><p>[TOC]</p>
-<h2 id="没有免费午餐定理（no-free-lunch-theorem-or-NFL）"><a href="#没有免费午餐定理（no-free-lunch-theorem-or-NFL）" class="headerlink" title="没有免费午餐定理（no free lunch theorem, or NFL）"></a>没有免费午餐定理（no free lunch theorem, or NFL）</h2><p>人们使用机器学习是期望机器学习到的算法有用，但是NFL定理却证明，对于任意两个学习算法，它们的期望性能都一样。但是别灰心，NFL定理的前提是“所有情况下”，所以NFL说的是“<strong>一个算法不可能在任何情况下都取得最好的性能</strong>”。</p>
+              <h1>我的机器学习课笔记 #1-绪论与模型评估</h1>
+<p>[TOC]</p>
+<h2 id="没有免费午餐定理（no-free-lunch-theorem-or-NFL）">没有免费午餐定理（no free lunch theorem, or NFL）</h2>
+<p>人们使用机器学习是期望机器学习到的算法有用，但是NFL定理却证明，对于任意两个学习算法，它们的期望性能都一样。但是别灰心，NFL定理的前提是“所有情况下”，所以NFL说的是“<strong>一个算法不可能在任何情况下都取得最好的性能</strong>”。</p>
 <p>但是我们并不需要一个算法在任何情况下性能都最好，甚至，我们经常只关注一个算法在一个方面的性能，比如使用鸢尾花数据集进行分类预测时，我们假设<strong>数据集中的4个属性足够让我们将鸢尾花进行分类</strong>，但是实际上鸢尾花有许多许多许多的属性，要将这些属性都综合考虑在内才能在所有情况下正确预测，所以用这个数据集训练出来的模型在其他鸢尾花数据集上可能就不工作了。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106173104.jpg" srcset="/img/loading.gif" lazyload alt="NFL 图源知乎"></p>
 <p>或者NFL定理也可以理解为“<strong>你不可能在没有假设的情况下从数据中学习</strong>”，如下图，我们的机器学习模型在学习过程中对于输入和输出作出了假设，这种假设可能在某些数据集上适用，但是换成别的数据集就不适用了。比如我有一个处理视频的模型，它假设视频中有物体运动的时序信息，但是视频中也可能没有运动，也可能是个意义不明的所有帧像ppt那样排布的视频，在这些情况下假设失效。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106171336.jpeg" srcset="/img/loading.gif" lazyload alt="no free lunch theorems"></p>
-<h2 id="模型评估"><a href="#模型评估" class="headerlink" title="模型评估"></a>模型评估</h2><p>对一个模型的评估会分成两类，一类是训练误差，另一类是泛化误差。前者是在训练样本上进行评估得到的误差，后者是在新样本上进行评估得到的误差。</p>
+<h2 id="模型评估">模型评估</h2>
+<p>对一个模型的评估会分成两类，一类是训练误差，另一类是泛化误差。前者是在训练样本上进行评估得到的误差，后者是在新样本上进行评估得到的误差。</p>
 <p>这两类误差的大小能导致过拟合和欠拟合现象，如下表和下图，</p>
 <table>
 <thead>
@@ -290,7 +293,8 @@
 <th>泛化误差小</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>训练误差大</td>
 <td>欠拟合</td>
 <td>不可能</td>
@@ -300,30 +304,47 @@
 <td>过拟合</td>
 <td>模型的目标</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211106174253.png" srcset="/img/loading.gif" lazyload alt="欠拟合与过拟合 图源geeksforgeeks"></p>
 <p>如何得到训练误差和泛化误差呢？可以分为<strong>得到训练集和测试集的方法</strong>和<strong>使用哪种误差函数</strong>这两个问题。</p>
-<h3 id="如何得到训练集和测试集？"><a href="#如何得到训练集和测试集？" class="headerlink" title="如何得到训练集和测试集？"></a>如何得到训练集和测试集？</h3><ul>
-<li><p>留出法</p>
+<h3 id="如何得到训练集和测试集？">如何得到训练集和测试集？</h3>
+<ul>
+<li>
+<p>留出法</p>
 <p>最常用，就是把数据集的划分成两个互斥的集合，一个训练一个预测。</p>
 </li>
-<li><p>交叉验证法</p>
+<li>
+<p>交叉验证法</p>
 <p>小样本适用，因为会带来更大的计算开销。K折交叉验证指的是将数据集随机分成K份，进行K次训练和预测，每次训练选取K-1份作为训练集，每次预测选取剩下那1份作为测试集。</p>
 </li>
-<li><p>自助法</p>
+<li>
+<p>自助法</p>
 <p>适用于集成学习，不会减少训练集的数据数量，但会改变数据集的分布。就是将一个拥有m个数据的数据集进行放回抽样，抽m次出来得到的就是训练集，用所有数据去掉训练集就是测试集，易知训练集的数量是m，但里面会有重复的数据。</p>
 </li>
 </ul>
-<h3 id="使用哪种误差函数？"><a href="#使用哪种误差函数？" class="headerlink" title="使用哪种误差函数？"></a>使用哪种误差函数？</h3><p>误差函数有很多很多种，作用就是告诉你模型的性能。西瓜书上主要介绍的是分类任务的性能度量。</p>
-<h4 id="错误率和精度"><a href="#错误率和精度" class="headerlink" title="错误率和精度"></a>错误率和精度</h4><p>错误率就是分类错误样本占总数的比例，精度又叫做正确率、准确率（accuracy）。</p>
-<h4 id="混淆矩阵"><a href="#混淆矩阵" class="headerlink" title="混淆矩阵"></a>混淆矩阵</h4><p>对于二分类结果，通常列出下面这种混淆矩阵，注意这个表的纵轴是真实情况，横轴是预测结果，有的图可能会把横纵轴对换，但是字母是不变的。</p>
+<h3 id="使用哪种误差函数？">使用哪种误差函数？</h3>
+<p>误差函数有很多很多种，作用就是告诉你模型的性能。西瓜书上主要介绍的是分类任务的性能度量。</p>
+<h4 id="错误率和精度">错误率和精度</h4>
+<p>错误率就是分类错误样本占总数的比例，精度又叫做正确率、准确率（accuracy）。</p>
+<h4 id="混淆矩阵">混淆矩阵</h4>
+<p>对于二分类结果，通常列出下面这种混淆矩阵，注意这个表的纵轴是真实情况，横轴是预测结果，有的图可能会把横纵轴对换，但是字母是不变的。</p>
 <p>结果中的<code>T/P</code>指的是预测是否正确，而<code>P/N</code>指的是预测的是正例还是反例。FP就是预测是正例，但是预测错了，实际是反例，以此类推。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107165119.png" srcset="/img/loading.gif" lazyload> </p>
-<h4 id="查准率、查全率、P-R曲线、F1"><a href="#查准率、查全率、P-R曲线、F1" class="headerlink" title="查准率、查全率、P-R曲线、F1"></a>查准率、查全率、P-R曲线、F1</h4><p>查准率查全率可以用搜索引擎的角度来解释，<strong>查准率就是搜索出来的数据有多少是对的，查全率就是有多少对的数据被查出来了</strong>，两者分母不同。也可以把查准率叫做精确率（和acc准确率区分开），把查全率叫做召回率。<br>$$<br>查准率、精确率：Precise=\frac{TP}{TP+FP}<br>$$</p>
-<p>$$<br>查全率、召回率：Recall=\frac{TP}{TP+FN}<br>$$</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107165119.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h4 id="查准率、查全率、P-R曲线、F1">查准率、查全率、P-R曲线、F1</h4>
+<p>查准率查全率可以用搜索引擎的角度来解释，<strong>查准率就是搜索出来的数据有多少是对的，查全率就是有多少对的数据被查出来了</strong>，两者分母不同。也可以把查准率叫做精确率（和acc准确率区分开），把查全率叫做召回率。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>查准率、精确率：</mtext><mi>P</mi><mi>r</mi><mi>e</mi><mi>c</mi><mi>i</mi><mi>s</mi><mi>e</mi><mo>=</mo><mfrac><mrow><mi>T</mi><mi>P</mi></mrow><mrow><mi>T</mi><mi>P</mi><mo>+</mo><mi>F</mi><mi>P</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">查准率、精确率：Precise=\frac{TP}{TP+FP}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord cjk_fallback">查准率、精确率：</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord mathnormal">rec</span><span class="mord mathnormal">i</span><span class="mord mathnormal">se</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1297em;vertical-align:-0.7693em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">TP</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">FP</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">TP</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>查全率、召回率：</mtext><mi>R</mi><mi>e</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>l</mi><mo>=</mo><mfrac><mrow><mi>T</mi><mi>P</mi></mrow><mrow><mi>T</mi><mi>P</mi><mo>+</mo><mi>F</mi><mi>N</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">查全率、召回率：Recall=\frac{TP}{TP+FN}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord cjk_fallback">查全率、召回率：</span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal">ec</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">ll</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1297em;vertical-align:-0.7693em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">TP</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">FN</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">TP</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
 <p>P-R曲线就是纵轴P，横轴R的曲线。分类问题一般会对测试数据得出一个预测概率，从高到低排序，可以手动选择最高的k个作为预测正例，在k不确定的时候，查准率和查全率就会呈现P-R曲线。<strong>假如k很大，那么查全率就会高，查准率就会低，因为把很多低概率的结果都判成正例。</strong></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107170803.png" srcset="/img/loading.gif" lazyload alt="P-R和ROC曲线"></p>
-<p>查准率和查全率是对于模型两方面的评估，但是我们想要一个综合的评价指标，于是<strong>使用调和平均得到F1这个指标。</strong><br>$$<br>\frac{1}{F1} = \frac{1}{2} (\frac{1}{P}+\frac{1}{R})<br>$$<br>若对于查准率和查全率需要偏好，则可以使用<strong>加权调和平均</strong>。<br>$$<br>\frac{1}{F_\beta} = \frac{1}{1+\beta^2} (\frac{1}{P}+\frac{\beta^2}{R})<br>$$</p>
+<p>查准率和查全率是对于模型两方面的评估，但是我们想要一个综合的评价指标，于是<strong>使用调和平均得到F1这个指标。</strong></p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mfrac><mn>1</mn><mrow><mi>F</mi><mn>1</mn></mrow></mfrac><mo>=</mo><mfrac><mn>1</mn><mn>2</mn></mfrac><mo stretchy="false">(</mo><mfrac><mn>1</mn><mi>P</mi></mfrac><mo>+</mo><mfrac><mn>1</mn><mi>R</mi></mfrac><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\frac{1}{F1} = \frac{1}{2} (\frac{1}{P}+\frac{1}{R})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="mord">1</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">2</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.0074em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>若对于查准率和查全率需要偏好，则可以使用<strong>加权调和平均</strong>。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mfrac><mn>1</mn><msub><mi>F</mi><mi>β</mi></msub></mfrac><mo>=</mo><mfrac><mn>1</mn><mrow><mn>1</mn><mo>+</mo><msup><mi>β</mi><mn>2</mn></msup></mrow></mfrac><mo stretchy="false">(</mo><mfrac><mn>1</mn><mi>P</mi></mfrac><mo>+</mo><mfrac><msup><mi>β</mi><mn>2</mn></msup><mi>R</mi></mfrac><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\frac{1}{F_\beta} = \frac{1}{1+\beta^2} (\frac{1}{P}+\frac{\beta^2}{R})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.2935em;vertical-align:-0.9721em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">F</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05278em;">β</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.9721em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.2019em;vertical-align:-0.8804em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7401em;"><span style="top:-2.989em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mopen">(</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">P</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:2.1771em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.4911em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.00773em;">R</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord"><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mclose">)</span></span></span></span></span></p>
 <blockquote>
 <p>调和平均：参考<a target="_blank" rel="noopener" href="https://www.zhihu.com/question/23096098">如何理解与应用调和平均数？ - 知乎 (zhihu.com)</a></p>
 <p>考虑一次去便利店并返回的行程：</p>
@@ -336,10 +357,17 @@
 <p>但是这么算不对。因为去程速度更快，所以你更快地完成了去程的5英里，整个行程中以30 mph的速度行驶的时间更少，以10 mph的速度行驶的时间更多，所以整个行程期间你的平均速度不会是<code>30 mph</code>和<code>10 mph</code>的中点，而应该更接近<code>10 mph</code>。</p>
 <p>用调和平均数呢？2 / (1/30 + 1/10) = 15 mph 一下子得到了真正的行程平均速度，<strong>自动</strong>根据在每个方向上使用的时间进行调整。</p>
 </blockquote>
-<h4 id="ROC和AUC"><a href="#ROC和AUC" class="headerlink" title="ROC和AUC"></a>ROC和AUC</h4><p>用查准率查全率得到的P-R曲线和F1指标有一个缺点，那就是<strong>都没用上混淆矩阵中的TN——也就是“真反例”——也就是预测是反例，真实是反例的结果</strong>。所以定义FPR为“假正例率”，<strong>ROC就是以FPR为横轴，召回率为纵轴的曲线。</strong><br>$$<br>FPR=\frac{FP}{TN+FP}<br>$$<br>对于ROC曲线，越往左上角凸的模型越好，理解为“<strong>所有负例中被判错的少，且所有正例中被判对的多。</strong>”</p>
+<h4 id="ROC和AUC">ROC和AUC</h4>
+<p>用查准率查全率得到的P-R曲线和F1指标有一个缺点，那就是<strong>都没用上混淆矩阵中的TN——也就是“真反例”——也就是预测是反例，真实是反例的结果</strong>。所以定义FPR为“假正例率”，<strong>ROC就是以FPR为横轴，召回率为纵轴的曲线。</strong></p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>F</mi><mi>P</mi><mi>R</mi><mo>=</mo><mfrac><mrow><mi>F</mi><mi>P</mi></mrow><mrow><mi>T</mi><mi>N</mi><mo>+</mo><mi>F</mi><mi>P</mi></mrow></mfrac></mrow><annotation encoding="application/x-tex">FPR=\frac{FP}{TN+FP}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">FPR</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.1297em;vertical-align:-0.7693em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">TN</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">FP</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">FP</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.7693em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></span></p>
+<p>对于ROC曲线，越往左上角凸的模型越好，理解为“<strong>所有负例中被判错的少，且所有正例中被判对的多。</strong>”</p>
 <p>然而P-R曲线和ROC曲线都有一个问题，那就是曲线之间不好准确比较，对于交叉的曲线无法判断孰优孰劣。所以将ROC曲线下的面积AUC作为单个数字的指标。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20211107181343.png" srcset="/img/loading.gif" lazyload alt="ROC曲线"></p>
-<h2 id="模型性能分析"><a href="#模型性能分析" class="headerlink" title="模型性能分析"></a>模型性能分析</h2><p>得到模型的泛化误差后，我们仍然想知道如何模型为什么会得到这样的性能，于是我们对模型的泛化误差进行分析，可得：<br>$$<br>泛化误差=偏差(bias)+方差(var)+噪声(noise)<br>$$</p>
+<h2 id="模型性能分析">模型性能分析</h2>
+<p>得到模型的泛化误差后，我们仍然想知道如何模型为什么会得到这样的性能，于是我们对模型的泛化误差进行分析，可得：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>泛化误差</mtext><mo>=</mo><mtext>偏差</mtext><mo stretchy="false">(</mo><mi>b</mi><mi>i</mi><mi>a</mi><mi>s</mi><mo stretchy="false">)</mo><mo>+</mo><mtext>方差</mtext><mo stretchy="false">(</mo><mi>v</mi><mi>a</mi><mi>r</mi><mo stretchy="false">)</mo><mo>+</mo><mtext>噪声</mtext><mo stretchy="false">(</mo><mi>n</mi><mi>o</mi><mi>i</mi><mi>s</mi><mi>e</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">泛化误差=偏差(bias)+方差(var)+噪声(noise)
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord cjk_fallback">泛化误差</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord cjk_fallback">偏差</span><span class="mopen">(</span><span class="mord mathnormal">bia</span><span class="mord mathnormal">s</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord cjk_fallback">方差</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord cjk_fallback">噪声</span><span class="mopen">(</span><span class="mord mathnormal">n</span><span class="mord mathnormal">o</span><span class="mord mathnormal">i</span><span class="mord mathnormal">se</span><span class="mclose">)</span></span></span></span></span></p>
 <ul>
 <li>偏差指的是模型算法本身的拟合能力，是预测结果与真实结果的偏离程度</li>
 <li>方差指的是模型对于相同大小的<strong>训练集</strong>的学习结果的抖动。</li>
@@ -610,43 +638,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -268,25 +268,18 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python-Pathlib库基础使用教程"><a href="#Python-Pathlib库基础使用教程" class="headerlink" title="Python-Pathlib库基础使用教程"></a>Python-Pathlib库基础使用教程</h1><p>深度学习处理数据的时候经常使用这个Python库，Pathlib能够很方便地遍历各种样子的文件目录，性能也很好。</p>
-<h2 id="常用操作"><a href="#常用操作" class="headerlink" title="常用操作"></a>常用操作</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt.txt.bk&#x27;</span>)<br>p.name                          <span class="hljs-comment"># 获取文件名</span><br><span class="hljs-comment"># tt.txt.bk</span><br>p.stem                          <span class="hljs-comment"># 获取文件名除后缀的部分</span><br><span class="hljs-comment"># tt.txt</span><br>p.suffix                        <span class="hljs-comment"># 文件后缀</span><br><span class="hljs-comment"># .bk</span><br>p.suffixs                       <span class="hljs-comment"># 文件的后缀们...</span><br><span class="hljs-comment"># [&#x27;.txt&#x27;, &#x27;.bk&#x27;]</span><br>p.parent                        <span class="hljs-comment"># 相当于dirnanme</span><br><span class="hljs-comment"># WindowsPath(&#x27;d:/test&#x27;)</span><br>p.parents                       <span class="hljs-comment"># 返回一个iterable, 包含所有父目录</span><br><span class="hljs-comment"># &lt;WindowsPath.parents&gt;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> p.parents:<br>    <span class="hljs-built_in">print</span>(i)<br><span class="hljs-comment"># d:\test</span><br><span class="hljs-comment"># d:\</span><br>a.parts                         <span class="hljs-comment"># 将路径通过分隔符分割成一个元祖</span><br><span class="hljs-comment"># (&#x27;d:\\&#x27;, &#x27;test&#x27;, &#x27;tt.txt.bk&#x27;)</span><br></code></pre></td></tr></table></figure>
-
+              <h1>Python-Pathlib库基础使用教程</h1>
+<p>深度学习处理数据的时候经常使用这个Python库，Pathlib能够很方便地遍历各种样子的文件目录，性能也很好。</p>
+<h2 id="常用操作">常用操作</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt.txt.bk&#x27;</span>)<br>p.name                          <span class="hljs-comment"># 获取文件名</span><br><span class="hljs-comment"># tt.txt.bk</span><br>p.stem                          <span class="hljs-comment"># 获取文件名除后缀的部分</span><br><span class="hljs-comment"># tt.txt</span><br>p.suffix                        <span class="hljs-comment"># 文件后缀</span><br><span class="hljs-comment"># .bk</span><br>p.suffixs                       <span class="hljs-comment"># 文件的后缀们...</span><br><span class="hljs-comment"># [&#x27;.txt&#x27;, &#x27;.bk&#x27;]</span><br>p.parent                        <span class="hljs-comment"># 相当于dirnanme</span><br><span class="hljs-comment"># WindowsPath(&#x27;d:/test&#x27;)</span><br>p.parents                       <span class="hljs-comment"># 返回一个iterable, 包含所有父目录</span><br><span class="hljs-comment"># &lt;WindowsPath.parents&gt;</span><br><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> p.parents:<br>    <span class="hljs-built_in">print</span>(i)<br><span class="hljs-comment"># d:\test</span><br><span class="hljs-comment"># d:\</span><br>a.parts                         <span class="hljs-comment"># 将路径通过分隔符分割成一个元祖</span><br><span class="hljs-comment"># (&#x27;d:\\&#x27;, &#x27;test&#x27;, &#x27;tt.txt.bk&#x27;)</span><br></code></pre></td></tr></table></figure>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test&#x27;</span>)<br>p = Path(p, <span class="hljs-string">&#x27;tt.txt&#x27;</span>)           <span class="hljs-comment"># 字符串拼接</span><br>p.exists()                      <span class="hljs-comment"># 判断文件是否存在</span><br>p.is_file()                     <span class="hljs-comment"># 判断是否是文件</span><br>p.is_dir()                      <span class="hljs-comment"># 判断是否是目录</span><br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="遍历❤"><a href="#遍历❤" class="headerlink" title="遍历❤"></a>遍历❤</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test&#x27;</span>)<br><span class="hljs-comment"># WindowsPath(&#x27;d:/test&#x27;)</span><br>p.iterdir()                     <span class="hljs-comment"># 相当于os.listdir 列出子目录/文件</span><br>p.glob(<span class="hljs-string">&#x27;*&#x27;</span>)                     <span class="hljs-comment"># 相当于os.listdir, 列出符合条件的子目录/文件但是可以添加匹配条件</span><br>p.rglob(<span class="hljs-string">&#x27;*&#x27;</span>)                    <span class="hljs-comment"># 相当于os.walk, 递归列出符合条件的子目录/文件也可以添加匹配条件</span><br></code></pre></td></tr></table></figure>
-
+<h2 id="遍历❤">遍历❤</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test&#x27;</span>)<br><span class="hljs-comment"># WindowsPath(&#x27;d:/test&#x27;)</span><br>p.iterdir()                     <span class="hljs-comment"># 相当于os.listdir 列出子目录/文件</span><br>p.glob(<span class="hljs-string">&#x27;*&#x27;</span>)                     <span class="hljs-comment"># 相当于os.listdir, 列出符合条件的子目录/文件但是可以添加匹配条件</span><br>p.rglob(<span class="hljs-string">&#x27;*&#x27;</span>)                    <span class="hljs-comment"># 相当于os.walk, 递归列出符合条件的子目录/文件也可以添加匹配条件</span><br></code></pre></td></tr></table></figure>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs shell">* # 所有<br>? # 单个字符<br>. # 当前目录<br>.. # 上一级目录<br>[0-9] [a-z] [A-Z] # 字面意思<br>[A-Za-z] # 大小写字母 windows路径不分大小写<br>[0-9A-Za-Z] # 数字和字母<br><br>**  # 表示 “此目录以及所有子目录，递归”<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="创建文件夹"><a href="#创建文件夹" class="headerlink" title="创建文件夹"></a>创建文件夹</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt\dd&#x27;</span>)<br>p.mkdir(exist_ok=<span class="hljs-literal">True</span>)          <span class="hljs-comment"># 创建文件目录(前提是tt目录存在, 否则会报错)</span><br><span class="hljs-comment"># 一般我会使用下面这种创建方法</span><br>p.mkdir((exist_ok=<span class="hljs-literal">True</span>, parents=<span class="hljs-literal">True</span>) <span class="hljs-comment"># 递归创建文件目录</span><br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="文件详细信息-size-createtime…"><a href="#文件详细信息-size-createtime…" class="headerlink" title="文件详细信息(size, createtime…)"></a>文件详细信息(size, createtime…)</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt.txt&#x27;</span>)<br>p.stat()                        <span class="hljs-comment"># 获取详细信息</span><br><span class="hljs-comment"># os.stat_result(st_mode=33206, st_ino=562949953579011, st_dev=3870140380, st_nlink=1, st_uid=0, st_gid=0, st_size=0, st_atime=1525254557, st_mtime=1525254557, st_ctime=1525254557)</span><br>p.stat().st_size                <span class="hljs-comment"># 文件大小</span><br><span class="hljs-comment"># 0</span><br>p.stat().st_ctime               <span class="hljs-comment"># 创建时间</span><br><span class="hljs-comment"># 1525254557.2090347</span><br><span class="hljs-comment"># 其他的信息也可以通过相同方式获取</span><br>p.stat().st_mtime               <span class="hljs-comment"># 修改时间</span><br></code></pre></td></tr></table></figure>
-
+<h2 id="创建文件夹">创建文件夹</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt\dd&#x27;</span>)<br>p.mkdir(exist_ok=<span class="hljs-literal">True</span>)          <span class="hljs-comment"># 创建文件目录(前提是tt目录存在, 否则会报错)</span><br><span class="hljs-comment"># 一般我会使用下面这种创建方法</span><br>p.mkdir((exist_ok=<span class="hljs-literal">True</span>, parents=<span class="hljs-literal">True</span>) <span class="hljs-comment"># 递归创建文件目录</span><br></code></pre></td></tr></table></figure>
+<h2 id="文件详细信息-size-createtime…">文件详细信息(size, createtime…)</h2>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">p = Path(<span class="hljs-string">r&#x27;d:\test\tt.txt&#x27;</span>)<br>p.stat()                        <span class="hljs-comment"># 获取详细信息</span><br><span class="hljs-comment"># os.stat_result(st_mode=33206, st_ino=562949953579011, st_dev=3870140380, st_nlink=1, st_uid=0, st_gid=0, st_size=0, st_atime=1525254557, st_mtime=1525254557, st_ctime=1525254557)</span><br>p.stat().st_size                <span class="hljs-comment"># 文件大小</span><br><span class="hljs-comment"># 0</span><br>p.stat().st_ctime               <span class="hljs-comment"># 创建时间</span><br><span class="hljs-comment"># 1525254557.2090347</span><br><span class="hljs-comment"># 其他的信息也可以通过相同方式获取</span><br>p.stat().st_mtime               <span class="hljs-comment"># 修改时间</span><br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
@@ -545,43 +538,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

@@ -268,7 +268,10 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="Python下使用MySQL（包括MySQL教程）"><a href="#Python下使用MySQL（包括MySQL教程）" class="headerlink" title="Python下使用MySQL（包括MySQL教程）"></a>Python下使用MySQL（包括MySQL教程）</h1><h2 id="MySQL基本使用"><a href="#MySQL基本使用" class="headerlink" title="MySQL基本使用"></a>MySQL基本使用</h2><h3 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h3><p>MySQL是一个<strong>开源</strong>的<strong>关系型数据库管理系统</strong>，即<strong>RDBMS</strong>(Relational Database Management System)。使用SQL语言访问数据库。</p>
+              <h1>Python下使用MySQL（包括MySQL教程）</h1>
+<h2 id="MySQL基本使用">MySQL基本使用</h2>
+<h3 id="简介">简介</h3>
+<p>MySQL是一个<strong>开源</strong>的<strong>关系型数据库管理系统</strong>，即<strong>RDBMS</strong>(Relational Database Management System)。使用SQL语言访问数据库。</p>
 <p><strong>关系型数据库</strong>是<strong>依据关系模型</strong>来创建的数据库，关系模型包含“一对一、一对多、多对多”等，分别对应一本书的ISBN、一本书的作者、一个班的老师和学生。<strong>一个关系型数据库就是由二维表及其之间的练习组成的一个数据组织。</strong></p>
 <table>
 <thead>
@@ -277,7 +280,8 @@
 <th>一张二维表，每个关系都有个名字，即表名</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>元组</td>
 <td>行，在数据库中叫做<strong>记录</strong></td>
 </tr>
@@ -297,12 +301,14 @@
 <td>关系模式</td>
 <td>对关系的描述。关系名（属性1，属性2…）在数据库中叫<strong>表结构</strong></td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p><strong>非关系型数据库</strong>类似一个巨大的map数据结构或者键值对数据结构。结构不固定，每一个元组可以有不一样的字段。</p>
 <blockquote>
 <p>MySQL由瑞典MySQL AB公司开发，这时候Oracle和MySQL是对头，后来被Sun公司收购，Sun后来又被Oracle公司收购。</p>
 </blockquote>
-<h3 id="MySQL的服务结构"><a href="#MySQL的服务结构" class="headerlink" title="MySQL的服务结构"></a>MySQL的服务结构</h3><pre><code class=" mermaid">graph LR
+<h3 id="MySQL的服务结构">MySQL的服务结构</h3>
+<pre><code class=" mermaid">graph LR
 A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 	B --&gt; A
 	B --&gt; C[数据库1]
@@ -312,181 +318,187 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 	B --&gt; D[数据库2]
 	B --&gt; E[数据库3]
 </code></pre>
-
 <p>MySQL通过SQL语言来与服务器沟通，一个数据库服务器可以有多个数据库，每个数据库可以有多个数据表。</p>
-<h3 id="域"><a href="#域" class="headerlink" title="域"></a>域</h3><p>包括<strong>数据类型</strong>和<strong>约束</strong>。</p>
+<h3 id="域">域</h3>
+<p>包括<strong>数据类型</strong>和<strong>约束</strong>。</p>
 <table>
 <thead>
 <tr>
-<th align="left">类型</th>
-<th align="left">大小</th>
-<th align="left">范围（signed）</th>
-<th align="left">范围（unsigned）</th>
-<th align="left">用途</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">大小</th>
+<th style="text-align:left">范围（signed）</th>
+<th style="text-align:left">范围（unsigned）</th>
+<th style="text-align:left">用途</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">TINYINT</td>
-<td align="left">1 字节</td>
-<td align="left">(-128，127)</td>
-<td align="left">(0，255)</td>
-<td align="left">小整数值</td>
+<tbody>
+<tr>
+<td style="text-align:left">TINYINT</td>
+<td style="text-align:left">1 字节</td>
+<td style="text-align:left">(-128，127)</td>
+<td style="text-align:left">(0，255)</td>
+<td style="text-align:left">小整数值</td>
 </tr>
 <tr>
-<td align="left">SMALLINT</td>
-<td align="left">2 字节</td>
-<td align="left">(-32 768，32 767)</td>
-<td align="left">(0，65 535)</td>
-<td align="left">大整数值</td>
+<td style="text-align:left">SMALLINT</td>
+<td style="text-align:left">2 字节</td>
+<td style="text-align:left">(-32 768，32 767)</td>
+<td style="text-align:left">(0，65 535)</td>
+<td style="text-align:left">大整数值</td>
 </tr>
 <tr>
-<td align="left">MEDIUMINT</td>
-<td align="left">3 字节</td>
-<td align="left">(-8 388 608，8 388 607)</td>
-<td align="left">(0，16 777 215)</td>
-<td align="left">大整数值</td>
+<td style="text-align:left">MEDIUMINT</td>
+<td style="text-align:left">3 字节</td>
+<td style="text-align:left">(-8 388 608，8 388 607)</td>
+<td style="text-align:left">(0，16 777 215)</td>
+<td style="text-align:left">大整数值</td>
 </tr>
 <tr>
-<td align="left">INT或INTEGER</td>
-<td align="left">4 字节</td>
-<td align="left">(-2 147 483 648，2 147 483 647)</td>
-<td align="left">(0，4 294 967 295)</td>
-<td align="left">大整数值</td>
+<td style="text-align:left">INT或INTEGER</td>
+<td style="text-align:left">4 字节</td>
+<td style="text-align:left">(-2 147 483 648，2 147 483 647)</td>
+<td style="text-align:left">(0，4 294 967 295)</td>
+<td style="text-align:left">大整数值</td>
 </tr>
 <tr>
-<td align="left">BIGINT</td>
-<td align="left">8 字节</td>
-<td align="left">(-9,223,372,036,854,775,808，9 223 372 036 854 775 807)</td>
-<td align="left">(0，18 446 744 073 709 551 615)</td>
-<td align="left">极大整数值</td>
+<td style="text-align:left">BIGINT</td>
+<td style="text-align:left">8 字节</td>
+<td style="text-align:left">(-9,223,372,036,854,775,808，9 223 372 036 854 775 807)</td>
+<td style="text-align:left">(0，18 446 744 073 709 551 615)</td>
+<td style="text-align:left">极大整数值</td>
 </tr>
 <tr>
-<td align="left">FLOAT</td>
-<td align="left">4 字节</td>
-<td align="left">(-3.402 823 466 E+38，-1.175 494 351 E-38)，0，(1.175 494 351 E-38，3.402 823 466 351 E+38)</td>
-<td align="left">0，(1.175 494 351 E-38，3.402 823 466 E+38)</td>
-<td align="left">单精度 浮点数值</td>
+<td style="text-align:left">FLOAT</td>
+<td style="text-align:left">4 字节</td>
+<td style="text-align:left">(-3.402 823 466 E+38，-1.175 494 351 E-38)，0，(1.175 494 351 E-38，3.402 823 466 351 E+38)</td>
+<td style="text-align:left">0，(1.175 494 351 E-38，3.402 823 466 E+38)</td>
+<td style="text-align:left">单精度 浮点数值</td>
 </tr>
 <tr>
-<td align="left">DOUBLE</td>
-<td align="left">8 字节</td>
-<td align="left">(-1.797 693 134 862 315 7 E+308，-2.225 073 858 507 201 4 E-308)，0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308)</td>
-<td align="left">0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308)</td>
-<td align="left">双精度 浮点数值</td>
+<td style="text-align:left">DOUBLE</td>
+<td style="text-align:left">8 字节</td>
+<td style="text-align:left">(-1.797 693 134 862 315 7 E+308，-2.225 073 858 507 201 4 E-308)，0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308)</td>
+<td style="text-align:left">0，(2.225 073 858 507 201 4 E-308，1.797 693 134 862 315 7 E+308)</td>
+<td style="text-align:left">双精度 浮点数值</td>
 </tr>
 <tr>
-<td align="left">DECIMAL</td>
-<td align="left">DECIMAL(M,D) ，如果M&gt;D，为M+2否则为D+2</td>
-<td align="left">依赖于M和D的值</td>
-<td align="left">依赖于M和D的值</td>
-<td align="left">小数值</td>
+<td style="text-align:left">DECIMAL</td>
+<td style="text-align:left">DECIMAL(M,D) ，如果M&gt;D，为M+2否则为D+2</td>
+<td style="text-align:left">依赖于M和D的值</td>
+<td style="text-align:left">依赖于M和D的值</td>
+<td style="text-align:left">小数值</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
-<th align="left">类型</th>
-<th align="left">大小 (字节)</th>
-<th align="left">范围</th>
-<th align="left">格式</th>
-<th align="left">用途</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">大小 (字节)</th>
+<th style="text-align:left">范围</th>
+<th style="text-align:left">格式</th>
+<th style="text-align:left">用途</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">DATE</td>
-<td align="left">3</td>
-<td align="left">1000-01-01/9999-12-31</td>
-<td align="left">YYYY-MM-DD</td>
-<td align="left">日期值</td>
+<tbody>
+<tr>
+<td style="text-align:left">DATE</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">1000-01-01/9999-12-31</td>
+<td style="text-align:left">YYYY-MM-DD</td>
+<td style="text-align:left">日期值</td>
 </tr>
 <tr>
-<td align="left">TIME</td>
-<td align="left">3</td>
-<td align="left">‘-838:59:59’/‘838:59:59’</td>
-<td align="left">HH:MM:SS</td>
-<td align="left">时间值或持续时间</td>
+<td style="text-align:left">TIME</td>
+<td style="text-align:left">3</td>
+<td style="text-align:left">‘-838:59:59’/‘838:59:59’</td>
+<td style="text-align:left">HH:MM:SS</td>
+<td style="text-align:left">时间值或持续时间</td>
 </tr>
 <tr>
-<td align="left">YEAR</td>
-<td align="left">1</td>
-<td align="left">1901/2155</td>
-<td align="left">YYYY</td>
-<td align="left">年份值</td>
+<td style="text-align:left">YEAR</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1901/2155</td>
+<td style="text-align:left">YYYY</td>
+<td style="text-align:left">年份值</td>
 </tr>
 <tr>
-<td align="left">DATETIME</td>
-<td align="left">8</td>
-<td align="left">1000-01-01 00:00:00/9999-12-31 23:59:59</td>
-<td align="left">YYYY-MM-DD HH:MM:SS</td>
-<td align="left">混合日期和时间值</td>
+<td style="text-align:left">DATETIME</td>
+<td style="text-align:left">8</td>
+<td style="text-align:left">1000-01-01 00:00:00/9999-12-31 23:59:59</td>
+<td style="text-align:left">YYYY-MM-DD HH:MM:SS</td>
+<td style="text-align:left">混合日期和时间值</td>
 </tr>
 <tr>
-<td align="left">TIMESTAMP</td>
-<td align="left">4</td>
-<td align="left">1970-01-01 00:00:00/2038结束时间是第 <strong>2147483647</strong> 秒，北京时间 <strong>2038-1-19 11:14:07</strong>，格林尼治时间 2038年1月19日 凌晨 03:14:07</td>
-<td align="left">YYYYMMDD HHMMSS</td>
-<td align="left">混合日期和时间值，时间戳</td>
+<td style="text-align:left">TIMESTAMP</td>
+<td style="text-align:left">4</td>
+<td style="text-align:left">1970-01-01 00:00:00/2038结束时间是第 <strong>2147483647</strong> 秒，北京时间 <strong>2038-1-19 11:14:07</strong>，格林尼治时间 2038年1月19日 凌晨 03:14:07</td>
+<td style="text-align:left">YYYYMMDD HHMMSS</td>
+<td style="text-align:left">混合日期和时间值，时间戳</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
-<th align="left">类型</th>
-<th align="left">大小</th>
-<th align="left">用途</th>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">大小</th>
+<th style="text-align:left">用途</th>
 </tr>
 </thead>
-<tbody><tr>
-<td align="left">CHAR</td>
-<td align="left">0-255字节</td>
-<td align="left">定长字符串</td>
+<tbody>
+<tr>
+<td style="text-align:left">CHAR</td>
+<td style="text-align:left">0-255字节</td>
+<td style="text-align:left">定长字符串</td>
 </tr>
 <tr>
-<td align="left">VARCHAR</td>
-<td align="left">0-65535 字节</td>
-<td align="left">变长字符串</td>
+<td style="text-align:left">VARCHAR</td>
+<td style="text-align:left">0-65535 字节</td>
+<td style="text-align:left">变长字符串</td>
 </tr>
 <tr>
-<td align="left">TINYBLOB</td>
-<td align="left">0-255字节</td>
-<td align="left">不超过 255 个字符的二进制字符串</td>
+<td style="text-align:left">TINYBLOB</td>
+<td style="text-align:left">0-255字节</td>
+<td style="text-align:left">不超过 255 个字符的二进制字符串</td>
 </tr>
 <tr>
-<td align="left">TINYTEXT</td>
-<td align="left">0-255字节</td>
-<td align="left">短文本字符串</td>
+<td style="text-align:left">TINYTEXT</td>
+<td style="text-align:left">0-255字节</td>
+<td style="text-align:left">短文本字符串</td>
 </tr>
 <tr>
-<td align="left">BLOB</td>
-<td align="left">0-65 535字节</td>
-<td align="left">二进制形式的长文本数据</td>
+<td style="text-align:left">BLOB</td>
+<td style="text-align:left">0-65 535字节</td>
+<td style="text-align:left">二进制形式的长文本数据</td>
 </tr>
 <tr>
-<td align="left">TEXT</td>
-<td align="left">0-65 535字节</td>
-<td align="left">长文本数据</td>
+<td style="text-align:left">TEXT</td>
+<td style="text-align:left">0-65 535字节</td>
+<td style="text-align:left">长文本数据</td>
 </tr>
 <tr>
-<td align="left">MEDIUMBLOB</td>
-<td align="left">0-16 777 215字节</td>
-<td align="left">二进制形式的中等长度文本数据</td>
+<td style="text-align:left">MEDIUMBLOB</td>
+<td style="text-align:left">0-16 777 215字节</td>
+<td style="text-align:left">二进制形式的中等长度文本数据</td>
 </tr>
 <tr>
-<td align="left">MEDIUMTEXT</td>
-<td align="left">0-16 777 215字节</td>
-<td align="left">中等长度文本数据</td>
+<td style="text-align:left">MEDIUMTEXT</td>
+<td style="text-align:left">0-16 777 215字节</td>
+<td style="text-align:left">中等长度文本数据</td>
 </tr>
 <tr>
-<td align="left">LONGBLOB</td>
-<td align="left">0-4 294 967 295字节</td>
-<td align="left">二进制形式的极大文本数据</td>
+<td style="text-align:left">LONGBLOB</td>
+<td style="text-align:left">0-4 294 967 295字节</td>
+<td style="text-align:left">二进制形式的极大文本数据</td>
 </tr>
 <tr>
-<td align="left">LONGTEXT</td>
-<td align="left">0-4 294 967 295字节</td>
-<td align="left">极大文本数据</td>
+<td style="text-align:left">LONGTEXT</td>
+<td style="text-align:left">0-4 294 967 295字节</td>
+<td style="text-align:left">极大文本数据</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <table>
 <thead>
 <tr>
@@ -494,7 +506,8 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <th>解释</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>主键(Primary key)</td>
 <td>物理上存储的顺序</td>
 </tr>
@@ -514,29 +527,26 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <td><em>外键(foreign key)</em></td>
 <td><em>只能填写另一处字段的值</em></td>
 </tr>
-</tbody></table>
-<h3 id="SQL语言"><a href="#SQL语言" class="headerlink" title="SQL语言"></a>SQL语言</h3><h4 id="简介-1"><a href="#简介-1" class="headerlink" title="简介"></a>简介</h4><p>SQL(Structured Query Language)，指结构化查询语言。<strong>SQL语言不区分大小写。</strong></p>
+</tbody>
+</table>
+<h3 id="SQL语言">SQL语言</h3>
+<h4 id="简介-v2">简介</h4>
+<p>SQL(Structured Query Language)，指结构化查询语言。<strong>SQL语言不区分大小写。</strong></p>
 <p>SQL语句的分号不是必须的，使用分号可以分隔多条SQL语句，可以在对服务器相同请求中执行一条以上的SQL语句。</p>
-<h4 id="数据库操作-不常用"><a href="#数据库操作-不常用" class="headerlink" title="数据库操作(不常用)"></a>数据库操作(不常用)</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 查看所有数据库<br>show databases;<br>-- 使用数据库<br>use 数据库名;<br>-- 查看当前数据库<br>select database();<br>-- 创建数据库<br>create database 数据库名 charset=utf8;<br>-- 删除数据库<br>drop database 数据库名<br></code></pre></td></tr></table></figure>
-
-<h4 id="数据表操作"><a href="#数据表操作" class="headerlink" title="数据表操作"></a>数据表操作</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 查看当前所有数据表<br>show tables;<br>-- 查看表结构<br>desc 名字<br>-- 删除表<br>drop table 名字<br>-- 查看表的创建语句<br>show create table 名字<br>-- 创建表<br>create table 表名(字段名字 数据结构 约束,字段名字 数据结构);<br>create table people(<br>    id int unsigned primary key not null auto_increment, <br>    age int unsigned,<br>    height decimal(5,2) default 1.70<br>    gender enum(&quot;男&quot;,&quot;女&quot;,&quot;保密&quot;) default &quot;保密&quot;<br>    name varchar(30)<br>);  <br>-- 这个表id是主键，且不能空，且自动增长；age是无符号类型；height是2位小数的5位（包括小数位）数；gender只能有三种值，默认为保密<br><br>-- 增删查改字段<br>alter table 名字 操作 字段名字 数据结构 约束<br>-- 添加<br>alter table people add birthday datetime<br>-- 修改-不重命名<br>alter table people modify birthday date<br>-- 修改-重命名<br>alter table people change birthday birth date<br>-- 删除<br>alter table people drop height<br></code></pre></td></tr></table></figure>
-
-<h4 id="数据的增删改查（重重重点）-CURD-create-update-retrieve-delete"><a href="#数据的增删改查（重重重点）-CURD-create-update-retrieve-delete" class="headerlink" title="数据的增删改查（重重重点）(CURD-create update retrieve delete)"></a>数据的增删改查（重重重点）(CURD-create update retrieve delete)</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 增加<br>-- 完全插入：参数必须对应字段<br>insert into 表名字 values(字段参数)<br>-- 若有些字段不想写,且可以不用写，可用null或者default占位<br>insert into people(default,13,1.80,&quot;男&quot;,&quot;Tom&quot;)<br>-- 部分插入 <br>insert into 表名字 (字段名) values (加入的数据)<br>insert into people (age, name) values (13,&quot;Jack&quot;)<br>-- 多行插入<br>insert into 表名字 values (字段参数1),(字段参数2)<br>insert into 表名字 (字段名) values (加入的数据1),(加入的数据2)<br><br>-- 修改<br>-- 修改所有记录该字段的值<br>update 表名字 set 字段1=新值1，字段2=新值2<br>-- 修改一定某个记录中字段的值 where <br>update 表名字 set 字段=新值 where 字段与值关系(可用大于小于号)<br>update people set age = 18 where id=1<br><br>-- 删除<br>-- 清空表！别用！<br>delete from 表名字<br>-- 删除某个记录<br>delete from 表名字 where<br>-- 逻辑删除，新增一个is_delete操作，标记这行可不可用<br>alter table 表名字 add is_delete bit default 0<br>update 表名字 set is_delete where ...<br><br>-- 查询（基本）<br>-- 查询表所有记录<br>select * from 表名字<br>-- 查询某个记录<br>select * from 表名字 where 字段与值关系<br>-- 查询某个字段<br>select 字段名字 from 表名字 <br>-- 指定别名，指定别名后不能用本名了<br>select 字段名字 as 别名 from 表名字 as 别名<br>select 表名.字段名 from 表名<br>-- 指定列的顺序<br>select 第一个字段,第二个字段 from 表名字<br>-- 去重<br>select distinct 字段 from 表名<br></code></pre></td></tr></table></figure>
-
-<h4 id="查询"><a href="#查询" class="headerlink" title="查询"></a>查询</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 条件查询<br>-- 使用where关键字<br>&gt; &lt; &gt;= &lt;= -- 和别的语言一样<br>= -- 单等于表示判断<br>&lt;&gt; !=  -- 不等于<br>and or not  -- 与或非，同Python<br>()  -- 括号，优先级很高<br><br>-- 模糊查询<br>-- 使用like关键字<br>-- % 替换0个或多个 | _ 替换一个 | [charlist] 字符列中任意单一字符 | []不在字符列中的任何单一字符<br>select name from people where name like &quot;T%&quot;  -- 名字以T开头<br>-- 使用rlike关键字<br>-- 正则表达式<br>select name from people where name rlike &quot;正则表达式&quot;<br><br>-- 范围查询<br>-- （非连续）使用in和not in关键字  <br>select name from people where age in (12,18,6)  -- &#123;12,18,6&#125;<br>-- （连续）使用between...and...关键字和not between...and...关键字 左闭右闭区间<br>select name from people where age between 6 and 18  -- [6,18]<br><br>-- 空判断<br>-- 使用is null关键字和is not null关键字<br>select name from people where age is null<br></code></pre></td></tr></table></figure>
-
-
-
-<h4 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- order by 字段<br>-- asc 升序(从小到大)   desc 降序<br>select name from people order by age<br>select name from people order by age asc<br>-- order by 多个字段<br>-- 在第一个字段相同情况下，再按第二个字段排...<br>select name from people order by age asc, id desc<br></code></pre></td></tr></table></figure>
-
-
-
-<h4 id="聚合函数"><a href="#聚合函数" class="headerlink" title="聚合函数"></a>聚合函数</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 聚合函数只能输出一个结果<br>-- count 总数<br>-- 就是计算输出的东西一共多少行，结果表头是count(*)，可用as<br>select count(*) from people<br>select count(*) as &quot;人数&quot; from people<br>-- max 最大值  min 最小值<br>select max(age) from people<br>select min(height) from people<br>-- sum 求和<br>select sum(age) from people<br>-- avg 平均<br>select avg(age) from people<br>select sum(age) / count(*) from people  -- select后可以用运算和多个函数<br>-- round(x,保留小数位数) 四舍五入<br>select rount(avg(age),1) from people  -- 保留平均数的一位小数<br></code></pre></td></tr></table></figure>
-
-
-
-<h4 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- group by<br>-- xxx是能唯一标记分组后各组之间不同的字段<br>-- xxx不能填*<br>select gender from people group by gender  -- 1*<br><br>-- 与聚合函数一起用，查找不同性别各自的人数<br>select gender,count(*) from people group by gender<br><br>-- group_concat(字段1,字段2) 写什么有什么，链接所有参数<br>-- 查询group中某字段的总和<br>select gender,group_concat(name) from people group by gender  -- 2*<br>select gender,group_concat(name,age) from people group by gender<br>select gender,group_concat(name,&quot;_&quot;，age) from people group by gender  -- 3* <br><br>-- 与where一起用，先判断，然后从中分组<br>select gender,group_concat(name) from people where age&lt;18 group by gender<br><br>-- having 显示符合条件的分组，与where不同的是写在group后面<br>-- 所以where是对表进行判断，having是对分组结果进行判断<br>select gender,group_concat(name) from people group by gender having min(age)&lt;5  -- 4*<br></code></pre></td></tr></table></figure>
-
+<h4 id="数据库操作-不常用">数据库操作(不常用)</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 查看所有数据库<br>show databases;<br>-- 使用数据库<br>use 数据库名;<br>-- 查看当前数据库<br>select database();<br>-- 创建数据库<br>create database 数据库名 charset=utf8;<br>-- 删除数据库<br>drop database 数据库名<br></code></pre></td></tr></table></figure>
+<h4 id="数据表操作">数据表操作</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 查看当前所有数据表<br>show tables;<br>-- 查看表结构<br>desc 名字<br>-- 删除表<br>drop table 名字<br>-- 查看表的创建语句<br>show create table 名字<br>-- 创建表<br>create table 表名(字段名字 数据结构 约束,字段名字 数据结构);<br>create table people(<br>    id int unsigned primary key not null auto_increment, <br>    age int unsigned,<br>    height decimal(5,2) default 1.70<br>    gender enum(&quot;男&quot;,&quot;女&quot;,&quot;保密&quot;) default &quot;保密&quot;<br>    name varchar(30)<br>);  <br>-- 这个表id是主键，且不能空，且自动增长；age是无符号类型；height是2位小数的5位（包括小数位）数；gender只能有三种值，默认为保密<br><br>-- 增删查改字段<br>alter table 名字 操作 字段名字 数据结构 约束<br>-- 添加<br>alter table people add birthday datetime<br>-- 修改-不重命名<br>alter table people modify birthday date<br>-- 修改-重命名<br>alter table people change birthday birth date<br>-- 删除<br>alter table people drop height<br></code></pre></td></tr></table></figure>
+<h4 id="数据的增删改查（重重重点）-CURD-create-update-retrieve-delete">数据的增删改查（重重重点）(CURD-create update retrieve delete)</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 增加<br>-- 完全插入：参数必须对应字段<br>insert into 表名字 values(字段参数)<br>-- 若有些字段不想写,且可以不用写，可用null或者default占位<br>insert into people(default,13,1.80,&quot;男&quot;,&quot;Tom&quot;)<br>-- 部分插入 <br>insert into 表名字 (字段名) values (加入的数据)<br>insert into people (age, name) values (13,&quot;Jack&quot;)<br>-- 多行插入<br>insert into 表名字 values (字段参数1),(字段参数2)<br>insert into 表名字 (字段名) values (加入的数据1),(加入的数据2)<br><br>-- 修改<br>-- 修改所有记录该字段的值<br>update 表名字 set 字段1=新值1，字段2=新值2<br>-- 修改一定某个记录中字段的值 where <br>update 表名字 set 字段=新值 where 字段与值关系(可用大于小于号)<br>update people set age = 18 where id=1<br><br>-- 删除<br>-- 清空表！别用！<br>delete from 表名字<br>-- 删除某个记录<br>delete from 表名字 where<br>-- 逻辑删除，新增一个is_delete操作，标记这行可不可用<br>alter table 表名字 add is_delete bit default 0<br>update 表名字 set is_delete where ...<br><br>-- 查询（基本）<br>-- 查询表所有记录<br>select * from 表名字<br>-- 查询某个记录<br>select * from 表名字 where 字段与值关系<br>-- 查询某个字段<br>select 字段名字 from 表名字 <br>-- 指定别名，指定别名后不能用本名了<br>select 字段名字 as 别名 from 表名字 as 别名<br>select 表名.字段名 from 表名<br>-- 指定列的顺序<br>select 第一个字段,第二个字段 from 表名字<br>-- 去重<br>select distinct 字段 from 表名<br></code></pre></td></tr></table></figure>
+<h4 id="查询">查询</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 条件查询<br>-- 使用where关键字<br>&gt; &lt; &gt;= &lt;= -- 和别的语言一样<br>= -- 单等于表示判断<br>&lt;&gt; !=  -- 不等于<br>and or not  -- 与或非，同Python<br>()  -- 括号，优先级很高<br><br>-- 模糊查询<br>-- 使用like关键字<br>-- % 替换0个或多个 | _ 替换一个 | [charlist] 字符列中任意单一字符 | []不在字符列中的任何单一字符<br>select name from people where name like &quot;T%&quot;  -- 名字以T开头<br>-- 使用rlike关键字<br>-- 正则表达式<br>select name from people where name rlike &quot;正则表达式&quot;<br><br>-- 范围查询<br>-- （非连续）使用in和not in关键字  <br>select name from people where age in (12,18,6)  -- &#123;12,18,6&#125;<br>-- （连续）使用between...and...关键字和not between...and...关键字 左闭右闭区间<br>select name from people where age between 6 and 18  -- [6,18]<br><br>-- 空判断<br>-- 使用is null关键字和is not null关键字<br>select name from people where age is null<br></code></pre></td></tr></table></figure>
+<h4 id="排序">排序</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- order by 字段<br>-- asc 升序(从小到大)   desc 降序<br>select name from people order by age<br>select name from people order by age asc<br>-- order by 多个字段<br>-- 在第一个字段相同情况下，再按第二个字段排...<br>select name from people order by age asc, id desc<br></code></pre></td></tr></table></figure>
+<h4 id="聚合函数">聚合函数</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 聚合函数只能输出一个结果<br>-- count 总数<br>-- 就是计算输出的东西一共多少行，结果表头是count(*)，可用as<br>select count(*) from people<br>select count(*) as &quot;人数&quot; from people<br>-- max 最大值  min 最小值<br>select max(age) from people<br>select min(height) from people<br>-- sum 求和<br>select sum(age) from people<br>-- avg 平均<br>select avg(age) from people<br>select sum(age) / count(*) from people  -- select后可以用运算和多个函数<br>-- round(x,保留小数位数) 四舍五入<br>select rount(avg(age),1) from people  -- 保留平均数的一位小数<br></code></pre></td></tr></table></figure>
+<h4 id="分组">分组</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- group by<br>-- xxx是能唯一标记分组后各组之间不同的字段<br>-- xxx不能填*<br>select gender from people group by gender  -- 1*<br><br>-- 与聚合函数一起用，查找不同性别各自的人数<br>select gender,count(*) from people group by gender<br><br>-- group_concat(字段1,字段2) 写什么有什么，链接所有参数<br>-- 查询group中某字段的总和<br>select gender,group_concat(name) from people group by gender  -- 2*<br>select gender,group_concat(name,age) from people group by gender<br>select gender,group_concat(name,&quot;_&quot;，age) from people group by gender  -- 3* <br><br>-- 与where一起用，先判断，然后从中分组<br>select gender,group_concat(name) from people where age&lt;18 group by gender<br><br>-- having 显示符合条件的分组，与where不同的是写在group后面<br>-- 所以where是对表进行判断，having是对分组结果进行判断<br>select gender,group_concat(name) from people group by gender having min(age)&lt;5  -- 4*<br></code></pre></td></tr></table></figure>
 <blockquote>
 <p>1* 的结果</p>
 <table>
@@ -546,7 +556,8 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <th>count(*)</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>男</td>
 <td>5</td>
 </tr>
@@ -554,7 +565,8 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <td>女</td>
 <td>3</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>2* 的结果</p>
 <table>
 <thead>
@@ -563,7 +575,8 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <th>group_concat(name)</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>男</td>
 <td>Mike, Leo, Tom</td>
 </tr>
@@ -571,16 +584,18 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <td>女</td>
 <td>Lucy, Mary</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>3* 的结果</p>
 <table>
 <thead>
 <tr>
 <th>gender</th>
-<th>group_concat(name,”_”，age)</th>
+<th>group_concat(name,“_”，age)</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>男</td>
 <td>Mike_12, Leo_18, Tom_6</td>
 </tr>
@@ -588,7 +603,8 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <td>女</td>
 <td>Lucy_12, Mary_3</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 <p>4* 的结果</p>
 <table>
 <thead>
@@ -597,32 +613,36 @@ A(MySQL-client) --&gt;|SQL|B[MySQL-server]
 <th>group_concat(name)</th>
 </tr>
 </thead>
-<tbody><tr>
+<tbody>
+<tr>
 <td>女</td>
 <td>Lucy, Mary</td>
 </tr>
-</tbody></table>
+</tbody>
+</table>
 </blockquote>
-<h4 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h4><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 使用limit限制<br>-- limit 数字m  查询前m个<br>select * from people limit 5<br>-- limit 数字n,数字m  查询从n开始，查询共m个<br>-- n从0开始<br>select * from peolpe limit 2,6  -- [3,9]<br>select * from peolpe limit 0,5  -- [1,5]<br>select * from peolpe limit 5,5  -- [6,10]<br>select * from peolpe limit 10,5  -- [11,15]<br>-- limit放最后<br>select * from peolpe order by age limit 0,5  -- 按age排序的[1,5]<br></code></pre></td></tr></table></figure>
-
-<h4 id="链接查询"><a href="#链接查询" class="headerlink" title="链接查询"></a>链接查询</h4><p>结合多个表的查询，比如一张表存放班级信息，另一张表存放同学信息，要显示同学信息的同时再显示该同学的班级信息，就用链接查询。</p>
+<h4 id="分页">分页</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs mysql">-- 使用limit限制<br>-- limit 数字m  查询前m个<br>select * from people limit 5<br>-- limit 数字n,数字m  查询从n开始，查询共m个<br>-- n从0开始<br>select * from peolpe limit 2,6  -- [3,9]<br>select * from peolpe limit 0,5  -- [1,5]<br>select * from peolpe limit 5,5  -- [6,10]<br>select * from peolpe limit 10,5  -- [11,15]<br>-- limit放最后<br>select * from peolpe order by age limit 0,5  -- 按age排序的[1,5]<br></code></pre></td></tr></table></figure>
+<h4 id="链接查询">链接查询</h4>
+<p>结合多个表的查询，比如一张表存放班级信息，另一张表存放同学信息，要显示同学信息的同时再显示该同学的班级信息，就用链接查询。</p>
 <p>略。</p>
-<h4 id="自关联"><a href="#自关联" class="headerlink" title="自关联"></a>自关联</h4><p>一个表中某个字段用的是另一个字段的值</p>
+<h4 id="自关联">自关联</h4>
+<p>一个表中某个字段用的是另一个字段的值</p>
 <p>比如公司中上下属关系，A是B的属下，B是D的属下，C是D的属下，于是数据表中可以新建一个字段，表示每个员工的老板是谁，同时这个老板也在同一个表中，并且也有他的老板。</p>
 <p>略。</p>
-<h4 id="子查询"><a href="#子查询" class="headerlink" title="子查询"></a>子查询</h4><p>select中嵌入另一个select语句</p>
+<h4 id="子查询">子查询</h4>
+<p>select中嵌入另一个select语句</p>
 <p>比如查找人群中最高的人的信息，需要select最高的人，然后select *</p>
 <p>略。</p>
-<h4 id="Union语句"><a href="#Union语句" class="headerlink" title="Union语句"></a>Union语句</h4><p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hstjbj/article/details/100775841?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-100775841-blog-126824653.pc_relevant_multi_platform_whitelistv3&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-100775841-blog-126824653.pc_relevant_multi_platform_whitelistv3&utm_relevant_index=1">union和union all的用法_滑板不摔跤的博客-CSDN博客_union all</a></p>
+<h4 id="Union语句">Union语句</h4>
+<p>参考：<a target="_blank" rel="noopener" href="https://blog.csdn.net/hstjbj/article/details/100775841?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-100775841-blog-126824653.pc_relevant_multi_platform_whitelistv3&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2~default~CTRLIST~Rate-1-100775841-blog-126824653.pc_relevant_multi_platform_whitelistv3&amp;utm_relevant_index=1">union和union all的用法_滑板不摔跤的博客-CSDN博客_union all</a></p>
 <p>SQL中Union语句能将两个select的结果作为一个整体显示，两次查询的列数量要相同，数据结构要相似。语法如下，用<code>union</code>或者<code>union all</code>夹在两个select语句中间，区别在于<code>union</code>会去重，而<code>union all</code>不去重。</p>
 <figure class="highlight n1ql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs n1ql"><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user1    |       <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user1<br>	<span class="hljs-keyword">union</span> 			   |		<span class="hljs-keyword">union</span> <span class="hljs-keyword">all</span><br><span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user2    |       <span class="hljs-keyword">select</span> * <span class="hljs-keyword">from</span> user2<br></code></pre></td></tr></table></figure>
-
-<h4 id="递归查询"><a href="#递归查询" class="headerlink" title="递归查询"></a>递归查询</h4><p>语法如下，<code>WITH RECURSIVE</code>定义递归形式的CTE，包含初始化和递归两部分，后者可以对当前CTE自我引用。若递归查询无法从上一次迭代中返回更多的数据，则终止递归。</p>
+<h4 id="递归查询">递归查询</h4>
+<p>语法如下，<code>WITH RECURSIVE</code>定义递归形式的CTE，包含初始化和递归两部分，后者可以对当前CTE自我引用。若递归查询无法从上一次迭代中返回更多的数据，则终止递归。</p>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">WITH</span> <span class="hljs-keyword">RECURSIVE</span> cte_name <span class="hljs-keyword">AS</span>(<br>	cte_query_initial  <span class="hljs-comment">-- 初始化部分</span><br>    <span class="hljs-keyword">UNION</span> <span class="hljs-keyword">ALL</span><br>    cte_query_interative  <span class="hljs-comment">-- 递归部分</span><br>)<br></code></pre></td></tr></table></figure>
-
-
-
-<h2 id="Python-与-MySQL-交互"><a href="#Python-与-MySQL-交互" class="headerlink" title="Python 与 MySQL 交互"></a>Python 与 MySQL 交互</h2><pre><code class=" mermaid">graph LR
+<h2 id="Python-与-MySQL-交互">Python 与 MySQL 交互</h2>
+<pre><code class=" mermaid">graph LR
 A(开始) --&gt; B[创建connection]
 B --&gt; C[获取cursor]
 C --&gt; D[操作]
@@ -630,14 +650,13 @@ D --&gt; E[关闭cursor]
 E --&gt; F[关闭connection]
 F --&gt; G(结束)
 </code></pre>
-
-<h3 id="查询-1"><a href="#查询-1" class="headerlink" title="查询"></a>查询</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pymysql <span class="hljs-keyword">import</span> *<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>    <span class="hljs-comment"># 创建connection</span><br>    conn = connect(<br>    	host=<span class="hljs-string">&#x27;localhost&#x27;</span>,<br>        port=<span class="hljs-number">3306</span>,<br>        user=<span class="hljs-string">&#x27;root&#x27;</span>,<br>        password=<span class="hljs-string">&#x27;root&#x27;</span>,<br>        database=<span class="hljs-string">&#x27;study&#x27;</span>,<br>        charset=<span class="hljs-string">&#x27;utf8&#x27;</span><br>    )<br>    <span class="hljs-comment"># 获取cursor</span><br>    cursor = conn.sursor()<br>    <br>    <span class="hljs-comment"># 执行sql语句获取数据 select返回获取的行数</span><br>    cursor.execute(<span class="hljs-string">&quot;&quot;&quot;select * from people;&quot;&quot;&quot;</span>)<br>    <span class="hljs-comment"># 从游标中获取数据(fetch) </span><br>    <span class="hljs-comment"># fetchone()得到一个元组,然后游标向下走一行</span><br>    oneline = cursor.fetchone()<br>    <span class="hljs-comment"># fetchmany(int)元组里面套元组，然后游标向下走那么多行</span><br>    manylines = cursor.fetchmany(<span class="hljs-number">3</span>)<br>    <span class="hljs-comment"># fetchall() 元组里面套元组，获取游标下所有</span><br>    alllines = cursor.fetchall()<br>    <br>    <span class="hljs-comment"># 关闭游标</span><br>    cursor.close()<br>    <span class="hljs-comment"># 关闭连接</span><br>    conn.close()<br></code></pre></td></tr></table></figure>
-
-<h3 id="增删改"><a href="#增删改" class="headerlink" title="增删改"></a>增删改</h3><p>增删改操作需要增加一个提交connection.commit()操作</p>
+<h3 id="查询-v2">查询</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pymysql <span class="hljs-keyword">import</span> *<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>    <span class="hljs-comment"># 创建connection</span><br>    conn = connect(<br>    	host=<span class="hljs-string">&#x27;localhost&#x27;</span>,<br>        port=<span class="hljs-number">3306</span>,<br>        user=<span class="hljs-string">&#x27;root&#x27;</span>,<br>        password=<span class="hljs-string">&#x27;root&#x27;</span>,<br>        database=<span class="hljs-string">&#x27;study&#x27;</span>,<br>        charset=<span class="hljs-string">&#x27;utf8&#x27;</span><br>    )<br>    <span class="hljs-comment"># 获取cursor</span><br>    cursor = conn.sursor()<br>    <br>    <span class="hljs-comment"># 执行sql语句获取数据 select返回获取的行数</span><br>    cursor.execute(<span class="hljs-string">&quot;&quot;&quot;select * from people;&quot;&quot;&quot;</span>)<br>    <span class="hljs-comment"># 从游标中获取数据(fetch) </span><br>    <span class="hljs-comment"># fetchone()得到一个元组,然后游标向下走一行</span><br>    oneline = cursor.fetchone()<br>    <span class="hljs-comment"># fetchmany(int)元组里面套元组，然后游标向下走那么多行</span><br>    manylines = cursor.fetchmany(<span class="hljs-number">3</span>)<br>    <span class="hljs-comment"># fetchall() 元组里面套元组，获取游标下所有</span><br>    alllines = cursor.fetchall()<br>    <br>    <span class="hljs-comment"># 关闭游标</span><br>    cursor.close()<br>    <span class="hljs-comment"># 关闭连接</span><br>    conn.close()<br></code></pre></td></tr></table></figure>
+<h3 id="增删改">增删改</h3>
+<p>增删改操作需要增加一个提交connection.commit()操作</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> pymysql <span class="hljs-keyword">import</span> *<br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>():</span><br>    <span class="hljs-comment"># 创建connection</span><br>    conn = connect(<br>    	host=<span class="hljs-string">&#x27;localhost&#x27;</span>,<br>        port=<span class="hljs-number">3306</span>,<br>        user=<span class="hljs-string">&#x27;root&#x27;</span>,<br>        password=<span class="hljs-string">&#x27;root&#x27;</span>,<br>        database=<span class="hljs-string">&#x27;study&#x27;</span>,<br>        charset=<span class="hljs-string">&#x27;utf8&#x27;</span><br>    )<br>    <span class="hljs-comment"># 获取cursor</span><br>    cursor = conn.sursor()<br>    <br>    <span class="hljs-comment"># 执行sql语句 返回生效行数</span><br>    cursor.execute(<span class="hljs-string">&quot;&quot;&quot;insert into people(name, age) values(&quot;Ash&quot;, 31);&quot;&quot;&quot;</span>)  <span class="hljs-comment"># 增</span><br>    cursor.execute(<span class="hljs-string">&quot;&quot;&quot;delete from people where id=6 ;&quot;&quot;&quot;</span>)  <span class="hljs-comment"># 删</span><br>    cursor.execute(<span class="hljs-string">&quot;&quot;&quot;update people set age=18 where name=&quot;Tom&quot;;&quot;&quot;&quot;</span>)  <span class="hljs-comment"># 改</span><br>    <br>    <span class="hljs-comment"># 取消所有请求 但是自动增长（例如id）会持续生效</span><br>    <span class="hljs-comment"># conn.rollback()</span><br>    <span class="hljs-comment"># 提交请求</span><br>    conn.commit()<br>    <span class="hljs-comment"># 关闭游标</span><br>    cursor.close()<br>    <span class="hljs-comment"># 关闭连接</span><br>    conn.close()<br></code></pre></td></tr></table></figure>
-
-<h3 id="防止SQL注入"><a href="#防止SQL注入" class="headerlink" title="防止SQL注入"></a>防止SQL注入</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">## 前略</span><br><br>name = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;请输入你要查询的人的名字：&quot;</span>)<br>cursor.execute(<span class="hljs-string">&quot;&quot;&quot;select * from people where name = &quot;&#123;&#125;&quot; &quot;&quot;&quot;</span>.<span class="hljs-built_in">format</span>(name))<br><span class="hljs-comment"># 输入 Tom</span><br><span class="hljs-comment"># 结果 (1,18,1.80,&quot;男&quot;,&quot;Tom&quot;)</span><br><span class="hljs-comment"># 输入 &quot;or 1=1 or &quot;1</span><br><span class="hljs-comment"># execute内容： select * from people where name = &quot;&quot;or 1=1 or &quot;1&quot;</span><br><span class="hljs-comment"># 结果输出所有人的名字</span><br><span class="hljs-comment"># SQL注入！！！！！</span><br><br><span class="hljs-comment"># 防止方法</span><br><span class="hljs-comment"># 构建参数列表</span><br>params = [name]<br>sql = <span class="hljs-string">&quot;select * from people where name=%s, id=%d, age=%d &quot;</span><br>cursor.execute(sql,params)  <span class="hljs-comment"># 自动填充</span><br><br><span class="hljs-comment">## 后略</span><br></code></pre></td></tr></table></figure>
-
+<h3 id="防止SQL注入">防止SQL注入</h3>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">## 前略</span><br><br>name = <span class="hljs-built_in">input</span>(<span class="hljs-string">&quot;请输入你要查询的人的名字：&quot;</span>)<br>cursor.execute(<span class="hljs-string">&quot;&quot;&quot;select * from people where name = &quot;&#123;&#125;&quot; &quot;&quot;&quot;</span>.<span class="hljs-built_in">format</span>(name))<br><span class="hljs-comment"># 输入 Tom</span><br><span class="hljs-comment"># 结果 (1,18,1.80,&quot;男&quot;,&quot;Tom&quot;)</span><br><span class="hljs-comment"># 输入 &quot;or 1=1 or &quot;1</span><br><span class="hljs-comment"># execute内容： select * from people where name = &quot;&quot;or 1=1 or &quot;1&quot;</span><br><span class="hljs-comment"># 结果输出所有人的名字</span><br><span class="hljs-comment"># SQL注入！！！！！</span><br><br><span class="hljs-comment"># 防止方法</span><br><span class="hljs-comment"># 构建参数列表</span><br>params = [name]<br>sql = <span class="hljs-string">&quot;select * from people where name=%s, id=%d, age=%d &quot;</span><br>cursor.execute(sql,params)  <span class="hljs-comment"># 自动填充</span><br><br><span class="hljs-comment">## 后略</span><br></code></pre></td></tr></table></figure>
 <div class="note note-info">
             <p>参考文献：</p><ol><li><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/fd7b422d5f93">https://www.jianshu.com/p/fd7b422d5f93</a></li><li><a target="_blank" rel="noopener" href="https://www.runoob.com/sql/sql-intro.html">https://www.runoob.com/sql/sql-intro.html</a></li><li><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/av37278656">https://www.bilibili.com/video/av37278656</a></li></ol>
           </div>
@@ -649,9 +668,9 @@ F --&gt; G(结束)
                   <div class="post-meta mr-3">
                     <i class="iconfont icon-category"></i>
                     
-                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
-                    
                       <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                    
+                      <a class="hover-with-bg" href="/categories/Python/">Python</a>
                     
                   </div>
                 
@@ -900,43 +919,8 @@ F --&gt; G(结束)
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

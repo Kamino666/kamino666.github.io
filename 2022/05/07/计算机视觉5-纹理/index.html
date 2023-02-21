@@ -271,9 +271,10 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="计算机视觉学习笔记-5-纹理"><a href="#计算机视觉学习笔记-5-纹理" class="headerlink" title="计算机视觉学习笔记#5 纹理"></a>计算机视觉学习笔记#5 纹理</h1><p><strong>纹理（Texture）是计算机视觉中经常用到的一种特征</strong>，反映图像中某种同质现象，在自然界中普遍存在。纹理包括随机的模式（Pattern）和规律的模式，但更多是两者结合。使用纹理特征，我们可以分析图像相似度、转移纹理到另一个图像，或者用作分隔、分类等任务的特征。</p>
+              <h1>计算机视觉学习笔记#5 纹理</h1>
+<p><strong>纹理（Texture）是计算机视觉中经常用到的一种特征</strong>，反映图像中某种同质现象，在自然界中普遍存在。纹理包括随机的模式（Pattern）和规律的模式，但更多是两者结合。使用纹理特征，我们可以分析图像相似度、转移纹理到另一个图像，或者用作分隔、分类等任务的特征。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220507102818.png" srcset="/img/loading.gif" lazyload alt="image-20220507102811623"></p>
-<p>要检测纹理，我们可以用这样的方法：先检测线、点等基础元素，然后统计这些基础元素的密度。 </p>
+<p>要检测纹理，我们可以用这样的方法：先检测线、点等基础元素，然后统计这些基础元素的密度。</p>
 <blockquote>
 <p>参考文献：</p>
 <p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1nz4y197Qv?p=6">计算机视觉（本科） 北京邮电大学 鲁鹏 清晰完整合集_哔哩哔哩_bilibili</a></p>
@@ -517,43 +518,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 

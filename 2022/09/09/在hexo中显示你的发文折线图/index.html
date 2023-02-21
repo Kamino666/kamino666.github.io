@@ -276,8 +276,9 @@
               </p>
             
             <div class="markdown-body">
-              <h1 id="在Hexo中显示你的发文折线图"><a href="#在Hexo中显示你的发文折线图" class="headerlink" title="在Hexo中显示你的发文折线图"></a>在Hexo中显示你的发文折线图</h1><p>在GitHub敲代码的时候，看见Profile里的Contributions统计图就会获得一股成就感，而Hexo中却没有这种功能，作为一个对前端一无所知的coder，最近现学现卖做了个实时同步的发文统计图，放在了<a href="https://blog.kamino.link/about/">“关于”页面</a>。如下图所示，这个统计图能很适应地嵌入在正文中，并且鼠标放上去会有响应，不是简单的图片。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909151307.png" srcset="/img/loading.gif" lazyload></p>
+              <h1>在Hexo中显示你的发文折线图</h1>
+<p>在GitHub敲代码的时候，看见Profile里的Contributions统计图就会获得一股成就感，而Hexo中却没有这种功能，作为一个对前端一无所知的coder，最近现学现卖做了个实时同步的发文统计图，放在了<a href="https://blog.kamino.link/about/">“关于”页面</a>。如下图所示，这个统计图能很适应地嵌入在正文中，并且鼠标放上去会有响应，不是简单的图片。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909151307.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p>制作这个的基本流程如下图所示，基本思路是通过GitHub的API来获取寄放在GitHub Pages上的本网站的repo，之后由于hexo将文章排序按照时间规律分目录存储，可以获取到各个时间段的发文数量。这个数据之后通过很便宜甚至能白嫖的腾讯云Severless云函数来实时获取，最后在我们的网站中只需要简单访问云函数的API就可以获得数据。</p>
 <pre><code class=" mermaid">graph LR
 	A[获取GitHub API权限] --&gt; B[用Python写好获取发文数据的函数]
@@ -285,32 +286,34 @@
 	C --&gt; D[配置Hexo导入要用的第三方JS库]
 	D --&gt; E[在文章插入JS代码]
 </code></pre>
-
-<h2 id="获取GitHub-API权限"><a href="#获取GitHub-API权限" class="headerlink" title="获取GitHub API权限"></a>获取GitHub API权限</h2><p>由于GitHub的API就能方便地提供我们需要的信息，所以我们不需要费心用各种方法去爬取。GitHub的REST API是RESTful架构的教科书级参考，非常好用易懂，文档也很全面：<a target="_blank" rel="noopener" href="https://docs.github.com/en/rest">GitHub REST API - GitHub Docs</a>。我们主要用到其查询commits和查询tree的API。使用API需要先获得Personal access token，可以在<a target="_blank" rel="noopener" href="https://github.com/settings/tokens">这里</a>生成（这个页面在<code>Settings -&gt; Developer settings -&gt; Personal access tokens</code>下），假如只是实现我们这个功能不需要勾选任何权限，也不推荐勾选过多的权限。</p>
+<h2 id="获取GitHub-API权限">获取GitHub API权限</h2>
+<p>由于GitHub的API就能方便地提供我们需要的信息，所以我们不需要费心用各种方法去爬取。GitHub的REST API是RESTful架构的教科书级参考，非常好用易懂，文档也很全面：<a target="_blank" rel="noopener" href="https://docs.github.com/en/rest">GitHub REST API - GitHub Docs</a>。我们主要用到其查询commits和查询tree的API。使用API需要先获得Personal access token，可以在<a target="_blank" rel="noopener" href="https://github.com/settings/tokens">这里</a>生成（这个页面在<code>Settings -&gt; Developer settings -&gt; Personal access tokens</code>下），假如只是实现我们这个功能不需要勾选任何权限，也不推荐勾选过多的权限。</p>
 <p>⚠️要注意这个token只显示一次，及时保存。</p>
-<h2 id="使用Python获取发文数据"><a href="#使用Python获取发文数据" class="headerlink" title="使用Python获取发文数据"></a>使用Python获取发文数据</h2><p>使用<code>requests</code>就能轻松的访问API，我这里文章的目录结构是<code>&lt;年份&gt;/&lt;月份&gt;/&lt;日&gt;/&lt;标题&gt;/页面</code>，年份直接在根目录下。为了之后部署在云函数上，需要以Flask的形式写。两个库的细节就不说啦，代码含义见注释。</p>
+<h2 id="使用Python获取发文数据">使用Python获取发文数据</h2>
+<p>使用<code>requests</code>就能轻松的访问API，我这里文章的目录结构是<code>&lt;年份&gt;/&lt;月份&gt;/&lt;日&gt;/&lt;标题&gt;/页面</code>，年份直接在根目录下。为了之后部署在云函数上，需要以Flask的形式写。两个库的细节就不说啦，代码含义见注释。</p>
 <figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@app.route(<span class="hljs-params"><span class="hljs-string">&quot;/github/&lt;owner&gt;/&lt;repo&gt;&quot;</span></span>)</span><br><span class="hljs-function"><span class="hljs-keyword">def</span> <span class="hljs-title">main</span>(<span class="hljs-params">owner, repo</span>):</span><br>    secret_token = <span class="hljs-string">&quot;你的token&quot;</span><br>    headers = &#123;  <span class="hljs-comment"># 通用头</span><br>        <span class="hljs-string">&#x27;Accept&#x27;</span>: <span class="hljs-string">&quot;application/vnd.github+json&quot;</span>,<br>        <span class="hljs-string">&#x27;Authorization&#x27;</span>: <span class="hljs-string">f&quot;Bearer <span class="hljs-subst">&#123;secret_token&#125;</span>&quot;</span><br>    &#125;<br>    <span class="hljs-comment"># 先获取最新commit的url</span><br>    api_url = <span class="hljs-string">f&quot;https://api.github.com/repos/<span class="hljs-subst">&#123;owner&#125;</span>/<span class="hljs-subst">&#123;repo&#125;</span>/commits&quot;</span><br>    rsp = requests.get(api_url, headers=headers)<br>    tree_url = json.loads(rsp.content)[<span class="hljs-number">0</span>][<span class="hljs-string">&#x27;commit&#x27;</span>][<span class="hljs-string">&#x27;tree&#x27;</span>][<span class="hljs-string">&#x27;url&#x27;</span>]<br>    <span class="hljs-comment"># 然后获取表示年份的根url</span><br>    rsp = requests.get(tree_url, headers=headers)<br>    year_root_url = []<br>    <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> json.loads(rsp.content)[<span class="hljs-string">&#x27;tree&#x27;</span>]:<br>        p: <span class="hljs-built_in">str</span> = item[<span class="hljs-string">&#x27;path&#x27;</span>]  <span class="hljs-comment"># 由于有多个目录，要先判断是年份</span><br>        <span class="hljs-keyword">if</span> p.isdigit() <span class="hljs-keyword">and</span> p.startswith(<span class="hljs-string">&#x27;20&#x27;</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">len</span>(p) == <span class="hljs-number">4</span>:<br>            year_root_url.append([p, item[<span class="hljs-string">&#x27;url&#x27;</span>]])<br>    <span class="hljs-comment"># 然后recursive获取下面的所有路径，保存到blog_info中</span><br>    blog_info = []<br>    <span class="hljs-keyword">for</span> yr, yr_url <span class="hljs-keyword">in</span> year_root_url:<br>        rsp = requests.get(yr_url, headers=headers, params=&#123;<span class="hljs-string">&#x27;recursive&#x27;</span>: <span class="hljs-literal">True</span>&#125;)<br>        <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> json.loads(rsp.content)[<span class="hljs-string">&#x27;tree&#x27;</span>]:<br>            <span class="hljs-keyword">if</span> item[<span class="hljs-string">&#x27;type&#x27;</span>] == <span class="hljs-string">&#x27;blob&#x27;</span>:  <span class="hljs-comment"># 节点才是我们需要的文章</span><br>                month, day, name, _ = item[<span class="hljs-string">&#x27;path&#x27;</span>].split(<span class="hljs-string">&#x27;/&#x27;</span>)<br>                blog_info.append([yr, month, day, name])<br>    <span class="hljs-comment"># 合并一些数据进行可视化（按月）</span><br>    blog_counter = &#123;&#125;<br>    <span class="hljs-keyword">for</span> yr, mo, _, _ <span class="hljs-keyword">in</span> blog_info:<br>        date = <span class="hljs-string">f&quot;<span class="hljs-subst">&#123;yr&#125;</span>/<span class="hljs-subst">&#123;mo&#125;</span>&quot;</span><br>        <span class="hljs-keyword">if</span> date <span class="hljs-keyword">in</span> blog_counter:<br>            blog_counter[date] += <span class="hljs-number">1</span><br>        <span class="hljs-keyword">else</span>:<br>            blog_counter[date] = <span class="hljs-number">1</span><br>    <span class="hljs-comment"># 组合返回</span><br>    result_dict = &#123;<br>        <span class="hljs-string">&quot;labels&quot;</span>: <span class="hljs-built_in">list</span>(blog_counter.keys()),<br>        <span class="hljs-string">&quot;values&quot;</span>: <span class="hljs-built_in">list</span>(blog_counter.values()),<br>    &#125;<br>    <span class="hljs-keyword">return</span> jsonify(data=result_dict)<br></code></pre></td></tr></table></figure>
-
-<h2 id="部署到云函数上"><a href="#部署到云函数上" class="headerlink" title="部署到云函数上"></a>部署到云函数上</h2><p>在腾讯云打开Serverless的控制台（第一次用可能要授权什么的，但是很简单），然后在函数服务中用模板创建一个flask的云函数。</p>
+<h2 id="部署到云函数上">部署到云函数上</h2>
+<p>在腾讯云打开Serverless的控制台（第一次用可能要授权什么的，但是很简单），然后在函数服务中用模板创建一个flask的云函数。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909163830.png" srcset="/img/loading.gif" lazyload alt="云函数"></p>
 <p>函数创建成功后，点开云函数，可以在线编辑代码，找到里面的<code>app.py</code>，加上之前写好的代码，然后在<code>requirements.txt</code>中添加requests库，最后点击编辑器右上角的部署就可以啦。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909164152.png" srcset="/img/loading.gif" lazyload alt="在线编辑云函数"></p>
 <p>要访问云函数，则点开Severless应用，然后找到URL，之间点开应该就能看到模版自带的欢迎界面，出现这个界面就表示应用成功了。之后可以用postman等工具来测试自己写的代码能不能用。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909164427.png" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909164427.png" srcset="/img/loading.gif" lazyload alt=""></p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20220909164541.png" srcset="/img/loading.gif" lazyload alt="模版自带界面"></p>
-<h2 id="配置Hexo"><a href="#配置Hexo" class="headerlink" title="配置Hexo"></a>配置Hexo</h2><p>要在hexo中访问我们的云函数，以及之后的可视化，需要使用第三方的js库，但是并不能直接在文章中用<code>&lt;script&gt;</code>标签引入。（不太懂为啥不能，反正试过了）</p>
+<h2 id="配置Hexo">配置Hexo</h2>
+<p>要在hexo中访问我们的云函数，以及之后的可视化，需要使用第三方的js库，但是并不能直接在文章中用<code>&lt;script&gt;</code>标签引入。（不太懂为啥不能，反正试过了）</p>
 <p>要解决这个问题，我们使用<a target="_blank" rel="noopener" href="https://hexo.fluid-dev.com/posts/hexo-injector/">Hexo 5 注入器</a>，在生成页面的头部加上对应要导入的<code>&lt;script&gt;</code>标签。</p>
 <p>根据上面这个链接的教材，我们在<code>&lt;blog目录&gt;/themes/&lt;主题&gt;/scripts</code>下新建一个<code>injector.js</code>，内容为：</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs html">hexo.extend.injector.register(&#x27;head_begin&#x27;, `<br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;/js/Chart.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">script</span> <span class="hljs-attr">src</span>=<span class="hljs-string">&quot;https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br>`)<br></code></pre></td></tr></table></figure>
-
 <p>此处假如用CDN就直接贴链接，假如用本地相对目录，则是以<code>&lt;blog目录&gt;/source</code>为根目录的相对路径。我们要使用的可视化工具为<a target="_blank" rel="noopener" href="https://www.chartjs.org/docs/2.7.2/">Chart.js</a>。并且由于我只学过一点点jquery，所以就导入jq来访问云函数了。</p>
-<h2 id="在文章中插入"><a href="#在文章中插入" class="headerlink" title="在文章中插入"></a>在文章中插入</h2><p>为了控制大小，用一个div包裹住canvas，canvas在js中绑定为一个new Chart。由于对前端不是很熟，就进行了一些小小的配置，懂js的老哥应该能写得比我好很多hhhh。</p>
+<h2 id="在文章中插入">在文章中插入</h2>
+<p>为了控制大小，用一个div包裹住canvas，canvas在js中绑定为一个new Chart。由于对前端不是很熟，就进行了一些小小的配置，懂js的老哥应该能写得比我好很多hhhh。</p>
 <figure class="highlight html"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><code class="hljs html"><span class="hljs-tag">&lt;<span class="hljs-name">div</span> <span class="hljs-attr">class</span>=<span class="hljs-string">&quot;chart-container&quot;</span> <span class="hljs-attr">style</span>=<span class="hljs-string">&quot;position: relative; height:80%; width:100%&quot;</span>&gt;</span><br>  <span class="hljs-tag">&lt;<span class="hljs-name">canvas</span> <span class="hljs-attr">id</span>=<span class="hljs-string">&quot;myChart&quot;</span>&gt;</span><span class="hljs-tag">&lt;/<span class="hljs-name">canvas</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">div</span>&gt;</span><br><br><span class="hljs-tag">&lt;<span class="hljs-name">script</span>&gt;</span><span class="javascript"></span><br><span class="javascript">$.getJSON(<span class="hljs-string">&quot;https://&lt;你的云函数链接&gt;/release/github/Kamino666/kamino666.github.io&quot;</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">api_data</span>)</span>&#123;</span><br><span class="javascript">    <span class="hljs-keyword">const</span> ctx = <span class="hljs-built_in">document</span>.getElementById(<span class="hljs-string">&#x27;myChart&#x27;</span>).getContext(<span class="hljs-string">&#x27;2d&#x27;</span>);</span><br><span class="javascript">    <span class="hljs-keyword">const</span> myChart = <span class="hljs-keyword">new</span> Chart(ctx, &#123;</span><br><span class="javascript">    <span class="hljs-attr">type</span>: <span class="hljs-string">&#x27;line&#x27;</span>,</span><br><span class="javascript">    <span class="hljs-attr">data</span>: &#123;</span><br><span class="javascript">        <span class="hljs-attr">labels</span>: api_data.data.labels,</span><br><span class="javascript">        <span class="hljs-attr">datasets</span>: [&#123;</span><br><span class="javascript">            <span class="hljs-attr">label</span>: <span class="hljs-string">&#x27;发表博客数量&#x27;</span>,</span><br><span class="javascript">            <span class="hljs-attr">data</span>: api_data.data.values,</span><br><span class="javascript">            <span class="hljs-attr">backgroundColor</span>: [<span class="hljs-string">&quot;rgba(238, 238, 238, 0.2)&quot;</span>],</span><br><span class="javascript">            <span class="hljs-attr">borderColor</span>: [<span class="hljs-string">&quot;rgba(0, 173, 181, 1)&quot;</span>],</span><br><span class="javascript">            <span class="hljs-attr">borderWidth</span>: <span class="hljs-number">2</span>,</span><br><span class="javascript">            <span class="hljs-attr">pointBorderWidth</span>: <span class="hljs-number">2</span>,</span><br><span class="javascript">            <span class="hljs-attr">pointHoverBorderWidth</span>: <span class="hljs-number">4</span>,</span><br><span class="javascript">            <span class="hljs-attr">pointHoverBackgroundColor</span>: <span class="hljs-string">&quot;rgba(0, 0, 0, 0)&quot;</span>,</span><br><span class="javascript">            <span class="hljs-attr">pointHoverBorderColor</span>: <span class="hljs-string">&quot;rgba(0, 173, 181, 1)&quot;</span>,</span><br><span class="javascript">            <span class="hljs-attr">pointHitRadius</span>: <span class="hljs-number">15</span>,</span><br><span class="javascript">            <span class="hljs-attr">pointBackgroundColor</span>: <span class="hljs-string">&quot;rgba(238, 238, 238, 1)&quot;</span>,</span><br><span class="javascript">        &#125;]</span><br><span class="javascript">    &#125;,</span><br><span class="javascript">    <span class="hljs-attr">options</span>: &#123;</span><br><span class="javascript">        <span class="hljs-attr">responsive</span>: <span class="hljs-literal">true</span>,</span><br><span class="javascript">        <span class="hljs-attr">scales</span>: &#123;</span><br><span class="javascript">            <span class="hljs-attr">yAxes</span>: [&#123;</span><br><span class="javascript">                <span class="hljs-attr">ticks</span>: &#123;</span><br><span class="javascript">                    <span class="hljs-attr">beginAtZero</span>:<span class="hljs-literal">true</span></span><br><span class="javascript">                &#125;</span><br><span class="javascript">            &#125;]</span><br><span class="javascript">        &#125;,</span><br><span class="javascript">        <span class="hljs-attr">legend</span>: &#123;</span><br><span class="javascript">            <span class="hljs-attr">display</span>: <span class="hljs-literal">false</span></span><br><span class="javascript">        &#125;,</span><br><span class="javascript">        <span class="hljs-attr">title</span>: &#123;</span><br><span class="javascript">            <span class="hljs-attr">display</span>: <span class="hljs-literal">true</span>,</span><br><span class="javascript">            <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,</span><br><span class="javascript">            <span class="hljs-attr">text</span>: <span class="hljs-string">&quot;Kamino发表博客的数量&quot;</span></span><br><span class="javascript">        &#125;</span><br><span class="javascript">    &#125;</span><br><span class="javascript">    &#125;);</span><br><span class="javascript">&#125;)</span><br><span class="javascript"></span><span class="hljs-tag">&lt;/<span class="hljs-name">script</span>&gt;</span><br></code></pre></td></tr></table></figure>
-
-<h2 id="Q-amp-A"><a href="#Q-amp-A" class="headerlink" title="Q&amp;A"></a>Q&amp;A</h2><p>Q：为什么要用云函数，不直接用js访问GitHub API？</p>
-<p>A：<del>因为我不会js</del>。因为用js的话token会暴露出去，可能不是很安全。</p>
+<h2 id="Q-A">Q&amp;A</h2>
+<p>Q：为什么要用云函数，不直接用js访问GitHub API？</p>
+<p>A：<s>因为我不会js</s>。因为用js的话token会暴露出去，可能不是很安全。</p>
 <p>Q：为什么这么麻烦，每次更新的时候直接生成新的数据就不用云函数了。</p>
-<p>A：因为<del>浪漫</del>每次更新生成新数据也挺麻烦，而且这套流程也很适合练手。</p>
+<p>A：因为<s>浪漫</s>每次更新生成新数据也挺麻烦，而且这套流程也很适合练手。</p>
 <p>Q：为什么要通过GitHub？我的Hexo不寄存在GitHub怎么办？</p>
 <p>A：目前的解决方法不是最佳的，最佳应该是每次<code>hexo g</code>的时候自动生成对应的数据和代码，但是对这部分就更更更不熟悉了……</p>
 
@@ -575,43 +578,8 @@
   
 
   
-    <!-- MathJax -->
-    <script>
-      MathJax = {
-        tex: {
-          inlineMath: [['$', '$'], ['\\(', '\\)']]
-        },
-        loader: {
-          
-        },
-        options: {
-          renderActions: {
-            findScript: [10, doc => {
-              document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
-                const display = !!node.type.match(/; *mode=display/);
-                const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
-                const text = document.createTextNode('');
-                node.parentNode.replaceChild(text, node);
-                math.start = { node: text, delim: '', n: 0 };
-                math.end = { node: text, delim: '', n: 0 };
-                doc.math.push(math);
-              });
-            }, '', false],
-            insertedScript: [200, () => {
-              document.querySelectorAll('mjx-container').forEach(node => {
-                let target = node.parentNode;
-                if (target.nodeName.toLowerCase() === 'li') {
-                  target.parentNode.classList.add('has-jax');
-                }
-              });
-            }, '', false]
-          }
-        }
-      };
-    </script>
-
-    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js" ></script>
-
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
   
 
 
