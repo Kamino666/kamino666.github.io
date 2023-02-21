@@ -27,7 +27,7 @@
 <meta property="og:description" content="Stable Diffusion（SD）是当前AIGC中最热门的AI绘画模型（这个模型有多厉害就不多吹了），它由CompVis、Stability AI和LAION的研究人员开发，是一种潜空间扩散模型，由VAE、U-Net、预训练文本编码器（如CLIP）、采样器构成，本文将由浅入深，先介绍整体框架和基本流程，同时提供可选的公式推导章节，本文的公式推导尽量能让非本研究方向的同学弄懂（比如我）。">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2023-02-21T03:50:00.000Z">
-<meta property="article:modified_time" content="2023-02-21T04:09:55.367Z">
+<meta property="article:modified_time" content="2023-02-21T04:47:08.381Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="AIGC">
 <meta property="article:tag" content="AI绘画">
@@ -267,13 +267,13 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2023年2月21日 中午
+                  本文最后更新于：2023年2月21日 下午
                 
               </p>
             
             <div class="markdown-body">
               <h1>Stable Diffusion 扩散模型 由浅入深 原理解析+公式推导</h1>
-<p><strong>Stable Diffusion（SD）<strong>是当前AIGC中最热门的AI绘画模型（这个模型有多厉害就不多吹了），它由CompVis、Stability AI和LAION的研究人员开发，是一种</strong>潜空间扩散模型</strong>，由<strong>VAE</strong>（Variational AutoEncoders 变分自编码器）、<strong>U-Net</strong>、<strong>预训练文本编码器</strong>（如CLIP）、<strong>采样器</strong>（Sampler）构成，本文将由浅入深，先介绍整体框架和基本流程，同时提供可选的公式推导章节，本文的公式推导尽量能让非本研究方向的同学弄懂（比如我）。</p>
+<p><strong>Stable Diffusion</strong>（SD）是当前AIGC中最热门的AI绘画模型（这个模型有多厉害就不多吹了），它由CompVis、Stability AI和LAION的研究人员开发，是一种潜空间扩散模型，由<strong>VAE</strong>（Variational AutoEncoders 变分自编码器）、<strong>U-Net</strong>、<strong>预训练文本编码器</strong>（如CLIP）、<strong>采样器</strong>（Sampler）构成，本文将由浅入深，先介绍整体框架和基本流程，同时提供可选的公式推导章节，本文的公式推导尽量能让非本研究方向的同学弄懂（比如我）。</p>
 <h2 id="⚡整体">⚡整体</h2>
 
             </div>
