@@ -1,0 +1,675 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="阿里巴巴达摩院于23年2月发布的大规模视觉-语言预训练模型——**mPLUG-2**，相较于前作mPLUG，本次将模型拓展到了视频领域，总共在30多个下游任务上进行试验，并取得很多SOTA。并且本作没有像前作那样突出减少运算时间，而是在训练效率和有效性上有长进。mPLUG2是一个多模块结合的模型，通过不同的模块能够应对“模态纠缠”的问题，不同任务可以选择性地使用部分模块。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="阿里巴巴达摩院于23年2月发布的大规模视觉-语言预训练模型——**mPLUG-2**，相较于前作mPLUG，本次将模型拓展到了视频领域，总共在30多个下游任务上进行试验，并取得很多SOTA。并且本作没有像前作那样突出减少运算时间，而是在训练效率和有效性上有长进。mPLUG2是一个多模块结合的模型，通过不同的模块能够应对“模态纠缠”的问题，不同任务可以选择性地使用部分模块。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 mPLUG-2：A Modularized Multi-modal Foundation Model Across Text, Image and Video">
+<meta property="og:url" content="http://blog.kamino.link/2023/03/18/mPLUG2%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="阿里巴巴达摩院于23年2月发布的大规模视觉-语言预训练模型——**mPLUG-2**，相较于前作mPLUG，本次将模型拓展到了视频领域，总共在30多个下游任务上进行试验，并取得很多SOTA。并且本作没有像前作那样突出减少运算时间，而是在训练效率和有效性上有长进。mPLUG2是一个多模块结合的模型，通过不同的模块能够应对“模态纠缠”的问题，不同任务可以选择性地使用部分模块。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318144141.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318145553.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318150220.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318150723.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318154354.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318160623.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230321101541.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230321101552.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318184746.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318185059.png">
+<meta property="article:published_time" content="2023-03-18T06:40:00.000Z">
+<meta property="article:modified_time" content="2023-03-21T02:15:53.991Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="多模态预训练">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318144141.png">
+  
+  <title>论文笔记 mPLUG-2：A Modularized Multi-modal Foundation Model Across Text, Image and Video - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 mPLUG-2：A Modularized Multi-modal Foundation Model Across Text, Image and Video">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-03-18 14:40" pubdate>
+        2023年3月18日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 mPLUG-2：A Modularized Multi-modal Foundation Model Across Text, Image and Video</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年3月21日 上午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>mPLUG-2: A Modularized Multi-modal Foundation Model Across Text, Image and Video</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2302.00402#">mPLUG-2: A Modularized Multi-modal Foundation Model Across Text, Image and Video (arxiv.org)</a></p>
+<p>代码链接：（即将开源在这里，和前作在同一个库）<a target="_blank" rel="noopener" href="https://github.com/alibaba/AliceMind">alibaba/AliceMind: ALIbaba’s Collection of Encoder-decoders from MinD (Machine IntelligeNce of Damo) Lab (github.com)</a></p>
+<p>我的介绍其前作mPLUG模型的博客：<a href="https://blog.kamino.link/2023/02/01/mPLUG%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记 mPLUG Effective and Efficient Vision-Language Learning by Cross-modal Skip-connections - Kamino’s Blog</a></p>
+<p>阿里巴巴达摩院于23年2月发布的大规模视觉-语言预训练模型——<strong>mPLUG-2</strong>，相较于前作mPLUG，本次将模型拓展到了视频领域，总共在30多个下游任务上进行试验，并取得很多SOTA。并且本作没有像前作那样突出减少运算时间，而是在训练效率和有效性上有长进。mPLUG2是一个多模块结合的模型，通过不同的模块能够应对“模态纠缠”的问题，不同任务可以选择性地使用部分模块。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318144141.png" srcset="/img/loading.gif" lazyload alt="mPLUG-2整体框架"></p>
+<h2 id="简介">简介</h2>
+<p>之前的foundation模型（如下图的Flamingo模型，用一个统一的解码器）使用单个网络来处理多模态数据，企图达到多模态间的合作，然而这样会因为不同模态任务之间的差异而造成“模态纠缠（modality entanglement）”，模态纠缠指的是不同模态的信息会互相干扰，单模块的网络很难做到权衡不同模态对某个特定任务的影响。</p>
+<blockquote>
+<p>不是很理解模态纠缠，但是至少人家是这么说的，并且有一篇相关文献，假如我读懂了会更新到博客上：What makes joint training of multi-modal network fail in deep learning?(provably).</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318145553.png" srcset="/img/loading.gif" lazyload alt="Flamingo"></p>
+<p>mPLUG2相较于Flamingo的话，就是把不同模块分开了，有共享参数的编码器Universal Layer，也有多模态融合的Fusion Layer，还有用来做生成任务的解码器。这个灵活的框架使该模型比其他模型涵盖的任务更加广泛：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318150220.png" srcset="/img/loading.gif" lazyload alt="mPLIG2能做的任务"></p>
+<p>最终作者在保证模型大小和数据量大小还算正常的情况下，打败了各路之前的SOTA，作者特别吹了一下在Video Caption任务和Video QA任务上的成果，由于我是做Video Caption的，他这个成果可以说是非常SOTA了，超过了之前我在另一篇博客介绍的<a href="https://blog.kamino.link/2022/10/11/GIT/">GIT</a>模型。</p>
+<h2 id="方法">方法</h2>
+<h3 id="整体框架">整体框架</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318150723.png" srcset="/img/loading.gif" lazyload alt="图2"></p>
+<p>图2是mPLUG更详细的整体框架图，从下往上看：首先文本侧有一个比较普通的编码器（基于BERT），视觉侧为了适配视频进行了改进，是一个Dual-vision编码器，这个编码器会建模视频的空间和局部时序信息。之后，两个模态的表征会送到Universal Layers Module中，这个模块将不同模态通过编码映射到共享的语义空间中，并在此处进行多模态语义对齐，这个模块还没有进行特征融合，所以可以用在各<strong>种单模态的任务</strong>上。对于<strong>多模态任务</strong>，则需要一个额外的融合模块来融合不同模态的信息。要做<strong>生成任务</strong>时，无论是融合了的还是没融合的特征都可以通过Shared Decoder Module进行解码。</p>
+<p>这种搭积木式的网络能够适应多个任务，下面据一些例子：</p>
+<ol>
+<li>语义情感分类：只需要文本的单模态任务，将文本通过文本编码器进行编码，然后通过Universal模块进行再次编码，然后接分类器得到结果。</li>
+<li>图像分类：只需要视觉的单模态任务，将图像送到视觉编码器进行编码，然后通过Universal模块再次进行编码，然后接分类器得到结果。</li>
+<li>Video Captioning：多模态任务，视觉和文本各自送进自己的编码器，然后通过Universal模块再次编码，然后送入Fusion模块进行融合，最后作为Decoder的Cross Attention的输入进行解码。在推理阶段则是自回归式生成，会使用“”What does the video describe?”来作为prompt。</li>
+</ol>
+<h3 id="Dual-vision-Encoder">Dual-vision Encoder</h3>
+<p>这个模块把视频和图像先分成L长的不重叠的token，然后额外添加<code>[CLS]</code>，并加上可学习的空间位置编码。要对时空token进行建模需要大规模数据支持，所以作者这里简化了问题，将其解耦为分别学习空间和时间，并提出了一个Local Temporal模块来对局部时序进行建模。</p>
+<p>公式上是这样的：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mi>V</mi><mrow><mi>L</mi><mi>T</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>L</mi><mi>N</mi><mo stretchy="false">(</mo><mi>L</mi><mi>o</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>T</mi><mi>e</mi><mi>m</mi><mi>p</mi><mi>o</mi><mi>r</mi><mi>a</mi><mi>l</mi><mo stretchy="false">(</mo><msup><mi>V</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="false">)</mo><mo>+</mo><msup><mi>V</mi><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msup><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><msubsup><mi>V</mi><mrow><mi>S</mi><mi>A</mi></mrow><mi>n</mi></msubsup><mo>=</mo><mi>L</mi><mi>N</mi><mo stretchy="false">(</mo><mi>S</mi><mi>e</mi><mi>l</mi><mi>f</mi><mi>A</mi><mi>t</mi><mi>t</mi><mi>n</mi><mo stretchy="false">(</mo><msubsup><mi>V</mi><mrow><mi>L</mi><mi>T</mi></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msubsup><mo stretchy="false">)</mo><mo>+</mo><msubsup><mi>V</mi><mrow><mi>L</mi><mi>T</mi></mrow><mrow><mi>n</mi><mo>−</mo><mn>1</mn></mrow></msubsup><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><msup><mi>V</mi><mi>n</mi></msup><mo>=</mo><mi>L</mi><mi>N</mi><mo stretchy="false">(</mo><mi>F</mi><mi>F</mi><mi>N</mi><mo stretchy="false">(</mo><msubsup><mi>V</mi><mrow><mi>S</mi><mi>A</mi></mrow><mi>n</mi></msubsup><mo stretchy="false">)</mo><mo>+</mo><msubsup><mi>V</mi><mrow><mi>S</mi><mi>A</mi></mrow><mi>n</mi></msubsup><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">V^n_{LT}=LN(LocalTemporal(V^{n-1})+V^{n-1})\\
+V^n_{SA}=LN(SelfAttn(V^{n-1}_{LT})+V^{n-1}_{LT})\\
+V^n=LN(FFN(V^n_{SA})+V^n_{SA})
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9614em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">L</span><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1141em;vertical-align:-0.25em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mopen">(</span><span class="mord mathnormal">L</span><span class="mord mathnormal">oc</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.13889em;">lT</span><span class="mord mathnormal">e</span><span class="mord mathnormal">m</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">or</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1141em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span></span></span></span></span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.9614em;vertical-align:-0.247em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span><span class="mord mathnormal mtight">A</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.1478em;vertical-align:-0.2837em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">A</span><span class="mord mathnormal">tt</span><span class="mord mathnormal">n</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-2.4163em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">L</span><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2837em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1478em;vertical-align:-0.2837em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8641em;"><span style="top:-2.4163em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">L</span><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">n</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2837em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.7144em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">FFN</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span><span class="mord mathnormal mtight">A</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.7144em;"><span style="top:-2.453em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05764em;">S</span><span class="mord mathnormal mtight">A</span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span></span></span></span></p>
+<p>直接看图比较清晰：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318154354.png" srcset="/img/loading.gif" lazyload alt="Dual-vision Encoder"></p>
+<p>和ViT来说也就是增加了Local Temporal这个模块，这个模块通过对相同位置的token进行分组融合来交换时间信息，该模块公式：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msub><mi>V</mi><mi>g</mi></msub><mo>=</mo><mi>R</mi><mi>e</mi><mi>L</mi><mi>U</mi><mo stretchy="false">(</mo><msub><mi>A</mi><mi>g</mi></msub><msub><mi>ϕ</mi><mi>g</mi></msub><mo stretchy="false">(</mo><mi>V</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>∈</mo><msup><mi mathvariant="double-struck">R</mi><mrow><mi>T</mi><mo>×</mo><mfrac><mi>C</mi><mi>G</mi></mfrac></mrow></msup><mspace linebreak="newline"></mspace><mi>L</mi><mi>o</mi><mi>c</mi><mi>a</mi><mi>l</mi><mi>T</mi><mi>e</mi><mi>m</mi><mi>p</mi><mi>o</mi><mi>r</mi><mi>a</mi><mi>l</mi><mo stretchy="false">(</mo><mi>V</mi><mo stretchy="false">)</mo><mo>=</mo><mi>φ</mi><mo stretchy="false">(</mo><mi>C</mi><mi>o</mi><mi>n</mi><mi>c</mi><mi>a</mi><mi>t</mi><mo stretchy="false">[</mo><msub><mi>V</mi><mn>1</mn></msub><mo separator="true">;</mo><msub><mi>V</mi><mn>2</mn></msub><mo separator="true">;</mo><mo>…</mo><mtext> </mtext><mo separator="true">;</mo><msub><mi>V</mi><mi>G</mi></msub><mo stretchy="false">]</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">V_g=ReLU(A_g\phi_g(V)) \in \mathbb{R}^{T\times \frac{C}{G}}\\
+LocalTemporal(V) = \varphi(Concat[V_1;V_2;\dots;V_G])
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0361em;vertical-align:-0.2861em;"></span><span class="mord mathnormal" style="margin-right:0.00773em;">R</span><span class="mord mathnormal">e</span><span class="mord mathnormal" style="margin-right:0.10903em;">LU</span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord mathnormal">ϕ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.0235em;"></span><span class="mord"><span class="mord mathbb">R</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.0235em;"><span style="top:-3.413em;margin-right:0.05em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span><span class="mbin mtight">×</span><span class="mord mtight"><span class="mopen nulldelimiter sizing reset-size3 size6"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8721em;"><span style="top:-2.656em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span style="top:-3.2255em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line mtight" style="border-bottom-width:0.049em;"></span></span><span style="top:-3.384em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">C</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.344em;"><span></span></span></span></span></span><span class="mclose nulldelimiter sizing reset-size3 size6"></span></span></span></span></span></span></span></span></span></span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">L</span><span class="mord mathnormal">oc</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.13889em;">lT</span><span class="mord mathnormal">e</span><span class="mord mathnormal">m</span><span class="mord mathnormal">p</span><span class="mord mathnormal" style="margin-right:0.02778em;">or</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.01968em;">l</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">φ</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span><span class="mord mathnormal">o</span><span class="mord mathnormal">n</span><span class="mord mathnormal">c</span><span class="mord mathnormal">a</span><span class="mord mathnormal">t</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner">…</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.2222em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">])</span></span></span></span></span></p>
+<p>公式省略的层数的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>n</mi></mrow><annotation encoding="application/x-tex">n</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">n</span></span></span></span>，其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>A</mi><mi>g</mi></msub></mrow><annotation encoding="application/x-tex">A_g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9694em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">g</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>是组的卷积核，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϕ</mi><mo stretchy="false">(</mo><mo>⋅</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\phi(\cdot)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">ϕ</span><span class="mopen">(</span><span class="mord">⋅</span><span class="mclose">)</span></span></span></span>是将隐藏维度<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">C</span></span></span></span>转换到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mfrac><mi>C</mi><mi>G</mi></mfrac></mrow><annotation encoding="application/x-tex">\frac{C}{G}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2173em;vertical-align:-0.345em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8723em;"><span style="top:-2.655em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">G</span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.394em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">C</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.345em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span>的线性映射函数，然后这个卷积的操作论文里没详细说，反正最后每个组的concat在一起再经过一个线性映射层<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>φ</mi><mo stretchy="false">(</mo><mo>⋅</mo><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">\varphi(\cdot)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">φ</span><span class="mopen">(</span><span class="mord">⋅</span><span class="mclose">)</span></span></span></span>就得到最后结果了。</p>
+<blockquote>
+<p>这论文也写得太简略了……</p>
+</blockquote>
+<h3 id="Text-Encoder">Text Encoder</h3>
+<p>是BERT。</p>
+<h3 id="Universal-Layers">Universal Layers</h3>
+<p>这里不直接对视觉的token进行self-attention，而是通过k个learnable的query来浓缩信息并提高效率，这一块和BLIP2的结构也很相似。如图，Learnable Query自己之间做self-attention，然后通过Cross-attention来选择性得到Image/Video的信息，然后进入FFN。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318160623.png" srcset="/img/loading.gif" lazyload alt="Universal Layers"></p>
+<h3 id="Fusion">Fusion</h3>
+<p>这里使用ALBEF的多模态融合模块，如下图红色框框住的部分，视觉侧特征通过Cross Attention进来，文本侧特征则是走Self Attention。</p>
+<blockquote>
+<p>这里原文也很简略，让人不明所以。到底哪个是SA的输入，哪个是CA的输入？？？？</p>
+<figure class="highlight livecodeserver"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livecodeserver">Specifically, <span class="hljs-keyword">the</span> fusion module takes <span class="hljs-keyword">the</span> <span class="hljs-keyword">text</span> embeddings <span class="hljs-built_in">from</span> <span class="hljs-keyword">the</span> universal layers module <span class="hljs-keyword">as</span> <span class="hljs-keyword">the</span> input. Then, <span class="hljs-keyword">the</span> <span class="hljs-keyword">text</span>-aware vision embedding cross-attends <span class="hljs-built_in">to</span> <span class="hljs-keyword">the</span> visual-aware <span class="hljs-keyword">text</span> embeddings <span class="hljs-keyword">in</span> language-shared common <span class="hljs-literal">space</span>. By cascading <span class="hljs-keyword">the</span> Transformer blocks <span class="hljs-keyword">with</span> cross-attention layers, fusion module is able <span class="hljs-built_in">to</span> yield multi-modal vision language representations<br></code></pre></td></tr></table></figure>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230321101541.png" srcset="/img/loading.gif" lazyload alt="ALBEF"></p>
+<h3 id="Shared-Decoder">Shared Decoder</h3>
+<p>一个简单的带CA的Transformer Decoder。</p>
+<h3 id="Objective">Objective</h3>
+<ol>
+<li>
+<p>Language Loss</p>
+<p>在图中标注的是在universal layer后面进行MLM作为Language Loss，但是文中又说是text encoder的loss。</p>
+</li>
+<li>
+<p>Multi-modal Loss</p>
+<p>包括Vision-Language-Matching和Vision-Language Contrastive。都是常规操作。</p>
+</li>
+<li>
+<p>Instruction-based Language Model Loss</p>
+<p>就是自回归生成语言的loss，在前方通过一些prompt作为Instruction。</p>
+</li>
+</ol>
+<h2 id="实验">实验</h2>
+<p>本文进行了非常多的任务，实验也自然有非常多，这里挑选几组实验：</p>
+<h3 id="Video-Caption">Video Caption</h3>
+<p>视频描述的任务上可以说是非常SOTA了，在CIDEr上又拔高了一点，此前的SOTA是GIT。</p>
+<blockquote>
+<p>但是这里根据附录来看，mPLUG是默认启用了CIDEr optimization（<a href="https://blog.kamino.link/2023/03/16/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0%20Self-critical%20Sequence%20Training%20for%20Image%20Captioning/">见我这篇博客介绍的SCST方法</a>），但是GIT没有，假如GIT也进行微调的话，感觉这个模型在指标上并不会超越太多。</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230321101552.png" srcset="/img/loading.gif" lazyload alt="Video Captioning"></p>
+<h3 id="Local-Temporal-Modeling">Local Temporal Modeling</h3>
+<p>作者统一了图像和视频的输入时，使用了Local Temporal Modeling作为时序的建模，而像GIT这种模型只有很简单的附加时序编码，作者的消融实验证明这样添加效果是好的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318184746.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="Learnable-Queries">Learnable Queries</h3>
+<p>作者使用Grad-CAM方法可视化了learnable queries的attention map。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230318185059.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="模型大小分析">模型大小分析</h3>
+<p>暂时没给代码，无法分析大小，只能根据论文来猜测。</p>
+<p>文章训练了mPLUG-2-base和mPLUG-2两个版本，base版本使用VIT-base和BERT-base作为编码器，而更大的版本则使用ViT-Large和BERT-Large。后面的维度也随之变化，分别为768和1024，universal layer是2层Transformer，fusion模块则分别是3和6层，解码模块都是12层Transformer（这么一看参数还真多……）。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E9%A2%84%E8%AE%AD%E7%BB%83/">多模态预训练</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/03/20/STOA-VLP%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文笔记 STOA-VLP：Spatial-Temporal Modeling of Object and Action for Video-Language Pre-training</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/16/CIDEr/">
+                        <span class="hidden-mobile">Image Captioning常用指标CIDEr原理</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
