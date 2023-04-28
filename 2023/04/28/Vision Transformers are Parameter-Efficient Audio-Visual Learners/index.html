@@ -1,0 +1,621 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="CVPR2023的一篇关于少参数训练多模态视音频模型的论文，使用了最近火热的Parameter-Efficient的方式，将ViT冻结，通过只训练一种叫作LAVisH的Adapter进行音频编码和模态融合，从而以极低的参数量达到令人满意的效果。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="CVPR2023的一篇关于少参数训练多模态视音频模型的论文，使用了最近火热的Parameter-Efficient的方式，将ViT冻结，通过只训练一种叫作LAVisH的Adapter进行音频编码和模态融合，从而以极低的参数量达到令人满意的效果。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 Vision Transformers are Parameter-Efficient Audio-Visual Learners">
+<meta property="og:url" content="http://blog.kamino.link/2023/04/28/Vision%20Transformers%20are%20Parameter-Efficient%20Audio-Visual%20Learners/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="CVPR2023的一篇关于少参数训练多模态视音频模型的论文，使用了最近火热的Parameter-Efficient的方式，将ViT冻结，通过只训练一种叫作LAVisH的Adapter进行音频编码和模态融合，从而以极低的参数量达到令人满意的效果。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428144157.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428150417.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428151341.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428151358.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428151946.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428152128.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428152615.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428153042.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428153444.png">
+<meta property="article:published_time" content="2023-04-28T06:33:00.000Z">
+<meta property="article:modified_time" content="2023-04-28T07:43:54.344Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="视音频">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428144157.png">
+  
+  <title>论文笔记 Vision Transformers are Parameter-Efficient Audio-Visual Learners - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 Vision Transformers are Parameter-Efficient Audio-Visual Learners">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-04-28 14:33" pubdate>
+        2023年4月28日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      6 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 Vision Transformers are Parameter-Efficient Audio-Visual Learners</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年4月28日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>Vision Transformers are Parameter-Efficient Audio-Visual Learners</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2212.07983">https://arxiv.org/abs/2212.07983</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/GenjiB/LAVISH">GenjiB/LAVISH: Vision Transformers are Parameter-Efficient Audio-Visual Learners (github.com)</a></p>
+<p>CVPR2023的一篇关于少参数训练多模态视音频模型的论文，使用了最近火热的Parameter-Efficient的方式，将ViT冻结，通过只训练一种叫作LAVisH的Adapter进行音频编码和模态融合，从而以极低的参数量达到令人满意的效果。</p>
+<h2 id="LAVISH">LAVISH</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428144157.png" srcset="/img/loading.gif" lazyload alt="整体框架"></p>
+<p>论文整体框架如上图所示。</p>
+<p>首先图像经过Tokenize之后得到视觉Token，音频转化为频谱图后也类似得到音频Token。</p>
+<p>随后，两个模态都会经过同一个基于ViT的冻结的Backbone，而在自注意力部分和FFN部分会通过可训练的LAVISH Adapter进行模态融合。这些LAVISH就是训练中要调节的参数。</p>
+<p>两个模态的LAVISH设计相同，以左边的A2V为例，其将音频信息引入到视觉特征中。首先会通过Cross-Modal Attention（CMA）和Latent Token得到紧凑的音频模态信息，这里CMA是<strong>参数量极少</strong>的类似交叉注意力机制的模块，其公式为：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>C</mi><mi>M</mi><mi>A</mi><mo stretchy="false">(</mo><mi mathvariant="bold-italic">Q</mi><mo separator="true">,</mo><mi mathvariant="bold-italic">K</mi><mo separator="true">,</mo><mi mathvariant="bold-italic">V</mi><mo stretchy="false">)</mo><mo>=</mo><mi mathvariant="bold-italic">Q</mi><mo>+</mo><mi>g</mi><mo>⋅</mo><mi>S</mi><mi>o</mi><mi>f</mi><mi>t</mi><mi>m</mi><mi>a</mi><mi>x</mi><mo stretchy="false">(</mo><mi mathvariant="bold-italic">Q</mi><msup><mi mathvariant="bold-italic">K</mi><mi mathvariant="normal">⊤</mi></msup><mo stretchy="false">)</mo><mi mathvariant="bold-italic">V</mi></mrow><annotation encoding="application/x-tex">CMA(\boldsymbol{Q},\boldsymbol{K},\boldsymbol{V})=\boldsymbol{Q}+g\cdot Softmax(\boldsymbol{Q}\boldsymbol{K}^\top)\boldsymbol{V}
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">CM</span><span class="mord mathnormal">A</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord boldsymbol">Q</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.06979em;">K</span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.25555em;">V</span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.8805em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol">Q</span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6389em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.1751em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord mathnormal">o</span><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="mord mathnormal">t</span><span class="mord mathnormal">ma</span><span class="mord mathnormal">x</span><span class="mopen">(</span><span class="mord"><span class="mord"><span class="mord boldsymbol">Q</span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.06979em;">K</span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9251em;"><span style="top:-3.139em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">⊤</span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.25555em;">V</span></span></span></span></span></span></span></p>
+<p>与交叉注意力相比，CMA没有QKV映射矩阵的参数，也没有输出映射矩阵的参数，是直接将QK相乘然后softmax，再使用一个可学习的权重来控制从另一个模态过来的信息。Latent Token则是和Perceiver、BLIP-2、CoCa、Flamingo中类似的，通过可学习的张量作为Query，通过交叉注意力的机制从长序列特征中提炼特征。</p>
+<p>在得到另一个模态的紧凑特征后，还会通过一个相同的CMA，但是此时Latent Token是Key和Value，当前模态是Query，也就是让当前模态吸收另一个模态的紧凑特征信息。</p>
+<p>经过注意力的分配之后，类似Transformer原本的架构，也经过一个FFN，但这里就是和Adapter的设计一样，先降维，然后激活，再升维。</p>
+<p>LAVISH与原本的模块呈现并行关系，每一层会在注意力块和FFN块都添加一个并行的LAVISH。</p>
+<p>所以，需要训练的参数仅为降维和升维的参数以及几乎可以忽略的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span>。</p>
+<h2 id="LAVISH下游任务">LAVISH下游任务</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428150417.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>通过这种即插即用的设计，LAVISH可以应用在多个下游任务中，（a）任务就特征拼接+MLP分类，（b）任务使用了U-Net的结构，（c）任务使用了MUSIC-AVQA数据集的Baseline。</p>
+<p>LAVISH使用的Baseline是Swin-V2-L网络。</p>
+<h2 id="实验结果">实验结果</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428151341.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428151358.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>两个大表摆出来，作者主要关注的是是否使用额外的音频预训练数据集以及训练的参数量，可以发现在不使用AudioSet预训练的情况下，LAVISH的结果已经超过了大部分模型，在于MBT的比较中，虽然使用Base的ViT效果比它差，但是LAVISH训练参数少，可用更大的Backbone进行超越，更别说MBT还要用AST这个额外的预训练模型。与CMBS的比较中，同样训练参数量小，但是LAVISH效果好，参数量还更少。</p>
+<p>表2、3也是基本一样的比较思路，此外作者还进行了表4所示的动作识别任务，效果也十分惊艳。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428151946.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="消融实验">消融实验</h2>
+<p>作者进行了非常扎实的消融实验。</p>
+<h3 id="LAVISH设计消融">LAVISH设计消融</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428152128.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>两个方向的模态融合都有一定的作用，结合两者效果则更好。AVISH是不使用Latent Token的结果，GFLOP从11上升到了217。Latent Token的设计在降低计算量的同时，也能带来性能的提升。</p>
+<h3 id="与其它Parameter-Efficient方法的比较">与其它Parameter-Efficient方法的比较</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428152615.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>目前有许多Parameter-Efficient方法，作者测试了几种热门的，证明CMA带来的模态融合比较有用，Adapter+CMA的效果接近了LAVISH，而Adapter是级联，说明并联的效果会更好一些。LoRA也是并联，但是文中好像没说具体是LoRA在哪个模块。</p>
+<h3 id="Latent-Token数量">Latent Token数量</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428153042.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>证明少量的Latent Token就能得到较好的效果，所以计算量可以大大的节约。</p>
+<h3 id="额外的音频特征？">额外的音频特征？</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230428153444.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>虽然已经考虑了音频特征，但是假如再加额外的预训练的音频编码器，效果还更好哦……这应该说明LAVISH学的还有些差距。题注里写是slight boost，但是感觉……提升还挺大的呀。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E8%A7%86%E9%9F%B3%E9%A2%91/">视音频</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/03/27/Audio-Visual%20Event%20Localization%20in%20Unconstrained%20Videos%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">论文笔记 两篇关于Audio-Visual定位的论文</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
