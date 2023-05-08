@@ -1,0 +1,703 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="这篇博客介绍的多模态语言模型指通过视觉提示生成器将其他模态（图像）的数据转换为Prompt Embedding，再提供给大型语言模型（LLM），从而构建出来的具备多模态对话能力的模型。博客将介绍BLIP-2、LLaVA、MiniGPT-4、mPLUG-Owl、VPGTrans这些最新的多模态LLM方法。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="这篇博客介绍的多模态语言模型指通过视觉提示生成器将其他模态（图像）的数据转换为Prompt Embedding，再提供给大型语言模型（LLM），从而构建出来的具备多模态对话能力的模型。博客将介绍BLIP-2、LLaVA、MiniGPT-4、mPLUG-Owl、VPGTrans这些最新的多模态LLM方法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="多模态语言模型发展观察">
+<meta property="og:url" content="http://blog.kamino.link/2023/05/08/%E5%9F%BA%E4%BA%8E%E8%BF%81%E7%A7%BB%E7%9A%84%E5%A4%9A%E6%A8%A1%E6%80%81%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="这篇博客介绍的多模态语言模型指通过视觉提示生成器将其他模态（图像）的数据转换为Prompt Embedding，再提供给大型语言模型（LLM），从而构建出来的具备多模态对话能力的模型。博客将介绍BLIP-2、LLaVA、MiniGPT-4、mPLUG-Owl、VPGTrans这些最新的多模态LLM方法。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124428.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508164745.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508170444.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508171041.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508172343.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508173207.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508174320.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508195925.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508203250.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508203547.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508211839.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508210720.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508212005.png">
+<meta property="article:published_time" content="2023-05-08T08:14:00.000Z">
+<meta property="article:modified_time" content="2023-05-08T14:01:51.081Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="多模态语言模型">
+<meta property="article:tag" content="BLIP-2">
+<meta property="article:tag" content="LLaVA">
+<meta property="article:tag" content="MiniGPT-4">
+<meta property="article:tag" content="mPLUG-Owl">
+<meta property="article:tag" content="VPGTrans">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124428.png">
+  
+  <title>多模态语言模型发展观察 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="多模态语言模型发展观察">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-05-08 16:14" pubdate>
+        2023年5月8日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      18 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">多模态语言模型发展观察</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年5月8日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>多模态语言模型发展观察</h1>
+<p>这篇博客介绍的多模态语言模型指：<strong>通过视觉提示生成器将其他模态（图像）的数据转换为Prompt Embedding</strong>，<strong>再提供给大型语言模型（LLM）</strong>，<strong>从而构建出来的具备多模态对话能力的模型</strong>。</p>
+<p>本文对这些模型的基本方法和贡献进行简单介绍，将涉及以下模型：</p>
+<ul>
+<li>✔️<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.12597">BLIP-2</a>：2023.1.30</li>
+<li>❌<a target="_blank" rel="noopener" href="https://proceedings.neurips.cc/paper_files/paper/2022/hash/960a172bc7fbf0177ccccbb411a7d800-Abstract-Conference.html">Flamingo</a>：2022.12</li>
+<li>✔️<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.08485">LLaVA</a>：2023.4.17</li>
+<li>✔️<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.10592">MiniGPT-4</a>：2023.4.20</li>
+<li>✔️<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.14178">mPLUG-Owl</a>：2023.4.27</li>
+<li>✔️<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.01278">VPGTrans</a>：2023.5.2</li>
+</ul>
+<h2 id="BLIP-2">BLIP-2</h2>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2301.12597">BLIP-2: Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models (arxiv.org)</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/salesforce/LAVIS/tree/main/projects/blip2">LAVIS/projects/blip2 at main · salesforce/LAVIS (github.com)</a></p>
+<p>Demo：<a target="_blank" rel="noopener" href="https://huggingface.co/spaces/Salesforce/BLIP2">官方HF Demo，但是已不可用</a>、<a target="_blank" rel="noopener" href="https://huggingface.co/spaces/hysts/BLIP2-with-transformers">非官方HF Demo</a></p>
+<p>我之前写过一篇详细介绍BLIP-2的博客：<a href="https://blog.kamino.link/2023/02/17/BLIP2/">论文笔记 BLIP-2 - Kamino’s Blog</a>，这里再简单介绍一下。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230217124428.png" srcset="/img/loading.gif" lazyload alt="BLIP2"></p>
+<p>BLIP-2的整体架构如上所示，使用Image Encoder（现在很多也叫作visual foundation model）提取图像特征，然后通过一个Query Transformer（Q-Former，现在也叫visual prompt generator）将特征降维并凝练，之后通过一个映射层，得到固定数量的visual prompt，再送LLM中。</p>
+<p>BLIP-2的训练分为两个阶段，第一阶段进行视觉-语言表征学习，即利用Image Encoder和Q-Former进行语义对齐，使Q-Former能够提炼到关键的视觉特征。第二阶段进行视觉-语言生成学习，引入LLM，将提炼的特征作为visual prompt，进行LM生成任务。</p>
+<p>在整个过程中，占参数量大头的Image Encoder和LLM都冻结参数不进行训练，从而使BLIP-2的学习效率上升。使用这种方法，可以在不训练LLM的情况下，将LLM打造成多模态LLM。</p>
+<p>数据上，BLIP-2使用了来自COCO、VG、CC、SBU、LAION的129M的图像，使用BLIP的方式获得对应的文本。预训练模型的选择上，Image Encoder选择了ViT-L和EVA ViT-G，LLM选择了OPT和FlanT5的多个版本，整体参数从3.1B到12.1B。训练效率上，16张A100(40G)在第一阶段6天，第二阶段3天。</p>
+<p><strong>BLIP-2使语言模型初步获得了多模态的能力，为将来的发展探索出了一条高效率的道路，但是训练数据不包含对话，外部知识也不够全面，目前只能问一些简单的问题。</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508164745.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="LLaVA🌋">LLaVA🌋</h2>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.08485">Visual Instruction Tuning (arxiv.org)</a></p>
+<p>项目主页：<a target="_blank" rel="noopener" href="https://llava-vl.github.io/">LLaVA (llava-vl.github.io)</a></p>
+<p>这篇文章主要贡献在于构建了一个<strong>多模态的instruction-following数据集</strong>和使用这个数据集训练出来的<strong>LLaVA模型</strong>。致力于对标GPT-4的性能。</p>
+<p>这篇文章使用ChatGPT来帮助构建Visual Instruction Data，如下图所示，Response的类型包括对话、详细描述和复杂推理三类，使用众包收集人类标注的成本过于高昂，所以通过提供图像的Caption和Bounding Box标注，让ChatGPT来生成数据集。</p>
+<p>具体的构建过程可以查看论文，他们总共收集了158K个样例，其中58K是对话、23K是详细描述、77K是复杂推理。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508170444.png" srcset="/img/loading.gif" lazyload alt="LLaVA数据"></p>
+<p>这篇文章以数据为重点，于是只设计了一个简单的模型如下图所示。其中，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">X</mi><mi>v</mi></msub></mrow><annotation encoding="application/x-tex">\boldsymbol{X}_v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8361em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.07778em;">X</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是图像，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">Z</mi><mi>v</mi></msub></mrow><annotation encoding="application/x-tex">\boldsymbol{Z}_v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8361em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.06979em;">Z</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是使用Visual Encoder（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span>）得到的特征，特征经过一个简单的映射矩阵<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="bold-italic">W</mi></mrow><annotation encoding="application/x-tex">\boldsymbol W</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6861em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.15972em;">W</span></span></span></span></span></span>得到visual prompt<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi mathvariant="bold-italic">H</mi><mi>v</mi></msub></mrow><annotation encoding="application/x-tex">\boldsymbol{H}_v</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8361em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.08229em;">H</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.03588em;">v</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，其与语言模型的Embedding维度相同。之后，添加Instruction送入LLM里面进行训练。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508171041.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>训练过程分为两个阶段，第一阶段为了特征对齐，冻结了Vision Encoder和LLM，就是为了学习一个好的Projection矩阵，使用了CC3M中的595K个图像文本对。第二阶段开始使用instruct的数据，训练<strong>映射层和LLM</strong>。</p>
+<p>LLaVA使用CLIP ViT-L/14作为视觉编码器，使用指令微调的Vicuna作为LLM。</p>
+<p>在项目主页有Demo可以随意尝试例子，这里就放一个论文里的：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508172343.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这篇文章在结尾放出了一些将来的工作：</p>
+<ol>
+<li>数据量扩大。这种自动生成的数据集构建流程可以利用更多的数据集来构建Instruction数据。</li>
+<li>连接更多视觉模型。比如连接SAM。</li>
+</ol>
+<h2 id="MiniGPT-4">MiniGPT-4</h2>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.10592">MiniGPT-4: Enhancing Vision-Language Understanding with Advanced Large Language Models (arxiv.org)</a></p>
+<p>项目主页：<a target="_blank" rel="noopener" href="https://minigpt-4.github.io/">Minigpt-4</a></p>
+<p>这个比LLaVA更露骨地体现了要对标GPT-4的想法，和LLaVA差了三天发布。MiniGPT-4使用了BLIP-2的架构，引入了经过调优的Vicuna模型，并构建了一个规模较小但是质量非常高的数据集。同时，MiniGPT-4也注重了训练时间，在4张A100上训练10小时就够。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508173207.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>上图是MiniGPT-4的基本架构，和BLIP-2就是一样的。MiniGPT-4和LLaVA一样采用了两个阶段的训练，第一阶段也是通过图像文本对来训练一个好的映射层，这里使用了5M个图像文本对，训练了10个小时，<strong>是最耗时间的一步</strong>。第二阶段使用自建的高质量数据集，<strong>在单卡上就训练了7分钟</strong>就能达到很好的效果。</p>
+<p>MiniGPT-4的数据收集方式比LLaVA简单，它在第一阶段训练结束后，使用</p>
+<figure class="highlight clean"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs clean">###Human: &lt;Img&gt;&lt;ImageFeature&gt;&lt;/Img&gt; Describe this image <span class="hljs-keyword">in</span> detail. Give <span class="hljs-keyword">as</span> many details <span class="hljs-keyword">as</span><br>possible. Say everything you see. ###Assistant:<br></code></pre></td></tr></table></figure>
+<p>这个prompt让模型详细地描述约5000张图像，然后使用ChatGPT来修复生成中的语法错误并润色。之后，他们<strong>手动</strong>过了这5000个样本，从中选取了3500个样本并施以润色，保证了数据的高质量……</p>
+<p>同样，MiniGPT-4给出了很多样例和在线的Demo，这里从论文摘一张图：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508174320.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="mPLUG-Owl🦉">mPLUG-Owl🦉</h2>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.14178">mPLUG-Owl: Modularization Empowers Large Language Models with Multimodality (arxiv.org)</a></p>
+<p>论文代码：<a target="_blank" rel="noopener" href="https://github.com/X-PLUG/mPLUG-Owl">X-PLUG/mPLUG-Owl: mPLUG-Owl🦉: Modularization Empowers Large Language Models with Multimodality (github.com)</a></p>
+<p>论文Demo：<a target="_blank" rel="noopener" href="https://www.modelscope.cn/studios/damo/mPLUG-Owl/summary">mPLUG-Owl Multimodal Chatbot · 创空间 (modelscope.cn)</a></p>
+<p>国产多模态LLM，来自阿里达摩院，mPLUG系列模型使用模块化的训练，这个模型也使用了类似BLIP-2的架构，但没用他们自己的mPLUG-2，和其他工作不一样的是，他们还做了LLM的PEFT。除此以外，这篇文章还构建了一个Instruction Evaluation set，名为OwlEval。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508195925.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>模型的整体框架如上图所示，图像经过视觉编码器<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>V</mi></msub></mrow><annotation encoding="application/x-tex">f_V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.22222em;">V</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>之后得到patch级别的特征，然后通过一个视觉摘要器<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">f_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>得到降维特征，这里和BLIP-2的思想类似，但是论文里居然没有介绍清楚？？</p>
+<blockquote>
+<p>他们的mPLUG-2模型我也写过<a href="https://blog.kamino.link/2023/03/18/mPLUG2%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">博客介绍</a>，那篇论文的模型框架在文中就没有解释清楚，这篇论文的Visual Abstractor也只是在论文里给了个图，两篇论文的一作都相同，感觉赶工严重，有为了专门蹭上热度的嫌疑。</p>
+</blockquote>
+<p>总之，得到视觉的prompt之后，和Instruction组合成输入，送到LLM<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>L</mi></msub></mrow><annotation encoding="application/x-tex">f_L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>中让模型输出。</p>
+<p>他们也是进行两个阶段的训练，第一阶段为多模态预训练，他们说提出了<strong>一种新颖的训练范式</strong>（但是……别人都已经用了，没怎么新颖啊……），学习<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>V</mi></msub></mrow><annotation encoding="application/x-tex">f_V</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.22222em;">V</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>和<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>K</mi></msub></mrow><annotation encoding="application/x-tex">f_K</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07153em;">K</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>，冻住<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>L</mi></msub></mrow><annotation encoding="application/x-tex">f_L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">L</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>。第二阶段是指令微调，冻住所有原本的参数，在LLM上进行LoRA微调。<strong>他们说这也是一个新颖的视觉-语言联合指令微调策略</strong>。然后还说这种方式不需要视觉-语言模型的重新对齐（你都把视觉编码器和提示生成器一起训练了，那肯定不需要重新对齐了呀……）</p>
+<p>mPLUG-Owl使用ViT-L/14作为视觉编码器，使用没有经过指令微调版本的LLaMA-7B来训练（用来证明模型的有效性和泛化性，同期的miniGPT-4和LLaVA都用了Vicuna），总参数量7.2B。</p>
+<p>第一阶段的训练使用了LAION-400M、COYO-700M、CC、COCO，以2.1M token的batchsize训练（好像没见过以token计数的batchsize）。第二阶段的训练同时使用文本的指令数据和多模态的指令数据，文本的来自Alpaca、Vicuna和Baize，多模态的来自LLaVA。训练没有突出时长的。</p>
+<p>对于实验结果，他们构建了<strong>OwlEval</strong>评价数据集，呃……其中包含50张图片、82个人工构建的问题，部分图片还有多轮的问题。问题包含了自然图像理解、表格、流程图、OCR、多模态创造、知识QA、 referential interaction QA。因为缺少较好的评价，所以使用了另一个论文Self-Instruct中使用的人工评估方法。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508203250.png" srcset="/img/loading.gif" lazyload alt="人工评价"></p>
+<p>同样，他们提供了Demo可以自己跑例子，这里给出比较有趣的多语言的例子：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508203547.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>**除了论文里说的，他们还进行了多图/视频数据的训练和多语言的训练，但是没有发布。**在5.5号他们在HuggingFace上的Demo已经可以支持视频输入了，但是实测效果不是特别好。</p>
+<p>总的来说，作为国产的模型，开源做的还是很不错的，但是论文撰写和实际效果还是有点差，让人觉得像是在赶工，希望在沉淀之后这个模型能更好。</p>
+<h2 id="VPGTrans">VPGTrans</h2>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2305.01278">Transfer Visual Prompt Generator across LLMs (arxiv.org)</a></p>
+<p>项目主页：<a target="_blank" rel="noopener" href="https://vpgtrans.github.io/">VPGTrans</a></p>
+<p>清华和新加坡国立大学的合作论文，这篇文章将现在的多模态LLM划分成了视觉提示生成器（Visual Prompt Generator，VPG）、Projector和LLM三部分，VPG用来提取视觉Prompt，Projector用来转换维度。<strong>这篇文章的主要贡献在于提出了有效的在多个LLM之间迁移VPG的方法，可以在更少训练数据和时间的情况下得到相当或更好的结果</strong>。同时，这篇文章的写作虽然有点花里胡哨，但是整体逻辑十分清晰，汇报了许多有趣的发现。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508211839.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508210720.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>论文一开始总结了多模态LLM的预训练范式如下表：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/20230508212005.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>论文主要研究如何在不同的模型中迁移VPG，他们使用了两阶段的迁移学习策略，接下来根据他们行文逻辑进行介绍。</p>
+<p>作者首先通过实验发现使用其他模型训练好的VPG初始化可以加速训练。这个发现比较普通，因为有更好初始化参数肯定就学地更好。</p>
+<p>然后，作者发现对projector进行warm up可以加速训练，这里warm up就是冻住除了projector以外所有参数先训练个3轮。但是warmup也是一个耗时很长的步骤，所以论文之后会使用更好的方法，这里先按下不表。</p>
+<p>作者之后又发现，只调projector是不能得到很好的迁移效果的，毕竟参数量小。</p>
+<p>由于视觉prompt其实就接近了word embedding，所以作者尝试学习一个简单的word embedding converter，通过余弦相似度作为损失，将LLM<sub>src</sub>每个词的embedding转化为LLM<sub>tgt</sub>。实际上，就是将一个模型的嵌入语义空间转换到另一个模型的嵌入语义空间，学习到这个转换的函数后，就可以将新的projector替换成旧的projector+converter，在数学上后者可以合并，所以就和原来的形式相同了。作者在实验这个方法后发现有效，但是又发现这个方式并不能取代warm up。</p>
+<p>所以作者又探索有没有更快的warm up的方式，他们惊讶地发现使用5倍与原始值的大学习率来warm up projector可以得到快速的收敛。（原文说是Extremely large learning rate，但是……学习率不是按照10的倍数调吗？5倍好像也没有特别大吧）。</p>
+<p>根据上面的实验经历，作者得出了正式的二阶段的VPG迁移方法：</p>
+<ul>
+<li>阶段一：Projector Warm-up
+<ul>
+<li>继承VPG的参数</li>
+<li>使用Converter的方式进行projector的初始化。Converter的训练十分简单，以余弦距离为损失，最小化每个词在转化后与对应词的嵌入特征距离。最后<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>f</mi><mi>t</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo>=</mo><msub><mi>f</mi><mi>s</mi></msub><mo stretchy="false">(</mo><msub><mi>g</mi><mi>w</mi></msub><mo stretchy="false">(</mo><mi>x</mi><mo stretchy="false">)</mo><mo stretchy="false">)</mo><mo>=</mo><msub><mi>W</mi><mi>s</mi></msub><mo stretchy="false">(</mo><msub><mi>W</mi><mi>w</mi></msub><mi>x</mi><mo>+</mo><msub><mi>b</mi><mi>w</mi></msub><mo stretchy="false">)</mo><mo>+</mo><msub><mi>b</mi><mi>s</mi></msub></mrow><annotation encoding="application/x-tex">f_t(x)=f_s(g_w(x))=W_s(W_wx+b_w)+b_s</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10764em;">f</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1076em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">g</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal">x</span><span class="mclose">))</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.02691em;">w</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal">b</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">s</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>合并。</li>
+<li>warm-up训练，使用5倍学习率训练1轮足以。</li>
+</ul>
+</li>
+<li>阶段二：直接微调
+<ul>
+<li>冻结LLM，直接对VPG和projector进行微调。</li>
+</ul>
+</li>
+</ul>
+<p>作者整体使用BLIP-2的框架，进行了大量的实验，包括从小模型迁移到大模型，从一种模型迁移到另一种模型，证明了这种方式的有效性，具体可以看原文。最后，他们使用这种方式，把BLIP-2与预训练的OPT<sub>6.7B</sub>迁移到了LLaMA<sub>7B</sub>上，得到了VL-LLaMA<sub>7B</sub>模型，相同的方法还构建了VL-Vicuna模型，并使用了MiniGPT-4的数据来微调。</p>
+<h2 id="总结">总结</h2>
+<p>BLIP-2开创的这一套由LLM构建多模态LLM的训练范式十分有效，在将来这种范式可能会被更多的研究。目前进行多模态LLM的训练，数据上有LLaVA的大多模态指令数据集，也有MiniGPT-4的小人工多模态指令数据集，可以初步支持多模态LLM的训练。而且LLaVA使用的一套数据集构建流程还可以扩大到更多的数据，以取得更好的效果。训练上，VPGTrans提出了一套高效的迁移策略，mPLUG-Owl使用的更大范围的微调也能提升性能，进一步降低了研究的门槛。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E8%AF%AD%E8%A8%80%E6%A8%A1%E5%9E%8B/">多模态语言模型</a>
+                    
+                      <a class="hover-with-bg" href="/tags/BLIP-2/">BLIP-2</a>
+                    
+                      <a class="hover-with-bg" href="/tags/LLaVA/">LLaVA</a>
+                    
+                      <a class="hover-with-bg" href="/tags/MiniGPT-4/">MiniGPT-4</a>
+                    
+                      <a class="hover-with-bg" href="/tags/mPLUG-Owl/">mPLUG-Owl</a>
+                    
+                      <a class="hover-with-bg" href="/tags/VPGTrans/">VPGTrans</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/04/28/Vision%20Transformers%20are%20Parameter-Efficient%20Audio-Visual%20Learners/">
+                        <span class="hidden-mobile">论文笔记 Vision Transformers are Parameter-Efficient Audio-Visual Learners</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
