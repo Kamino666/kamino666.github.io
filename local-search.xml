@@ -4,6 +4,33 @@
   
   
   <entry>
+    <title>论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning</title>
+    <link href="/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <url>/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1>论文笔记 LiT🔥 Zero-Shot Transfer with Locked-image text Tuning</h1><p>论文链接：<a href="https://openaccess.thecvf.com/content/CVPR2022/html/Zhai_LiT_Zero-Shot_Transfer_With_Locked-Image_Text_Tuning_CVPR_2022_paper.html">CVPR 2022 Open Access Repository (thecvf.com)</a></p><p>代码链接：无</p><p>Google Brain的CVPR2022论文，探索一种将视觉模型通过<strong>对比调优</strong>迁移至图像-文本领域，从而展现跨模态能力的方法。方法名称叫做Locked-image Tuning（LiT），非常直白，就是将一个预训练的图像编码器冻结，再令一个文本编码器从零开始学习与图像表征对齐。</p><p>LiT可以将数据解耦，从ImageNet这种优质数据源学习到图像表征能力强的图像编码器，然后再通过对比调优使其获得跨模态能力。实验证明这种方法在多种backbone上都有效。</p><h2 id="方法介绍">方法介绍</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242135072.png" alt=""></p><p>作者用了一种符号表示不同的模型，大写表示加载预训练，L表示冻结，U表示不冻结。所以<code>Uu</code>表示图像编码器加载预训练参数不冻结，文本编码器从零训练不冻结；<code>Lu</code>就是LiT的方法，图像加载预训练冻结，文本从零不冻结。</p><h2 id="实验">实验</h2><p>作者用了两个set数据集，公开数据集是CC12M+YFCC100m，私有数据集是4B使用ALIGN方式收集的数据集。作者训练LiT使用在IN-21K预训练的<code>ViT-L/16</code>。</p><p>下图展示对比，私有数据集效果还挺不错，都比公开数据集好，而LiT则每个方面都更好，展现了很强的zero-shot能力。同时这种微调的方法能利用已有数据集。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242139918.png" alt=""></p><p>下图Table 2显示图像编码器冻结参数居然比解冻参数好。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242142808.png" alt=""></p><p>下图发现训练的时候，解冻参数的黄色和绿色能得到更低的loss，其中加载了预训练参数的绿色在检索任务十分强悍，但是这两种却损失了zero-shot分类的能力，没有蓝色的冻结图像模型的强。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242143609.png" alt=""></p><p>这张图可以把解冻参数带来的灾难性遗忘显示地更清楚，<code>Lu</code>虽然预训练loss更高，但是在其他数据集分类和生成的能力更强，并且10-shot的能力完全没有下降。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242148394.png" alt=""></p><p>作者发现一些在IN上训练的模型有相同的表征能力，通过LiT调优能得到相当的zero-shot能力，但更差的比如在Places数据集上预训练的模型就没有那么强的表征能力了。</p><p>虽然作者主要使用的是ViT，但是在附录A用了别的架构。</p><p>对于重新初始化的文本模型，作者尝试了CLIP、T5、mT5、BERT几种架构，以及使用SentencePiece和WordPiece的Tokenizer。结果说BERT效果最好，但是训练不稳定，并且架构和CLIP的也差不多，所以归因于初始化和LN的位置，最终还是选择了ViT+SP。</p><h2 id="总结">总结</h2><p>本文说明IN预训练模型获得强大zero-shot可以更简单，重点在于令文本得到适配于图像的高级语义。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>VLP</tag>
+      
+      <tag>CVPR22</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>论文笔记 Image Captioners Are Scalable Vision Learners Too</title>
     <link href="/2023/06/24/Image%20Captioners%20Are%20Scalable%20Vision%20Learners%20Too%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     <url>/2023/06/24/Image%20Captioners%20Are%20Scalable%20Vision%20Learners%20Too%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
