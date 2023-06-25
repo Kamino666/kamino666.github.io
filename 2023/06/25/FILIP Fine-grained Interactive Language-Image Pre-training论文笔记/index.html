@@ -16,30 +16,33 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Google Brain的CVPR2022论文，探索一种将视觉模型通过对比调优迁移至图像-文本领域，从而展现跨模态能力的方法。方法名称叫做Locked-image Tuning（LiT），非常直白，就是将一个预训练的图像编码器冻结，再令一个文本编码器从零开始学习与图像表征对齐。">
+  <meta name="description" content="华为、中山、香港科技大学的ICLR2022论文，介绍了一种非常简单的细粒度交互的对比学习方法，以patch和token级别进行对比学习，从而使训练出的FILIP模型得到优秀的细粒度特征和定位能力。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Google Brain的CVPR2022论文，探索一种将视觉模型通过对比调优迁移至图像-文本领域，从而展现跨模态能力的方法。方法名称叫做Locked-image Tuning（LiT），非常直白，就是将一个预训练的图像编码器冻结，再令一个文本编码器从零开始学习与图像表征对齐。">
+  <meta name="description" content="华为、中山、香港科技大学的ICLR2022论文，介绍了一种非常简单的细粒度交互的对比学习方法，以patch和token级别进行对比学习，从而使训练出的FILIP模型得到优秀的细粒度特征和定位能力。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning">
-<meta property="og:url" content="http://blog.kamino.link/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training">
+<meta property="og:url" content="http://blog.kamino.link/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Google Brain的CVPR2022论文，探索一种将视觉模型通过对比调优迁移至图像-文本领域，从而展现跨模态能力的方法。方法名称叫做Locked-image Tuning（LiT），非常直白，就是将一个预训练的图像编码器冻结，再令一个文本编码器从零开始学习与图像表征对齐。">
+<meta property="og:description" content="华为、中山、香港科技大学的ICLR2022论文，介绍了一种非常简单的细粒度交互的对比学习方法，以patch和token级别进行对比学习，从而使训练出的FILIP模型得到优秀的细粒度特征和定位能力。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242135072.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242139918.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242142808.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242143609.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242148394.png">
-<meta property="article:published_time" content="2023-06-24T14:00:00.000Z">
-<meta property="article:modified_time" content="2023-06-24T14:03:42.928Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251258015.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251313763.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251315084.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251325322.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251326522.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251327114.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251329783.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251332793.png">
+<meta property="article:published_time" content="2023-06-25T04:50:00.000Z">
+<meta property="article:modified_time" content="2023-06-25T06:15:02.268Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="VLP">
-<meta property="article:tag" content="CVPR22">
+<meta property="article:tag" content="ICLR22">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242135072.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251258015.png">
   
-  <title>论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning - Kamino&#39;s Blog</title>
+  <title>论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -198,7 +201,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning">
+            <span class="h2" id="subtitle" title="论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training">
               
             </span>
 
@@ -208,8 +211,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2023-06-24 22:00" pubdate>
-        2023年6月24日 晚上
+      <time datetime="2023-06-25 12:50" pubdate>
+        2023年6月25日 下午
       </time>
     </span>
   
@@ -219,7 +222,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.1k 字
+      1.3k 字
     </span>
   
 
@@ -228,7 +231,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3 分钟
+      4 分钟
     </span>
   
 
@@ -265,38 +268,52 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning</h1>
+            <h1 style="display: none">论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2023年6月24日 晚上
+                  本文最后更新于：2023年6月25日 下午
                 
               </p>
             
             <div class="markdown-body">
-              <h1>论文笔记 LiT🔥 Zero-Shot Transfer with Locked-image text Tuning</h1>
-<p>论文链接：<a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/CVPR2022/html/Zhai_LiT_Zero-Shot_Transfer_With_Locked-Image_Text_Tuning_CVPR_2022_paper.html">CVPR 2022 Open Access Repository (thecvf.com)</a></p>
+              <h1>论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2111.07783">FILIP: Fine-grained Interactive Language-Image Pre-Training (arxiv.org)</a></p>
 <p>代码链接：无</p>
-<p>Google Brain的CVPR2022论文，探索一种将视觉模型通过<strong>对比调优</strong>迁移至图像-文本领域，从而展现跨模态能力的方法。方法名称叫做Locked-image Tuning（LiT），非常直白，就是将一个预训练的图像编码器冻结，再令一个文本编码器从零开始学习与图像表征对齐。</p>
-<p>LiT可以将数据解耦，从ImageNet这种优质数据源学习到图像表征能力强的图像编码器，然后再通过对比调优使其获得跨模态能力。实验证明这种方法在多种backbone上都有效。</p>
+<p>华为、中山、香港科技大学的ICLR2022论文，介绍了一种非常简单的<strong>细粒度交互的对比学习方法</strong>，以<strong>patch和token级别</strong>进行对比学习，从而使训练出的FILIP模型得到优秀的细粒度特征和定位能力。</p>
 <h2 id="方法介绍">方法介绍</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242135072.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>作者用了一种符号表示不同的模型，大写表示加载预训练，L表示冻结，U表示不冻结。所以<code>Uu</code>表示图像编码器加载预训练参数不冻结，文本编码器从零训练不冻结；<code>Lu</code>就是LiT的方法，图像加载预训练冻结，文本从零不冻结。</p>
-<h2 id="实验">实验</h2>
-<p>作者用了两个set数据集，公开数据集是CC12M+YFCC100m，私有数据集是4B使用ALIGN方式收集的数据集。作者训练LiT使用在IN-21K预训练的<code>ViT-L/16</code>。</p>
-<p>下图展示对比，私有数据集效果还挺不错，都比公开数据集好，而LiT则每个方面都更好，展现了很强的zero-shot能力。同时这种微调的方法能利用已有数据集。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242139918.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>下图Table 2显示图像编码器冻结参数居然比解冻参数好。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242142808.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>下图发现训练的时候，解冻参数的黄色和绿色能得到更低的loss，其中加载了预训练参数的绿色在检索任务十分强悍，但是这两种却损失了zero-shot分类的能力，没有蓝色的冻结图像模型的强。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242143609.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>这张图可以把解冻参数带来的灾难性遗忘显示地更清楚，<code>Lu</code>虽然预训练loss更高，但是在其他数据集分类和生成的能力更强，并且10-shot的能力完全没有下降。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306242148394.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>作者发现一些在IN上训练的模型有相同的表征能力，通过LiT调优能得到相当的zero-shot能力，但更差的比如在Places数据集上预训练的模型就没有那么强的表征能力了。</p>
-<p>虽然作者主要使用的是ViT，但是在附录A用了别的架构。</p>
-<p>对于重新初始化的文本模型，作者尝试了CLIP、T5、mT5、BERT几种架构，以及使用SentencePiece和WordPiece的Tokenizer。结果说BERT效果最好，但是训练不稳定，并且架构和CLIP的也差不多，所以归因于初始化和LN的位置，最终还是选择了ViT+SP。</p>
-<h2 id="总结">总结</h2>
-<p>本文说明IN预训练模型获得强大zero-shot可以更简单，重点在于令文本得到适配于图像的高级语义。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251258015.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<blockquote>
+<p>猫猫表情包赞🐱👍</p>
+</blockquote>
+<p>下文用patch指代视觉的Token，而token就是文本的Token。</p>
+<p>文章就改了一个loss，使用的CLIP的架构没有变化，最后一层的Patch输出不用<code>[CLS]</code>，而是和Token一起计算一个Token-wise Similarity矩阵，假如Patch有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>个，Token有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span></span></span></span>个，那么这个矩阵就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>×</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">K\times L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span></span></span></span>。</p>
+<p>注意这个矩阵是一个样本内的相似度矩阵，而不是Batch级别的用来做对比学习的那个矩阵。原本对比学习是一个<strong>样本对</strong>有一个<strong>相似度值</strong>，现在则有一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>×</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">K\times L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span></span></span></span>矩阵，需要将这个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo separator="true">,</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">K,L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">L</span></span></span></span>维度都消掉。</p>
+<p>假如是<code>image-&gt;text</code>，那么就为每一个Patch找到最匹配的Token，然后使用所有Patch的相似度求平均以得到样本的相似度分数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow><mi>I</mi></msubsup></mrow><annotation encoding="application/x-tex">s^I_{i,j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2361em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">I</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span></span></span></span>。</p>
+<p>假如是<code>text-&gt;image</code>则相反，为每一个Token找到最匹配的Patch，然后平均得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow><mi>T</mi></msubsup></mrow><annotation encoding="application/x-tex">s^T_{i,j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2361em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span></span></span></span>。</p>
+<p>由于进行了细粒度的对比，会带来更高的计算复杂度，所以Patch-Token会被映射到更小的256维再计算相似度，在多卡计算的时候，在计算出每个Patch最匹配的Token之后，会选择分数最高的25%的Patch与其他卡进行通信（对于Token也是取Top25%）。</p>
+<h1>实验</h1>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251313763.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table1是与CLIP的比较，总之就是更厉害。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251315084.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table2是zero-shot能力的比较，在COCO上效果好，在Flicker上应该更关注text-to-image的性能才对，但是它把更好的image-to-text放在了前面，感觉是比ALIGN略差。</p>
+<p>经过微调之后，<code>FILIP*</code>的效果更好了，甚至比ALBEF更好。</p>
+<blockquote>
+<p>不过ALIGN用了1.8B、CLIP用了400M，FILIP只用了340M数据，稍微比ALIGN差一些也合理。</p>
+<p>但是FILIP又增加了一些计算复杂度，与ALIGN还是比较难比较。</p>
+<p>ALBEF使用了ITC+ITM+MLM+Momentum+14.1M数据，loss计算更复杂，但数据更少，也很难比较。</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251325322.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table3又展示了一下SOTA。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251326522.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251327114.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table4展示这个细粒度的loss还是很有用的，而Table5显示在降低维度和优选Token之后，显存和训练时间就涨一点点。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251329783.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Fig2的可视化效果还是很明显的，这种可视化也比较有趣，观察单词与Patch的匹配。（也不说匹配的概率多大，反正是最大看着就更好看）</p>
+<p>附录还有更多的可视化如图，效果都很好。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251332793.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="结论">结论</h2>
+<p>基本上是一个即插即用的比较优秀的Loss设计。</p>
 
             </div>
             <hr>
@@ -316,7 +333,7 @@
                     
                       <a class="hover-with-bg" href="/tags/VLP/">VLP</a>
                     
-                      <a class="hover-with-bg" href="/tags/CVPR22/">CVPR22</a>
+                      <a class="hover-with-bg" href="/tags/ICLR22/">ICLR22</a>
                     
                   </div>
                 
@@ -333,9 +350,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                      <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training</span>
+                        <span class="hidden-mobile">论文笔记 FLIP Scaling Language-Image Pre-training via Masking论文笔记</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -343,8 +360,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/06/24/Image%20Captioners%20Are%20Scalable%20Vision%20Learners%20Too%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
-                        <span class="hidden-mobile">论文笔记 Image Captioners Are Scalable Vision Learners Too</span>
+                      <a href="/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">
+                        <span class="hidden-mobile">论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

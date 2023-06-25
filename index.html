@@ -372,6 +372,110 @@ Diffie Hellman 密钥
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          论文笔记 FLIP Scaling Language-Image Pre-training via Masking论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          
+          
+            
+          
+          Meta AI的CVPR2023论文，Kaiming He是通讯。论文受到MAE的启发，把图像的部分区域Mask掉之后送入视觉编码器，和MAE一样，被Mask的Patch直接丢弃而不是替换为`[MASK]`的Token，所以能够提升训练效率。而这篇论文还发现，只做Mask，不做Reconstruct的效果也很好。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-25 13:35" pubdate>
+              2023-06-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/VLP/">VLP</a>
+            
+              <a href="/tags/CVPR23/">CVPR23</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          
+          
+            
+          
+          华为、中山、香港科技大学的ICLR2022论文，介绍了一种非常简单的细粒度交互的对比学习方法，以patch和token级别进行对比学习，从而使训练出的FILIP模型得到优秀的细粒度特征和定位能力。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-25 12:50" pubdate>
+              2023-06-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/VLP/">VLP</a>
+            
+              <a href="/tags/ICLR22/">ICLR22</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
           论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning
         </a>
@@ -621,110 +725,6 @@ Diffie Hellman 密钥
             <i class="iconfont icon-tags"></i>
             
               <a href="/tags/%E8%A7%86%E9%9F%B3%E9%A2%91/">视音频</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/27/Audio-Visual%20Event%20Localization%20in%20Unconstrained%20Videos%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          论文笔记 两篇关于Audio-Visual定位的论文
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/03/27/Audio-Visual%20Event%20Localization%20in%20Unconstrained%20Videos%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          
-            
-          
-          ECCV2018的论文，这篇文章提出了Audio-Visual Event Localization的任务，作者定义一个Audio-Visual Event就是同时会出现在视觉和音频中的事件，并以此收集了一个AVE数据集来进行三种任务：监督视听事件定位、弱监督视听事件定位、跨模态定位。作者提出了一个双模态残差网络（DMRN）学习这些任务。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-27 19:05" pubdate>
-              2023-03-27
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E8%A7%86%E9%9F%B3%E9%A2%91/">视音频</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/21/Coca%E5%92%8CVideoCoCa%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          论文笔记 CoCa 与 VideoCoCa
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/03/21/Coca%E5%92%8CVideoCoCa%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          
-            
-          
-          CoCa和VideoCoCa都是Google Research提出的多模态预训练模型，前者于2022年年中发布，后者于23年初发布。CoCa的名字来源于Contrastive和Caption，顾名思义就是通过对比学习和生成描述这两个任务来进行训练，从而使模型能够适应更多的包含单模态和多模态的下游任务。VideoCoCa就是将CoCa从图像-文本的训练延伸到视频-文本训练，从而更加适应视频领域的一些
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-21 16:30" pubdate>
-              2023-03-21
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E9%A2%84%E8%AE%AD%E7%BB%83/">多模态预训练</a>
-            
-              <a href="/tags/CoCa/">CoCa</a>
-            
-              <a href="/tags/VideoCoCa/">VideoCoCa</a>
             
           </div>
         

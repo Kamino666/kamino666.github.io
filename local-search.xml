@@ -4,6 +4,60 @@
   
   
   <entry>
+    <title>论文笔记 FLIP Scaling Language-Image Pre-training via Masking论文笔记</title>
+    <link href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <url>/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1>论文笔记 FLIP Scaling Language-Image Pre-training via Masking论文笔记</h1><p>论文链接：<a href="https://openaccess.thecvf.com/content/CVPR2023/html/Li_Scaling_Language-Image_Pre-Training_via_Masking_CVPR_2023_paper.html">CVPR 2023 Open Access Repository (thecvf.com)</a></p><p>代码链接：<a href="https://github.com/facebookresearch/flip">facebookresearch/flip: Official Open Source code for “Scaling Language-Image Pre-training via Masking” (github.com)</a></p><p>Meta AI的CVPR2023论文，Kaiming He是通讯。论文受到MAE的启发，把图像的部分区域Mask掉之后送入视觉编码器，和MAE一样，被Mask的Patch直接丢弃而不是替换为<code>[MASK]</code>的Token，所以能够提升训练效率。而这篇论文还发现，只做Mask，不做Reconstruct的效果也很好。</p><h2 id="方法介绍">方法介绍</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251339574.png" alt=""></p><p>实际上这个方法也没什么好介绍的，图像划分Patch之后加上空间编码，然后去掉50%~70%的Patch，从而得到2倍到4倍的效率提升。</p><p>FLIP主要研究这种mask对于scalability的提升。</p><p>既然对视觉从侧做了mask，文本侧也尝试了做mask的效果，后续有消融实验。</p><p>由于预训练和推理有一定的差距（训练有mask，推理无mask），所以考虑了训练后期不mask。</p><h2 id="实验">实验</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251400416.png" alt=""></p><p>Table1概括大部分关心的消融实验。</p><p>（a b）：mask可以容纳更大的batch size，带来更好的效果</p><p>（c）：Text masking没什么用，因为文本信息更密集，mask率要更小，但是小了又带来不了什么效率的提升，所以就算了。</p><p>（d）预测的时候就不用mask了，带mask虽然和训练统一了，但是会降低性能。</p><p>（e）训练后期不用mask可以带来提升</p><p>（f）MAE重构损失没用</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251404818.png" alt=""></p><p>Fig3对比来看，mask50%比较好，收敛很快，最终性能也更好。</p><p>Table4~7与CLIP进行了超级多个数据集的全面对比，这里不放图了，总之就是更好。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251407379.png" alt=""></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251408103.png" alt=""></p><p>Fig4和Table8验证了这种方法的scalability。</p><h2 id="总结">总结</h2><p>文章给出了一个信号：Mask也可以不重构，像BERT就是重构<code>[MASK]</code>，MAE、BEiT、MaskFeat、EVA-CLIP也是重构<code>[MASK]</code>的图像patch，而不重构性能也很高，还不麻烦。（感觉有点类似Dropout的感觉）</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>VLP</tag>
+      
+      <tag>CVPR23</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training</title>
+    <link href="/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
+    <url>/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
+    
+    <content type="html"><![CDATA[<h1>论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training</h1><p>论文链接：<a href="https://arxiv.org/abs/2111.07783">FILIP: Fine-grained Interactive Language-Image Pre-Training (arxiv.org)</a></p><p>代码链接：无</p><p>华为、中山、香港科技大学的ICLR2022论文，介绍了一种非常简单的<strong>细粒度交互的对比学习方法</strong>，以<strong>patch和token级别</strong>进行对比学习，从而使训练出的FILIP模型得到优秀的细粒度特征和定位能力。</p><h2 id="方法介绍">方法介绍</h2><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251258015.png" alt=""></p><blockquote><p>猫猫表情包赞🐱👍</p></blockquote><p>下文用patch指代视觉的Token，而token就是文本的Token。</p><p>文章就改了一个loss，使用的CLIP的架构没有变化，最后一层的Patch输出不用<code>[CLS]</code>，而是和Token一起计算一个Token-wise Similarity矩阵，假如Patch有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>k</mi></mrow><annotation encoding="application/x-tex">k</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03148em;">k</span></span></span></span>个，Token有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>L</mi></mrow><annotation encoding="application/x-tex">L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span></span></span></span>个，那么这个矩阵就是<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>×</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">K\times L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span></span></span></span>。</p><p>注意这个矩阵是一个样本内的相似度矩阵，而不是Batch级别的用来做对比学习的那个矩阵。原本对比学习是一个<strong>样本对</strong>有一个<strong>相似度值</strong>，现在则有一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo>×</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">K\times L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">×</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal">L</span></span></span></span>矩阵，需要将这个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>K</mi><mo separator="true">,</mo><mi>L</mi></mrow><annotation encoding="application/x-tex">K,L</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8778em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.07153em;">K</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">L</span></span></span></span>维度都消掉。</p><p>假如是<code>image-&gt;text</code>，那么就为每一个Patch找到最匹配的Token，然后使用所有Patch的相似度求平均以得到样本的相似度分数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow><mi>I</mi></msubsup></mrow><annotation encoding="application/x-tex">s^I_{i,j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2361em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.07847em;">I</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span></span></span></span>。</p><p>假如是<code>text-&gt;image</code>则相反，为每一个Token找到最匹配的Patch，然后平均得到<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mi>s</mi><mrow><mi>i</mi><mo separator="true">,</mo><mi>j</mi></mrow><mi>T</mi></msubsup></mrow><annotation encoding="application/x-tex">s^T_{i,j}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.2361em;vertical-align:-0.3948em;"></span><span class="mord"><span class="mord mathnormal">s</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8413em;"><span style="top:-2.4413em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.13889em;">T</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3948em;"><span></span></span></span></span></span></span></span></span></span>。</p><p>由于进行了细粒度的对比，会带来更高的计算复杂度，所以Patch-Token会被映射到更小的256维再计算相似度，在多卡计算的时候，在计算出每个Patch最匹配的Token之后，会选择分数最高的25%的Patch与其他卡进行通信（对于Token也是取Top25%）。</p><h1>实验</h1><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251313763.png" alt=""></p><p>Table1是与CLIP的比较，总之就是更厉害。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251315084.png" alt=""></p><p>Table2是zero-shot能力的比较，在COCO上效果好，在Flicker上应该更关注text-to-image的性能才对，但是它把更好的image-to-text放在了前面，感觉是比ALIGN略差。</p><p>经过微调之后，<code>FILIP*</code>的效果更好了，甚至比ALBEF更好。</p><blockquote><p>不过ALIGN用了1.8B、CLIP用了400M，FILIP只用了340M数据，稍微比ALIGN差一些也合理。</p><p>但是FILIP又增加了一些计算复杂度，与ALIGN还是比较难比较。</p><p>ALBEF使用了ITC+ITM+MLM+Momentum+14.1M数据，loss计算更复杂，但数据更少，也很难比较。</p></blockquote><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251325322.png" alt=""></p><p>Table3又展示了一下SOTA。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251326522.png" alt=""></p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251327114.png" alt=""></p><p>Table4展示这个细粒度的loss还是很有用的，而Table5显示在降低维度和优选Token之后，显存和训练时间就涨一点点。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251329783.png" alt=""></p><p>Fig2的可视化效果还是很明显的，这种可视化也比较有趣，观察单词与Patch的匹配。（也不说匹配的概率多大，反正是最大看着就更好看）</p><p>附录还有更多的可视化如图，效果都很好。</p><p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202306251332793.png" alt=""></p><h2 id="结论">结论</h2><p>基本上是一个即插即用的比较优秀的Loss设计。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>论文笔记</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>VLP</tag>
+      
+      <tag>ICLR22</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>论文笔记 LiT Zero-Shot Transfer with Locked-image text Tuning</title>
     <link href="/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/"/>
     <url>/2023/06/24/LiT%20Zero-Shot%20Transfer%20with%20Locked-image%20text%20Tuning%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/</url>
