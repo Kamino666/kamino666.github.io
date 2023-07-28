@@ -1,0 +1,663 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="中国西北工业大学的Arxiv预印期刊论文（2023.7.24），提出了Video Anomaly Retrieval这个新任务，旨在进行文本-视频检索和音频-视频检索，对应两个数据集UCFCrime-AR和XDViolence-AR，并提出了一个ALAN模型作为baseline。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="中国西北工业大学的Arxiv预印期刊论文（2023.7.24），提出了Video Anomaly Retrieval这个新任务，旨在进行文本-视频检索和音频-视频检索，对应两个数据集UCFCrime-AR和XDViolence-AR，并提出了一个ALAN模型作为baseline。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 Towards Video Anomaly Retrieval from Video Anomaly Detection：New Benchmarks and Model">
+<meta property="og:url" content="http://blog.kamino.link/2023/07/28/Towards%20Video%20Anomaly%20Retrieval%20from%20Video%20Anomaly%20Detection/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="中国西北工业大学的Arxiv预印期刊论文（2023.7.24），提出了Video Anomaly Retrieval这个新任务，旨在进行文本-视频检索和音频-视频检索，对应两个数据集UCFCrime-AR和XDViolence-AR，并提出了一个ALAN模型作为baseline。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281140978.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281146635.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281155054.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281201197.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281217500.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281223211.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281224379.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281227075.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281228634.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281229641.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281232854.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281233850.png">
+<meta property="article:published_time" content="2023-07-28T03:30:00.000Z">
+<meta property="article:modified_time" content="2023-07-28T05:19:28.073Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Video Anomaly Retrieval">
+<meta property="article:tag" content="Video Anomaly Detection">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281140978.png">
+  
+  <title>论文笔记 Towards Video Anomaly Retrieval from Video Anomaly Detection：New Benchmarks and Model - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 Towards Video Anomaly Retrieval from Video Anomaly Detection：New Benchmarks and Model">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-07-28 11:30" pubdate>
+        2023年7月28日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      9 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 Towards Video Anomaly Retrieval from Video Anomaly Detection：New Benchmarks and Model</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年7月28日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>论文笔记 Towards Video Anomaly Retrieval from Video Anomaly Detection：New Benchmarks and Model</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2307.12545">Towards Video Anomaly Retrieval from Video Anomaly Detection: New Benchmarks and Model (arxiv.org)</a></p>
+<p>代码链接：待开源？</p>
+<p>中国西北工业大学的Arxiv预印期刊论文（2023.7.24），提出了Video Anomaly Retrieval这个新任务，旨在进行<strong>文本-视频检索</strong>和<strong>音频-视频检索</strong>，对应两个数据集<strong>UCFCrime-AR</strong>和<strong>XDViolence-AR</strong>，并提出了一个ALAN模型作为baseline。</p>
+<h2 id="Video-Anomaly-Retrieval（VAR）任务">Video Anomaly Retrieval（VAR）任务</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281140978.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示，VAR任务使用一个文本或者音频对视频进行检索，乍一看与Video Retrieval（VR）任务没什么区别，但VAR的特点在于被检索的视频①长度可能非常长 ②可能包含需要关注的异常事件。</p>
+<p>传统视频检索任务使用DiDeMo、MSR-VTT等数据集，视频已经切分成小片段，文本和视频内容设计范围比较广。对于长视频则视频检索模型一般没办法，会有另外的Video Moment Retrieval任务，这个任务则是检索出长视频中符合文本描述的一段。而VAR的粒度不及Video Moment Retrieval，但是检索对象却是长视频。</p>
+<p>同时，VAR更关注异常情况的检索，比如撞车、爆炸、斗殴等，但是也能支持普通文本的检索，这一点论文没有强调。</p>
+<p>下图是更详细的不同任务的对比。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281146635.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="VAR-Benchmarks">VAR Benchmarks</h2>
+<p>作者构建了UCFCrime-AR和XDViolence-AR两个Benchmark，UCF-Crime和XD-Violence都是VAD中常用的数据集，前者有1900个视频和video级别的标注，后者有4700+视频和对应video级别的标注。</p>
+<p>UCFCrime-AR是一个文本-视频的检索数据集，作者找了8个人标记了UCF-Crime的视频的中英文caption。XDViolence-AR是一个音频-视频的检索数据集，作者就是用了其音频来作为query。</p>
+<h2 id="ALAN模型">ALAN模型</h2>
+<p>作者提出了<strong>A</strong>nomaly-<strong>L</strong>ed <strong>A</strong>lignment <strong>N</strong>etwork（ALAN）来进行VAR的任务，其整体架构如下：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281155054.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>视频包含RGB和光流两个模态，分别用I3D-RGB和I3D-Flow提取，音频则使用VGGish提取，文本使用BERT提取。</p>
+<p>视频和音频的处理逻辑类似，作者提出了Anomaly-Led Sampling（AS）和Fixed-Frame Sampling（FS）两种采样方法，前者通过一个VAD模型来找到视频异常的片段，并提升在其中采样关键帧的概率，后者就是普通的等间隔采样。帧会添加<code>[CLS]</code>、位置编码、区分模态的编码，然后通过Transformer进行模态融合或者进一步的编码，最后得到<code>[CLS]</code><strong>的特征</strong>以及<strong>平均池化所有token的全局特征</strong>。</p>
+<p>文本对应的也会得到<code>[CLS]</code><strong>的特征</strong>以及<strong>平均池化所有token的全局特征</strong>。</p>
+<p>这里两种都算全局特征，只是通过不同的方式得到，AS的具体采样方法见下图Algorithm 1.</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281201197.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>VAD模型是3层时序卷积层，最后使用Sigmoid得到每一帧的分数。</p>
+<p>训练loss分为三部分：①模态对齐 ②VAD ③掩码语言建模</p>
+<ol>
+<li>
+<p>模态对齐</p>
+<p>最小化之前得到的全局特征之间的余弦相似度，会通过网络预测不同模态相似度的权重来进行融合，文本和音频额外使用GEU来得到“两种模态”的特征。两种global的特征通过超参数融合。batch内使用双向max-margin ranking loss。</p>
+<blockquote>
+<p>视频有RGB和Flow的全局特征，在计算模态对齐的视频需要文本和音频也有对应的两个全局特征，但是没有，所以通过GEU来一生二，得到两种特征。</p>
+</blockquote>
+</li>
+<li>
+<p>VAD</p>
+<p>弱监督的训练方法，模型预测帧级别的异常分数，取top-k作为视频级别异常分数，然后使用视频级别的标签进行优化。</p>
+</li>
+<li>
+<p>掩码语言建模</p>
+<p>通过Spacy分析句子中的动词短语和名词短语，mask掉，然后重构。</p>
+</li>
+</ol>
+<p>整体来说，ALAN的模型包含了一个BERT、一个Prompting Decoder、多个Self-Attention和Cross-Attention、多个GEU、两个VAD模型。论文没有给出参数量，但是感觉还是挺多的（论文说BERT的参数不冻结）。论文最后说一个pair的检索时间是0.008s，在UCF和XD的测试上一次检索都只用2.7s和5.6s，这个效率也太高了吧，我觉得得打个问号，这个肯定是没有包含VGGish和I3D的。</p>
+<h2 id="实验">实验</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281217500.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>上图第一栏（CE到X-CLIP）是视频检索模型；第二栏的HL-Net是VAD模型，使用ALAN的框架，只是利用了其Video Encoder，而XML则是Video moment retrieval模型，但是不使用其时序定位的模块。</p>
+<p>结果证明ALAN效果最好，与其最接近的是X-CLIP，提升还挺多。</p>
+<blockquote>
+<p>实际应用中，应该更关注的是Text-&gt;Video的任务，不是很清楚Audio&lt;–&gt;Video的使用场景，从这个角度看，X-CLIP和ALAN差距不是特别大。</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281223211.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>上图是不同采样方法的比较，发现AS+FS能显著增加性能，并且在UCF-Crime上更明显。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281224379.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>对于掩码语言建模任务的加入，掩码特定词的效果更好，而掩码特定短语的效果最好。</p>
+<blockquote>
+<p>作者说掩码短语在4个指标上有3个指标领先所以更好，但是假如更关注Text-&gt;Video的话，应该是掩码单词效果更好呢……这个消融实验对我不是特别有说服力</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281227075.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>作者对使用两种全局特征的方法进行消融，也有对应比较显著的提升。</p>
+<p>还有一个loss超参数的融合就不放出来了，下面是一些可视化的分析：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281228634.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>图5是query检索出来的top-3的视频，效果还是不错的，最右边的是正常的检索，发现也有效果。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281229641.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>图7则是一些简单的单词的检索结果，也有效果。</p>
+<blockquote>
+<p>但是这里也许可以定量分析而不只是可视化？比如通过“Explosion”来检索所有视频，根据分类标签统计召回率什么的。因为实际情况的query text可能就是偏简单的。假如有定量分析会更好一些。</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281232854.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>图8是异常检测的效果和对应的采样方式示意。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202307281233850.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>图9是跨数据集的zero-shot的结果，使用UCF-Crime的文本来检索XD的视频，得到了还不错的结果。</p>
+<blockquote>
+<p>为啥用UCF-Crime的文本？可以直接人工标10+个XD的视频，然后检索看看泛化性能呀。</p>
+</blockquote>
+<h2 id="结论">结论</h2>
+<p>整体有一定的新意，也许需要带一下这个技术的实际应用场景。实际上和视频检索相比，只要解决了长视频的处理方法，差别也不是特别大，并且实验看上去本文也没有领先太多。</p>
+<p>弄了新的benchmark应该<strong>开源</strong>的……24号挂上来的，现在28号，也可能是我看得太早了，不过论文里丝毫没有提到要开源的迹象……这个不开源的话，可信度都得打个问号。</p>
+<p>模型的<strong>细节没有说清楚</strong>，比如说各个模块的层数、总参数量、冻结哪部分的参数、测试时间运行在什么机器上、用什么配置运行的，期待补充材料。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Video-Anomaly-Retrieval/">Video Anomaly Retrieval</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Video-Anomaly-Detection/">Video Anomaly Detection</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/07/21/OvarNet/">
+                        <span class="hidden-mobile">论文笔记 OvarNet：Towards Open-vocabulary Object Attribute Recognition</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
