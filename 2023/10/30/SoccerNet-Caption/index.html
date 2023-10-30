@@ -16,35 +16,34 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。">
+  <meta name="description" content="CVPR 2023 Workshop的一篇主办方的论文，构建了一个足球比赛数据集，并标注了激情的解说，提出了一个新任务，即Single-anchored Dense Video Captioning（SDVC），即单个锚点的DVC。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。">
+  <meta name="description" content="CVPR 2023 Workshop的一篇主办方的论文，构建了一个足球比赛数据集，并标注了激情的解说，提出了一个新任务，即Single-anchored Dense Video Captioning（SDVC），即单个锚点的DVC。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding">
-<meta property="og:url" content="http://blog.kamino.link/2023/10/23/UCF-Crime%20annotation/index.html">
+<meta property="og:title" content="论文笔记 SoccerNet-Caption Dense Video Captioning for Soccer Broadcasts Commentaries">
+<meta property="og:url" content="http://blog.kamino.link/2023/10/30/SoccerNet-Caption/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。">
+<meta property="og:description" content="CVPR 2023 Workshop的一篇主办方的论文，构建了一个足球比赛数据集，并标注了激情的解说，提出了一个新任务，即Single-anchored Dense Video Captioning（SDVC），即单个锚点的DVC。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240940879.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240944765.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240945275.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240947291.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240948214.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240953676.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240958309.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241018085.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241020686.png">
-<meta property="article:published_time" content="2023-10-23T12:20:00.000Z">
-<meta property="article:modified_time" content="2023-10-24T02:29:03.963Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301052015.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301056060.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301057215.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301057163.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301104034.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301107312.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301119413.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301125718.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301125949.png">
+<meta property="article:published_time" content="2023-10-30T02:41:00.000Z">
+<meta property="article:modified_time" content="2023-10-30T03:37:20.238Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="UCF-Crime Annotation">
-<meta property="article:tag" content="temporal sentence grounding">
+<meta property="article:tag" content="Dense Video Captioning">
+<meta property="article:tag" content="SoccerNet Caption">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240940879.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301052015.png">
   
-  <title>论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding - Kamino&#39;s Blog</title>
+  <title>论文笔记 SoccerNet-Caption Dense Video Captioning for Soccer Broadcasts Commentaries - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding">
+            <span class="h2" id="subtitle" title="论文笔记 SoccerNet-Caption Dense Video Captioning for Soccer Broadcasts Commentaries">
               
             </span>
 
@@ -213,8 +212,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2023-10-23 20:20" pubdate>
-        2023年10月23日 晚上
+      <time datetime="2023-10-30 10:41" pubdate>
+        2023年10月30日 上午
       </time>
     </span>
   
@@ -224,7 +223,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.6k 字
+      1.7k 字
     </span>
   
 
@@ -270,48 +269,50 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding</h1>
+            <h1 style="display: none">论文笔记 SoccerNet-Caption Dense Video Captioning for Soccer Broadcasts Commentaries</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2023年10月24日 上午
+                  本文最后更新于：2023年10月30日 中午
                 
               </p>
             
             <div class="markdown-body">
-              <h1>论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding</h1>
-<p>论文链接：<a target="_blank" rel="noopener" href="http://export.arxiv.org/abs/2309.13925">UCF-Crime Annotation: A Benchmark for Surveillance Video-and-Language Understanding (arxiv.org)</a></p>
-<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/Xuange923/UCA-dataset">Xuange923/UCA-dataset: official project page of the paper “UCF-Crime Annotation: A Benchmark for Surveillance Video-Language Understanding” (github.com)</a></p>
-<p>北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。</p>
-<h2 id="UCA数据集">UCA数据集</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240940879.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>首先，去掉了少量质量低的视频，并分成了训练、验证、测试集。</p>
-<p>其次，这篇文章对UCF-Crime里的视频进行细粒度的标注，尽量把所有的事件都标注出来了，<strong>不管是否异常事件</strong>。</p>
-<p>标注使用10个人花费1000小时，还有额外的3个资深人花费500小时进行标注审核。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240944765.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>如上图，时间非常精确，标注也比较丰富，但是例子给的不是很多。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240945275.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>异常和正常的视频大概均衡，但是在测试集差的有点多。不过，异常视频中包含的基本应该也是正常的事件，所以异常描述整体来说应该是偏少。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240947291.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240948214.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>如上图，事件有长有短，最长可能超过50s，而25s内的事件是最多的。标注的长度也算聚集在40个词内。</p>
-<h2 id="Baseline比较">Baseline比较</h2>
-<h3 id="TSGV任务">TSGV任务</h3>
-<p>就是给一个句子，要求找到视频中对应的时间段，就是video moment retrieval。</p>
-<p>跑了6个开源的baseline，使用了相同的特征（这里感觉不是很有必要，因为论文不是要去比较什么方法比什么方法好，而是提供一些方法在这个benchmark上所能达到的最好效果是什么样的），指标普遍偏低。比如IoU=0.3的R@1，就是说预测的事件范围与标注范围的重合度大于30%的基本都低于10%，而R@5就是预测的top-5个范围中重合度达标的最高也只有22.3%。把这个阈值提高到0.5、0.7就更惨不忍睹了。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240953676.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<h3 id="Video-Captioning任务">Video Captioning任务</h3>
-<p>对视频进行描述，跑了5个baseline。这一块我比较了解。</p>
-<p>首先看结果，CIDEr指标最高才到16.7，基本属于瞎说，可以认为难度是很高的。</p>
-<p>其次里面23年的SwinBERT居然比不过15年的S2VT😂，这感觉是跑得有问题。那么问题出在哪呢？作者分析是预训练模型的问题，但是我觉得这个有点牵强，按道理SwinBERT的表征能力应该比其它的好很多才对，对于数据量来说，MSVD都能训起来，这个应该问题也不大。</p>
-<p>此外，还有就是这篇文章对实验怎么进行的介绍太少了，按照目前的表述可能是直接把长视频送进去训练的，但是VC一般都是针对15s的短视频，这个可能会导致指标的下降。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240958309.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<h3 id="Dense-Video-Captioning任务">Dense Video Captioning任务</h3>
-<p>同时预测事件和进行Video Captioning，效果也是不尽如人意。这个UEDVC为为啥在前两个表里不放进去比？？这里有使用GT proposal来dense captioning，为啥不套用一些普通VC的模型？？论文写作的时候甚至表还放错位置了😢。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241018085.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241020686.png" srcset="/img/loading.gif" lazyload alt=""></p>
+              <h1>论文笔记 SoccerNet-Caption: Dense Video Captioning for Soccer Broadcasts Commentaries</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2304.04565">SoccerNet-Caption: Dense Video Captioning for Soccer Broadcasts Commentaries (arxiv.org)</a></p>
+<p>项目主页链接：<a target="_blank" rel="noopener" href="https://www.soccer-net.org/tasks/dense-video-captioning">SoccerNet - Dense Video Captioning (soccer-net.org)</a></p>
+<p>CVPR 2023 Workshop的一篇主办方的论文，构建了一个足球比赛数据集，并标注了激情的解说，提出了一个新任务，即Single-anchored Dense Video Captioning（SDVC），即单个锚点的DVC。</p>
+<h2 id="SoccerNet-Caption-Dataset">SoccerNet-Caption Dataset</h2>
+<p>视频来自SoccerNet的471个足球比赛视频，视频质量较高（25fps×720p），标注从flashscore website爬取而来（不了解足球，不知道是啥……），最终获得了715.9h的视频和36894个有时间标注的comments。</p>
+<p>除了这些文本评论，他们还收集了关于比赛的元数据，包括所有球员的球衣号码、裁判的名字、球队的名字、每支球队的首发阵容、他们的战术、11名首发球员、替补球员，以及与球员相关的任何事件，如进球、助攻、替换和黄牌/红牌。</p>
+<p>和一些早期提出的电影描述数据集一样，数据集的标注提供了匿名版本，因为目前的Captioning方法较少去考虑人名、队名，所以替换成一些特殊的符号。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301052015.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>一场比赛比较久，图3是0分钟到60分钟的分布，比较均匀。图5是最常用词，足球领域常用的词频率很高。图4是词数量分布，平均21.38个词。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301056060.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301057215.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>下面是与其它数据集的比较，这个数据集的视频数量少，但是总时长比较长，并且是适配它这个新任务的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301057163.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="Single-anchored-Dense-Video-Captioning">Single-anchored Dense Video Captioning</h2>
+<p>Single-anchored表示和以往的DVC不一样，没有开始时间和结束时间，而是只有一个评论应该开始的时间。因为足球评论不是一个有明显边界点的东西。（<strong>这一点也可以借鉴到其它任务中，比如异常检测的异常可能也没有明显的时间点</strong>）</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301104034.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>在评价指标上，使用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>m</mi><mi>A</mi><mi>P</mi><mi mathvariant="normal">@</mi><mi>δ</mi></mrow><annotation encoding="application/x-tex">mAP@\delta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">A</span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mord">@</span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span></span></span></span>来衡量定位准确性，其中<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>δ</mi></mrow><annotation encoding="application/x-tex">\delta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span></span></span></span>是时间上的容忍度，只要在容忍度范围内就算。对于语言准确度，使用M、B、R、C这四个最常用的指标，以及一个<code>SODA_c</code>指标。</p>
+<h2 id="SDVC-baseline">SDVC baseline</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301107312.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>整个模型为M，包含冻结参数的特征提取器E、一个聚合模块A和Spotting头S和Caption头C。E得到帧级别特征，A进行时序聚合，然后通过S和C进行结果预测。</p>
+<p>对于S出来的时间点，围绕其截取<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi mathvariant="normal">Δ</mi></mrow><annotation encoding="application/x-tex">\Delta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord">Δ</span></span></span></span>的时间段，然后送入C进行推理，S本质是一个二分类，表示一小段视频是否应该有comment。训练的时候视频被randomly cropped，然后使用BCE损失。（这里不太理解，正例应该是按照标注得到的，负例就是随机裁剪的？）。</p>
+<p>推理的时候，整个视频分成有重叠的窗，得到分数之后用NMS平滑。</p>
+<p>C本质是LSTM，使用了Teacher Forcing训练，这个没什么特别的。</p>
+<p>特征编码器尝试用了ResNet、I3D、C3D、Baidu，聚合模块尝试用了NetVLAD、NetRVLAD、NetVLAD++、NetRVLAD++。</p>
+<h2 id="实验">实验</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301119413.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>实验很多对于特征等的消融，没什么兴趣，这里看一下最后的一些结果。</p>
+<p>在有30s的容忍度的时候，AP大概是50%，确实不能说很好。Captoining的C值也只有21左右。说明这个任务还是有难度的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301125718.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>官网上有个leaderboard，这个OPPO的薄纱其它啊，CIDEr有69.73？？</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310301125949.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这个是定性实验，额……虽然我不太了解足球，但是这个d有点离谱，感觉模型是在瞎说……，这种模型真的能理解足球比赛里面谁是队友、点球、角球这些吗？</p>
 <h2 id="总结">总结</h2>
-<p>这篇文章标注出了一个应该是相当高质量的UCA数据集，这个是核心贡献点。但是根据目前这篇在Arxiv上的pdf版本，论文还是有很多不足，首先对于数据集的样例给的太少太少了，不是很直观。其次虽然跑了很多baseline，但是没有一个的implementation是详细的，根本不知道是怎么做的实验。此外文中一些错别字和错位的表也很令人在意。</p>
+<p>基本就是主办方提出了一个难度很高的数据集让人来搞，这个任务还是很有意义的，但是目前的baseline感觉不足以解决这个任务，涉及到的难点太多了，要理解一场足球比赛还是太困难了。</p>
 
             </div>
             <hr>
@@ -329,11 +330,9 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
+                      <a class="hover-with-bg" href="/tags/Dense-Video-Captioning/">Dense Video Captioning</a>
                     
-                      <a class="hover-with-bg" href="/tags/UCF-Crime-Annotation/">UCF-Crime Annotation</a>
-                    
-                      <a class="hover-with-bg" href="/tags/temporal-sentence-grounding/">temporal sentence grounding</a>
+                      <a class="hover-with-bg" href="/tags/SoccerNet-Caption/">SoccerNet Caption</a>
                     
                   </div>
                 
@@ -350,18 +349,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/10/26/UCCD%20human-centric/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/10/23/NWPU/">
-                        <span class="hidden-mobile">论文笔记 A New Comprehensive Benchmark for Semi-supervised Video Anomaly Detection and Anticipation</span>
+                      <a href="/2023/10/26/UCCD%20human-centric/">
+                        <span class="hidden-mobile">论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>

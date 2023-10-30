@@ -16,35 +16,34 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。">
+  <meta name="description" content="西北工业大学吴鹏组的一篇Arxiv论文，发表于2023.10，提出了UCCD（UCF-Crime Captioning Dataset）数据集，该数据集对UCF-Crime里出现的7820个人的行为进行了描述文本标注（以及bounding box），并以此数据集提出了以人为中心的行为描述新任务，还提出了一个针对这个新任务的模型。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。">
+  <meta name="description" content="西北工业大学吴鹏组的一篇Arxiv论文，发表于2023.10，提出了UCCD（UCF-Crime Captioning Dataset）数据集，该数据集对UCF-Crime里出现的7820个人的行为进行了描述文本标注（以及bounding box），并以此数据集提出了以人为中心的行为描述新任务，还提出了一个针对这个新任务的模型。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding">
-<meta property="og:url" content="http://blog.kamino.link/2023/10/23/UCF-Crime%20annotation/index.html">
+<meta property="og:title" content="论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model">
+<meta property="og:url" content="http://blog.kamino.link/2023/10/26/UCCD%20human-centric/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。">
+<meta property="og:description" content="西北工业大学吴鹏组的一篇Arxiv论文，发表于2023.10，提出了UCCD（UCF-Crime Captioning Dataset）数据集，该数据集对UCF-Crime里出现的7820个人的行为进行了描述文本标注（以及bounding box），并以此数据集提出了以人为中心的行为描述新任务，还提出了一个针对这个新任务的模型。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240940879.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240944765.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240945275.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240947291.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240948214.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240953676.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240958309.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241018085.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241020686.png">
-<meta property="article:published_time" content="2023-10-23T12:20:00.000Z">
-<meta property="article:modified_time" content="2023-10-24T02:29:03.963Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261427166.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261430039.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261437137.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261752482.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261755836.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261759290.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261804352.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261807007.png">
+<meta property="article:published_time" content="2023-10-26T06:18:00.000Z">
+<meta property="article:modified_time" content="2023-10-26T10:14:22.920Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Video Captioning">
-<meta property="article:tag" content="UCF-Crime Annotation">
-<meta property="article:tag" content="temporal sentence grounding">
+<meta property="article:tag" content="UCCD">
+<meta property="article:tag" content="Dense Video Captioning">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240940879.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261427166.png">
   
-  <title>论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding - Kamino&#39;s Blog</title>
+  <title>论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -203,7 +202,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding">
+            <span class="h2" id="subtitle" title="论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model">
               
             </span>
 
@@ -213,8 +212,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2023-10-23 20:20" pubdate>
-        2023年10月23日 晚上
+      <time datetime="2023-10-26 14:18" pubdate>
+        2023年10月26日 下午
       </time>
     </span>
   
@@ -224,7 +223,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.6k 字
+      1.7k 字
     </span>
   
 
@@ -270,48 +269,47 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding</h1>
+            <h1 style="display: none">论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2023年10月24日 上午
+                  本文最后更新于：2023年10月26日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1>论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding</h1>
-<p>论文链接：<a target="_blank" rel="noopener" href="http://export.arxiv.org/abs/2309.13925">UCF-Crime Annotation: A Benchmark for Surveillance Video-and-Language Understanding (arxiv.org)</a></p>
-<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/Xuange923/UCA-dataset">Xuange923/UCA-dataset: official project page of the paper “UCF-Crime Annotation: A Benchmark for Surveillance Video-Language Understanding” (github.com)</a></p>
-<p>北京科技大学的一篇2023.9的Arxiv，对UCF-Crime进行了精确到0.1s的caption标注，提出了新的UCA（UCF Crime Annotation）数据集，支持temporal sentence grounding、video captioning、dense video captioning任务。</p>
-<h2 id="UCA数据集">UCA数据集</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240940879.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>首先，去掉了少量质量低的视频，并分成了训练、验证、测试集。</p>
-<p>其次，这篇文章对UCF-Crime里的视频进行细粒度的标注，尽量把所有的事件都标注出来了，<strong>不管是否异常事件</strong>。</p>
-<p>标注使用10个人花费1000小时，还有额外的3个资深人花费500小时进行标注审核。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240944765.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>如上图，时间非常精确，标注也比较丰富，但是例子给的不是很多。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240945275.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>异常和正常的视频大概均衡，但是在测试集差的有点多。不过，异常视频中包含的基本应该也是正常的事件，所以异常描述整体来说应该是偏少。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240947291.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240948214.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>如上图，事件有长有短，最长可能超过50s，而25s内的事件是最多的。标注的长度也算聚集在40个词内。</p>
-<h2 id="Baseline比较">Baseline比较</h2>
-<h3 id="TSGV任务">TSGV任务</h3>
-<p>就是给一个句子，要求找到视频中对应的时间段，就是video moment retrieval。</p>
-<p>跑了6个开源的baseline，使用了相同的特征（这里感觉不是很有必要，因为论文不是要去比较什么方法比什么方法好，而是提供一些方法在这个benchmark上所能达到的最好效果是什么样的），指标普遍偏低。比如IoU=0.3的R@1，就是说预测的事件范围与标注范围的重合度大于30%的基本都低于10%，而R@5就是预测的top-5个范围中重合度达标的最高也只有22.3%。把这个阈值提高到0.5、0.7就更惨不忍睹了。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240953676.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<h3 id="Video-Captioning任务">Video Captioning任务</h3>
-<p>对视频进行描述，跑了5个baseline。这一块我比较了解。</p>
-<p>首先看结果，CIDEr指标最高才到16.7，基本属于瞎说，可以认为难度是很高的。</p>
-<p>其次里面23年的SwinBERT居然比不过15年的S2VT😂，这感觉是跑得有问题。那么问题出在哪呢？作者分析是预训练模型的问题，但是我觉得这个有点牵强，按道理SwinBERT的表征能力应该比其它的好很多才对，对于数据量来说，MSVD都能训起来，这个应该问题也不大。</p>
-<p>此外，还有就是这篇文章对实验怎么进行的介绍太少了，按照目前的表述可能是直接把长视频送进去训练的，但是VC一般都是针对15s的短视频，这个可能会导致指标的下降。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310240958309.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<h3 id="Dense-Video-Captioning任务">Dense Video Captioning任务</h3>
-<p>同时预测事件和进行Video Captioning，效果也是不尽如人意。这个UEDVC为为啥在前两个表里不放进去比？？这里有使用GT proposal来dense captioning，为啥不套用一些普通VC的模型？？论文写作的时候甚至表还放错位置了😢。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241018085.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310241020686.png" srcset="/img/loading.gif" lazyload alt=""></p>
+              <h1>论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.02894">Human-centric Behavior Description in Videos: New Benchmark and Model (arxiv.org)</a></p>
+<p>西北工业大学吴鹏组的一篇Arxiv论文，发表于2023.10，提出了<strong>UCCD（UCF-Crime Captioning Dataset）数据集</strong>，该数据集对UCF-Crime里出现的7820个人的行为进行了描述文本标注（以及bounding box），并以此数据集提出了以人为中心的行为描述新任务，还提出了一个针对这个新任务的模型。</p>
+<h2 id="UCCD-数据集">UCCD 数据集</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261427166.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>上图是三种任务对应数据的比较，VC是对整个（简短）视频的一个简单的描述，DVC需要预测事件并分别描述各个事件，UCCD数据集则针对人，每个人在视频中完整的行为都将被描述出来，描述语句可能包含多个句子。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261430039.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>在数据统计分析上，UCCD是监控视频领域的，时长比VC任务的MSVD、VATEX、MSR-VTT长，比DVC的更短，但是描述长度是非常长的。数据标注用了20个native speaker，200h的培训+5000h的标注，每个视频至少要5个人来标，花费了约6000美元。</p>
+<p>标注时，他们先用了300h把7820个人的bounding box标了出来，然后再进行文本的标注。论文里没有说5个人是怎么合作标注的。</p>
+<h2 id="模型">模型</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261437137.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>视频首先分帧，然后用YoloV7+Strongsort+OsNet进行目标检测和跟踪，把同一个人的box resize到相同大小送入预训练图像编码器（C3D、I3D、CLIP）提特征，作为person query。同时视频的整体特征也使用预训练模型（I3D）提取，并每帧独立送入Transformer Encoder中进行编码。</p>
+<p>解码器是一个Deformable Transformer Decoder，并在输出接了一个Localization Head和一个Caption Head。<strong>这一块的原文的表述十分不清晰</strong>，期待其上传更新版本。</p>
+<p>解码器<strong>可能</strong>是以person queries（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">q_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>）、每一个query对应的参考点（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>p</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">p_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>）、帧级别特征（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="bold-italic">X</mi><mi>f</mi></msup></mrow><annotation encoding="application/x-tex">\boldsymbol{X}^f</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9251em;"></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol" style="margin-right:0.07778em;">X</span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.9251em;"><span style="top:-3.139em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10764em;">f</span></span></span></span></span></span></span></span></span></span></span>）作为输入。然后进行Deformable Attention，即用<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">q_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>经过全连得到偏移量和对应的权重，然后对K个参考点和L个尺度进行加权求和。</p>
+<p>Localization head预测开始时间、结束时间和置信度分数？但是又说是什么Box Prediction，这个box完全不知道是什么。</p>
+<p>Caption Head的表述十分不清晰，图上没有体现LSTM的事情，但是论文Section IV.D部分莫名其妙跑出来了一个LSTM。</p>
+<p>他们说传统的captioning模型只考虑将人物级别的特征<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>q</mi><mi>j</mi></msub></mrow><annotation encoding="application/x-tex">q_j</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.7167em;vertical-align:-0.2861em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.0359em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span></span></span></span>，缺少与语言和帧特征的交互，为了改进，有了Deformable Soft Attention。这里传统的captioning模型压根不考虑人物级别特征呀？而且语言特征也不是很清楚说的是什么。</p>
+<p>总之，训练的时候有GIOU的损失，有Focal损失，还有caption的损失。</p>
+<h2 id="实验">实验</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261752482.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>先定性实验，与Vid2Seq比较了，但是Vid2Seq是针对事件的DVC，和这个针对人的不太一样，但是还是实验出来了，其实……感觉和Vid2Seq差不太多，然后模型离GT都差的挺多。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261755836.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>然后是定量实验，与SOTA进行比较，这个也看不太懂，没有细说怎么进行的比较。DVC会生成多个描述还好说，但是VC生成一个描述怎么算指标啊……</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261759290.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>表3进行了正常和异常的描述，这里OURS写错了，然后VAST为啥不给METEOR的指标？结果发现他们根本没在新数据集上训练过，合着你拿在这个数据集上训练的模型比别人在另一个数据集训练然后在你这个数据集上zero-shot的结果？？？</p>
+<p>表4说用了两种方法，可是有4行……</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261804352.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>消融实验，反正就是都有效，都是好。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202310261807007.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>表6，人工评测，这里ACC又是从何而来？？？？</p>
 <h2 id="总结">总结</h2>
-<p>这篇文章标注出了一个应该是相当高质量的UCA数据集，这个是核心贡献点。但是根据目前这篇在Arxiv上的pdf版本，论文还是有很多不足，首先对于数据集的样例给的太少太少了，不是很直观。其次虽然跑了很多baseline，但是没有一个的implementation是详细的，根本不知道是怎么做的实验。此外文中一些错别字和错位的表也很令人在意。</p>
+<p>目前论文有很大很大很大很大的缺陷，基本不怎么能看懂，除了数据集看上去挺有价值，其余看上去就像是瞎编的。</p>
 
             </div>
             <hr>
@@ -331,9 +329,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Video-Captioning/">Video Captioning</a>
                     
-                      <a class="hover-with-bg" href="/tags/UCF-Crime-Annotation/">UCF-Crime Annotation</a>
+                      <a class="hover-with-bg" href="/tags/UCCD/">UCCD</a>
                     
-                      <a class="hover-with-bg" href="/tags/temporal-sentence-grounding/">temporal sentence grounding</a>
+                      <a class="hover-with-bg" href="/tags/Dense-Video-Captioning/">Dense Video Captioning</a>
                     
                   </div>
                 
@@ -350,9 +348,9 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/10/26/UCCD%20human-centric/">
+                      <a href="/2023/10/30/SoccerNet-Caption/">
                         <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">论文笔记 Human-centric Behavior Description in Videos New Benchmark and Model</span>
+                        <span class="hidden-mobile">论文笔记 SoccerNet-Caption Dense Video Captioning for Soccer Broadcasts Commentaries</span>
                         <span class="visible-mobile">上一篇</span>
                       </a>
                     
@@ -360,8 +358,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/10/23/NWPU/">
-                        <span class="hidden-mobile">论文笔记 A New Comprehensive Benchmark for Semi-supervised Video Anomaly Detection and Anticipation</span>
+                      <a href="/2023/10/23/UCF-Crime%20annotation/">
+                        <span class="hidden-mobile">论文笔记 UCF-Crime Annotation A Benchmark for Surveillance Video-and-Language Understanding</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
