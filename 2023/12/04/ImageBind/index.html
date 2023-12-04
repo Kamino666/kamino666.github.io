@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 ImageBind One Embedding Space To Bind Them All">
+<meta property="og:url" content="http://blog.kamino.link/2023/12/04/ImageBind/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042209984.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233603.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233182.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042248206.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042251212.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042258440.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042306121.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042308307.png">
+<meta property="article:published_time" content="2023-12-04T13:59:00.000Z">
+<meta property="article:modified_time" content="2023-12-04T15:13:22.339Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Multimodal Learning">
+<meta property="article:tag" content="CLIP">
+<meta property="article:tag" content="Contrastive Learning">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042209984.png">
+  
+  <title>论文笔记 ImageBind One Embedding Space To Bind Them All - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 ImageBind One Embedding Space To Bind Them All">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2023-12-04 21:59" pubdate>
+        2023年12月4日 晚上
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      7 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 ImageBind One Embedding Space To Bind Them All</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2023年12月4日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>论文笔记 ImageBind: One Embedding Space To Bind Them All</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/CVPR2023/html/Girdhar_ImageBind_One_Embedding_Space_To_Bind_Them_All_CVPR_2023_paper.html">CVPR 2023 Open Access Repository (thecvf.com)</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/ImageBind">facebookresearch/ImageBind: ImageBind One Embedding Space to Bind Them All (github.com)</a></p>
+<p>官方网站：<a target="_blank" rel="noopener" href="https://imagebind.metademolab.com/">ImageBind by Meta AI (metademolab.com)</a></p>
+<p>Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下hhhh。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。</p>
+<h2 id="方法">方法</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042209984.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>上图是ImageBind的网络图，乍一看都不像是个网络架构的图，但其精华都在其中。</p>
+<p>首先左边绝大一部分都是在说使用的模态数据源，包括图像-文本对（CLIP的训练数据）、深度传感数据（不清楚，当时应该都有对应的图像）、热力数据（RGB图像+热力图）、视频（图像序列+音频）、第一人称视频（视频+IMU运动传感数据）。可以发现，目前涉及到的其他模态，都能够通过视觉的图像或者图像序列连接在一起，所以这也就带来了本篇文章的标题，使用Image来bing所有模态。</p>
+<p>再捋一遍，为什么是ImageBind？因为数据！数据都能通过Image，bind在一起。</p>
+<p>由于前人CLIP将图像和语言的语义捆绑在一起的工作做的非常好，所以这篇文章也是采取了基本相同的手法，<strong>每种模态使用基于ViT的编码器得到N维的一个特征向量</strong>，<strong>然后使用InfoNCE损失函数进行优化</strong>。在训练过程中，<strong>图像和文本编码器由于已经学的很好了，不会更新参数，其余编码器使用CLIP或者OpenCLIP来初始化</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>模态</th>
+<th>编码器</th>
+<th>适配方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图像</td>
+<td>OpenCLIP ViT-H 630M</td>
+<td>-</td>
+</tr>
+<tr>
+<td>视频</td>
+<td>同上</td>
+<td>I3D方法拓展ViT，切成2s</td>
+</tr>
+<tr>
+<td>文本</td>
+<td>OpenCLIP ViT-H 302M</td>
+<td>-</td>
+</tr>
+<tr>
+<td>音频</td>
+<td>ViT-B</td>
+<td>2s的梅尔频谱</td>
+</tr>
+<tr>
+<td>热力图</td>
+<td>ViT-S</td>
+<td>单通道图像</td>
+</tr>
+<tr>
+<td>深度图</td>
+<td>ViT-S</td>
+<td>单通道图像</td>
+</tr>
+</tbody>
+</table>
+<p>ImageBind对不同数据集进行训练，得到训练好的各个模态的编码器之后，就可以做Zero-shot和Emergent Zero-shot的实验，后者是将原来没有数据相连的模态进行实验。比如使用了“图像-文本”和“视频-音频”的数据分别训练，最后却可以进行“音频-文本”的Zero-shot实验。</p>
+<h2 id="实验">实验</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233603.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>上图图像和视频就是OpenCLIP的结果，蓝色背景的其他模态就是这篇文章的结果。最下一行就是包括监督学习、集成学习等等在内的最高分，也就是目前的上限。第三行的热力图是直接当作灰度图做CLIP的，音频是一个不算Zero-shot的用了文本的结果。因为实在比的太少了，所以没什么可比性，但是至少比随机高了很多，距离监督学习倒还是有差距。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233182.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这张图的三个数据集是有Audio-Text的标注的，但是ImageBind做的只是视觉-音频和视觉-文本的学习，然后Emergent Zero-shot到音频-文本上，发现表现还不错，虽然也是离监督学习和不Emergent的AudioCLIP有差距。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042248206.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>在视频检索上，MSR-VTT只用音频的效果不尽如人意，但是居然还比MIL-NCE好，在加上视觉模态后，更是在Zero-shot上超出其它一大截。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042251212.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>消融实验证明，这个方法是可以继续Scale的。</p>
+<p>其它实验去看论文吧~这里不一一分析了。</p>
+<h2 id="应用">应用</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042258440.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>论文放在摘要前面的第一张图，阐述了ImageBind的可能性。</p>
+<p>首先是做任意模态之间的检索，用音频检索文字、用音频检索深度图等等。</p>
+<p>其次是做一些可解释性的算术，这个在ZeroCap模型里也探索过（也可以看我的博客[基于梯度下降算法的Zero-shot Captioning方法 - Kamino’s Blog](<a href="https://blog.kamino.link/2023/09/08/Grad">https://blog.kamino.link/2023/09/08/Grad</a> Guided ZeroShot Captioning/)），下面还有一些例子：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042306121.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>比如水果+鸟叫声=树上的水果，家里墙上的挂钟+教堂钟声=教堂的钟的图，路牌+雷声=打雷时的路牌。</p>
+<p>最后，还有结合DALLE-2的生成模型，可以用其他模态的特征来生成图像，比如图中所示的音频生成图像。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042308307.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>论文里还放了一个使用音频进行目标检测的例子，Detic是Meta在ECCV2022提出的一个Open-vocabulary的目标检测模型（我也写过博客[博客 - Kamino’s Blog](<a href="https://blog.kamino.link/2022/11/16/Detic">https://blog.kamino.link/2022/11/16/Detic</a> and Object Detection Review/)），可以将任意文本的特征作为候选类，来进行目标检测。这里将文本特征替换为音频特征，就可以实现用音频来进行目标检测。</p>
+<h2 id="结论">结论</h2>
+<p>ImageBind给多模态的融合带来了一个崭新的Backbone，由于缺乏比较，其性能不一定好，但是至少是一个开始。ImageBind利用了多种数据源的特点，使用Image来作为中间表示，联合多种数据，定义了Emergent Zero-shot的范式。总的来说，ImageBind是一个很好的工作，是一个崭新的开始。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Multimodal-Learning/">Multimodal Learning</a>
+                    
+                      <a class="hover-with-bg" href="/tags/CLIP/">CLIP</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Contrastive-Learning/">Contrastive Learning</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/11/20/VideoEventRestoration/">
+                        <span class="hidden-mobile">论文笔记 Video Event Restoration Based on Keyframes for Video Anomaly Detection</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
