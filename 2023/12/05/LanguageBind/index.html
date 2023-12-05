@@ -16,35 +16,39 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。">
+  <meta name="description" content="北大主做的一个ImageBind的升级版，论文最早在23年10月挂载Arxiv上，并在之后有持续的更新。论文解决的问题与ImageBind类似，就是通过类似CLIP的方式，进行N种模态的对比学习，将不同模态统一到同一个语义空间。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。">
+  <meta name="description" content="北大主做的一个ImageBind的升级版，论文最早在23年10月挂载Arxiv上，并在之后有持续的更新。论文解决的问题与ImageBind类似，就是通过类似CLIP的方式，进行N种模态的对比学习，将不同模态统一到同一个语义空间。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记 ImageBind One Embedding Space To Bind Them All">
-<meta property="og:url" content="http://blog.kamino.link/2023/12/04/ImageBind/index.html">
+<meta property="og:title" content="论文笔记 LanguageBind Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment">
+<meta property="og:url" content="http://blog.kamino.link/2023/12/05/LanguageBind/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。">
+<meta property="og:description" content="北大主做的一个ImageBind的升级版，论文最早在23年10月挂载Arxiv上，并在之后有持续的更新。论文解决的问题与ImageBind类似，就是通过类似CLIP的方式，进行N种模态的对比学习，将不同模态统一到同一个语义空间。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042209984.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233603.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233182.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042248206.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042251212.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042258440.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042306121.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042308307.png">
-<meta property="article:published_time" content="2023-12-04T13:59:00.000Z">
-<meta property="article:modified_time" content="2023-12-05T02:09:49.789Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051027598.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051032670.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051041231.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051058675.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051050887.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051102929.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051112516.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051113905.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051115114.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051118602.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051130832.png">
+<meta property="article:published_time" content="2023-12-05T02:08:00.000Z">
+<meta property="article:modified_time" content="2023-12-05T03:49:10.793Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Multimodal Learning">
 <meta property="article:tag" content="CLIP">
 <meta property="article:tag" content="Contrastive Learning">
-<meta property="article:tag" content="ImageBind">
+<meta property="article:tag" content="LanguageBind">
+<meta property="article:tag" content="VIDAL-10M">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042209984.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051027598.png">
   
-  <title>论文笔记 ImageBind One Embedding Space To Bind Them All - Kamino&#39;s Blog</title>
+  <title>论文笔记 LanguageBind Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -203,7 +207,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="论文笔记 ImageBind One Embedding Space To Bind Them All">
+            <span class="h2" id="subtitle" title="论文笔记 LanguageBind Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment">
               
             </span>
 
@@ -213,8 +217,8 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2023-12-04 21:59" pubdate>
-        2023年12月4日 晚上
+      <time datetime="2023-12-05 10:08" pubdate>
+        2023年12月5日 上午
       </time>
     </span>
   
@@ -224,7 +228,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.2k 字
+      3.1k 字
     </span>
   
 
@@ -233,7 +237,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      7 分钟
+      10 分钟
     </span>
   
 
@@ -270,90 +274,67 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">论文笔记 ImageBind One Embedding Space To Bind Them All</h1>
+            <h1 style="display: none">论文笔记 LanguageBind Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2023年12月5日 上午
+                  本文最后更新于：2023年12月5日 中午
                 
               </p>
             
             <div class="markdown-body">
-              <h1>论文笔记 ImageBind: One Embedding Space To Bind Them All</h1>
-<p>论文链接：<a target="_blank" rel="noopener" href="https://openaccess.thecvf.com/content/CVPR2023/html/Girdhar_ImageBind_One_Embedding_Space_To_Bind_Them_All_CVPR_2023_paper.html">CVPR 2023 Open Access Repository (thecvf.com)</a></p>
-<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/ImageBind">facebookresearch/ImageBind: ImageBind One Embedding Space to Bind Them All (github.com)</a></p>
-<p>官方网站：<a target="_blank" rel="noopener" href="https://imagebind.metademolab.com/">ImageBind by Meta AI (metademolab.com)</a></p>
-<p>Meta的FAIR出的一篇CVPR2023 Highlight，在当时一出就受到广泛的关注，现在在大半年之后我才开始认真看一下hhhh。基本来说，这篇论文提出了一个基于对比学习的、CLIP架构的多模态模型，统一了Image、Video、Text、Audio、Depth、Thermal、IMU七种模态，并涌现了Zero-shot的能力。</p>
+              <h1>论文笔记 LanguageBind： Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2310.01852">LanguageBind: Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment (arxiv.org)</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/PKU-YuanGroup/LanguageBind">PKU-YuanGroup/LanguageBind: Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment (github.com)</a></p>
+<p>北大主做的一个ImageBind的升级版，论文最早在23年10月挂载Arxiv上，并在之后有持续的更新。论文解决的问题与ImageBind类似，就是通过类似CLIP的方式，进行N种模态的对比学习，将不同模态统一到同一个语义空间。</p>
+<p>ImageBind用Image进行Bind是因为存在图像这种公共的模态，而这篇文章使用Language进行Bind就是解决了数据上的问题，提出了VIDAL-10M数据集，包含视频、热力、深度、音频以及它们对应的文本数据集。数据集的构建很大程度借助了目前的基于AI的生成网络。结果就是获得了更优秀的Zero-shot能力，并且代码开源做的不错，Issue回复也很积极。</p>
 <h2 id="方法">方法</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042209984.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>上图是ImageBind的网络图，乍一看都不像是个网络架构的图，但其精华都在其中。</p>
-<p>首先左边绝大一部分都是在说使用的模态数据源，包括图像-文本对（CLIP的训练数据）、深度传感数据（不清楚，当时应该都有对应的图像）、热力数据（RGB图像+热力图）、视频（图像序列+音频）、第一人称视频（视频+IMU运动传感数据）。可以发现，目前涉及到的其他模态，都能够通过视觉的图像或者图像序列连接在一起，所以这也就带来了本篇文章的标题，使用Image来bing所有模态。</p>
-<p>再捋一遍，为什么是ImageBind？因为数据！数据都能通过Image，bind在一起。</p>
-<p>由于前人CLIP将图像和语言的语义捆绑在一起的工作做的非常好，所以这篇文章也是采取了基本相同的手法，<strong>每种模态使用基于ViT的编码器得到N维的一个特征向量</strong>，<strong>然后使用InfoNCE损失函数进行优化</strong>。在训练过程中，<strong>图像和文本编码器由于已经学的很好了，不会更新参数，其余编码器使用CLIP或者OpenCLIP来初始化</strong>。</p>
-<table>
-<thead>
-<tr>
-<th>模态</th>
-<th>编码器</th>
-<th>适配方法</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td>图像</td>
-<td>OpenCLIP ViT-H 630M</td>
-<td>-</td>
-</tr>
-<tr>
-<td>视频</td>
-<td>同上</td>
-<td>I3D方法拓展ViT，切成2s</td>
-</tr>
-<tr>
-<td>文本</td>
-<td>OpenCLIP ViT-H 302M</td>
-<td>-</td>
-</tr>
-<tr>
-<td>音频</td>
-<td>ViT-B</td>
-<td>2s的梅尔频谱</td>
-</tr>
-<tr>
-<td>热力图</td>
-<td>ViT-S</td>
-<td>单通道图像</td>
-</tr>
-<tr>
-<td>深度图</td>
-<td>ViT-S</td>
-<td>单通道图像</td>
-</tr>
-</tbody>
-</table>
-<p>ImageBind对不同数据集进行训练，得到训练好的各个模态的编码器之后，就可以做Zero-shot和Emergent Zero-shot的实验，后者是将原来没有数据相连的模态进行实验。比如使用了“图像-文本”和“视频-音频”的数据分别训练，最后却可以进行“音频-文本”的Zero-shot实验。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051027598.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>LanguageBind的方法与ImageBind一样简洁，甚至形式上更加对称和美观。如上图所示，除了语言以外的模态的Encoder都是24层1024维patch14的ViT（ViT-L/14），并且继承OpenCLIP-Large的权重。为了保持对称，数据上会进行一些适配，单通道的热力图和深度图会复制到三个通道；音频也同样变成10s的梅尔频谱，同时也复制到三个通道上。文本模态则是12层768维的小一点的接近BERT-base的编码器，使用BPE tokenizer。</p>
+<p>与ImageBind相比，LanguageBind的参数量低了一个级别。</p>
+<p>训练上，可能是国内算力没那么富裕，所以使用LoRA进行微调，并且使用类似MAE的方式进行Token Masking，即Patch Embedding之后根据比例丢弃50%的token，使训练加速到原来的4倍。</p>
+<blockquote>
+<p>这里Patch Masking的表示很简洁，马克一下：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051032670.png" srcset="/img/loading.gif" lazyload alt=""></p>
+</blockquote>
+<p>训练的方法和CLIP、ImageBind类似，但是其他所有的模态都和Language进行对比学习，Language Encoder的参数保持不变。</p>
+<h2 id="数据集：VIDAL-10M">数据集：VIDAL-10M</h2>
+<p>这篇文章的数据集也是重要贡献点之一，VIDAL-10M数据集包括3M 视频-语言、3M 热力-语言、3M 深度-语言和1M音频-语言数据，加起来一共10M。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051041231.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051058675.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>数据集的构建如上所示，首先从COCO、ImageNet、MSR-VTT数据源的文本中通过动词和名词的词频分析，获得100K个搜索项（Table9），然后通过这些词去Freesound（音频网站）和YouTube Shorts（短视频网站）上进行搜索、爬取和过滤，得到视频和音频的数据。这里在短视频网站爬取是因为作者认为短视频的语义更加集中明确，效果更加好。</p>
+<p>之后，使用<strong>sRGB-TIR</strong>模型来生成视频的热力图数据，使用<strong>GLPN</strong>模型生成视频的深度图数据。这里依赖的是深度估计和热力估计领域的SOTA模型。</p>
+<p>对于视频对应的文本，采取下图这种方式进行生成。首先视频抽取关键帧使用一个SOTA的Image-Captioning模型<strong>OFA</strong>来获得静态的caption。之后，利用一个多模态的LLM <strong>mPLUG-owl</strong>来综合利用视频标题、标签和Image caption得到视频的caption，最后再用ChatGPT进行一波润色。对于音频对应的文本，文中好像没怎么说，应该是爬取下来就有对应的文本了。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051050887.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>然而，在这里看一个附录中的实验，发现热力图数据集用那些title&amp;hashtag作为文本训练效果反而好，文章没有探究为什么，但是数据集提供了所有阶段的文本。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051102929.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>此外，文中对视频数据进行分析，因为是从短视频平台爬的，所以基本都是竖屏的数据，不是横屏的。</p>
+<blockquote>
+<p>目前数据发布情况：</p>
+<p>视频ID和各个阶段文本标注以及发出来了，有百度网盘和Google网盘的链接，比较友好。但是很奇怪没有找到Hashtags。</p>
+<p>热力图和深度图作者说有20T，正在努力整理发布。</p>
+</blockquote>
 <h2 id="实验">实验</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233603.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>上图图像和视频就是OpenCLIP的结果，蓝色背景的其他模态就是这篇文章的结果。最下一行就是包括监督学习、集成学习等等在内的最高分，也就是目前的上限。第三行的热力图是直接当作灰度图做CLIP的，音频是一个不算Zero-shot的用了文本的结果。因为实在比的太少了，所以没什么可比性，但是至少比随机高了很多，距离监督学习倒还是有差距。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042233182.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>这张图的三个数据集是有Audio-Text的标注的，但是ImageBind做的只是视觉-音频和视觉-文本的学习，然后Emergent Zero-shot到音频-文本上，发现表现还不错，虽然也是离监督学习和不Emergent的AudioCLIP有差距。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042248206.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>在视频检索上，MSR-VTT只用音频的效果不尽如人意，但是居然还比MIL-NCE好，在加上视觉模态后，更是在Zero-shot上超出其它一大截。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042251212.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>消融实验证明，这个方法是可以继续Scale的。</p>
-<p>其它实验去看论文吧~这里不一一分析了。</p>
-<h2 id="应用">应用</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042258440.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>论文放在摘要前面的第一张图，阐述了ImageBind的可能性。</p>
-<p>首先是做任意模态之间的检索，用音频检索文字、用音频检索深度图等等。</p>
-<p>其次是做一些可解释性的算术，这个在ZeroCap模型里也探索过（也可以看我的博客[基于梯度下降算法的Zero-shot Captioning方法 - Kamino’s Blog](<a href="https://blog.kamino.link/2023/09/08/Grad">https://blog.kamino.link/2023/09/08/Grad</a> Guided ZeroShot Captioning/)），下面还有一些例子：</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042306121.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>比如水果+鸟叫声=树上的水果，家里墙上的挂钟+教堂钟声=教堂的钟的图，路牌+雷声=打雷时的路牌。</p>
-<p>最后，还有结合DALLE-2的生成模型，可以用其他模态的特征来生成图像，比如图中所示的音频生成图像。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312042308307.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>论文里还放了一个使用音频进行目标检测的例子，Detic是Meta在ECCV2022提出的一个Open-vocabulary的目标检测模型（我也写过博客[博客 - Kamino’s Blog](<a href="https://blog.kamino.link/2022/11/16/Detic">https://blog.kamino.link/2022/11/16/Detic</a> and Object Detection Review/)），可以将任意文本的特征作为候选类，来进行目标检测。这里将文本特征替换为音频特征，就可以实现用音频来进行目标检测。</p>
+<p>实验太多啦，选择个人感兴趣的一些来展示和分析。主要的下游应用如下图所示，可以用语言来检索任一模态，可以对任一模态进行Zero-shot的分类。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051112516.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>发现LanguageBind的效果真的很不错，在Zero-shot Video retrieval上，做了更多数据集的比较，同时使用的数据量也不是特别多。与最接近的ImageBind相比高了不少。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051113905.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table3则展示了数据集的优越性，使用CLIP4Clip这个baseline，把HowTo100M替换成VIDAl之后，各种指标都有上升。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051115114.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table4则是做分类的结果，这里ImageBind的Video的50.0其实不算是它的结果，因为就完全没有训练，应该算OpenCLIP的Zero-shot结果，而这个表的OpenCLIP则是经过了multi-view/crop的trick的结果。LanguageBind对于视频编码器进行了微调，效果也应该好一些点，这个比较我觉得没什么意外（甚至觉得低了一点点）。</p>
+<p>Depth的结果，其实也不能算是一个fair的比较，因为ImageBind是做emergent zero-shot，即没有利用深度-文本进行训练，但是这里还是可以比较的，结果发现效果好了很多。同样，在热力图上也是ImageBind由于做Emergent，性能低了一些。总的来说，<strong>这里想说的应该是构造配对的数据比依赖emergent的效果好</strong>。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051118602.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table6展示了在多模态检索上的性能的提升，Table7则是展示了LanguageBind的Emergent能力。由于ImageBind做了RGB与音频的对比学习，所以性能好一大截。下面两个数据集的比较则是发现Emergent的效果接近不Emergent的效果。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202312051130832.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>论文在训练超参上进行了消融，这个其实也看不出什么东西，我就直接说结论。它们发现full tuning的效果不如LoRA，且LoRA能减少一般的显存和时间（0.8h训练？没看懂是在哪里训练的？）LoRA的rank设置为了2，比较低。MAE的Mask ratio基本为0.5，符合FLIP论文的假设。</p>
 <h2 id="结论">结论</h2>
-<p>ImageBind给多模态的融合带来了一个崭新的Backbone，由于缺乏比较，其性能不一定好，但是至少是一个开始。ImageBind利用了多种数据源的特点，使用Image来作为中间表示，联合多种数据，定义了Emergent Zero-shot的范式。总的来说，ImageBind是一个很好的工作，是一个崭新的开始。</p>
+<blockquote>
+<p>The limits of language are the limits of my world. 语言的界限就是我世界的界限。</p>
+<p>Ludwig Wittgenstein 维特根斯坦</p>
+<p>著名哲学家维特根斯坦的观念在这篇论文里得到了实践，把所有模态知识统一到语言的语义空间中，在那个语义空间里，就蕴含着智慧。</p>
+</blockquote>
+<p>有14个作者的论文，比ImageBind的7个作者多了一倍，也是有许多科研机构的参与，但是算力消耗貌似也没有那么大，期待scale的结果。文章通过数据集的构建，把所有模态都弄到了语言的语义空间，也为其它下游应用带来了更多的可能性。（这里是语言的语义空间吗？那个Text Encoder貌似是CLIP训练的结果，应该算是CLIP那种视觉-文本的语义空间吧，但是论文标题这么说了也没办法）。</p>
+<p>比起模型，这里数据集的构建流程我还是很感兴趣的，希望它们之后能够开源整套流程（目前开源的是模型）</p>
 
             </div>
             <hr>
@@ -377,7 +358,9 @@
                     
                       <a class="hover-with-bg" href="/tags/Contrastive-Learning/">Contrastive Learning</a>
                     
-                      <a class="hover-with-bg" href="/tags/ImageBind/">ImageBind</a>
+                      <a class="hover-with-bg" href="/tags/LanguageBind/">LanguageBind</a>
+                    
+                      <a class="hover-with-bg" href="/tags/VIDAL-10M/">VIDAL-10M</a>
                     
                   </div>
                 
@@ -394,18 +377,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2023/12/05/LanguageBind/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">论文笔记 LanguageBind Extending Video-Language Pretraining to N-modality by Language-based Semantic Alignment</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2023/11/20/VideoEventRestoration/">
-                        <span class="hidden-mobile">论文笔记 Video Event Restoration Based on Keyframes for Video Anomaly Detection</span>
+                      <a href="/2023/12/04/ImageBind/">
+                        <span class="hidden-mobile">论文笔记 ImageBind One Embedding Space To Bind Them All</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
