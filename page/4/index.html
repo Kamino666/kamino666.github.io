@@ -208,6 +208,58 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          论文笔记 FLIP Scaling Language-Image Pre-training via Masking论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          
+          
+            
+          
+          Meta AI的CVPR2023论文，Kaiming He是通讯。论文受到MAE的启发，把图像的部分区域Mask掉之后送入视觉编码器，和MAE一样，被Mask的Patch直接丢弃而不是替换为`[MASK]`的Token，所以能够提升训练效率。而这篇论文还发现，只做Mask，不做Reconstruct的效果也很好。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-25 13:35" pubdate>
+              2023-06-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/VLP/">VLP</a>
+            
+              <a href="/tags/CVPR23/">CVPR23</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
           论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training
         </a>
@@ -647,56 +699,6 @@
             <i class="iconfont icon-date"></i>
             <time datetime="2023-03-20 21:30" pubdate>
               2023-03-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E9%A2%84%E8%AE%AD%E7%BB%83/">多模态预训练</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/18/mPLUG2%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          论文笔记 mPLUG-2：A Modularized Multi-modal Foundation Model Across Text, Image and Video
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/03/18/mPLUG2%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          
-            
-          
-          阿里巴巴达摩院于23年2月发布的大规模视觉-语言预训练模型——**mPLUG-2**，相较于前作mPLUG，本次将模型拓展到了视频领域，总共在30多个下游任务上进行试验，并取得很多SOTA。并且本作没有像前作那样突出减少运算时间，而是在训练效率和有效性上有长进。mPLUG2是一个多模块结合的模型，通过不同的模块能够应对“模态纠缠”的问题，不同任务可以选择性地使用部分模块。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-18 14:40" pubdate>
-              2023-03-18
             </time>
           </div>
         
