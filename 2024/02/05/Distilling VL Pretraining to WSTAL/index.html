@@ -30,8 +30,13 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202402051650530.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202402051703068.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202402051702237.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271916468.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271917393.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271919972.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271921948.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271925255.png">
 <meta property="article:published_time" content="2024-02-05T07:45:00.000Z">
-<meta property="article:modified_time" content="2024-02-05T09:12:46.289Z">
+<meta property="article:modified_time" content="2024-03-27T11:27:45.331Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="prompt">
 <meta property="article:tag" content="TAL">
@@ -218,7 +223,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      1.1k 字
+      1.6k 字
     </span>
   
 
@@ -227,7 +232,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      3 分钟
+      5 分钟
     </span>
   
 
@@ -268,7 +273,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2024年2月5日 下午
+                  本文最后更新于：2024年3月27日 晚上
                 
               </p>
             
@@ -297,8 +302,31 @@
 <p>注意，文中又强调生成的伪标签同时包含前景和背景，只是不同支路生成的比例不同罢了。</p>
 <p>从这个角度看的话，文中的动机有一点被削弱了，基本就是两路的互相蒸馏。</p>
 </blockquote>
-<p>此外，文章还进行了对比学习，其使用InfoNCE的改版，分子是所有正例配对，分母是所有例子相似度：</p>
+<p>此外，文章还进行了对比学习，其使用InfoNCE的改版，其对两路都起作用 ，对于某一路得到的高置信度的正例和负例，组成集合<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mi mathvariant="normal">Φ</mi><mo>+</mo></msup><mo separator="true">,</mo><msup><mi mathvariant="normal">Φ</mi><mo>−</mo></msup></mrow><annotation encoding="application/x-tex">\Phi^+,\Phi^-</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.9658em;vertical-align:-0.1944em;"></span><span class="mord"><span class="mord">Φ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7713em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">+</span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord">Φ</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7713em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mbin mtight">−</span></span></span></span></span></span></span></span></span></span></span>，高置信度的特征两两计算相似度，和是分母，分子则是正例之间的相似度。</p>
 <p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202402051702237.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="推理">推理</h3>
+<p>推理时为了处理光流，只使用CBP一路，得到帧级别分数后，通过阈值限制，并连接相邻的snippet构成proposal，然后用softNMS消除多余的。</p>
+<blockquote>
+<p>这里softNMS有用吗？按照这个逻辑应该没有重合的proposal呀。</p>
+</blockquote>
+<h2 id="实验">实验</h2>
+<h3 id="SOTA比较">SOTA比较</h3>
+<p>比较基础，在THUMOS14和ActivityNet1.2上比较，直接看结果的话，AVG的IoU提升非常明显。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271916468.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271917393.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>目前（2024.3）来说，paperwithcode上也是能排到第三的位置</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271919972.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="消融实验">消融实验</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271921948.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Tab3是对论文假设的验证，证明两路模型有不同的侧重点，而这篇文章的方法能比较好地融合。</p>
+<p>Tab4是不进行Collaborate的消融，也就是做单向的蒸馏，效果不会更好。</p>
+<p>Tab5是loss的贡献，这样看来，对比学习的loss也提升了很多点。</p>
+<p>Tab6是一般人不会做的实验，为了证明方法的泛化性，找了不同的baseline来加上他们的方法，结果提升很多。</p>
+<h3 id="可视化">可视化</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202403271925255.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这个可视化真的很能验证假说。</p>
+<h2 id="结论">结论</h2>
+<p>我感觉确实是一个非常扎实的工作，研究故事讲得很完整，作者未来工作打算做更大规模end2end的训练。</p>
 
             </div>
             <hr>
