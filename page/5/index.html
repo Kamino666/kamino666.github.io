@@ -208,6 +208,110 @@
     <article class="col-12 col-md-12 mx-auto index-info">
       <h1 class="index-header">
         
+        <a href="/2023/07/05/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%93%88%E5%B8%8C%E6%A3%80%E7%B4%A2/" target="_self">
+          多模态哈希检索初见
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/07/05/%E5%A4%9A%E6%A8%A1%E6%80%81%E5%93%88%E5%B8%8C%E6%A3%80%E7%B4%A2/" target="_self">
+          
+          
+            
+          
+          多模态检索就是使用一种模态的数据对另一种模态进行检索，比如以文搜图等，用来检索的数据叫作query，被检索的库叫作dataset。哈希检索则是将query和dataset的原始特征映射到二进制编码中，从而提升检索速度。本笔记通过阅读下面这个综述得来，如有错误见谅。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-07-05 10:54" pubdate>
+              2023-07-05
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E6%A3%80%E7%B4%A2/">多模态检索</a>
+            
+              <a href="/tags/%E5%93%88%E5%B8%8C%E6%A3%80%E7%B4%A2/">哈希检索</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
+        <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          论文笔记 FLIP Scaling Language-Image Pre-training via Masking论文笔记
+        </a>
+      </h1>
+
+      <p class="index-excerpt">
+        <a href="/2023/06/25/FLIP%20Scaling%20Language-Image%20Pre-training%20via%20Masking%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
+          
+          
+            
+          
+          Meta AI的CVPR2023论文，Kaiming He是通讯。论文受到MAE的启发，把图像的部分区域Mask掉之后送入视觉编码器，和MAE一样，被Mask的Patch直接丢弃而不是替换为`[MASK]`的Token，所以能够提升训练效率。而这篇论文还发现，只做Mask，不做Reconstruct的效果也很好。
+        </a>
+      </p>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2023-06-25 13:35" pubdate>
+              2023-06-25
+            </time>
+          </div>
+        
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-category"></i>
+            
+              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+            
+          </div>
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/VLP/">VLP</a>
+            
+              <a href="/tags/CVPR23/">CVPR23</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h1 class="index-header">
+        
         <a href="/2023/06/25/FILIP%20Fine-grained%20Interactive%20Language-Image%20Pre-training%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
           论文笔记 FILIP Fine-grained Interactive Language-Image Pre-training
         </a>
@@ -613,106 +717,6 @@
               <a href="/tags/CoCa/">CoCa</a>
             
               <a href="/tags/VideoCoCa/">VideoCoCa</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/20/STOA-VLP%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          论文笔记 STOA-VLP：Spatial-Temporal Modeling of Object and Action for Video-Language Pre-training
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/03/20/STOA-VLP%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          
-            
-          
-          哈工大、腾讯、鹏程实验室于2023年2月挂到Arxiv上的多模态预训练模型，其通过对视频中的目标和动作进行时空建模来提升视觉-语言模型细粒度性能。模型提出了一个建模目标轨迹的模块和一个建模动作的模块，并相应添加了对齐目标轨迹-语言和对齐动作-语言的损失函数。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-20 21:30" pubdate>
-              2023-03-20
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E9%A2%84%E8%AE%AD%E7%BB%83/">多模态预训练</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h1 class="index-header">
-        
-        <a href="/2023/03/18/mPLUG2%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          论文笔记 mPLUG-2：A Modularized Multi-modal Foundation Model Across Text, Image and Video
-        </a>
-      </h1>
-
-      <p class="index-excerpt">
-        <a href="/2023/03/18/mPLUG2%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/" target="_self">
-          
-          
-            
-          
-          阿里巴巴达摩院于23年2月发布的大规模视觉-语言预训练模型——**mPLUG-2**，相较于前作mPLUG，本次将模型拓展到了视频领域，总共在30多个下游任务上进行试验，并取得很多SOTA。并且本作没有像前作那样突出减少运算时间，而是在训练效率和有效性上有长进。mPLUG2是一个多模块结合的模型，通过不同的模块能够应对“模态纠缠”的问题，不同任务可以选择性地使用部分模块。
-        </a>
-      </p>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2023-03-18 14:40" pubdate>
-              2023-03-18
-            </time>
-          </div>
-        
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-category"></i>
-            
-              <a href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
-            
-          </div>
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E5%A4%9A%E6%A8%A1%E6%80%81%E9%A2%84%E8%AE%AD%E7%BB%83/">多模态预训练</a>
             
           </div>
         

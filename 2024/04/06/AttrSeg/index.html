@@ -1,0 +1,672 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="上交的一篇NIPS2023（2024.1），进行Open-vocabulary的语义分割，其将类别通过大语言模型和人工分解成多种属性，然后提出了一种AttrSeg网络来通过这些属性进行语义分割，从而提升Open的能力。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="上交的一篇NIPS2023（2024.1），进行Open-vocabulary的语义分割，其将类别通过大语言模型和人工分解成多种属性，然后提出了一种AttrSeg网络来通过这些属性进行语义分割，从而提升Open的能力。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 AttrSeg：Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation">
+<meta property="og:url" content="http://blog.kamino.link/2024/04/06/AttrSeg/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="上交的一篇NIPS2023（2024.1），进行Open-vocabulary的语义分割，其将类别通过大语言模型和人工分解成多种属性，然后提出了一种AttrSeg网络来通过这些属性进行语义分割，从而提升Open的能力。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061652703.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061658409.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061728417.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061734923.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061741203.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061742591.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061742863.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061744825.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061745895.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061749746.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061757087.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061805024.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061809114.png">
+<meta property="article:published_time" content="2024-04-06T08:42:00.000Z">
+<meta property="article:modified_time" content="2024-04-08T04:15:32.741Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Semantic Segmentation">
+<meta property="article:tag" content="Open-Vocabulary">
+<meta property="article:tag" content="AttrSeg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061652703.png">
+  
+  <title>论文笔记 AttrSeg：Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 AttrSeg：Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2024-04-06 16:42" pubdate>
+        2024年4月6日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 AttrSeg：Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年4月8日 中午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>论文笔记 AttrSeg：Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation</h1>
+<p>上交的一篇NIPS2023（2024.1），进行Open-vocabulary的语义分割，其将类别通过大语言模型和人工分解成多种属性，然后提出了一种AttrSeg网络来通过这些属性进行语义分割，从而提升Open的能力。</p>
+<p>由于本人不了解该领域，本文介绍其基本思想和少量关键实验</p>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2309.00096">AttrSeg: Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation (arxiv.org)</a></p>
+<p><a target="_blank" rel="noopener" href="https://openreview.net/forum?id=ESEM1lNoeS">AttrSeg: Open-Vocabulary Semantic Segmentation via Attribute Decomposition-Aggregation | OpenReview</a></p>
+<h2 id="思路">思路</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061652703.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图左，在OV的语义分割情况下，会遇到三种问题：</p>
+<ol>
+<li><strong>Ambiguity</strong>：不完整或者过于简洁的名字带来歧义。（比如龙可以指西方龙，也可以指东方龙）</li>
+<li><strong>Neologism</strong>：一些新词模型没有见过，难以描述。（比如科幻中的生物等）</li>
+<li><strong>Unnameability</strong>：不知道怎么去命名</li>
+</ol>
+<p>为了解决这些问题，这篇文章提出了Decomposition-Aggregation两阶段（上图中），分解阶段将标签分解为一系列的属性，比如颜色、形状等；聚合阶段则通过网络聚合用户提供的描述属性来预测mask。最后如上图右所示，能得到较好的结果。</p>
+<h2 id="AttrSeg方法">AttrSeg方法</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061658409.png" srcset="/img/loading.gif" lazyload alt="AttrSeg"></p>
+<h3 id="Decomposition-Stage">Decomposition Stage</h3>
+<p>对于通常的数据集（PASCAL、COCO），LLM可以得到它们的属性。同时这篇文章也搜集了一个新的数据集“Fantastic Beasts”，其包含20种哈利波特神奇动物系列电影的奇幻生物，并且人工标注了每个类别的属性。</p>
+<h3 id="Aggregation-Stage">Aggregation Stage</h3>
+<p>对于图片提取CLIP视觉特征，对于属性，分开提取CLIP文本特征。</p>
+<p>Agg阶段使用了分级设计，如上图（b）所示，一个block（图上说stage，但是有点混淆）包含Fusion和Cluster两个模块，前者是一个普通的Transformer Encoder Layer，后者则如图（b）最右边所示是一个比较复杂的结构，其作用是根据视觉信息和属性信息，来得到一个全局的属性表征，其具体设计架构如下：</p>
+<ol>
+<li>初始化几个可学习的向量，对视觉和文本特征分别做交叉注意力</li>
+<li>与文本额外做一个Slot Attention，算法如下图所示，基本上就是cross-attention中注意力机制后加一个GRU。在Slot Attention中，是同一份参数反复迭代T次得到输出，但是这篇文章没有细说迭代多少次。</li>
+<li>这些cluster tokens最后通过MLP-Mixer的架构进行token和channel的mixing进行编码，相当于一个简化版的Transformer层。</li>
+</ol>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061728417.png" srcset="/img/loading.gif" lazyload alt="Slot Attention"></p>
+<p>不同block输入的可学习向量的个数不一样，最后一层使用1个向量，就能得到全局的文本侧（标签侧）表征。</p>
+<p>最后，利用两路特征，通过相似度比较和上采样就能得到分割结果。</p>
+<p>除了层级聚合的架构，作者尝试了以下的几种架构，后续有消融实验。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061734923.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<blockquote>
+<p>文章认为属性potentially contain hierarchy，所以设计了层级聚合，但是后面却没有这个结论的验证和讨论，这一部分研究动机我觉得是欠缺的。</p>
+</blockquote>
+<h2 id="实验">实验</h2>
+<h3 id="实验配置">实验配置</h3>
+<p>OVSS的标准实验是PASCAL-5<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8247em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span></span></span></span></span></span></span></span>和COCO-20<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mi>i</mi></msup></mrow><annotation encoding="application/x-tex">^i</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8247em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8247em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span></span></span></span></span></span></span></span>数据集，前者20个类别，每个fold15个训练、5个测试，总共有4个folds；后者则是80各类别分成4个folds。训练好后，还在PASCAL VOC和PASCAL-Context上进行验证。除此以外，他们还在自己弄的Fantastic Beasts的20类别上验证。mIoU作为指标。</p>
+<p>AttrSeg整了两个版本，使用CLIP ViT-L和ResNet101为backbone，类别对应15个属性。</p>
+<h3 id="实验表格">实验表格</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061741203.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061742591.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>相关文献比较少，已有文献的比较结果都比较好。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061742863.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061744825.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>在他们自己的数据集上也体现了优势，同时FB这个数据集上用attr的方式才能行得通，否则mIoU会非常非常低。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061745895.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>对于agg的策略，结合前面几个表格，post是传统方法中最好的，而层级式的是最好的，提点很多。</p>
+<blockquote>
+<p>鉴于Hrchy的方法引入了非常多的参数量，这里有一些不公平比较的嫌疑，可能参数量多效果就更好</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061749746.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>各个模块的消融实验，Mini的set指的是只留下Slot-Attention。可以发现，去掉MLP-Mixer后参数下降，表达能力也下降。CrossAttn和Slot-Attention感觉上作用是有一些重复的，但是实验这里去掉了Attr的CrossAttn后结果是有一定下降的。</p>
+<blockquote>
+<p>为什么不做去掉Slot-Attention的实验呢？</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061757087.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>作者进行了噪声对识别效果影响的实验，inaccurate是给属性中加一些相同类别其它图片的属性，incorrect则是加一些完全不同类别的属性，<strong>这两种“加料”均在训练阶段进行</strong>。加上之后，性能有一定的下降，作者使用VLM进行简单的过滤得到了一定的效果。</p>
+<blockquote>
+<p>这个实验很令人迷惑，应该是一个类别对应一批属性，这里Inaccurate是怎么做的？人为标注一些inaccurate的数据吗？</p>
+<p>而且，为什么要在训练阶段加噪声呢，不应该都在推理阶段进行吗，考验用户输入带噪时模型的表现？</p>
+<p>VLM filtering的具体设置没有介绍，而且单独VLM filtering在测试阶段进行。</p>
+<p>而且就单独这一个表没有说是在什么数据集上使用什么模型进行的实验。</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061805024.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这个实验大概将属性分成了4类，考察了每个类别的贡献。</p>
+<blockquote>
+<p>叠加形式的实验感觉不是很能体现哪个最要紧，根据差值是Shape最重要，但是Color重不重要完全体现不出啊。</p>
+<p>假如是我，我会标注差值或者使用移除的方式进行实验。</p>
+</blockquote>
+<h3 id="可视化">可视化</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202404061809114.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="结论">结论</h2>
+<p>这篇论文的部分研究故事是我很感兴趣的，即通过属性的方式解决Ambiguity、Neologism、Unnameability三个OV中会遇到的问题，但是层级和部分实验感觉不太行。</p>
+<blockquote>
+<p>类似思路：[论文笔记 Multi-modal Prompting for Low-Shot Temporal Action Localization - Kamino’s Blog](<a href="https://blog.kamino.link/2024/02/05/multi-modal">https://blog.kamino.link/2024/02/05/multi-modal</a> prompting for low-shot TAL/)</p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Semantic-Segmentation/">Semantic Segmentation</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Open-Vocabulary/">Open-Vocabulary</a>
+                    
+                      <a class="hover-with-bg" href="/tags/AttrSeg/">AttrSeg</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/04/10/decola/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文笔记 Language-conditioned Detection Transformer</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/03/27/RWKV/">
+                        <span class="hidden-mobile">论文笔记 RWKV：Reinventing RNNs for the Transformer Era</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
