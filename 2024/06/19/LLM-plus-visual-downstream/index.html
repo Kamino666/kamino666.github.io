@@ -1,0 +1,688 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="最近，使用大语言模型（LLM）和多模态大语言模型（Multimodal LLM, MLLM）进行视觉下游任务的方法越来越多，本文对相关文献进行初步的调研，并形成了一篇总结的文章。（因个人水平，无法覆盖全，望谅解）。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="最近，使用大语言模型（LLM）和多模态大语言模型（Multimodal LLM, MLLM）进行视觉下游任务的方法越来越多，本文对相关文献进行初步的调研，并形成了一篇总结的文章。（因个人水平，无法覆盖全，望谅解）。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="近期LLM+视觉下游任务方法总结">
+<meta property="og:url" content="http://blog.kamino.link/2024/06/19/LLM-plus-visual-downstream/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="最近，使用大语言模型（LLM）和多模态大语言模型（Multimodal LLM, MLLM）进行视觉下游任务的方法越来越多，本文对相关文献进行初步的调研，并形成了一篇总结的文章。（因个人水平，无法覆盖全，望谅解）。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191548030.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191551951.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191553941.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191558238.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191601031.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191603108.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192044264.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192049566.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192052283.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192103169.png">
+<meta property="article:published_time" content="2024-06-19T04:11:00.000Z">
+<meta property="article:modified_time" content="2024-06-19T13:15:33.358Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="MLLM">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191548030.png">
+  
+  <title>近期LLM+视觉下游任务方法总结 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="近期LLM+视觉下游任务方法总结">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2024-06-19 12:11" pubdate>
+        2024年6月19日 中午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      5.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      16 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">近期LLM+视觉下游任务方法总结</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年6月19日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>近期LLM+视觉下游任务方法总结</h1>
+<p>最近，使用大语言模型（LLM）和多模态大语言模型（Multimodal LLM, MLLM）进行视觉下游任务的方法越来越多，本文对相关文献进行初步的调研，并形成了一篇总结的文章。（因个人水平，无法覆盖全，望谅解）。</p>
+<h2 id="什么是LLM-MLLM？">什么是LLM/MLLM？</h2>
+<p>LLM的概念大家都知道，基本上就是GPT-3.5、LLaMa、Vicuna这样的模型，规模一般是7B、13B往上，处理文本任务。</p>
+<p><strong>MLLM</strong>（Multimodal Large Language Model）这个词可能不同文献有不同的说法，本文中将其定义为：相较于LLM来说，还能够输入图像/视频，并能够理解视觉内容并进行对话的模型。注意，虽然是说是多模态，但是我这边定义的MLLM基本都是处理图像的，并且只能输入图像而<strong>无法输出图像</strong>，比如MiniGPT-4、LLaVA这种模型。</p>
+<p>MLLM一般是通过额外的视觉编码器（基本都是CLIP）得到图像patch级别的特征，然后作为LLM的embedding输入。部分使用BLIP-2的结构，通过一个Q-former对CLIP提取的特征进行降维（将非常多的patch特征降成固定例如32个特征），使用这种方法的有Video-LLaMA<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="Video-LLaMA: An Instruction-tuned Audio-Visual Language Model for Video Understanding, EMNLP’23
+">[1]</span></a></sup>、TimeChat<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="TimeChat: A Time-sensitive Multimodal Large Language Model for Long Video Understanding, CVPR’24
+">[2]</span></a></sup>、AutoAD III<sup id="fnref:3" class="footnote-ref"><a href="#fn:3" rel="footnote"><span class="hint--top hint--rounded" aria-label="AutoAD III: The Prequel - Back to the Pixels, CVPR’24
+">[3]</span></a></sup>、InstructBLIP<sup id="fnref:4" class="footnote-ref"><a href="#fn:4" rel="footnote"><span class="hint--top hint--rounded" aria-label="Instructblip: Towards general-purpose vision-language models with instruction tuning, NeurIPS’24
+">[4]</span></a></sup>、MiniGPT-4<sup id="fnref:5" class="footnote-ref"><a href="#fn:5" rel="footnote"><span class="hint--top hint--rounded" aria-label="MiniGPT-4: Enhancing Vision-Language Understanding with Advanced Large Language Models, ICLR’24
+">[5]</span></a></sup>等。还有的直接将CLIP的特征通过简单的相信层映射到LLM的空间中，比如LLaVA<sup id="fnref:6" class="footnote-ref"><a href="#fn:6" rel="footnote"><span class="hint--top hint--rounded" aria-label="Visual Instruction Tuning, NeurIPS’23.
+">[6]</span></a></sup>。还有少部分位于其中，比如Flamingo<sup id="fnref:7" class="footnote-ref"><a href="#fn:7" rel="footnote"><span class="hint--top hint--rounded" aria-label="Flamingo: a Visual Language Model for Few-Shot Learning, NeurIPS’22
+">[7]</span></a></sup>使用了交叉注意力的方式嵌入LLM，KOSMOS-1<sup id="fnref:8" class="footnote-ref"><a href="#fn:8" rel="footnote"><span class="hint--top hint--rounded" aria-label="Language Is Not All You Need: Aligning Perception with Language Models, NeurIPS’23
+">[8]</span></a></sup>和KOSMOS-2<sup id="fnref:9" class="footnote-ref"><a href="#fn:9" rel="footnote"><span class="hint--top hint--rounded" aria-label="KOSMOS-2: Grounding Multimodal Large Language Models to the World, ICLR’24
+">[9]</span></a></sup>使用了相同的Attentive Pooling方法来进行Q-Former的任务。</p>
+<h2 id="LLM在视觉下游任务的问题">LLM在视觉下游任务的问题</h2>
+<p>在NLP领域，LLM将翻译、总结、生成、问答等任务都统一为<strong>生成式对话任务</strong>。在CV领域，目标检测、图像分割、视频检索、目标跟踪、图像/视频生成、视频总结、异常视频检测这些任务的输出是<strong>异构</strong>的，<strong>任务之间趋于独立</strong>，<strong>需要额外的模块或新的大模型架构</strong>。</p>
+<p>比如目标检测需要得到框，即至少两个图像坐标；图像分割则需要得到mask，是像素级别的数据；视频检索则是得到视频的表征向量，或者利用MLLM生成的文本来进行检索……这些任务很难统一。</p>
+<h2 id="目前的两大解决方法">目前的两大解决方法</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191548030.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示，LLM在视觉下游任务可以分为<strong>以大模型为主体</strong>和<strong>以大模型和任务特定模型为主体</strong>的两类方法。</p>
+<h3 id="以大模型为主体">以大模型为主体</h3>
+<p>KOSMOS-2<sup id="fnref:9" class="footnote-ref"><a href="#fn:9" rel="footnote"><span class="hint--top hint--rounded" aria-label="KOSMOS-2: Grounding Multimodal Large Language Models to the World, ICLR’24
+">[9]</span></a></sup>将图像的不同坐标离散化为token，虽然有一定的量化误差，但是能够支持用户输入框，模型也能输出框。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191551951.png" srcset="/img/loading.gif" lazyload alt="KOSMOS-2"></p>
+<p>LITA<sup id="fnref:10" class="footnote-ref"><a href="#fn:10" rel="footnote"><span class="hint--top hint--rounded" aria-label="LITA: Language Instructed Temporal-Localization Assistant, ArXiv/2403.19046
+">[10]</span></a></sup>处理视频，将视频的timestamp离散化为T个token，能够让模型输出视频的相对位置。比如&lt;1&gt; &lt;3&gt;就是从1%到3%的区间。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191553941.png" srcset="/img/loading.gif" lazyload alt="LITA"></p>
+<p>TimeChat<sup id="fnref:2" class="footnote-ref"><a href="#fn:2" rel="footnote"><span class="hint--top hint--rounded" aria-label="TimeChat: A Time-sensitive Multimodal Large Language Model for Long Video Understanding, CVPR’24
+">[2]</span></a></sup>也是处理视频的，但是它输出绝对时间。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191558238.png" srcset="/img/loading.gif" lazyload alt="TimeChat"></p>
+<p>Momentor<sup id="fnref:11" class="footnote-ref"><a href="#fn:11" rel="footnote"><span class="hint--top hint--rounded" aria-label="Momentor: Advancing Video Large Language Model with Fine-Grained Temporal Reasoning. ArXiv/2402.11435
+">[11]</span></a></sup>在训练时将时间戳token进行了优化，将每个时间戳token融入相邻时间戳的梯度，并通过插值可以得到任意时间点的特征，避免了量化误差。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191601031.png" srcset="/img/loading.gif" lazyload alt="Momentor"></p>
+<h3 id="以大模型和任务特定模型为主体">以大模型和任务特定模型为主体</h3>
+<p>然而，单纯使用大模型进行特定任务是有极限的，对于某些任务就不太合适了。同样举几个例子：</p>
+<h4 id="【LLM-图像生成】DreamLLM">【LLM+图像生成】DreamLLM</h4>
+<p><strong>DreamLLM</strong><sup id="fnref:12" class="footnote-ref"><a href="#fn:12" rel="footnote"><span class="hint--top hint--rounded" aria-label="DreamLLM: Synergistic Multimodal Comprehension and Creation, ICLR’24.
+">[12]</span></a></sup>将LLM赋予了图像理解和<strong>生成</strong>能力。<strong>对于生成来说</strong>，它使用了一批dream queries，这些queries和BLIP-2的learnable queries一样，属于模型可学习的一组参数。这些queries在编码之后，就会得到一批embedding，这批embedding将会作为Stable Diffusion模型的condition，进行图像生成。<strong>对于理解来说</strong>，它会和别的模型一样将图像通过编码器得到特征输入到LLM中。</p>
+<p>训练时，DreamLLM使用Interleave的数据（即像本博客一样，图文交叉的形式）。当需要图片输入进去的时候，会在前面添加一个特殊的<code>&lt;dream&gt;</code>token，然后输入一批dream queries，之后再将图片通过视觉编码器编码为visual embedding，再进行接下来的生成。</p>
+<p>特别的，图像生成的时候，使用了DreamFusion<sup id="fnref:13" class="footnote-ref"><a href="#fn:13" rel="footnote"><span class="hint--top hint--rounded" aria-label="DreamFusion: Text-to-3D using 2D Diffusion, ICLR’23
+">[13]</span></a></sup>中的Score Distillation Sampling（SDS）作为图像生成部分的损失函数。直观的来说，SDS就是将扩散模型作为了一个现有的评价模型，这个评价模型不更新参数，但它会给你一个loss，告诉你的condition生成得好不好。</p>
+<blockquote>
+<p>具体来说，它用的SDS损失如下所示，对于从正态分布中采样的噪声<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ϵ</mi></mrow><annotation encoding="application/x-tex">\epsilon</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal">ϵ</span></span></span></span>、以及从0~1随机选择的扩散步数<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span>，需要使估计噪声与真实噪声MSE最小。而估计噪声是根据<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>t</mi></mrow><annotation encoding="application/x-tex">t</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6151em;"></span><span class="mord mathnormal">t</span></span></span></span>、扩散模型参数以及DreamLLM给的condition决定的。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><msubsup><mi mathvariant="script">L</mi><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">M</mi></mrow><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">R</mi><mi mathvariant="normal">E</mi><mi mathvariant="normal">A</mi><mi mathvariant="normal">M</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">L</mi><mi mathvariant="normal">M</mi></mrow></msubsup><mo stretchy="false">(</mo><mi>θ</mi><mo separator="true">,</mo><mi mathvariant="bold">d</mi><mo separator="true">,</mo><mi>ζ</mi><mo separator="true">,</mo><mi>ψ</mi><mo separator="true">,</mo><mi mathvariant="bold">z</mi><mo stretchy="false">)</mo><mo>:</mo><mo>=</mo><msub><mi mathvariant="double-struck">E</mi><mrow><mi>t</mi><mo>∼</mo><mi mathvariant="script">U</mi><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo><mo separator="true">,</mo><mi mathvariant="bold-italic">ϵ</mi><mo>∼</mo><mi mathvariant="script">N</mi><mo stretchy="false">(</mo><mn mathvariant="bold">0</mn><mo separator="true">,</mo><mi mathvariant="bold">I</mi><mo stretchy="false">)</mo></mrow></msub><mrow><mo fence="true">[</mo><msup><mrow><mo fence="true">∥</mo><msub><mi mathvariant="bold-italic">ϵ</mi><mi>ξ</mi></msub><mrow><mo fence="true">(</mo><msub><mi mathvariant="bold">z</mi><mi>t</mi></msub><mo separator="true">;</mo><msup><mi mathvariant="script">C</mi><mtext>DREAMLLM </mtext></msup><mo separator="true">,</mo><mi>t</mi><mo fence="true">)</mo></mrow><mo>−</mo><mi mathvariant="bold-italic">ϵ</mi><mo fence="true">∥</mo></mrow><mn>2</mn></msup><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\mathcal{L}_{\mathrm{DM}}^{\mathrm{DREAMLLM}}(\theta, \mathbf{d}, \zeta, \psi, \mathbf{z}):=\mathbb{E}_{t \sim \mathcal{U}(0,1), \boldsymbol{\epsilon} \sim \mathcal{N}(\mathbf{0}, \mathbf{I})}\left[\left\|\boldsymbol{\epsilon}_{\xi}\left(\mathbf{z}_t ; \mathcal{C}^{\text {DREAMLLM }}, t\right)-\boldsymbol{\epsilon}\right\|^2\right]
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.1413em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathcal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">DM</span></span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">DREAMLLM</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.02778em;">θ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">d</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.07378em;">ζ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">ψ</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathbf">z</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.8em;vertical-align:-0.65em;"></span><span class="mord"><span class="mord mathbb">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5198em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mrel mtight">∼</span><span class="mord mathcal mtight" style="margin-right:0.09931em;">U</span><span class="mopen mtight">(</span><span class="mord mtight">0</span><span class="mpunct mtight">,</span><span class="mord mtight">1</span><span class="mclose mtight">)</span><span class="mpunct mtight">,</span><span class="mord mtight"><span class="mord mtight"><span class="mord boldsymbol mtight">ϵ</span></span></span><span class="mrel mtight">∼</span><span class="mord mathcal mtight" style="margin-right:0.14736em;">N</span><span class="mopen mtight">(</span><span class="mord mathbf mtight">0</span><span class="mpunct mtight">,</span><span class="mord mathbf mtight">I</span><span class="mclose mtight">)</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3552em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size2">[</span></span><span class="minner"><span class="minner"><span class="mopen"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-2.85em;"><span class="pstrut" style="height:3.2em;"></span><span style="width:0.556em;height:1.200em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.556em' height='1.200em' viewBox='0 0 556 1200'><path d='M145 15 v585 v0 v585 c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v0 v585 h43z
+M367 15 v585 v0 v585 c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v0 v585 h43z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span></span><span class="mord"><span class="mord"><span class="mord"><span class="mord boldsymbol">ϵ</span></span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.04601em;">ξ</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">;</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DREAMLLM </span></span></span></span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal">t</span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord"><span class="mord boldsymbol">ϵ</span></span></span><span class="mclose"><span class="delimsizing mult"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.85em;"><span style="top:-2.85em;"><span class="pstrut" style="height:3.2em;"></span><span style="width:0.556em;height:1.200em;"><svg xmlns="http://www.w3.org/2000/svg" width='0.556em' height='1.200em' viewBox='0 0 556 1200'><path d='M145 15 v585 v0 v585 c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M188 15 H145 v585 v0 v585 h43z
+M367 15 v585 v0 v585 c2.667,10,9.667,15,21,15
+c10,0,16.667,-5,20,-15 v-585 v0 v-585 c-2.667,-10,-9.667,-15,-21,-15
+c-10,0,-16.667,5,-20,15z M410 15 H367 v585 v0 v585 h43z'/></svg></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.35em;"><span></span></span></span></span></span></span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:1.0953em;"><span style="top:-3.3442em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size2">]</span></span></span></span></span></span></span></p>
+<p>根据文献<sup id="fnref:13" class="footnote-ref"><a href="#fn:13" rel="footnote"><span class="hint--top hint--rounded" aria-label="DreamFusion: Text-to-3D using 2D Diffusion, ICLR’23
+">[13]</span></a></sup>的结论上面这个loss在<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>ξ</mi></mrow><annotation encoding="application/x-tex">\xi</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.04601em;">ξ</span></span></span></span>不变时等价于下面这个。这个公式先看<code>,</code>逗号，再看<code>|</code>，也就是两个条件概率的KL散度，第一个条件概率是 <code>扩散模型</code>+<code>(可能不准确的)condition</code> 得到的图像分布，第二个则是扩散模型原本的分布，最小化这个KL散度，就能够学到一个合理的condition。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><munder><mrow><mi>min</mi><mo>⁡</mo></mrow><mrow><mi>θ</mi><mo separator="true">,</mo><mi mathvariant="bold">d</mi><mo separator="true">,</mo><mi>ζ</mi><mo separator="true">,</mo><mi>ψ</mi></mrow></munder><msubsup><mi mathvariant="script">L</mi><mrow><mi mathvariant="normal">D</mi><mi mathvariant="normal">M</mi></mrow><mtext>DREAMLLM </mtext></msubsup><mo>:</mo><mo>=</mo><msub><mi mathvariant="double-struck">E</mi><mrow><mi>t</mi><mo separator="true">,</mo><msup><mi mathvariant="script">C</mi><mtext>DREAMLLM </mtext></msup></mrow></msub><mrow><mo fence="true">[</mo><msub><mi>D</mi><mrow><mi mathvariant="normal">K</mi><mi mathvariant="normal">L</mi></mrow></msub><mrow><mo fence="true">(</mo><mi>q</mi><mrow><mo fence="true">(</mo><msub><mi mathvariant="bold">z</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>∣</mo><msub><mi mathvariant="bold">z</mi><mi>t</mi></msub><mo separator="true">,</mo><msub><mi mathvariant="bold">z</mi><mn>1</mn></msub><mo separator="true">,</mo><msup><mi mathvariant="script">C</mi><mtext>DREAMLLM </mtext></msup><mo fence="true">)</mo></mrow><mi mathvariant="normal">∥</mi><msub><mi>p</mi><mi>ξ</mi></msub><mrow><mo fence="true">(</mo><msub><mi mathvariant="bold">z</mi><mrow><mi>t</mi><mo>−</mo><mn>1</mn></mrow></msub><mo>∣</mo><msub><mi mathvariant="bold">z</mi><mi>t</mi></msub><mo fence="true">)</mo></mrow><mo fence="true">)</mo></mrow><mo fence="true">]</mo></mrow></mrow><annotation encoding="application/x-tex">\min _{\theta, \mathbf{d}, \zeta, \psi} \mathcal{L}_{\mathrm{DM}}^{\text {DREAMLLM }}:=\mathbb{E}_{t, \mathcal{C}^{\text {DREAMLLM }}}\left[D_{\mathrm{KL}}\left(q\left(\mathbf{z}_{t-1} \mid \mathbf{z}_t, \mathbf{z}_1, \mathcal{C}^{\text {DREAMLLM }}\right) \| p_{\xi}\left(\mathbf{z}_{t-1} \mid \mathbf{z}_t\right)\right)\right]
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.7795em;vertical-align:-0.8882em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.6679em;"><span style="top:-2.3479em;margin-left:0em;"><span class="pstrut" style="height:3em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.02778em;">θ</span><span class="mpunct mtight">,</span><span class="mord mathbf mtight">d</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.07378em;">ζ</span><span class="mpunct mtight">,</span><span class="mord mathnormal mtight" style="margin-right:0.03588em;">ψ</span></span></span></span><span style="top:-3em;"><span class="pstrut" style="height:3em;"></span><span><span class="mop">min</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8882em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathcal">L</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-2.453em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">DM</span></span></span></span></span><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DREAMLLM </span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.247em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">:=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.2413em;vertical-align:-0.35em;"></span><span class="mord"><span class="mord mathbb">E</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3448em;"><span style="top:-2.5029em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mpunct mtight">,</span><span class="mord mtight"><span class="mord mathcal mtight" style="margin-right:0.05834em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.7741em;"><span style="top:-2.786em;margin-right:0.0714em;"><span class="pstrut" style="height:2.5em;"></span><span class="sizing reset-size3 size1 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DREAMLLM </span></span></span></span></span></span></span></span></span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.3332em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">[</span></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.02778em;">D</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-left:-0.0278em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mtight"><span class="mord mathrm mtight">KL</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord mathnormal" style="margin-right:0.03588em;">q</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;"><span class="delimsizing size1">(</span></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathcal" style="margin-right:0.05834em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8913em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">DREAMLLM </span></span></span></span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">∥</span><span class="mord"><span class="mord mathnormal">p</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3361em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.04601em;">ξ</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2861em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="minner"><span class="mopen delimcenter" style="top:0em;">(</span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3011em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">t</span><span class="mbin mtight">−</span><span class="mord mtight">1</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.2083em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∣</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mord"><span class="mord mathbf">z</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.2806em;"><span style="top:-2.55em;margin-left:0em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">t</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose delimcenter" style="top:0em;">)</span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">)</span></span></span><span class="mclose delimcenter" style="top:0em;"><span class="delimsizing size1">]</span></span></span></span></span></span></span></p>
+<p>本质上就是给原图加上一些噪声，然后提供给扩散模型一点提示（condition），让他能够去除这个噪声。到了测试的时候，就可以从纯噪声根据学出来的condition来一步步恢复原来的图像。</p>
+</blockquote>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406191603108.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>总之，DreamLLM通过一个外置的扩散模型，得到了图像生成的能力。</p>
+<p>DreamLLM引用了三篇论文<sup id="fnref:14" class="footnote-ref"><a href="#fn:14" rel="footnote"><span class="hint--top hint--rounded" aria-label="Generating Images with Multimodal Language Models, NeurIPS’23
+">[14]</span></a></sup><sup id="fnref:15" class="footnote-ref"><a href="#fn:15" rel="footnote"><span class="hint--top hint--rounded" aria-label="Emu: Generative Pretraining in Multimodality, ICLR’24
+">[15]</span></a></sup><sup id="fnref:16" class="footnote-ref"><a href="#fn:16" rel="footnote"><span class="hint--top hint--rounded" aria-label="Planting a SEED of Vision in Large Language Model, ICLR’24
+">[16]</span></a></sup>，都是使用类似的外置SD的方法，也都是生成对应SD的condition，只不过没有用SDS。</p>
+<h4 id="【LLM-图像分割】LISA-Reasoning-Segmentation-via-Large-Language-Model">【LLM+图像分割】LISA: Reasoning Segmentation via Large Language Model</h4>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192044264.png" srcset="/img/loading.gif" lazyload alt="LISA"></p>
+<p>LISA<sup id="fnref:17" class="footnote-ref"><a href="#fn:17" rel="footnote"><span class="hint--top hint--rounded" aria-label="LISA: Reasoning Segmentation via Large Language Model, ArXiv/2023
+">[17]</span></a></sup>的架构如上，非常简单，下路的MLLM+LoRA是LLaVA的微调 ，上面的VIsion Backbone+Decoder是SAM的微调。SAM的Decoder可以接受prompt，这个prompt就被改成了一个特殊的<code>&lt;SEG&gt;</code>token。</p>
+<p>利用LISA可以实现模型进行Reasonal的分割，即使用户没有明说要分割什么，也可以利用LLM的推理能力进行分割。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192049566.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>对于LISA，也有进化后的模型，比如清华的GSVA<sup id="fnref:18" class="footnote-ref"><a href="#fn:18" rel="footnote"><span class="hint--top hint--rounded" aria-label="GSVA: Generalized Segmentation via Multimodal Large Language Models, CVPR’24
+">[18]</span></a></sup>，字节的PixelLM<sup id="fnref:19" class="footnote-ref"><a href="#fn:19" rel="footnote"><span class="hint--top hint--rounded" aria-label="PixelLM: Pixel Reasoning with Large Multimodal Model, CVPR’24
+">[19]</span></a></sup>，美团的LaSagnA<sup id="fnref:20" class="footnote-ref"><a href="#fn:20" rel="footnote"><span class="hint--top hint--rounded" aria-label="LaSagnA: Language-based Segmentation Assistant for Complex Queries, ArXiv/2404.08506
+">[20]</span></a></sup>。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192052283.png" srcset="/img/loading.gif" lazyload alt="GSVA"></p>
+<h4 id="【LLM-多模态生成】">【LLM+多模态生成】</h4>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202406192103169.png" srcset="/img/loading.gif" lazyload alt="X-VILA"></p>
+<p>X-VILA<sup id="fnref:21" class="footnote-ref"><a href="#fn:21" rel="footnote"><span class="hint--top hint--rounded" aria-label="X-VILA: Cross-Modality Alignment for Large Language Model, ArXiv/2405.19335
+">[21]</span></a></sup>将LLM与更多模态连接起来了，不同模态能够映射到同一个Textual Embedding Space，使用LLM进行交互，然后再映射到不同生成模型作为condition，从而生成图像、视频、音频。</p>
+<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span>Video-LLaMA: An Instruction-tuned Audio-Visual Language Model for Video Understanding, EMNLP’23
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:2" class="footnote-text"><span>TimeChat: A Time-sensitive Multimodal Large Language Model for Long Video Understanding, CVPR’24
+<a href="#fnref:2" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:3" class="footnote-text"><span>AutoAD III: The Prequel - Back to the Pixels, CVPR’24
+<a href="#fnref:3" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:4" class="footnote-text"><span>Instructblip: Towards general-purpose vision-language models with instruction tuning, NeurIPS’24
+<a href="#fnref:4" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:5" class="footnote-text"><span>MiniGPT-4: Enhancing Vision-Language Understanding with Advanced Large Language Models, ICLR’24
+<a href="#fnref:5" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:6" class="footnote-text"><span>Visual Instruction Tuning, NeurIPS’23.
+<a href="#fnref:6" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:7" class="footnote-text"><span>Flamingo: a Visual Language Model for Few-Shot Learning, NeurIPS’22
+<a href="#fnref:7" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:8" class="footnote-text"><span>Language Is Not All You Need: Aligning Perception with Language Models, NeurIPS’23
+<a href="#fnref:8" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:9" class="footnote-text"><span>KOSMOS-2: Grounding Multimodal Large Language Models to the World, ICLR’24
+<a href="#fnref:9" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:10" class="footnote-text"><span>LITA: Language Instructed Temporal-Localization Assistant, ArXiv/2403.19046
+<a href="#fnref:10" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:11" class="footnote-text"><span>Momentor: Advancing Video Large Language Model with Fine-Grained Temporal Reasoning. ArXiv/2402.11435
+<a href="#fnref:11" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:12" class="footnote-text"><span>DreamLLM: Synergistic Multimodal Comprehension and Creation, ICLR’24.
+<a href="#fnref:12" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:13" class="footnote-text"><span>DreamFusion: Text-to-3D using 2D Diffusion, ICLR’23
+<a href="#fnref:13" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:14" class="footnote-text"><span>Generating Images with Multimodal Language Models, NeurIPS’23
+<a href="#fnref:14" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:15" class="footnote-text"><span>Emu: Generative Pretraining in Multimodality, ICLR’24
+<a href="#fnref:15" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:16" class="footnote-text"><span>Planting a SEED of Vision in Large Language Model, ICLR’24
+<a href="#fnref:16" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:17" class="footnote-text"><span>LISA: Reasoning Segmentation via Large Language Model, ArXiv/2023
+<a href="#fnref:17" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:18" class="footnote-text"><span>GSVA: Generalized Segmentation via Multimodal Large Language Models, CVPR’24
+<a href="#fnref:18" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:19" class="footnote-text"><span>PixelLM: Pixel Reasoning with Large Multimodal Model, CVPR’24
+<a href="#fnref:19" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:20" class="footnote-text"><span>LaSagnA: Language-based Segmentation Assistant for Complex Queries, ArXiv/2404.08506
+<a href="#fnref:20" rev="footnote" class="footnote-backref"> ↩</a></span></span></li><li><span id="fn:21" class="footnote-text"><span>X-VILA: Cross-Modality Alignment for Large Language Model, ArXiv/2405.19335
+<a href="#fnref:21" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/LLM/">LLM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/MLLM/">MLLM</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/13/UniVTG/">
+                        <span class="hidden-mobile">论文笔记 UniVTG：Towards Unified Video-Language Temporal Grounding</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
