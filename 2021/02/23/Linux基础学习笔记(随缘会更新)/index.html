@@ -28,7 +28,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/20210223234253.png">
 <meta property="article:published_time" content="2021-02-23T07:20:00.000Z">
-<meta property="article:modified_time" content="2022-10-29T04:48:45.636Z">
+<meta property="article:modified_time" content="2024-09-08T08:41:08.743Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="Linux">
 <meta name="twitter:card" content="summary_large_image">
@@ -214,7 +214,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      3.8k 字
+      4.8k 字
     </span>
   
 
@@ -223,7 +223,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      12 分钟
+      15 分钟
     </span>
   
 
@@ -264,7 +264,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2022年10月29日 下午
+                  本文最后更新于：2024年9月8日 下午
                 
               </p>
             
@@ -276,12 +276,14 @@
 <li>第二次更新：更新了一些超常用的命令速查</li>
 <li>第三次更新：新增了一下命令</li>
 <li>第四次更新：新增了scp相关命令</li>
+<li>第五次更新：增加了虚拟环境相关命令和少量常用命令</li>
 </ul>
 <h2 id="超常用命令速查！！">超常用命令速查！！</h2>
-<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">ls -alh  <span class="hljs-comment"># 人性化显示所有文件</span><br>tar -cvf xxx.tar ./data1/ ./data2/  <span class="hljs-comment"># 打包文件，不压缩！</span><br>tar -czvf xxx.tar.gz ./data1/ ./data2/  <span class="hljs-comment"># 压缩文件</span><br>tar -xvf xxx.tar -C ./data/ <span class="hljs-comment"># 解压xxx.tar</span><br>du -h /data/  <span class="hljs-comment"># 人性化显示文件占用磁盘大小</span><br>df -h  <span class="hljs-comment"># 显示磁盘分区可用空间</span><br>find /var/<span class="hljs-built_in">log</span>/ -<span class="hljs-built_in">type</span> f -<span class="hljs-built_in">print</span> | wc -l  <span class="hljs-comment"># 查看目录下有多少文件</span><br></code></pre></td></tr></table></figure>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash">ls -alh  <span class="hljs-comment"># 人性化显示所有文件</span><br>ll  <span class="hljs-comment"># 和ls -lsat差不多</span><br><br>tar -cvf xxx.tar ./data1/ ./data2/  <span class="hljs-comment"># 打包文件，不压缩！</span><br>tar -czvf xxx.tar.gz ./data1/ ./data2/  <span class="hljs-comment"># 压缩文件</span><br>tar -xvf xxx.tar -C ./data/ <span class="hljs-comment"># 解压xxx.tar到指定目录</span><br>tar -xzvf xxx.tar -C ./data/ <span class="hljs-comment"># 解压xxx.tar.gz到指定目录</span><br><br>du -h /data/  <span class="hljs-comment"># 人性化显示文件占用磁盘大小</span><br>df -h  <span class="hljs-comment"># 显示磁盘分区可用空间</span><br>find /var/<span class="hljs-built_in">log</span>/ -<span class="hljs-built_in">type</span> f -<span class="hljs-built_in">print</span> | wc -l  <span class="hljs-comment"># 查看目录下有多少文件</span><br>ls -l /path/to/directory | grep -v <span class="hljs-string">&#x27;^d&#x27;</span> | wc -l  <span class="hljs-comment"># 查看目录下有多少文件</span><br><br>ps aux | grep xxx  <span class="hljs-comment"># 查看所有用户的xxx的进程</span><br></code></pre></td></tr></table></figure>
 <h2 id="特殊符号">特殊符号</h2>
 <p><code>|</code>：管道，上一条命令的输出作为下一条命令的参数</p>
 <p><code>&amp;</code>：任务后台执行<code>redis-server &amp;</code></p>
+<p><code>nohup</code>：<code>nohup command &gt; /path/to/log.log 2&gt;&amp;1 &amp;</code> 后台执行命令，并将输出写到log中</p>
 <p><code>&amp;&amp;</code>：前一条命令成功时执行后一条命令</p>
 <p><code>||</code>：前一条命令失败时执行下一条命令</p>
 <h2 id="文件与目录管理">文件与目录管理</h2>
@@ -331,6 +333,8 @@
 <h3 id="GPU使用信息">GPU使用信息</h3>
 <p>跑深度学习模型的时候常用</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">nvidia-smi  # 查看显存、GPU使用率等<br></code></pre></td></tr></table></figure>
+<p>此外，可以<code>pip install gpu-stat</code>这个工具</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">gpustat  <span class="hljs-comment"># 显示GPU的一些信息，比nvidia-smi更直观</span><br>gpustat -i  <span class="hljs-comment"># 持续刷新信息</span><br></code></pre></td></tr></table></figure>
 <h3 id="ps命令">ps命令</h3>
 <p>ps是Process Status缩写，用来列出系统进程。linux进程有这几种状态：运行<strong>R</strong>、停止<strong>T</strong>、睡眠<strong>S</strong>（Interruptible sleep）、不可中断睡眠<strong>D</strong> ( Uninterruptible sleep，通常是IO )、僵尸<strong>Z</strong>。</p>
 <p>其中，睡眠状态指的是进程在等待某些事件或外部中断发生；不可中断睡眠指的是进程不接受外来信号中断，这个过程比较短暂；僵尸状态指的是进程在退出过程中，系统回收所有资源，但留下了进程的描述符，它的父进程可能会用到。</p>
@@ -356,6 +360,11 @@
 <p>当地址为远程时，使用这种格式：<code>&lt;用户名&gt;@&lt;IP&gt;:&lt;路径&gt;</code>，比如<code>root@192.168.23.4:/home/test.txt</code>。</p>
 <p>额外可以添加<code>-r</code>参数来复制目录。</p>
 <figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 将本地当前目录下的work目录复制到远程/home/kamino下</span><br>scp -r ./work kamino@123.123.44.44:/home/kamino<br><br><span class="hljs-comment"># 将远程/home/kamino/result.tar.gz复制到本地当前目录</span><br>scp kamino@123.123.44.44:/home/kamino/result.tar.gz .<br></code></pre></td></tr></table></figure>
+<h2 id="虚拟Python环境相关命令">虚拟Python环境相关命令</h2>
+<h3 id="pip相关">pip相关</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 导出requirements.txt的常用方法，下面两个都可用</span><br>pip freeze &gt; requirements.txt<br>pip list --format=freeze &gt; requirements.txt<br><br><span class="hljs-comment"># pipreqs，导出更简洁的requirements.txt</span><br>pip install pipreqs<br>pipreqs &lt;路径&gt; --encoding=utf-8<br><br><span class="hljs-comment"># 安装虚拟环境</span><br>pip install -r requirements.txt<br><br><span class="hljs-comment"># 安装包</span><br>pip install &lt;包名或者含有setup.py的路径&gt;<br>pip install -e &lt;路径&gt;  <span class="hljs-comment"># 以编辑模式安装</span><br>pip install git+https://github.com/openai/CLIP.git  <span class="hljs-comment"># 直接安装github上的库</span><br></code></pre></td></tr></table></figure>
+<h3 id="conda相关">conda相关</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 导出环境的YAML文件</span><br>conda env <span class="hljs-built_in">export</span> &gt; environment.yml<br><br><span class="hljs-comment"># 根据YAML创建环境</span><br>conda env create -f environment.yml<br><br><span class="hljs-comment"># 创建环境</span><br>conda env create \<br>   -n &lt;环境名字&gt;<br>   -p &lt;环境路径&gt;<br>   python=3.10  <span class="hljs-comment"># 指定版本</span><br>   <br><span class="hljs-comment"># 打包整个环境！！</span><br>pip install conda-pack<br>conda pack -n/-p &lt;环境名/路径&gt; -o &lt;导出路径.tar.gz&gt;  <span class="hljs-comment"># 导出是一个.tar.gz文件</span><br>tar -xzvf xxx.tar.gz  <span class="hljs-comment"># 解压出来就直接是一个可以activate的环境</span><br><br><span class="hljs-comment"># 激活</span><br>conda activate &lt;环境名字或者环境路径&gt;<br></code></pre></td></tr></table></figure>
 
             </div>
             <hr>
