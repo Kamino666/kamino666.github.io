@@ -1,0 +1,655 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="NeurIPS 2024的一篇论文，是Track on Datasets and Benchmarks上的，提出了一个新的多场景的异常检测数据集**MSAD**。MSAD包含了14个监控视角场景，包含与人相关和与人无关的类别，支持弱监督学习和自监督学习。文章给出了一个简单的综述，后面介绍了数据集的构成，最后跑了baseline。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="NeurIPS 2024的一篇论文，是Track on Datasets and Benchmarks上的，提出了一个新的多场景的异常检测数据集**MSAD**。MSAD包含了14个监控视角场景，包含与人相关和与人无关的类别，支持弱监督学习和自监督学习。文章给出了一个简单的综述，后面介绍了数据集的构成，最后跑了baseline。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 Advancing Video Anomaly Detection A Concise Review and a New Dataset">
+<meta property="og:url" content="http://blog.kamino.link/2024/12/03/MSAD/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="NeurIPS 2024的一篇论文，是Track on Datasets and Benchmarks上的，提出了一个新的多场景的异常检测数据集**MSAD**。MSAD包含了14个监控视角场景，包含与人相关和与人无关的类别，支持弱监督学习和自监督学习。文章给出了一个简单的综述，后面介绍了数据集的构成，最后跑了baseline。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031056422.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031154414.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031207877.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031208025.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031209868.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031222994.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031423355.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031442128.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031506252.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031508250.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031514503.png">
+<meta property="article:published_time" content="2024-12-03T02:29:00.000Z">
+<meta property="article:modified_time" content="2024-12-03T07:28:56.555Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="MSAD">
+<meta property="article:tag" content="异常检测">
+<meta property="article:tag" content="NIPS2024">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031056422.png">
+  
+  <title>论文笔记 Advancing Video Anomaly Detection A Concise Review and a New Dataset - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 Advancing Video Anomaly Detection A Concise Review and a New Dataset">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2024-12-03 10:29" pubdate>
+        2024年12月3日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.1k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 Advancing Video Anomaly Detection A Concise Review and a New Dataset</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年12月3日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>Advancing Video Anomaly Detection: A Concise Review and a New Dataset</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2402.04857">https://arxiv.org/abs/2402.04857</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/Tom-roujiang/MSAD">Github</a></p>
+<p>NeurIPS 2024的一篇论文，是Track on Datasets and Benchmarks上的，提出了一个新的多场景的异常检测数据集<strong>MSAD</strong>。MSAD包含了14个监控视角场景，包含与人相关和与人无关的类别，支持弱监督学习和自监督学习。</p>
+<p>文章给出了一个简单的综述，后面介绍了数据集的构成，最后跑了baseline。</p>
+<h2 id="异常检测综述">异常检测综述</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031056422.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>作者认为，异常视频检测（Video Anomaly Detection，VAD）领域早期的数据集较简单，比如Subway、UMN、UCSD Ped、CUHK Avenue这些只有较少的低质量视频、并且视角是固定的几个。ShanghaiTech数据集则有更多的视角，并设计了未见的异常类别。这些数据集的方法基本是传统方法，深度学习时代主要用的数据集是UCF-Crime和XD-Violence。</p>
+<p>作者还提到了few-shot学习的几个文献，比如<em>Model-Agnostic Meta-Learning for Fast Adaptation of Deep Networks</em>使用了<strong>元学习</strong>的方式，预训练后，在新视角下稍微微调一下就有好性能。（作者在这里给了6篇文献）</p>
+<p>对于VAD领域，作者认为自监督和弱监督是主流，因为这个领域数据比较稀缺。</p>
+<ul>
+<li>自监督的方法是说模型只在正常数据上训练，然后将偏离正常的数据点标记为异常。这类方法有基于reconstruction的、基于prediction的、基于distance的。但是问题是很难学习到所有正常的模式，<strong>并且相同的异常可能在不同场景下有不同的判断结果</strong>。</li>
+<li>弱监督的方法避免了frame-level和pixel-level的标注，使用video-level的标注。这种方法常用预训练模型提取特征，比如TSN、C3D、I3D、Swin（有很多用swin的吗？）。</li>
+</ul>
+<p>作者特别提到了human-related的VAD，这类方法还利用光流、运动信息或者pose信息来判别。最近还有用LLM来辅助VAD的，并且有一个叫CUVA的多模态VAD数据集被提出。（这个CUVA是CVPR的那篇<em>Uncovering What, Why and How: A Comprehensive Benchmark for Causation Understanding of Video Anomaly</em>提出的）</p>
+<p>除此以外，多模态在VAD中也比较热门，作者列举了光流、骨骼以及文本（利用CLIP）的一些方法。</p>
+<p>作者主要讨论了以下问题：</p>
+<ol>
+<li>Context-awareness：有的异常是需要关注上下文才能判断的，比如NWPU数据集（西北工业大学的那个）。这篇文章提出的MSAD数据集包含更复杂的场景。</li>
+<li>Generalizability：目前数据集限制在少量的异常类别，导致泛化性较差，导致应用新的异常类别就要重新训练。虽然目前有synthetic的数据，但是真实数据更好。</li>
+<li>Adaptability and Reliability：白天和夜间的异常不同、工作日和周末的异常不同，需要一个自适应的算法。这篇文章虽然没有提出这种算法，但是说他们的数据集包含更长的视频，可以让模型学到这种信息。</li>
+<li>Interpretability and privacy concerns：一般做新数据集要提到privacy。然后可解释性也是老生常谈。没什么新鲜的。</li>
+</ol>
+<h2 id="MSAD">MSAD</h2>
+<p>MSAD：Multi-Scenario Anomaly Detection。</p>
+<p>如下图所示，MSAD包含<strong>14种场景</strong>，<strong>720个视频</strong>，<strong>11种粗类别</strong>，<strong>35种人相关异常和20种人无关异常</strong>，<strong>平均20.7s</strong>。</p>
+<p>注意这里的场景和Shanghai Tech中的“scene”不一样，后者其实是校园里的摄像机视角，而前者是比如门口、高速公路、商场这种场景。</p>
+<p>MSAD中人相关异常指的是车祸、打架这种，人无关异常指的是物体坠落、漏水这种。</p>
+<p>MSAD的720视频包含240个异常视频和480个正常视频，其中有240个异常视频有帧级别标注。作者提供了两个评估protocol：</p>
+<ol>
+<li>360正常视频训练，240异常+120正常视频测试（自监督）</li>
+<li>360正常+120异常视频训练，120异常+120正常视频测试（弱监督）</li>
+</ol>
+<p>官方使用帧级别AUC和FPR作为指标。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031154414.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<blockquote>
+<p>给的注释只有11种类别，论文table5给了更细的，但是下载下来的标注中是<strong>没有细粒度类别标注</strong>的！</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031207877.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031208025.png" srcset="/img/loading.gif" lazyload alt=""></p>
+</blockquote>
+<p>MSAD收集视频分辨率较高，720p和1080p占主流。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031209868.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>视频时长平均20s，但是单独拿出异常视频则大概在13s左右，其中异常片段的平均时长在7s左右。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031222994.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="数据收集">数据收集</h3>
+<p>MSAD数据来源于YouTube、B站和Itemfix，没有具体说收集、标注的过程。收集的数据排除了低分辨率、灰度视频、非监控视角的视频、文本太多的视频、涉及政治隐私过度暴力的视频。</p>
+<blockquote>
+<p>Itemfix是Liveleak的延续，当年UCF-Crime就是Liveleak上爬的数据，打开网站一股十年前的味道，但是貌似高质量的事故视频还挺多。</p>
+</blockquote>
+<p>协议：非商业、要从中构建新数据集必须研究小组同意、仅能在学术时展示。</p>
+<h2 id="实验">实验</h2>
+<p>实验设计分为两部分，一部分是Generalizability and adaptability，另一部分是Practical applicability and effectiveness。前者使用自监督的protocol评估，后者使用弱监督的protocol评估。</p>
+<h3 id="Generalizability-and-adaptability">Generalizability and adaptability</h3>
+<p>作者提出了一种scenario-adaptive model <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>S</mi><msup><mi>A</mi><mn>2</mn></msup><mi>D</mi></mrow><annotation encoding="application/x-tex">SA^2D</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord mathnormal" style="margin-right:0.05764em;">S</span><span class="mord"><span class="mord mathnormal">A</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord mathnormal" style="margin-right:0.02778em;">D</span></span></span></span>，结合了一种few-shot的FSAD模型。他们将模型在ShanghaiTech和MSAD上训练。对比实验分为<strong>相同场景不同视角</strong>和<strong>不同场景</strong>两部分，前者在同一个场景下训练和测试，后者在一个场景训练然后再另一个场景测试。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031423355.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示，Table2展示了第一种对比实验，训练集用ShanghaiTech或者MSAD，然后用了别人的FSAD模型和他们提出的新模型。同样FSAD的话，除了v6，大部分指标都明显提升，然后SA<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msup><mrow></mrow><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141em;"></span><span class="mord"><span></span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>D又在此基础上有一定的提升。v6指标低是因为，v6将自行车和开车到道路上当作异常，而这个一般不被当作异常。</p>
+<p>Table3则是第二种对比试验，这个作者解释是MSAD训练比ShT训练在UCSD Ped2上能得到显著更好的结果，比如57.37-&gt;70.35，但是实际上不同数据集用的是不同模型，这个比较不是很公平呀。</p>
+<h3 id="Practical-applicability-and-effectiveness">Practical applicability and effectiveness</h3>
+<p>作者复现了一系列模型：MIST、RTFM、MSL、UR-DMU、MGFN、TEVAD，用了C3D、I3D（10-crop）、Swin三种特征。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031442128.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示，就是跑了一遍，没有什么信息量。不解的是为什么MIST和MSL两个方法没在MSAD上跑呢？并且这个实验的意义大部分在于report results，而不是证明MSAD的优越性。</p>
+<p>附录中有更多的实验：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031506252.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031508250.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table7、8是细分类别与场景的定量指标，训练集是UCF或者MSAD，测试集是MSAD。每一个在UCF那一栏中标黑了的数字，都代表某个方法用UCF跨数据集验证居然性能更好。然而，在Overall中，AUC和AP都是更好的。作者说“证明目前数据集不能足够好地关注与人不相关的异常，而MSAD促进了这方面”。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202412031514503.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Table9展示了zero-shot跨库性能，在ShT上普遍下降，在CUHK和Ped2上有上升。作者认为是ShT数据集的锅。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/MSAD/">MSAD</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">异常检测</a>
+                    
+                      <a class="hover-with-bg" href="/tags/NIPS2024/">NIPS2024</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/11/23/Cpp%E4%B8%8EPython%E5%90%88%E4%BD%9C%E7%9A%84%E6%96%B9%E6%B3%95/">
+                        <span class="hidden-mobile">C++与Python合作的方法</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>

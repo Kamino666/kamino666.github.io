@@ -1,0 +1,677 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="工业界应用神经网络时，往往要对学术界产出的模型进行优化，才能在推理设备/服务器上实现更高的效率，从而降低成本，这整个过程也一般称之为模型部署。那么，当我们在谈论模型部署时，我们究竟要经历哪些步骤？怎么去做优化提速？本文对这个过程进行大致的简略分析。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="工业界应用神经网络时，往往要对学术界产出的模型进行优化，才能在推理设备&#x2F;服务器上实现更高的效率，从而降低成本，这整个过程也一般称之为模型部署。那么，当我们在谈论模型部署时，我们究竟要经历哪些步骤？怎么去做优化提速？本文对这个过程进行大致的简略分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="当我们在谈论模型部署时，我们在谈论什么。">
+<meta property="og:url" content="http://blog.kamino.link/2024/10/31/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="工业界应用神经网络时，往往要对学术界产出的模型进行优化，才能在推理设备&#x2F;服务器上实现更高的效率，从而降低成本，这整个过程也一般称之为模型部署。那么，当我们在谈论模型部署时，我们究竟要经历哪些步骤？怎么去做优化提速？本文对这个过程进行大致的简略分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311552864.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311619524.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311642506.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311459996.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311503815.jpg">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311653826.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311658436.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311940484.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311944940.png">
+<meta property="article:published_time" content="2024-10-31T06:06:00.000Z">
+<meta property="article:modified_time" content="2024-11-04T14:25:17.319Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="模型部署">
+<meta property="article:tag" content="模型量化">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311552864.png">
+  
+  <title>当我们在谈论模型部署时，我们在谈论什么。 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="当我们在谈论模型部署时，我们在谈论什么。">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2024-10-31 14:06" pubdate>
+        2024年10月31日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      4k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      13 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">当我们在谈论模型部署时，我们在谈论什么。</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2024年11月4日 晚上
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>当我们在谈论模型部署时，我们在谈论什么。</h1>
+<p>工业界应用神经网络时，往往要对学术界产出的模型进行优化，才能在推理设备/服务器上实现更高的效率，从而降低成本，这整个过程也一般称之为<strong>模型部署</strong>（<strong>Deployment</strong>）。那么，当我们在谈论模型部署时，我们究竟要经历哪些步骤？怎么去做优化提速？</p>
+<p>本文对这个过程进行大致的简略分析。</p>
+<h2 id="为什么要部署">为什么要部署</h2>
+<p>模型部署目标有多种，云部署提供了可扩展性和易访问性；边缘部署通过使模型更接近数据源来减少延迟；本地部署则确保了隐私和控制。</p>
+<p>云部署非常适合需要快速扩展和处理大量数据的应用程序。 一些平台可以轻松管理从训练到部署的模型，不过，使用云计算的成本可能会很高，尤其是在数据用量大的情况下，如果用户远离数据中心，还会面临延迟问题。</p>
+<p>边缘部署非常适合需要实时响应和低延迟的应用，尤其是在互联网接入有限或没有互联网接入的地方。 在智能手机或物联网小工具等边缘设备上部署模型可确保快速处理并保持本地数据，从而提高隐私性。 然而，边缘设备的处理能力往往有限，因此您需要优化模型。</p>
+<p>本地部署适用于当数据隐私至关重要或互联网访问不可靠或无法访问时。 在本地服务器或台式机上运行模型可完全控制并保证数据安全。</p>
+<h2 id="神经网络是如何计算的">神经网络是如何计算的</h2>
+<p>神经网络一般可以表示为如下图所示的<strong>由算子组成的有向无环图</strong>，算子表示一个独立的计算过程，输入的数据就在这个图上进行传播，直到输出。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311552864.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>一个算子数学上是函数空间到函数空间的映射，实际上就是（大型）矩阵的加法、乘法等计算。比如卷积操作就需要卷积核在特征图上不断地进行element-wise的乘法并求和，又比如ReLU这样的激活函数需要对输入的每个值计算激活值。</p>
+<p>根据算子计算的方式，一般会分为计算密集型算子核访存密集型算子。像矩阵乘法、卷积这种算子就是<strong>计算密集型算子</strong>，单独拿出某个值，它需要不断计算与其它值的乘法和加法；而像激活函数这些算子就是<strong>访存密集型算子</strong>，每个值的计算比较简单，但是要从内存中拿出所有数据去进行这个计算。</p>
+<p>神经网络中用到的矩阵计算基本都是大型的运算，计算两个1024x1024的矩阵相乘是常态，对这些矩阵进行计算会消耗大量能源和时间，模型部署时需要尽可能地减少这些的消耗。</p>
+<h2 id="神经网络部署技术架构">神经网络部署技术架构</h2>
+<p>如下图所示，从上到下是从训练到部署运行要经历的三个阶段。</p>
+<p>绿色的是模型训练阶段，一般用到PyTorch、TensorFlow、PaddlePaddle等框架，此时还是神经网络还是动态图，比较灵活，并且一般都是在高性能的服务器上进行。</p>
+<p>橙色的是模型部署阶段，会把训练出的模型编译为对应的格式，将计算流程固定成一个确定的有向无环图，并且进行一定的优化以适应下游任务。此时就有非常多公司有对应的技术，比如Nvidia的TensorRT、开源的Onnx、Pytorch的TorchScript、Paddle的PaddleLite等。</p>
+<p>蓝色的是模型运行阶段，一个程序最终还是要在硬件上运行的，这就有各家不同的硬件处理器实现了。不同的处理器的计算能力不同，消耗的功率也不同。在移动平台上的硬件会更注重功率，在大型服务器上的硬件则可能会兼顾算力和功率。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311619524.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>第二阶段有的时候也会细分为两部分，一部分更接近底层，直接作用于硬件，另一部分则更抽象，作用于计算图。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311642506.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="硬件层面提速神经网络计算">硬件层面提速神经网络计算</h2>
+<p>首先讨论神经网络在现代计算机（冯诺依曼架构）上是如何计算的。</p>
+<pre><code class=" mermaid">graph LR
+A[取指令] --&gt; B[译码] --&gt; C[访存] --&gt; D[执行]
+</code></pre>
+<p>如上面这个流程图所示，处理器（CPU、GPU等）在执行指令时分为<strong>取指令、译码、访存、执行</strong>四步。</p>
+<ul>
+<li><strong>取指令</strong>是从内存中去取一系列表示指令的01串；</li>
+<li><strong>译码</strong>是理解指令，知道要执行哪个指令、要取哪些数据，这个过程可能会把指令拆解为多个微指令，一般CPU的指令会更复杂，而GPU则更简单；</li>
+<li><strong>访存</strong>就是根据指令来从内存/寄存器上取一些数据，CPU有多级缓存，如何更快地获取数据是一大难点，所以内存控制器也是CPU中占据大量面积的部件。计算机缓存一般是<code>寄存器&gt;L1&gt;L2&gt;L3&gt;主内存</code>，越往后越慢，越前越贵，L1的访问延时可能只有0.5ns。</li>
+<li><strong>执行</strong>就是芯片让电流信号送入晶体管，然后在输出接收结果。比如送入物理上存在于某处的加法器电路等。</li>
+</ul>
+<p>进行以上操作时，现代处理器一般都是<strong>流水线式</strong>的，上一个指令完成“取指令”后，就马上取下一个指令，而不是等当前指令执行完。这些操作的时间代价如下所示：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311459996.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>我们都听说过，神经网络在GPU（或者其它专门为AI推理设计的硬件）上运行会更快，这是为什么呢？</p>
+<p>GPU与CPU的区别是：GPU有更多的“核”、更大的带宽，可以支持数据更快地存入寄存器，然后并行地处理多条指令，但是由于共享了相同的控制器，所以并行处理的指令必须是相同的。</p>
+<p>这个特征和神经网络极为相似，因为上一节介绍的神经网络就是要进行非常大量的类似的运算。利用GPU更多核的并行计算可以快速得到结果，利用GPU的大带宽也可以快速访问数据。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311503815.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>GPU是随着电子游戏的发展而发展起来的，直到Hinton的AlexNet出现，人们才发现GPU能够加速神经网络的训练。然而，GPU中也有一些神经网络用不上的（光线追踪等）特殊器件，所以为了进一步降低神经网络推理的成本（速度和功率），国内外也有更专注于神经网络推理的硬件出现。比如TPU（Tensor Processing Unit）、NPU（Neural Processing Unit）等。</p>
+<p>有的硬件可能会设置处理器专用的内存，有的则和CPU的RAM共用内存，有的硬件也会设置更多的int8的运算电路来运行量化后的模型，有的硬件还专门为transformer架构进行优化。</p>
+<p>国内研发这类硬件的厂商比较多，有龙芯中科、寒武纪、莫尔线程、地平线等。</p>
+<p>如下图所示，各种除了各种PU，还有公司会针对特殊的应用场景定制FPGA和ASIC。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311653826.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="软件层面提速神经网络计算">软件层面提速神经网络计算</h2>
+<p>除了构建适合高速计算的硬件，软件层面如何去减少计算量、如何调度硬件进行计算也是十分重要的。将模型弄成硬件可执行的0/1代码的过程叫做编译，目前神经网络的编译框架如下图所示：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311658436.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>现有的神经网络一般都是用Python训练的，所以编译的第一步就是从深度学习框架中导出一个包含模型参数和运算方式的中间表示（IR）。</p>
+<p>接下来，Graph Optimizer会对IR进行优化，减少计算图的冗余部分，提高执行效率（比如算子融合、常量折叠）。</p>
+<p>在接下来，Ops Optimizer会对IR进行硬件相关的性能优化（重排计算顺序、内存优化）。</p>
+<p>最后，Backend会生成硬件能够直接执行的代码。</p>
+<h3 id="算子融合">算子融合</h3>
+<p><strong>Computing Op + Activation 融合为 ComputingAct：</strong></p>
+<p>比如MatMul/Conv/ConvTranspose/Gemm + ReLU/PReLU/Tanh/Sigmoid，可以在计算向量的点积的过程中就套上ReLU。</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs c++"><span class="hljs-comment">// 矩阵乘法 + ReLU的融合</span><br><span class="hljs-function"><span class="hljs-keyword">void</span> <span class="hljs-title">MatMul</span><span class="hljs-params">(input, weight, bias, output, num_of_elements)</span> </span>&#123;<br>    <span class="hljs-keyword">for</span> (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; num_of_elements; i++)&#123;<br>        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; num_of_elements; j++)&#123;<br>            <span class="hljs-keyword">int</span> accumulator = <span class="hljs-number">0</span>;<br>            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">unsigned</span> <span class="hljs-keyword">int</span> k = <span class="hljs-number">0</span>; k &lt; num_of_elements; k++)&#123;<br>            accumulator += input[i][k] * weight[k][j];<br>            &#125;<br>            output[i][j] = accumulator + bias[j] &gt; <span class="hljs-number">0</span> ? accumulator + bias[j]: <span class="hljs-number">0</span>;<br>        &#125;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+<p><strong>Computing Op + BatchNorm 融合为 ComputingBN：</strong></p>
+<p>公式变形得到新的W和B</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mi>Y</mi><mo>=</mo><mi>W</mi><mi>x</mi><mo>+</mo><mi>B</mi><mspace width="1em"/><msup><mi>Y</mi><mo mathvariant="normal">′</mo></msup><mo>=</mo><mi>γ</mi><mfrac><mrow><mi>Y</mi><mo>−</mo><mi>m</mi><mi>e</mi><mi>a</mi><mi>n</mi></mrow><mrow><mi>v</mi><mi>a</mi><mi>r</mi></mrow></mfrac><mo>+</mo><mi>β</mi><mspace linebreak="newline"></mspace><msup><mi>Y</mi><mo mathvariant="normal">′</mo></msup><mo>=</mo><mi>γ</mi><mfrac><mrow><mi>W</mi><mi>x</mi><mo>+</mo><mi>B</mi><mo>−</mo><mi>m</mi><mi>e</mi><mi>a</mi><mi>n</mi></mrow><mrow><mi>v</mi><mi>a</mi><mi>r</mi></mrow></mfrac><mo>+</mo><mi>β</mi><mspace linebreak="newline"></mspace><msup><mi>Y</mi><mo mathvariant="normal">′</mo></msup><mo>=</mo><mfrac><mi>γ</mi><mrow><mi>v</mi><mi>a</mi><mi>r</mi></mrow></mfrac><mi>W</mi><mi>x</mi><mo>+</mo><mfrac><mi>γ</mi><mrow><mi>v</mi><mi>a</mi><mi>r</mi></mrow></mfrac><mo stretchy="false">(</mo><mi>B</mi><mo>−</mo><mi>m</mi><mi>e</mi><mi>a</mi><mi>n</mi><mo stretchy="false">)</mo><mo>+</mo><mi>β</mi></mrow><annotation encoding="application/x-tex">Y=Wx+B \quad Y^\prime=\gamma\frac{Y-mean}{var}+\beta \\
+Y^\prime = \gamma\frac{Wx+B-mean}{var}+\beta \\
+Y^\prime = \frac{\gamma}{var}Wx + \frac{\gamma}{var}(B-mean) + \beta
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.7667em;vertical-align:-0.0833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8019em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:1em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">an</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8019em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:2.0463em;vertical-align:-0.686em;"></span><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3603em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">an</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.8019em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.22222em;">Y</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8019em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">′</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1.7936em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1076em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mord mathnormal" style="margin-right:0.13889em;">W</span><span class="mord mathnormal">x</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1.7936em;vertical-align:-0.686em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.1076em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03588em;">v</span><span class="mord mathnormal">a</span><span class="mord mathnormal" style="margin-right:0.02778em;">r</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.05556em;">γ</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.05017em;">B</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal">m</span><span class="mord mathnormal">e</span><span class="mord mathnormal">an</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span></span></p>
+<p><strong>支路并行融合：</strong></p>
+<p>左侧图需要访问内存中的A输出两次，但是假如把A复制一份，然后分别与BC融合，则节约了一次访问内存。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311940484.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><strong>多个卷积核融合：</strong></p>
+<p>有的神经网络就是为了部署，设计上就能够融合，比如下面这种</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202410311944940.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="算子优化">算子优化</h3>
+<p>就算是单个算子，如何将它放到GPU上计算也有说法，因为不同硬件的核不一样，处理int8/fp32的个数也不一样。</p>
+<blockquote>
+<p>由于算子种类的多样性，并没有一个一网打尽的优化手段能解决所有算子的高性能执行方式。算子优化存在以下挑战：</p>
+<ul>
+<li>优化手段多样：要在不同情况下权衡优化及其对应参数，例如针对不同种类算子、相同算子有不同的参数可采用不同优化，对于优化专家来说也是相当耗费精力。</li>
+<li>通用性与移植性：不同类型的硬件架构差异，使得优化方法要考虑的因素也有很大。例如硬件可使用的指令集，硬件的内存带宽，算力以及存储层次的影响。</li>
+<li>不同优化间相互影响：各种优化之间可能会相互制约，相互影响。这意味着找到最优的优化方法组合与序列就是一个困难的组合优化问题，甚至是 NP 问题。</li>
+</ul>
+</blockquote>
+<h2 id="总结">总结</h2>
+<p>当我们在谈论模型部署时，我们在谈论什么？</p>
+<blockquote>
+<p>参考资料：</p>
+<p><a target="_blank" rel="noopener" href="https://chenzomi12.github.io/01Introduction/README.html">《AI 系统》课程概述(DONE) — AI System</a></p>
+<p><a target="_blank" rel="noopener" href="https://openmlsys.github.io/chapter_preface/index.html">1. 前言 — 机器学习系统：设计和实现 1.0.0 documentation</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.bilibili.com/video/BV1TU4y1j7Wd">31 深度学习硬件：CPU 和 GPU【动手学深度学习v2】_哔哩哔哩_bilibili</a></p>
+</blockquote>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%A8%A1%E5%9E%8B%E9%83%A8%E7%BD%B2/">模型部署</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E6%A8%A1%E5%9E%8B%E9%87%8F%E5%8C%96/">模型量化</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/11/23/Cpp%E4%B8%8EPython%E5%90%88%E4%BD%9C%E7%9A%84%E6%96%B9%E6%B3%95/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">C++与Python合作的方法</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/10/22/cmake%E5%8E%9F%E7%90%86/">
+                        <span class="hidden-mobile">CMake快速入门</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
