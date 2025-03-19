@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="本文对视频异常检测（Video Anomaly Detection，VAD）中关于定位异常发生时间段任务的相关评价指标进行分析。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="本文对视频异常检测（Video Anomaly Detection，VAD）中关于定位异常发生时间段任务的相关评价指标进行分析。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="视频异常检测领域中关于时序定位相关指标分析">
+<meta property="og:url" content="http://blog.kamino.link/2025/03/19/VAD%E6%8C%87%E6%A0%87/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="本文对视频异常检测（Video Anomaly Detection，VAD）中关于定位异常发生时间段任务的相关评价指标进行分析。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503190938938.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191010926.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191126810.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191500222.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191523459.png">
+<meta property="article:published_time" content="2025-03-19T01:28:00.000Z">
+<meta property="article:modified_time" content="2025-03-19T07:36:42.492Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="异常检测">
+<meta property="article:tag" content="Metrics">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503190938938.png">
+  
+  <title>视频异常检测领域中关于时序定位相关指标分析 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="视频异常检测领域中关于时序定位相关指标分析">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2025-03-19 09:28" pubdate>
+        2025年3月19日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      6.7k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      21 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">视频异常检测领域中关于时序定位相关指标分析</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2025年3月19日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>视频异常检测领域中关于时序定位相关指标分析</h1>
+<p>本文对视频异常检测（Video Anomaly Detection，VAD）中关于定位异常发生时间段任务的相关评价指标进行分析。</p>
+<p>VAD任务旨在定位视频中与预期不符的部分，实际上基本就是为视频每一帧打异常分数（二分类），部分工作还涉及给出帧级别的细粒度多分类分数（也在本文讨论范围内，但不是主要部分），还有的工作涉及到空间（这部分本文完全不讨论）。</p>
+<p>本文会介绍相关指标的计算、对其概念进行解释、指出容易犯的误区，并给出自己的思考。</p>
+<h2 id="混淆矩阵">混淆矩阵</h2>
+<p>深度学习入门时相比都了解了混淆矩阵，这里放出来以防忘记</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>预测结果</strong></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>真实情况</strong></td>
+<td>正例</td>
+<td>负例</td>
+</tr>
+<tr>
+<td>正例</td>
+<td>TP</td>
+<td>FN</td>
+</tr>
+<tr>
+<td>负例</td>
+<td>FP</td>
+<td>TN</td>
+</tr>
+</tbody>
+</table>
+<h2 id="AUC">AUC</h2>
+<p>AUC本意是Area Under Curve，即曲线下面积，而VAD领域一般特制ROC曲线下面积，其它的称呼有“AUROC”或“AUC-ROC”。</p>
+<p>如下图所示，ROC曲线是以FPR为横轴、TPR为纵轴、通过改变阈值而绘制的曲线：</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>TPR</mtext><mo>=</mo><mtext>TP</mtext><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mtext>TP</mtext><mo>+</mo><mtext>FN</mtext><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><mtext>FPR</mtext><mo>=</mo><mtext>FP</mtext><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mtext>FP</mtext><mo>+</mo><mtext>TN</mtext><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace></mrow><annotation encoding="application/x-tex">\text{TPR}=\text{TP}/(\text{TP}+\text{FN}) \\
+\text{FPR}=\text{FP}/(\text{FP}+\text{TN}) \\
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">TPR</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">TP</span></span><span class="mord">/</span><span class="mopen">(</span><span class="mord text"><span class="mord">TP</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">FN</span></span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">FPR</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">FP</span></span><span class="mord">/</span><span class="mopen">(</span><span class="mord text"><span class="mord">FP</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">TN</span></span><span class="mclose">)</span></span><span class="mspace newline"></span></span></span></span></p>
+<p><strong>TPR</strong>是真实情况是正例中，模型判断正确的比例，也叫做召回率（recall）；<strong>FPR</strong>是真实情况为负例中，模型判断错误的比例，也就是误报警的比例。我们期望的模型则是召回率高但误报率低。现实中，这两个指标都是随着模型判定阈值而正相关，阈值越低、召回率越高、误报概率越大。</p>
+<p>ROC曲线一定会经过左下角的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>0</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(0,0)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mclose">)</span></span></span></span>点和右上角的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(1,1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>点，越往左上角凸则表示模型性能越好，一个随机预测的模型对应<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>→</mo><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(0,0) \rightarrow (1,1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>的线段，一个最佳模型对应<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>0</mn><mo stretchy="false">)</mo><mo>→</mo><mo stretchy="false">(</mo><mn>0</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo><mo>→</mo><mo stretchy="false">(</mo><mn>1</mn><mo separator="true">,</mo><mn>1</mn><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">(0,0) \rightarrow (0,1) \rightarrow (1,1)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">0</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">0</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">→</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord">1</span><span class="mclose">)</span></span></span></span>的曲线。</p>
+<p>因此，曲线下的面积可以作为单个值来衡量模型性能，比随机分类器更好的模型的AUC应该大于0.5。（假如你的分类器AUC小于0.5，那应该考虑把正负类反转一下，用1减去分类器输出的预测概率）</p>
+<p>直观来说，AUC还表示“模型对正例的预测分数大于对负例的预测分数的概率”，这是AUC与其他指标相比的一个最直观的解释。同时也说明AUC是一个基于排名的指标。</p>
+<img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503190938938.png" srcset="/img/loading.gif" lazyload style="zoom:50%;" />
+<h3 id="通用情况下AUC的不足">通用情况下AUC的不足</h3>
+<p>AUC起源于二战，与经济学常用的基尼系数有直接的联系，并且医学、工业等领域广泛应用这个指标，但是也有对这个指标的批评。</p>
+<p>根据[2]所述，AUC可以被认为是对同一个模型在不同情况下的性能总结。在现实中，有的人可能更注重误警率，有人则更注重召回率，他们可以通过改变阈值来调整。然而，某些情况人们几乎不需要，比如极高的阈值和极低的阈值，人们不关心这些情况下的模型性能，但是此时的性能仍然贡献了AUC值。[1]中给出了下图，对于一个看上去比较好的AUC=0.834的模型，贡献这个值的是曲线下的所有面积（绿+红），然而，红色部分面积对应的点是表现很差的模型（误报率高但是召回率低），这部分面积占了0.25。</p>
+<blockquote>
+<p>其实这部分不是很明白，假如觉得红色的0.25不重要，那就把AUC减去0.25然后再重新归一化就好了？</p>
+</blockquote>
+<p>除此以外，[1]还认为ROC曲线和AUC并没有提供关于precision和NPV的信息（<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>P</mi><mo>=</mo><mi>T</mi><mi>P</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mi>T</mi><mi>P</mi><mo>+</mo><mi>F</mi><mi>P</mi><mo stretchy="false">)</mo><mo separator="true">,</mo><mspace width="1em"/><mi>N</mi><mi>P</mi><mi>V</mi><mo>=</mo><mi>T</mi><mi>N</mi><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mi>T</mi><mi>N</mi><mo>+</mo><mi>F</mi><mi>N</mi><mo stretchy="false">)</mo></mrow><annotation encoding="application/x-tex">P=TP/(TP+FP),\quad NPV=TN/(TN+FN)</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">TP</span><span class="mord">/</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.13889em;">TP</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">FP</span><span class="mclose">)</span><span class="mpunct">,</span><span class="mspace" style="margin-right:1em;"></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">NP</span><span class="mord mathnormal" style="margin-right:0.22222em;">V</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">TN</span><span class="mord">/</span><span class="mopen">(</span><span class="mord mathnormal" style="margin-right:0.10903em;">TN</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord mathnormal" style="margin-right:0.10903em;">FN</span><span class="mclose">)</span></span></span></span>），一个高AUC的模型可能有低P和低NPV。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191010926.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="在VAD领域中AUC的不足">在VAD领域中AUC的不足</h3>
+<p>[1,2]都是医学统计学方面的文献，都是在争辩AUC对于常规的二分类任务到底好不好。然而在VAD领域中，实际上并不是一个单纯的二分类任务，VAD的测试集包含多个视频，每个视频包含许多帧，这包含一种层级的关系，而目前的AUC完全忽略这种层级。</p>
+<p>这会导致AUC与人类所希望的方向不是同一个方向，比如Temporal Action Localization任务中会使用mAP@IoU来评价，只要预测的时间段与GT时间段的IoU大于一个阈值，就算作预测正确。这种比较符合人类的直观，我不希望你预测的内容和GT一模一样，只要看着差不多就行。这种思想在图像的质量评价上也有体现，比如超分领域衡量两张图像不像，一开始是用MSE，但是和人眼的相似不一样，所以后面出现SSIM、LPIPS等指标。</p>
+<p>在VAD领域，由于GT本身可能存在偏差，或者人们更关注“是否在异常事件早期检测出异常”，我们想要的好模型和AUC衡量出来的好模型不一定是一回事。博主近期就在研究这方面，若有论文产出会及时更新到此处。</p>
+<p>此外，和接下来要介绍的AP指标一样，他们无法评价单个视频的判断成功性。对于一个异常视频（包含正例和负例），还是可以计算AUC指标的，但是对于一个正常视频（全都是负例），无法计算AUC。假如我们想评价模型在几个正常视频上预测地好不好，就无法用AUC来评价。不过，这个问题实际上也不算是一个大问题。</p>
+<h3 id="AUC的误区：Micro-AUC和Macro-AUC">AUC的误区：Micro-AUC和Macro-AUC</h3>
+<p>发表在TPAMI上的[3]指出VAD中有micro和macro的AUC的区分，[4,5]这两篇发表在CVPR的论文也跟随它汇报了两种AUC，但是<strong>这两个指标衡量的并非同一个东西！</strong></p>
+<p>[3]认为，micro-AUC是把所有预测分数拼接在一起，把所有GT也拼接在一起，然后计算两者之间最小单位为帧的AUC，这是常规且直观的做法。而macro-AUC则是先计算每个视频的预测分数与GT的AUC，然后对所有视频进行平均，这看上去也没毛病，而且符合micro-macro的思想，然而，正如我前一节所说，<strong>我们无法计算正常视频的AUC</strong>，这个指标<strong>从原理上是不可行</strong>的。</p>
+<p>既然它们都在论文里汇报了指标，那么实际上是怎么计算的呢？[3]没有公开代码，[4]在代码里计算macro-AUC的时候会人工添加一个TP和一个TN [6]：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">roc_auc = roc_auc_score(np.concatenate(([<span class="hljs-number">0</span>], gt_scores, [<span class="hljs-number">1</span>])), np.concatenate(([<span class="hljs-number">0</span>], video_scores, [<span class="hljs-number">1</span>])))<br>roc_auc_videos.append(roc_auc)<br></code></pre></td></tr></table></figure>
+<p>[5]在代码里则是忽略了正常视频：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">macro_auc = np.nanmean(aucs)  <span class="hljs-comment"># aucs是所有视频单独计算AUC的列表，其中正常视频的AUC是NaN</span><br></code></pre></td></tr></table></figure>
+<p>单看这两个代码的实现，得到的就不是同一个指标，[4]修改了预测结果来避免NaN，[5]则是忽略了一部分的数据。</p>
+<p>此事在Issue中亦有讨论：<a target="_blank" rel="noopener" href="https://github.com/lilygeorgescu/UBnormal/issues/3#issuecomment-1258619983">https://github.com/lilygeorgescu/UBnormal/issues/3#issuecomment-1258619983</a></p>
+<p><strong>综上所述，目前Macro-AUC并不是一个规范的、有明确意义的指标，不应该被用来评估模型性能。</strong></p>
+<h3 id="Ano-AUC-text-AUC-text-A">Ano-AUC / <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>AUC</mtext><mtext>A</mtext></msub></mrow><annotation encoding="application/x-tex">\text{AUC}_\text{A}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">AUC</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord text mtight"><span class="mord mtight">A</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span></h3>
+<p>[8]中的Ano-AUC和[9]中的<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mtext>AUC</mtext><mtext>A</mtext></msub></mrow><annotation encoding="application/x-tex">\text{AUC}_\text{A}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8333em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord text"><span class="mord">AUC</span></span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3283em;"><span style="top:-2.55em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord text mtight"><span class="mord mtight">A</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>是同一个东西，只对异常视频进行计算AUC，单独用来衡量模型对异常的定位能力。这个指标比较像micro版本的[5]的macro-AUC实现。</p>
+<p>这个指标没什么好说的，只对异常视频计算，本质上只衡量了模型一方面的性能。</p>
+<h2 id="AP">AP</h2>
+<p>AP是Average Precision，是Precision-Recall曲线下的面积，所以也可以叫做“AUC-PR”或“AUPRC”（不过一般没人这么叫）。</p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>Recall</mtext><mo>=</mo><mtext>TP</mtext><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mtext>TP</mtext><mo>+</mo><mtext>FN</mtext><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><mtext>Precision</mtext><mo>=</mo><mtext>TP</mtext><mi mathvariant="normal">/</mi><mo stretchy="false">(</mo><mtext>TP</mtext><mo>+</mo><mtext>FP</mtext><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace></mrow><annotation encoding="application/x-tex">\text{Recall}=\text{TP}/(\text{TP}+\text{FN}) \\
+\text{Precision}=\text{TP}/(\text{TP}+\text{FP}) \\
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord text"><span class="mord">Recall</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">TP</span></span><span class="mord">/</span><span class="mopen">(</span><span class="mord text"><span class="mord">TP</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">FN</span></span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">Precision</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">TP</span></span><span class="mord">/</span><span class="mopen">(</span><span class="mord text"><span class="mord">TP</span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord text"><span class="mord">FP</span></span><span class="mclose">)</span></span><span class="mspace newline"></span></span></span></span></p>
+<p>如下图，PR曲线不像ROC曲线那样单调、平滑，PR不一定过端点，在局部也可能出现上下波动。AP旨在衡量模型对正例的识别程度，它使用两个负相关的统计量作为两个轴，阈值越高、精确率一般会更高、召回率会更低。随机分类器的AP值取决于正样本的比例，完美的分类器的AP为1。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191126810.png" srcset="/img/loading.gif" lazyload alt="图来自sklearn的User Guide"></p>
+<p>在VAD领域，XD-Violence数据集[10]上最先使用AP指标，其它数据集（ShanghaiTech、UCF-Crime、UBNormal、MSAD）都以AUC为默认指标。</p>
+<h3 id="AP与AUC的比较">AP与AUC的比较</h3>
+<p>[10]中说AP在面临类别不均衡情况下更有优势，会更关注正例。根据[11]中对AUC和AP指标的分析，AP受到不均衡数据集的影响，而AUC不受影响。这种性质可能带来正反两面的影响，假如我想检测的两个类别的重要性是相当的，比如猫狗分类，那可能AUC更适合，而在VAD中，异常数据是稀有的（数据集中异常帧相较于正常帧少很多，实际情况中这种差距则更剧烈），我们也是更关注异常类别的，所以此时AP应该更适合。</p>
+<p>不过，这个可能智者见智，仁者见仁，至少没有macro-AUC的歧义性，目前的规范就是跟着数据集官方给出的评价标准来。</p>
+<h2 id="mAP-IoU">mAP@IoU</h2>
+<p>AUC、AP都是将VAD的任务看做平面化的给每一帧进行二分类的任务，没有考虑到异常的事件性。在[8]中作者使用了Temporal Action Localization中惯用的mAP@IoU指标到fine-grained VAD上来。fine-grained VAD要求为每一帧给出正常和不同异常类别的概率。</p>
+<p>对于预测和GT，假如IoU大于一个阈值就算TP，对于没有对应GT的预测就是FP，对于没有预测的GT就算FN，根据这三个值计算AP。每个类别单独结算，然后在所有类别中做平均。通常论文会给出不同IoU阈值下的指标，有的还会给出平均几个IoU阈值下的综合指标（比如AVG 0.1-0.5）。</p>
+<p>需要注意的是：</p>
+<ul>
+<li>VadCLIP只在异常视频上计算这个指标</li>
+<li>该指标需要确定阈值（VadCLIP中使用了<a target="_blank" rel="noopener" href="https://github.com/nwpu-zxr/VadCLIP/blob/c41067f07d252efcda18008bea367886070c33b0/src/utils/ucf_detectionMAP.py#L66-L68">动态阈值</a>），不像AUC和AP是与阈值无关的指标。</li>
+<li>在VadCLIP的实现上，计算IoU是通过帧级别的交并比，而TAL任务一般则是基于片段的交并比。</li>
+</ul>
+<p>模型预测的帧级别分数在卡了阈值之后会变成多个独立的片段，VadCLIP的实现上把这个作为一个pred。假如拓展到正常视频，只要有一帧超过了阈值那就会被认为是一个FP。</p>
+<h2 id="TBDC">TBDC</h2>
+<p>[12] 中提出Track-Based Detection Criterion（TBDC）作为评价指标，同样使用了IoU的方法考虑了标注噪声带来的影响。TBDC是类似ROC的曲线，以false positive regions per frame（FPR）为横轴，Track-Based Detection Rate（TBDR）为纵轴。</p>
+<p>一个TP的track表示至少有<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>α</mi></mrow><annotation encoding="application/x-tex">\alpha</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.4306em;"></span><span class="mord mathnormal" style="margin-right:0.0037em;">α</span></span></span></span>的TP region被检测到了，而一个TP region表示这一帧中预测与GT的IoU超过<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi></mrow><annotation encoding="application/x-tex">\beta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span>，而TBDR是检测到的track数除以总GT track数，相当于一种召回率。</p>
+<p>一个FP的region表示预测与任何GT的IoU都小于<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi></mrow><annotation encoding="application/x-tex">\beta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span>，则FPR是FP region数量除以总帧数，这个值可以大于1，相当于一种误警率。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191500222.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这个指标参考了ROC的不同阈值的概念，同时也利用了IoU的鲁棒性，然而这个指标是同时考虑时空信息的，并不是直接对时序进行评估。其次，论文没有分析这个指标的取值范围，横坐标没有归一化，感觉不太适合用来比较。</p>
+<h2 id="APD">APD</h2>
+<p>[13] 提出了Average Precision Delay（APD）作为评价指标，参考AP指标并纳入了“惩罚晚期检测”的思想。APD的两个轴分别是Average Detection Delay（ADD）和Alarm Precision（P），分别对应AP中的recall和precision。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191523459.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p class="katex-block "><span class="katex-display"><span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML" display="block"><semantics><mrow><mtext>ADD</mtext><mo>=</mo><mfrac><mn>1</mn><mrow><mi>N</mi><mo>⋅</mo><msub><mi>δ</mi><mtext>max</mtext></msub></mrow></mfrac><munderover><mo>∑</mo><mrow><mi>i</mi><mo>=</mo><mn>1</mn></mrow><mi>N</mi></munderover><mo stretchy="false">(</mo><msub><mi>T</mi><mi>i</mi></msub><mo>−</mo><msub><mi>τ</mi><mi>i</mi></msub><mo stretchy="false">)</mo><mspace linebreak="newline"></mspace><mi>P</mi><mo>=</mo><mfrac><mn>1</mn><mi>M</mi></mfrac><munderover><mo>∑</mo><mrow><mi>j</mi><mo>=</mo><mn>1</mn></mrow><mi>M</mi></munderover><msup><mi>T</mi><mi>j</mi></msup><mo>∈</mo><mo>∪</mo><mo stretchy="false">[</mo><msub><mi>τ</mi><mi>i</mi></msub><mo separator="true">,</mo><msub><mi>τ</mi><mi>i</mi></msub><mo>+</mo><msub><mi>δ</mi><mrow><mi>m</mi><mi>a</mi><mi>x</mi></mrow></msub><mo stretchy="false">]</mo></mrow><annotation encoding="application/x-tex">\text{ADD}=\frac{1}{N \cdot \delta_{\text{max}}} \sum^{N}_{i=1} (T_i - \tau_i) \\
+P=\frac{1}{M} \sum^M_{j=1} T^j \in \cup [\tau_i,\tau_i+\delta_{max}]
+</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord text"><span class="mord">ADD</span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.106em;vertical-align:-1.2777em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">⋅</span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.836em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8723em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">i</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">N</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.2777em;"><span></span></span></span></span></span><span class="mopen">(</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.1389em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.1132em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">)</span></span><span class="mspace newline"></span><span class="base"><span class="strut" style="height:0.6833em;"></span><span class="mord mathnormal" style="margin-right:0.13889em;">P</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:3.2421em;vertical-align:-1.4138em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3214em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.10903em;">M</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord">1</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.686em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mop op-limits"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.8283em;"><span style="top:-1.8723em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span><span class="mrel mtight">=</span><span class="mord mtight">1</span></span></span></span><span style="top:-3.05em;"><span class="pstrut" style="height:3.05em;"></span><span><span class="mop op-symbol large-op">∑</span></span></span><span style="top:-4.3em;margin-left:0em;"><span class="pstrut" style="height:3.05em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.10903em;">M</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:1.4138em;"><span></span></span></span></span></span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.13889em;">T</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8747em;"><span style="top:-3.113em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight" style="margin-right:0.05724em;">j</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">∈</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord">∪</span><span class="mopen">[</span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.1132em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mpunct">,</span><span class="mspace" style="margin-right:0.1667em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.1132em;">τ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.3117em;"><span style="top:-2.55em;margin-left:-0.1132em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathnormal mtight">i</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2222em;"></span><span class="mbin">+</span><span class="mspace" style="margin-right:0.2222em;"></span></span><span class="base"><span class="strut" style="height:1em;vertical-align:-0.25em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord mathnormal mtight">ma</span><span class="mord mathnormal mtight">x</span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span><span class="mclose">]</span></span></span></span></span></p>
+<p>如上式和上图所示，ADD衡量检测延时，对于GT异常事件，找到其中最早发生的异常点，计算与开头的距离。[13]中对异常事件是以点的形式标注的，所以会预定义一个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>δ</mi><mtext>max</mtext></msub></mrow><annotation encoding="application/x-tex">\delta_{\text{max}}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8444em;vertical-align:-0.15em;"></span><span class="mord"><span class="mord mathnormal" style="margin-right:0.03785em;">δ</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:0.1514em;"><span style="top:-2.55em;margin-left:-0.0379em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight"><span class="mord text mtight"><span class="mord mtight">max</span></span></span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.15em;"><span></span></span></span></span></span></span></span></span></span>的窗口，在窗口内发生的异常根据延迟程度会给一个0-1的分数，假如窗口内没有预测出的异常，则分数直接为0。P衡量误警，对于所有的预测异常点，假如发生在异常窗口内则为为TP，假如同一个窗口内有多个预测异常点，则只考虑第一个。</p>
+<p>改变阈值，两者曲线下面积就是APD。</p>
+<p>这个指标看上去挺合理的，但是：</p>
+<ol>
+<li>使用固定的时间窗口不合理，不同异常事件的持续时间不同，假如窗口过大，异常事件结束后的正预测也会被当作是TP。</li>
+<li>只考虑首个点可能会收到噪声影响。</li>
+</ol>
+<h2 id="总结">总结</h2>
+<p>目前在VAD的时序定位评价指标上，AUC占据主导地位，AP是一个强有力的挑战者，可以在一定程度上取代AUC，但是这两个指标都没有考虑异常的事件性，尝试考虑的几个指标都有各自致命的缺陷。</p>
+<h2 id="参考文献">参考文献</h2>
+<p>[1] The Matthews correlation coefficient (MCC) should replace the ROC AUC as the standard metric for assessing binary classification</p>
+<p>[2] AUC: a misleading measure of the performance of predictive distribution models</p>
+<p>[3] A Background-Agnostic Framework with Adversarial Training for Abnormal Event Detection in Video</p>
+<p>[4] UBnormal: New Benchmark for Supervised Open-Set Video Anomaly Detection</p>
+<p>[5] Self-Distilled Masked Auto-Encoders are Efficient Video Anomaly Detectors</p>
+<p>[6] <a target="_blank" rel="noopener" href="https://github.com/lilygeorgescu/UBnormal/blob/8c77642bb72615988ace0451b94ec42f8953a525/scripts/compute_auc_score.py#L24">https://github.com/lilygeorgescu/UBnormal/blob/8c77642bb72615988ace0451b94ec42f8953a525/scripts/compute_auc_score.py#L24</a></p>
+<p>[7] <a target="_blank" rel="noopener" href="https://github.com/ristea/aed-mae/blob/84d718d244b772fd58acd1d32c136d34432ee16b/inference.py#L84">https://github.com/ristea/aed-mae/blob/84d718d244b772fd58acd1d32c136d34432ee16b/inference.py#L84</a></p>
+<p>[8] VadCLIP: Adapting Vision-Language Models for Weakly Supervised Video Anomaly Detection</p>
+<p>[9] Unbiased Multiple Instance Learning for Weakly Supervised Video Anomaly Detection</p>
+<p>[10] Not only Look, but also Listen: Learning Multimodal Violence Detection under Weak Supervision</p>
+<p>[11] <a target="_blank" rel="noopener" href="https://medium.com/data-science/imbalanced-data-stop-using-roc-auc-and-use-auprc-instead-46af4910a494">https://medium.com/data-science/imbalanced-data-stop-using-roc-auc-and-use-auprc-instead-46af4910a494</a></p>
+<p>[12] Street Scene: A new dataset and evaluation protocol for video anomaly detection</p>
+<p>[13] Rethinking Video Anomaly Detection - A Continual Learning Approach</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%BC%82%E5%B8%B8%E6%A3%80%E6%B5%8B/">异常检测</a>
+                    
+                      <a class="hover-with-bg" href="/tags/Metrics/">Metrics</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/12/03/MSAD/">
+                        <span class="hidden-mobile">论文笔记 Advancing Video Anomaly Detection A Concise Review and a New Dataset</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
