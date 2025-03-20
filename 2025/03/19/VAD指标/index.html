@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191500222.png">
 <meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202503191523459.png">
 <meta property="article:published_time" content="2025-03-19T01:28:00.000Z">
-<meta property="article:modified_time" content="2025-03-19T07:36:42.492Z">
+<meta property="article:modified_time" content="2025-03-20T06:14:00.659Z">
 <meta property="article:author" content="Kamino">
 <meta property="article:tag" content="异常检测">
 <meta property="article:tag" content="Metrics">
@@ -219,7 +219,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      6.7k 字
+      7.5k 字
     </span>
   
 
@@ -228,7 +228,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      21 分钟
+      23 分钟
     </span>
   
 
@@ -269,7 +269,7 @@
             
               <p class="note note-info">
                 
-                  本文最后更新于：2025年3月19日 下午
+                  本文最后更新于：2025年3月20日 下午
                 
               </p>
             
@@ -354,6 +354,12 @@
 <h3 id="AP与AUC的比较">AP与AUC的比较</h3>
 <p>[10]中说AP在面临类别不均衡情况下更有优势，会更关注正例。根据[11]中对AUC和AP指标的分析，AP受到不均衡数据集的影响，而AUC不受影响。这种性质可能带来正反两面的影响，假如我想检测的两个类别的重要性是相当的，比如猫狗分类，那可能AUC更适合，而在VAD中，异常数据是稀有的（数据集中异常帧相较于正常帧少很多，实际情况中这种差距则更剧烈），我们也是更关注异常类别的，所以此时AP应该更适合。</p>
 <p>不过，这个可能智者见智，仁者见仁，至少没有macro-AUC的歧义性，目前的规范就是跟着数据集官方给出的评价标准来。</p>
+<blockquote>
+<p><strong>更新</strong></p>
+<p>AP在计算方式上相较于AUC有一个严重的误区，可能造成评价结果变化几个百分点，直接让SOTA不再SOTA。</p>
+<p>对于PR曲线和ROC曲线，由于点是离散的，曲线下的面积计算都要近似为矩形或者梯形的面积计算。对于ROC，由于其一定是单调的，所以可以进行插值来计算近似面积。然而，根据[14,15,16]的分析，进行插值会导致过于乐观的AP结果，所以在sklearn中，直接使用<code>sklearn.metrics.average_precision_score</code>来计算AP时是不插值的，即计算矩形的面积。然而，假如选择先使用<code>sklearn.metrics.precision_recall_curve</code>得到PR曲线，再使用<code>sklearn.metrics.auc</code>计算曲线下面积，则计算的是梯形的面积，这样会得到更高的AP值。此外，在torchmetrics的AP实现中是和sklearn一样默认使用矩形面积的。</p>
+<p>综上所述，应该直接使用<code>sklearn.metrics.average_precision_score</code>来计算AP，比较不同模型结果时最好严谨地看看是怎么计算的。</p>
+</blockquote>
 <h2 id="mAP-IoU">mAP@IoU</h2>
 <p>AUC、AP都是将VAD的任务看做平面化的给每一帧进行二分类的任务，没有考虑到异常的事件性。在[8]中作者使用了Temporal Action Localization中惯用的mAP@IoU指标到fine-grained VAD上来。fine-grained VAD要求为每一帧给出正常和不同异常类别的概率。</p>
 <p>对于预测和GT，假如IoU大于一个阈值就算TP，对于没有对应GT的预测就是FP，对于没有预测的GT就算FN，根据这三个值计算AP。每个类别单独结算，然后在所有类别中做平均。通常论文会给出不同IoU阈值下的指标，有的还会给出平均几个IoU阈值下的综合指标（比如AVG 0.1-0.5）。</p>
@@ -399,6 +405,9 @@ P=\frac{1}{M} \sum^M_{j=1} T^j \in \cup [\tau_i,\tau_i+\delta_{max}]
 <p>[11] <a target="_blank" rel="noopener" href="https://medium.com/data-science/imbalanced-data-stop-using-roc-auc-and-use-auprc-instead-46af4910a494">https://medium.com/data-science/imbalanced-data-stop-using-roc-auc-and-use-auprc-instead-46af4910a494</a></p>
 <p>[12] Street Scene: A new dataset and evaluation protocol for video anomaly detection</p>
 <p>[13] Rethinking Video Anomaly Detection - A Continual Learning Approach</p>
+<p>[14] J. Davis, M. Goadrich, <a target="_blank" rel="noopener" href="https://www.biostat.wisc.edu/~page/rocpr.pdf">The Relationship Between Precision-Recall and ROC Curves</a>, ICML 2006.</p>
+<p>[15] P.A. Flach, M. Kull, <a target="_blank" rel="noopener" href="https://papers.nips.cc/paper/5867-precision-recall-gain-curves-pr-analysis-done-right.pdf">Precision-Recall-Gain Curves: PR Analysis Done Right</a>, NIPS 2015.</p>
+<p>[16] <a target="_blank" rel="noopener" href="https://scikit-learn.org/stable/modules/model_evaluation.html#precision-recall-and-f-measures">https://scikit-learn.org/stable/modules/model_evaluation.html#precision-recall-and-f-measures</a></p>
 
             </div>
             <hr>
