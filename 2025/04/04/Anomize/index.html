@@ -1,0 +1,625 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="武汉大学的一篇开放词汇的VAD论文，发表在CVPR 2025上，整体是沿着NWPU的Open Vocabulary Video Anomaly Detection这篇CVPR24论文继续的工作。文章最重要的创新点在我看来是对文本侧有比较有效的改进。然而，从目前看来这篇文章存在着一些令人疑惑的地方。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="武汉大学的一篇开放词汇的VAD论文，发表在CVPR 2025上，整体是沿着NWPU的Open Vocabulary Video Anomaly Detection这篇CVPR24论文继续的工作。文章最重要的创新点在我看来是对文本侧有比较有效的改进。然而，从目前看来这篇文章存在着一些令人疑惑的地方。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 Anomize：Better Open Vocabulary Video Anomaly Detection">
+<meta property="og:url" content="http://blog.kamino.link/2025/04/04/Anomize/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="武汉大学的一篇开放词汇的VAD论文，发表在CVPR 2025上，整体是沿着NWPU的Open Vocabulary Video Anomaly Detection这篇CVPR24论文继续的工作。文章最重要的创新点在我看来是对文本侧有比较有效的改进。然而，从目前看来这篇文章存在着一些令人疑惑的地方。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041748697.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041802344.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041809378.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041818625.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041839245.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041847227.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041847673.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041847311.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041848926.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041856450.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041859467.png">
+<meta property="article:published_time" content="2025-04-04T09:41:00.000Z">
+<meta property="article:modified_time" content="2025-04-05T08:37:35.384Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Anomize">
+<meta property="article:tag" content="OVVAD">
+<meta property="article:tag" content="CVPR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041748697.png">
+  
+  <title>论文笔记 Anomize：Better Open Vocabulary Video Anomaly Detection - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 Anomize：Better Open Vocabulary Video Anomaly Detection">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2025-04-04 17:41" pubdate>
+        2025年4月4日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.2k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      10 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 Anomize：Better Open Vocabulary Video Anomaly Detection</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2025年4月5日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>论文笔记 Anomize: Better Open Vocabulary Video Anomaly Detection</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2503.18094">https://arxiv.org/abs/2503.18094</a></p>
+<p>代码链接：尚未开源</p>
+<p>武汉大学的一篇开放词汇的VAD论文，发表在CVPR 2025上，整体是沿着NWPU的Open Vocabulary Video Anomaly Detection这篇CVPR24论文继续的工作。文章最重要的创新点在我看来是对文本侧有比较有效的改进。</p>
+<h2 id="研究动机">研究动机</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041748697.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如图所示，作者认为OVVAD中有两个挑战，一个是Detection Ambiguity，指的是新异常的分数不高，另一个是Categorization Confusion，指的是新的与base比较像的类别容易过拟合到base类别中。</p>
+<p>为了解决第一个挑战，作者提出了Text-Augmented Dual Stream，直观来说就是讲视觉特征与文本特征融合，并且设置了dynamic和static两个支路，一个关注动态、另一个关注静态。在检测的时候把类别的信息融入到了视觉类别，所以能够得到更准确的分数。</p>
+<p>为了解决第二个挑战，作者提出了Group-Guided Text Encoding，直观来说就是用GPT来生成类别对应的prompt，生成过程会专门正对相似的标签做出区分。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041802344.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>两个创新点的可视化如上图所示，先看（a），红色星星的文本特征可以让视觉特征更加可分（视线跟着黄色箭头走）；再看（b），淡蓝色的星星在通过更好的prompt引导之后会离相似的元素更近一点（视线只需关注上方绿色虚箭头）。</p>
+<blockquote>
+<p>在我看来，这两幅图都差点意思。</p>
+<p>Fig1总结的两个问题要说重要也挺重要的，但是也不算一个非常新颖的问题，作者的叙述在我的眼里，举个例子来说，有点像在说“一个猫狗二分类的模型表现差的原因，分析为该模型对猫容易误判成狗。” 就是感觉问题没抓到点子上。</p>
+<p>Fig2是我看完整个方法之后才能理解，缺少一定的引导，让人不太知道先看哪个再看哪个，不过看完后续方法之后倒也能理解，但是表达的意思就很简单，想说的就是“通过我的方法，这个表征变好了”，也有一点没抓到点子上的感觉。</p>
+</blockquote>
+<h2 id="方法">方法</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041809378.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>模型整体框架如上图（c）所示，和传统框架没有本质上的区别，有一个预训练的特征提取器（Image Encoder）、有特征增强的模块（时序编码+特征融合）、还有最后的二分类和匹配头。接下来对两个创新点进行详细介绍。</p>
+<h3 id="Group-Guided-Text-Encoding">Group-Guided Text Encoding</h3>
+<p>对类别文本，作者首先通过LLM来将其聚合成几个group，每个group中的类别具备一定的相似度，比如shoplifting和stealing，然后再通过LLM对每个类别生成描述再送入CLIP Text Encoder中提取特征，这个阶段生成的时候会让LLM关注一个group内的相同点与不同点。</p>
+<p>具体的prompt设计如下图所示：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041818625.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>没错，这个模块就是如此的简单，简单到感觉LLM在这发挥的作用十分有限，实际上，没有LLM，人工也完全可以实现这些操作。第一个操作就是把几个类别聚个类，又不是K400这种几百个类别的数据集，UCF-Crime就13个类别、XD就6个类别，感觉人工看一眼就行了（在补充材料中作者说确实人工处理了一点）。第二个操作就是先说共同点，再说不同点，这算一个比较实用的提示设计技巧，但是在极其有限的类别上，LLM在这里不是很关键。</p>
+<p>此外，group的时候，根据后面结果，看上去是对novel和base的类别一起分类的，这样会不会提前告诉模型测试阶段的类别信息呢？会不会有标签泄露的嫌疑呢？</p>
+<h3 id="Text-Augmented-Dual-Stream">Text Augmented Dual Stream</h3>
+<p>作者设计了动态和静态两个Stream，分别融合的是不同的视觉和文本特征。</p>
+<p>对于动态stream，作者使用时序编码后的特征+Group-Guided Text Encoding的文本特征。</p>
+<p>对于静态stream，作者使用时序编码前的CLIP Image Encoder出来的视觉特征+ConceptLib文本特征，这个ConceptLib是让大模型说出类别相关的名词，这里文本特征就会更关注静态内容。（假如名词是“跑步”呢，用名词来对应静态特征合适吗？）</p>
+<p>对于融合方法，作者设计了简单的Augmenter，这个模块就是视觉文本融合的一个模块，作者没有复杂的设计，一个Cross-Attention+MLP。</p>
+<p>最后，在detection branch，两个stream用单独的检测头，并进行分数上的加权融合。在Categorization branch，则是用Group-Guided Text Encoding的文本特征与视觉计算相似度。</p>
+<h3 id="训练方式">训练方式</h3>
+<p>Loss上，比VadCLIP多了一个sep损失，这个损失让视频最大的异常类别概率减去正常概率的绝对值最大化，也就是让模型预测正常类别的时候，异常类别概率变低，反之亦然。</p>
+<p>作者分了两个阶段的训练，第一阶段只训练分类（sep损失+CE损失，此处可视为监督学习），第二阶段只训练检测（mil损失，此处则弱监督）。</p>
+<h2 id="实验">实验</h2>
+<p>数据集和评价指标和Open Vocabulary Video Anomaly Detection一模一样，UCF-Crime+XD-Violence数据集，AUC、AP以及异常视频上的ACC指标，同样把数据分成了base类和novel类。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041839245.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>有一点比较在意的是上图，这个<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi></mrow><annotation encoding="application/x-tex">\beta</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span></span></span></span>就是stream的加权融合参数，方法里面写的是tunable parameter，这里又直接人工设置了？所以是人工tune吗？此外，<span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>β</mi><mo>=</mo><mn>1</mn></mrow><annotation encoding="application/x-tex">\beta=1</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8889em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.05278em;">β</span><span class="mspace" style="margin-right:0.2778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2778em;"></span></span><span class="base"><span class="strut" style="height:0.6444em;"></span><span class="mord">1</span></span></span></span>意味着完全不用静态stream的分数。这里面括号里的0我也看不太懂，还能专门为新类别指定这种超参吗？实际情况也不知道要检测是base还是novel呀？<strong>这一点可能存在标签泄露？</strong></p>
+<p><strong>此外，没说实验的时候，用来做分类任务的模型和检测任务的模型是同一个模型还是不同阶段的模型。</strong></p>
+<h3 id="SOTA比较">SOTA比较</h3>
+<p>下面两张图是开放词汇set下的检测和分类性能，Table1带*的完全没有可比性，不知道为什么放在这里。在相同的split的比较下，这篇文章确实有比较显著的性能提升，特别是XD上的分类性能，ACC直接到了90.29，针对novel的分类性能提升巨大。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041847227.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041847673.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>下面两张图是跨域的结果，不知道为什么论文只给出了自己的结果，没有把OVVAD那篇结果也拿过来，所以我手动比较了一下。跨域性能还是有明显下降的，四个值里三个都下降，从UCF跨到XD的ACC降了巨多。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041847311.png" srcset="/img/loading.gif" lazyload alt="本论文结果"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041848926.png" srcset="/img/loading.gif" lazyload alt="OVVAD结果"></p>
+<h3 id="消融实验">消融实验</h3>
+<p>作者算是提出了非常多的小点，放了两个大表来验证每一个创新点，这个我倒是没仔细看，既然放出来了应该就是挺理想的。</p>
+<p>下面这个图则是group的结果，可以看见XD上也就是把Abuse、Fighting、Shooting、Riot放在一起，CarAccident和Explosion都单独group，UCF上则是整体分成了4个group，这个工作量不是很大，直观也能看出来，感觉确实不需要LLM。但是这种prompt的方法还是挺新颖的。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041856450.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>作者对时序编码用了很老的LSTM，可能是被审稿人质疑了，所以补充材料里多放了个Transformer的时序编码结果（放都放了，为什么不把原来LSTM的结果也放到这个表里……补充材料又不限制页数），他们解释是因为Transformer参数多容易过拟合，但是结果感觉不是很能说服我。在XD上，总ACC下降，特别是novel的ACC下降最多，这个比较符合过拟合的解释，但是在UCF上，novel的ACC反而上升，这一点就很奇怪了。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504041859467.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h2 id="总结">总结</h2>
+<p>总的来说，从目前看来，算是一篇比较中规中矩的文章，在放出最终版本和开源代码之后可能会打消一些我的疑虑。在我看来，group的创新点有点过于简单，Dual stream的创新点则因为测试时忽略一个stream而不够扎实，motivation不算特别有趣，一些标签泄露的疑惑也存在。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Anomize/">Anomize</a>
+                    
+                      <a class="hover-with-bg" href="/tags/OVVAD/">OVVAD</a>
+                    
+                      <a class="hover-with-bg" href="/tags/CVPR/">CVPR</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
