@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="西电+NUS+NWPU的一篇ArXiv论文，25年3月底挂上来的。文章提出了一种Online Video Surveillance Assistant的范式，我认为是第一篇真正将MLLM与视频异常检测（VAD）有机结合的文章。文中提出了Video Anomaly Prediction, Detection, and Analysis三个任务，这三个任务基本都可以看做是新任务，特别是Detectio">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="西电+NUS+NWPU的一篇ArXiv论文，25年3月底挂上来的。文章提出了一种Online Video Surveillance Assistant的范式，我认为是第一篇真正将MLLM与视频异常检测（VAD）有机结合的文章。文中提出了Video Anomaly Prediction, Detection, and Analysis三个任务，这三个任务基本都可以看做是新任务，特别是Detectio">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 AssistPDA：An Online Video Surveillance Assistant for Video Anomaly Prediction, Detection, and Analysis">
+<meta property="og:url" content="http://blog.kamino.link/2025/04/07/AssistPDA/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="西电+NUS+NWPU的一篇ArXiv论文，25年3月底挂上来的。文章提出了一种Online Video Surveillance Assistant的范式，我认为是第一篇真正将MLLM与视频异常检测（VAD）有机结合的文章。文中提出了Video Anomaly Prediction, Detection, and Analysis三个任务，这三个任务基本都可以看做是新任务，特别是Detectio">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504070951869.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071018039.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071019149.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071021379.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071028699.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071031548.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071033048.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071114702.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071123824.png">
+<meta property="article:published_time" content="2025-04-07T01:34:00.000Z">
+<meta property="article:modified_time" content="2025-04-07T04:35:02.020Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="LLM">
+<meta property="article:tag" content="MLLM">
+<meta property="article:tag" content="AssistPDA">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504070951869.png">
+  
+  <title>论文笔记 AssistPDA：An Online Video Surveillance Assistant for Video Anomaly Prediction, Detection, and Analysis - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 AssistPDA：An Online Video Surveillance Assistant for Video Anomaly Prediction, Detection, and Analysis">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2025-04-07 09:34" pubdate>
+        2025年4月7日 上午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      3.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      12 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 AssistPDA：An Online Video Surveillance Assistant for Video Anomaly Prediction, Detection, and Analysis</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2025年4月7日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>论文笔记 AssistPDA: An Online Video Surveillance Assistant for Video Anomaly Prediction, Detection, and Analysis</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2503.21904v1">https://arxiv.org/abs/2503.21904v1</a></p>
+<p>代码链接：尚未开源（预计开源）</p>
+<p>西电+NUS+NWPU的一篇ArXiv论文，25年3月底挂上来的，这个时间点看上去可能是ICCV的投稿，或者是提早放出来的等CVPR的文章。文章提出了一种Online Video Surveillance Assistant的范式，我认为是第一篇真正将MLLM与视频异常检测（VAD）有机结合的文章。文中提出了Video Anomaly Prediction, Detection, and Analysis三个任务，这三个任务基本都可以看做是新任务，特别是Detection与传统VAD定义不同。为了进行任务，提出了VAPDA-127K数据集。</p>
+<h2 id="研究动机">研究动机</h2>
+<p>MLLM出来后，有很多工作将其用在VAD上，比如VADor、LAVAD、HolmesVAD、HolmesVAU、HAWK、CUVA等，然而，这些文章都局限于offline的视频异常任务，局限在clip-level或video-level的QA，有的无法进行Detection，（我认为这些方法相比之下没有结合视频异常的特色，只是将LLM用异常数据调了一下。）</p>
+<p>本文认为Online Video Surveillance Assistant要有三个能力：Video Anomaly Prediction（VAP）、Video Anomaly Detection（VAD）、Video Anomaly Analysis（VAA）。VAP指的是在异常发生之前对异常进行预测，VAD则是发生时进行预测，VAA则是对异常进行分析或回应用户提问。</p>
+<blockquote>
+<p>NWPU之前另一篇文章（A New Comprehensive Benchmark for Semi-supervised Video Anomaly Detection and Anticipation）有一个Video Anomaly Anticipation任务，和这里的VAA缩写重名，语义又和VAP近似，需要进行区分。</p>
+</blockquote>
+<p>为了进行这些任务，本文基于现有数据集进行改造构建了VAPDA-127K数据集。</p>
+<p>此外，由于监控视频的流式特点，MLLM应该要具备对流式数据进行处理的能力。</p>
+<h2 id="方法">方法</h2>
+<h3 id="任务定义">任务定义</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504070951869.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h4 id="VAP">VAP</h4>
+<p>VAP和Video Anomaly Anticipation不一样，之前NWPU的Anticipation任务是在一个比较小的窗口内，用传统方法去预测后面几帧会不会出现异常，有点像Semi-sup VAD的Prediction-based的方法。但是这里VAP是根据开始时间点来的，需要模型在异常开始之前说出后续可能会发生xx异常（包括异常类别、异常描述）。<strong>注意，VAP并不需要预测具体的时间，既不需要说后续x秒内发生，也不需要说异常将持续多少时间，更不需要检测异常的结束。</strong></p>
+<h4 id="VAD">VAD</h4>
+<p>VAD和传统的VAD不一样，传统VAD是预测帧级别的异常分数，这里VAD是在异常发生时给出异常类别和异常解释。<strong>注意，这里的VAD并不注重定位性能。</strong></p>
+<h4 id="VAA">VAA</h4>
+<p>VAA基本就是根据用户需求做QA，文章定义在异常事件发生之后（或者发生过程中），用户对模型进行提问，然后模型进行回答。</p>
+<h3 id="数据构建">数据构建</h3>
+<p>文章构建了VAPDA-127K数据集，视频数据来源于UCF-Crime和XD-Violence的2415个视频，完全的标注信息则来自于Holmes-VAU的HIVAU-70K数据集。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071018039.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<ul>
+<li>对于VAP的数据，作者以1FPS生成生成图像，然后用Image Caption模型生成caption，然后将一个视频中异常开始之前的所有caption送入LLM来生成数据。（对于异常的可预测性，我表示疑惑，感觉很多情况下异常都不可预测？）</li>
+</ul>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071019149.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<ul>
+<li>对于VAD的数据，作者根据HIVAU-70K提取异常区间，但是认为区间内并不是所有的segment-level caption都与异常有关。所以作者使用到当前segment位置的所有caption，让LLM判断当前是否为异常。（这一步感觉有点疑惑，这里的segment是什么粒度的呢？这里本质上是让LLM生成segment-level的ground truth，实际上还假设了HIVAU的GT不够精准，但是又如何保证这里生成的足够精确呢？）</li>
+</ul>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071021379.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<ul>
+<li>关于VAA的数据，作者让LLM根据已有Caption生成5W (Who, What, When, Where, Why) and 2H (How, How much)的问题和回答，这个和HAWK比较相似。</li>
+</ul>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071028699.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>具体来说，作者使用的Image Caption Model是BLIP2的5个变种（Follow LAVAD的方法），然后LLM选择的是Qwen2.5-72B-Instruct。</p>
+<p>最后，作者让5个标注者每个检查10小时，确保数据集准确性。</p>
+<h3 id="模型架构">模型架构</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071031548.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如图是AssistPDA的整体架构，和普通MLLM的架构类似，不过在Vision Encoder和LLM之间加了一个Spatio-Temporal Relation Distillation（STRD）。在推理过程中，视频流会源源不断送进来，而STRD则起到一个特征增强的作用。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071033048.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>STRD的架构如上所示，是一个两层的多头注意力（应该是没有FFN），为了适配online的数据会进行一个预训练的蒸馏。</p>
+<p>原本Qwen2-VL的视觉编码器是通过一个卷积把相邻两帧卷在一起，然后多帧进行Transformer的编码，从而获取全局的信息。</p>
+<p>预训练则是让视觉编码器只处理相邻两帧，不让它获取全局的信息，然后单独让STRD对这种全局信息进行建模，并通过蒸馏损失来监督。</p>
+<p>在online数据进来的时候，每两帧的数据是最小单位，每有两帧数据进来，则会通过STRD获取之前的时序信息，类似Auto-regressive的架构，还可以使用KV-cache来进行加速。A6000的48G显存可以存储20分钟的上下文。</p>
+<blockquote>
+<p>感觉这里是一种解耦空间和时序编码的方法，理论上，不添加新的模块，直接用原来的视觉编码器加上casual的mask也可以实现，不过这样会带来更大的显存开销。</p>
+</blockquote>
+<p>在LLM的选择上，作者使用了2B的Qwen2-VL，属于大模型中比较小的一类了，适合学术界进行研究。</p>
+<h3 id="训练与推理">训练与推理</h3>
+<p>训练分成了两个阶段，第一阶段就是STRD的预训练，第二阶段是加上LLM的指令微调。这里重点介绍指令微调。指令微调的loss分成两部分，第一部分是Language Modeling，这个比较普通，第二个则follow了同一个大组在CVPR24的论文Videollm-online: Online video large language model for streaming video的思路。作者添加了一个特殊的EOS token，当模型想输出回答时，就会输出这个token，否则继续接收视觉数据。</p>
+<h2 id="实验">实验</h2>
+<p>实验设计基本follow Videollm-online。使用的指标有很多，Language Modeling Perplexity（LM-PPL）就是perplexity，Time Difference（TimeDiff）衡量预测点与GT点的时间差异，Fluency则衡量一个dialogue round中正确的百分比。此外，follow CUVA这篇论文，使用了几个与文本GT比较的指标：MoverScore、BLEURT、Unieval。此外，对于VAP和VAD这两个要预测异常类别的任务，使用了weighted F1-score。此外，对于VAP任务，还提出了Average Advance Time（AAT）指标，衡量提前预测的平均时间。</p>
+<blockquote>
+<p>这个F1和AAT具体怎么计算的没说，补充材料也没说……</p>
+</blockquote>
+<p>由于缺乏对应论文比较，所以基本上自主构建baseline来比较，主要比较的有general的MLLM，比如Qwen2-VL、InternVL2，还有VAD MLLM，如Holmes-VAD，还有同团队之前的VideoLLM-online。但是因为这些模型不是针对online的，所以划分了5s的窗口来模拟。</p>
+<h3 id="SOTA比较">SOTA比较</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071114702.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示是SOTA比较。</p>
+<p>在三个任务的语言比较上，微调过的AssistPDA效果更好，这个是预料之中的（Video-LLaMA2的79.84的Unieval是一个异常点）。在异常分类上，性能还是非常高的，超出其他模型一大截。在提前预测时间上，也是平均29s的优异成绩。</p>
+<p>但是，这些指标具体怎么计算的没说，而我觉得这个非常重要。比如AAT会考虑误警率吗，我直接在视频第一帧预测后续会发生异常，那会获得相当高的AAT。对结果来说，29s的提前预测我感觉不是很合理，车祸、纵火、偷窃这些按照常理都不是提早这么多能预测出来的，除非模型过拟合了。</p>
+<h3 id="消融实验">消融实验</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202504071123824.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>消融实验上比较公平的比较，但是怎么没有给F1和AAT指标呢？此外这个VAD中怎么计算的TimeDiff也是一头雾水呢。单看表，不看效率差距，貌似预训练STRD性能也没有提升很多，Table 3的层数也影响不大。</p>
+<h2 id="结论">结论</h2>
+<p>整体来说，文章的思路比较有意思，但是贡献度和扎实程度存疑。文章进行online的视频异常任务，我认为比其他MLLM+VAD的方法更加关注了VAD的特点，是一个十分有意思的方向。然而，这个思路基本和Videollm-online一模一样，其数据集的贡献也有限，基本延续的是其他人的思路。此外，实验部分偏少，有的指标都没说具体怎么算的，感觉至少在补充材料里提一嘴。</p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/LLM/">LLM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/MLLM/">MLLM</a>
+                    
+                      <a class="hover-with-bg" href="/tags/AssistPDA/">AssistPDA</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/08/VideoLLM-online/">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">论文笔记 VideoLLM-online Online Video Large Language Model for Streaming Video</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/04/05/VERA/">
+                        <span class="hidden-mobile">论文笔记 VERA：Explainable Video Anomaly Detection via Verbalized Learning of Vision-Language Models</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
