@@ -1,0 +1,631 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Word，虽然是从小用到大的排版软件，但是在写学术论文的时候总是会遇到各种各样的奇怪问题，比如图表编号、页眉、页码、公式编号、表格位置、参考文献格式等等。虽然正经写论文的人都用LaTeX，但是在某些高校里还是只提供Word模板，本文提供在写学位论文中可能遇到的各种排版、格式问题的个人解决方案，希望能够把血压降下来……">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="Word，虽然是从小用到大的排版软件，但是在写学术论文的时候总是会遇到各种各样的奇怪问题，比如图表编号、页眉、页码、公式编号、表格位置、参考文献格式等等。虽然正经写论文的人都用LaTeX，但是在某些高校里还是只提供Word模板，本文提供在写学位论文中可能遇到的各种排版、格式问题的个人解决方案，希望能够把血压降下来……">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用Word写学位论文时的降压药">
+<meta property="og:url" content="http://blog.kamino.link/2025/07/08/%E7%94%A8Word%E5%86%99%E5%AD%A6%E4%BD%8D%E8%AE%BA%E6%96%87%E6%97%B6%E7%9A%84%E9%99%8D%E5%8E%8B%E8%8D%AF/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="Word，虽然是从小用到大的排版软件，但是在写学术论文的时候总是会遇到各种各样的奇怪问题，比如图表编号、页眉、页码、公式编号、表格位置、参考文献格式等等。虽然正经写论文的人都用LaTeX，但是在某些高校里还是只提供Word模板，本文提供在写学位论文中可能遇到的各种排版、格式问题的个人解决方案，希望能够把血压降下来……">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081603115.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081616256.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081622579.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081632291.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081635882.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081653604.jpg">
+<meta property="article:published_time" content="2025-07-08T09:05:00.000Z">
+<meta property="article:modified_time" content="2025-07-08T09:05:51.161Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="Word">
+<meta property="article:tag" content="学位论文">
+<meta property="article:tag" content="EndNote">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081603115.png">
+  
+  <title>用Word写学位论文时的降压药 - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="用Word写学位论文时的降压药">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2025-07-08 17:05" pubdate>
+        2025年7月8日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.6k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      8 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">用Word写学位论文时的降压药</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2025年7月8日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>用Word写学位论文时的降压药</h1>
+<p>Word，虽然是从小用到大的排版软件，但是在写学术论文的时候总是会遇到各种各样的奇怪问题，比如图表编号、页眉、页码、公式编号、表格位置、参考文献格式等等。虽然正经写论文的人都用LaTeX，但是在某些高校里还是只提供Word模板，本文提供在写学位论文中可能遇到的各种排版、格式问题的个人解决方案，希望能够把血压降下来……</p>
+<h2 id="下笔之前">下笔之前</h2>
+<p>在正式开始写之前，以下是我的推荐：</p>
+<ol>
+<li><strong>使用Office Word</strong>。Word的功能是最新、最完整的，用起来也很流畅，现在很多笔记本出厂就送office，许多高校也买了office的授权，实在不行就整个盗版，为了降低血压，请使用Word！（甚至尽量不要编辑用WPS打开后的文档）</li>
+<li><strong>使用Visio绘图</strong>。Visio也是微软的画图软件，它可以在word中最方便地插入矢量图，比用ppt之类的画图好用很多。缺点是不支持mac系统。</li>
+<li><strong>使用Endnote管理文献</strong>。其他的我没太用过，但是Endnote是一个比较经典且很多人使用的参考文献生成工具（也用人用它分类和管理文献，但我只用它来生成格式化的参考文献列表）。相较于其他工具，Endnote可以比较方便地微调文献格式，例如英文人名是全大写还是大小写、<code>et al</code>与<code>等</code>、按照出现顺序排序还是作者首字母排序等等。</li>
+</ol>
+<h2 id="样式">样式</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081603115.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><strong>样式</strong>是一套预定义的格式模板，假如你的标题或者正文格式不符合要求，请在样式中进行修改，而非选择文字通过段落修改。在目录生成、分点和分节时这一点十分重要。样式的具体设置就根据学校要求来，假如学校提供的模板足够好，那样式应该已经设置好了，我们只需要将文字应用想要的样式就行。</p>
+<h2 id="图表">图表</h2>
+<p>Word中一半的问题来自图表，具体问题包括清晰度、题注、引用、位置、多图排版。</p>
+<h3 id="清晰度">清晰度</h3>
+<p>假如你和我一样使用visio，那么在visio中直接复制对应元素，然后粘贴到word中就可以插入高清的矢量图了。这种情况下，插入的是一个特殊的visio对象，双击它还可以跳转到visio中进行编辑，这是 官方提供的应用之间十分方便的途径。</p>
+<p>除此以外，你还可以从visio中导出<code>.emf</code>文件，然后在word中像插入其他图片一样插入，这种文件无法进行编辑，但是也是矢量的，并且相较于visio对象更加流畅，电脑不好的同学建议使用这种方法。</p>
+<p>网络上常用的矢量图格式还有svg，但是word对svg的支持很差，不建议。</p>
+<h3 id="题注">题注</h3>
+<p>对图片右键插入题注，千万别自己调个格式。题注假如要<code>图 3.2</code>这样包含章节号，在题注菜单里找一找就能找到。</p>
+<h3 id="引用">引用</h3>
+<p>插入提出基本上是为了引用更方便， 在文中经常需要说“如图2.2所示”这样的话，此时也不要手打，而是通过“交叉引用”功能，这样在word和导出的pdf中都会添加对应的链接，且假如引用编号改变了也能随之刷新。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081616256.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="位置">位置</h3>
+<p>位置是最令人头疼的东西，对图片来说，右键“大小与位置”中可以进行一定的控制，其中环绕方式一般都选的嵌入型或上下型，而在位置选项卡中，假如让图片在页面顶端，可以将垂直的位置选成页边距顶端对齐。</p>
+<p>表格和图片不一样，很难自由控制位置，但是有一个小技巧，就是先插入一个文本框，然后把图表和题注都放在文本框内，通过位置控制文本框宽度为100%的页边距、取消边框线条，就可以比较自由地控制位置了。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081622579.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>但是文本框的位置控制方法有一个严重的局限，就是在使用EndNote引用文献时，假如你的表格或题注中有引用，则编号顺序会很奇怪，所以避免在文本框中进行Endnote的文献引用。</p>
+<h3 id="多图排版">多图排版</h3>
+<p>当某个图有多个子图的时候，可以使用无边框的表格进行排版。具体来说，新建一个表格，然后把图放进单元格，通过合并单元格之类的方式可以控制列数、行数和比例，也可以在里面比较方便地添加子图题注（这个一般不需要用题注功能添加），最后给整个表格设置为无边框，并添加一个整体的题注即可。</p>
+<h2 id="公式">公式</h2>
+<p>这里介绍如何实现在公式右侧的这个可以自动刷新的公式标号。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081632291.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>首先，假如你不需要自动刷新，则很简单，在公式后输入一个<code>#</code>后按下回车，就会自动出现如图所示的带着括号的右侧对齐的公式。在里面写你想要写的就行。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081635882.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>为了自动刷新，我们需要使用域代码。我是使用的域代码如下：</p>
+<figure class="highlight livescript"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs livescript">&#123;STYLEREF <span class="hljs-number">1</span> <span class="hljs-string">\s&#125;.&#123;SEQ</span> 公式 <span class="hljs-string">\*</span> ARABIC <span class="hljs-string">\s</span> <span class="hljs-number">1</span>&#125;<br></code></pre></td></tr></table></figure>
+<p>使用<code>ctrl+F9</code>新建一个域代码（域代码中的大括号不是自己敲的，3.9的3和9是两段域代码）</p>
+<p>使用<code>shift+F9</code>切换域代码的显示模式和代码模式，使用<code>F9</code>刷新域代码。</p>
+<p>上面这个域代码中，第一段域代码的<code>STYLEREF 1 \s</code>表示提取最近的第一层级的章节编号，第二段域代码<code>SEQ</code>用于生成可计数的序列编号，<code>公式</code>是一个标识符，可以随便写，<code>\* ARABIC</code>指定数字格式是阿拉伯数字，最后的<code>\s 1</code>表示每遇到第一层级的章节就重置计数。也就是第一章的公式1.1 1.2 1.3，第二章会重新以2.1 2.2 2.3开始，而非2.4 2.5开始。</p>
+<p>缺点是这种方式无法交叉引用，这个我目前还没有找到比较好的解决方法。</p>
+<h2 id="参考文献">参考文献</h2>
+<p>Endnote的使用就不再多说了，因为我是做CS+AI的，引用的文献基本就是期刊、会议、ArXiv。其中，假如你把ArXiv的文章当作<code>[J/OL]</code>资源，那么你的参考文献就会出现非常丑陋的一堆链接，所以我的解决方法是把ArXiv当作Journal Article，在Volume字段中填写对应标识符。</p>
+<p>具体格式上，Endnote官方提供的GBT7714有些bug和不符合实际的，所以我提供一个我魔改之后的。对于会议论文，使用Conference Proceedings的项目，对应GBT7714中的会议集析出文献的格式（可以看作会议出版一个几千页的Proceeding论文集，然后你发表的文章是这里面的某几页）。此外，原本模板提供的英文人名是全大写，我也设置成更好看的首字母大写了。另外，部分情况下你也许不想写一大串的会议全称，在Endnote中也可以通过定义Term List的方式来指定缩写，比如“IEEE/CVF Conference on Computer Vision and Pattern Recognition”可以缩写为“IEEE Conf. Comput. Vis. Pattern Recog.”或者“CVPR”，这个看具体要求。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507081653604.jpg" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>我的EndNote样式下载链接：<a target="_blank" rel="noopener" href="https://kamino-img.oss-cn-beijing.aliyuncs.com/Chinese%20Std%20GBT7714%20%5B%E9%AD%94%E6%94%B9%5D.ens">魔改GBT7714.ens</a></p>
+
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>
+                    
+                      <a class="hover-with-bg" href="/categories/%E6%8A%80%E6%9C%AF%E6%9D%82%E6%96%87/">技术杂文</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/Word/">Word</a>
+                    
+                      <a class="hover-with-bg" href="/tags/%E5%AD%A6%E4%BD%8D%E8%AE%BA%E6%96%87/">学位论文</a>
+                    
+                      <a class="hover-with-bg" href="/tags/EndNote/">EndNote</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/08/LLM%20MLLM%20%E5%BF%AB%E9%80%9F%E6%8E%A8%E7%90%86/">
+                        <span class="hidden-mobile">LLM/MLLM的快速便捷推理方法笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
