@@ -16,35 +16,32 @@
   <meta http-equiv="x-ua-compatible" content="ie=edge">
   
   <meta name="theme-color" content="#2f4154">
-  <meta name="description" content="Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。">
+  <meta name="description" content="Nvidia的一篇ICCV 25论文，提出了一个指向性描述图像和视频的模型，结合SAM 2可以根据用户简单的几个点来描述视频中的的对象。文章提出了架构（DAM，Describe Anything Model）、半监督数据Pipeline（DLC-SDP）和benchmark（DLC-Bench）。">
   <meta name="author" content="Kamino">
   <meta name="keywords" content="Kamino">
-  <meta name="description" content="Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。">
+  <meta name="description" content="Nvidia的一篇ICCV 25论文，提出了一个指向性描述图像和视频的模型，结合SAM 2可以根据用户简单的几个点来描述视频中的的对象。文章提出了架构（DAM，Describe Anything Model）、半监督数据Pipeline（DLC-SDP）和benchmark（DLC-Bench）。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="论文笔记 SAM 2 Segment Anything in Images and Videos">
-<meta property="og:url" content="http://blog.kamino.link/2025/07/18/SAM2/index.html">
+<meta property="og:title" content="论文笔记 Describe Anything Detailed Localized Image and Video Captioning">
+<meta property="og:url" content="http://blog.kamino.link/2025/07/18/DAM/index.html">
 <meta property="og:site_name" content="Kamino&#39;s Blog">
-<meta property="og:description" content="Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。">
+<meta property="og:description" content="Nvidia的一篇ICCV 25论文，提出了一个指向性描述图像和视频的模型，结合SAM 2可以根据用户简单的几个点来描述视频中的的对象。文章提出了架构（DAM，Describe Anything Model）、半监督数据Pipeline（DLC-SDP）和benchmark（DLC-Bench）。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181410189.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181415179.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181416849.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181440370.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181443932.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181504583.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181452892.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559871.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559104.png">
-<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181602357.png">
-<meta property="article:published_time" content="2025-07-18T06:06:00.000Z">
-<meta property="article:modified_time" content="2025-07-18T08:22:05.399Z">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181640525.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181643518.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181647622.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181700002.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181707465.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181911227.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181914502.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181917446.png">
+<meta property="article:published_time" content="2025-07-18T08:21:00.000Z">
+<meta property="article:modified_time" content="2025-07-18T11:18:37.271Z">
 <meta property="article:author" content="Kamino">
-<meta property="article:tag" content="Segment Anything">
-<meta property="article:tag" content="SAM">
+<meta property="article:tag" content="DAM">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181410189.png">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181640525.png">
   
-  <title>论文笔记 SAM 2 Segment Anything in Images and Videos - Kamino&#39;s Blog</title>
+  <title>论文笔记 Describe Anything Detailed Localized Image and Video Captioning - Kamino&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
 
@@ -203,7 +200,7 @@
       <div class="full-bg-img">
         <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
           <div class="page-header text-center fade-in-up">
-            <span class="h2" id="subtitle" title="论文笔记 SAM 2 Segment Anything in Images and Videos">
+            <span class="h2" id="subtitle" title="论文笔记 Describe Anything Detailed Localized Image and Video Captioning">
               
             </span>
 
@@ -213,7 +210,7 @@
   
     <span class="post-meta">
       <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-      <time datetime="2025-07-18 14:06" pubdate>
+      <time datetime="2025-07-18 16:21" pubdate>
         2025年7月18日 下午
       </time>
     </span>
@@ -224,7 +221,7 @@
   
     <span class="post-meta mr-2">
       <i class="iconfont icon-chart"></i>
-      2.9k 字
+      2.2k 字
     </span>
   
 
@@ -233,7 +230,7 @@
       <i class="iconfont icon-clock-fill"></i>
       
       
-      9 分钟
+      7 分钟
     </span>
   
 
@@ -270,82 +267,86 @@
         <div class="py-5" id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">论文笔记 SAM 2 Segment Anything in Images and Videos</h1>
+            <h1 style="display: none">论文笔记 Describe Anything Detailed Localized Image and Video Captioning</h1>
             
               <p class="note note-info">
                 
-                  本文最后更新于：2025年7月18日 下午
+                  本文最后更新于：2025年7月18日 晚上
                 
               </p>
             
             <div class="markdown-body">
-              <h1>论文笔记 SAM 2：Segment Anything in Images and Videos</h1>
-<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.00714">https://arxiv.org/abs/2408.00714</a></p>
-<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/sam2">https://github.com/facebookresearch/sam2</a></p>
-<p>项目网站：<a target="_blank" rel="noopener" href="https://ai.meta.com/sam2/">https://ai.meta.com/sam2/</a></p>
-<p>Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181410189.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>对于PVS任务，如上图（a）所示，用户可以用框、点或者mask作为prompt来进行分割，对于视频，只需要在几帧中进行提示即可，不需要每一帧都提示（甚至可以只标一个点，后续SAM2会自动跟踪）。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181415179.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>如上图所示，对一帧进行标注可能会遇到后续丢失的情况，这个时候只需要补充一个点就可以，非常适合用户的交互。</p>
-<p>在架构上，为了处理视频，添加了Memory的部分，之前的预测存入memory bank中，然后在下一次预测前通过memory attention进行特征融合。</p>
-<p>在数据上，延续了前作的风格，使用了渐进式的数据构建，一边训练模型，一边用训练的模型辅助标记数据，再用新的数据训练更好的模型。</p>
-<h2 id="模型：SAM-2">模型：SAM 2</h2>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181416849.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<h3 id="Image-Encoder">Image Encoder</h3>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181440370.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>图像编码器使用了Meta自家出的Hiera编码器<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="Hiera: A Hierarchical Vision Transformer without the Bells-and-Whistles
-">[1]</span></a></sup>，如上图所示，Hiera采用了MAE的训练方式，架构上使用了Hierarchical的结构，每个Stage后，特征维度翻倍、空间维度减为1/4。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181443932.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>Hiera主要解决MAE破坏2D网格的问题，如上图所示，传统MAE为了实现sparsity，会破坏不同区域之间的相邻性（编码时相邻token不空间相邻），Hiera将图像分成多个Mask Unit，一个Mask Unit包含多个token，在进行mask的时候，删除一整个mask unit，并且在模型设计上避免卷积在不同unit之间进行。此外，在前两个Stage，只在Mask Unit内部进行注意力机制。</p>
-<h3 id="Memory-Attention">Memory Attention</h3>
-<p>该模块旨在根据以往帧特征、以往预测、新提示来得到当前帧的特征。由L（4）个transformer blocks组成，每个block是一个self-attention（SA）和一个cross-attention（CA），后者的Key/Value是以往帧和object points的memory，这些memory后续保存在一个bank里。</p>
-<p>在SA和CA中都使用了2D RoPE。</p>
-<h3 id="Prompt-Encoder">Prompt Encoder</h3>
-<p>这部分和SAM一模一样，但是完全去掉了文本模态，允许输入positive和negative的click、boxes、masks。click和boxes的prompt会经过编码，然后加上prompt类别的可学习embedding。mask的prompt则是通过卷积之后与图像特征相加，假如没有mask，则一个特殊的<code>[NoMask]</code>embedding会与embedding相加。</p>
-<h3 id="Mask-Decoder">Mask Decoder</h3>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181504583.png" srcset="/img/loading.gif" lazyload alt="SAM"></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181452892.png" srcset="/img/loading.gif" lazyload alt="SAM2"></p>
-<p>上面两张图分别是SAM1和SAM2的Mask Decoder的架构，大体和前代是一样的，混合了自注意力、交叉注意力和MLP。</p>
-<p>对比下来，SAM 2新增了object pointer和occlusion score的输出。object pointer是放在memory bank中的、用来表示所标记的目标的特征。occlusion score则是用来表示当前帧是否包含之前标记的对象的一个二分类概率。此外，SAM 2还在输出阶段添加了两个stride的特征残差连接。</p>
-<p>在输入的时候，图中的<code>output tokens</code>就对应了后面的各个输出，比如为了要输出occlusion score，就会在开头添加一个额外的<code>[occlusion]</code> token，然后后面取这个token对应的embedding过MLP进行输出。</p>
-<p>SAM 2为了处理视频，还需要面另一个大问题，也就是画面中不存在对应的分割对象的情况。所以会学习一个occlusion score。</p>
-<h3 id="Memory-Encoder-Memory-Bank">Memory Encoder &amp; Memory Bank</h3>
-<p>Memory Encoder通过将mask进行卷积之后加上原始帧特征来产生memory特征。</p>
-<p>Memory Bank包含三部分：</p>
+              <h1>论文笔记 Describe Anything: Detailed Localized Image and Video Captioning</h1>
+<p>项目网站：<a target="_blank" rel="noopener" href="https://describe-anything.github.io/">https://describe-anything.github.io/</a></p>
+<p>Nvidia的一篇ICCV 25论文，提出了一个指向性描述图像和视频的模型，结合SAM 2可以根据用户简单的几个点来描述视频中的的对象。文章提出了架构（DAM，Describe Anything Model）、半监督数据Pipeline（DLC-SDP）和benchmark（DLC-Bench）。</p>
+<h2 id="任务介绍">任务介绍</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181640525.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>DAM旨在进行Detailed Localized Caption（DLC）的任务，用户对图像或视频，可以通过点、框、mask等等方式选择需要描述的区域，然后模型就会输出对应的详细描述。</p>
+<h2 id="模型：DAM">模型：DAM</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181643518.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>对于类似的需要对某个区域进行描述的模型，最重要的就是如何告诉模型区域信息。现有方法如上所示：</p>
+<ul>
+<li>传统方法提特征，然后用类似RoI的方式提取局部特征，送进LLM。但是这样在提特征的时候就会丢失小区域的细节信息。</li>
+<li>简单的改进方法就是把目标区域crop出来，然后提特征，但是这样丢失了空间的context信息</li>
+</ul>
+<p><strong>因此，DAM模型提出了一种新方法，从全图中提取整体信息，从局部中使用高token密度提取详细信息。</strong></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181647622.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示，DAM包含了两个重要模块，一个是Focal Prompt，另一个是Localized Vision Backbone。</p>
+<h3 id="Focal-Prompt">Focal Prompt</h3>
+<p>首先是必需的图像和对应的Mask，为了提取高密度的局部特征，crop出局部的图像和对应mask，此时局部crop会稍微远一点，不会完全就是mask的bbox。</p>
+<h3 id="Localized-Vision-Backbone">Localized Vision Backbone</h3>
+<p>这个backbone对局部图像进行编码，并融入全图信息。</p>
+<p>首先，输入把图像和mask通过卷积分别进行编码然后相加，并加上位置编码。</p>
+<p>随后，全图和局部走两条路编码，全图信息使用和原来一样的由Self-Attention组成的backbone，局部信息则加入了Gated Cross-Attention，以全图编码完毕的信息作为K/V。</p>
+<p>注意，局部这一路每个block都有一个SA和CA，并不是先SA再CA。</p>
+<p>Gated CA很简单，就是普通CA后的特征乘上一个tanh激活的可学习参数，初始化为0来保证刚开始训练的稳定性：</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181700002.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>编码好之后，就常规送到LLM里去了。</p>
+<p>因为SAM2可以给出视频每一帧的object mask，所以这个模型就很方便了。</p>
+<h2 id="数据：DLC-SDP">数据：DLC-SDP</h2>
+<p>是一个半监督的数据引擎，分成两个阶段</p>
+<h3 id="Stage-1-利用现有标注">Stage 1 利用现有标注</h3>
+<p>使用MLLM对现有的带有局部标注的数据进行扩充，比如一个视频有mask和目标名字，就让MLLM根据这个信息去详细描述。</p>
+<h3 id="Stage-2-利用无监督数据">Stage 2 利用无监督数据</h3>
 <ol>
-<li>一个FIFO队列（First in first out），存放近N帧的特征</li>
-<li>另一个FIFO队列，存放M帧带有提示的帧特征</li>
-<li>Object Pointers</li>
+<li>使用图像分割模型从图像中提取Mask</li>
+<li>用Stage 1训练的DAM来生成描述</li>
+<li>使用CLIP来过滤低置信度数据</li>
 </ol>
-<p>1、3部分的特征会添加上时序信息。</p>
-<h2 id="数据：SA-V">数据：SA-V</h2>
-<h3 id="构建方法（数据引擎）">构建方法（数据引擎）</h3>
-<p>构建数据采用了人机协同的方法，分成3个阶段：</p>
-<ol>
-<li>使用一代SAM辅助人工标记收集到的图像和视频数据（把视频当作图像标注）。视频中的mask被称为masklet。</li>
-<li>用所收集数据训练<code>SAM 2 Mask</code>，这个模型只接收mask作为prompt。使用这个模型继续辅助人工标记数据，此时SAM 2级别一定对视频进行分割的能力，因此会加快。</li>
-<li>使用之前的数据训练完整版本的SAM 2，训完一轮之后再用它来标，标完再训一个新的，这样重复5次。</li>
-</ol>
-<p>此外，还有另一批标注者专门用来验证masklet的质量，假如object没有清晰边界（例如烟雾），那就排除它。</p>
-<p>最后，由于人类关注独立的object，为了提升泛化性，作者加进行了auto masklet generation。也就是给SAM 2在第一帧一大堆点，然后得到许多masklet，再经过标注者评价。这一步得到的标注会覆盖很多非中心对象的object。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559871.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559104.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>两个表显示了这种数据引擎的强大之处，human-in-the-loop！</p>
-<p>![](/Users/kamino/Library/Application Support/typora-user-images/image-20250718160716131.png)</p>
-<p>这个图展示了Auto的强大之处（这背景是菜鸟驿站么……）。</p>
-<h3 id="最终公开的SA-V的数据">最终公开的SA-V的数据</h3>
-<p>包含50.9K视频、642.6K masklets，数据众包获得，所以Meta可以大大方方公开数据！！！</p>
-<p>masklets中有190.9K人工标注的和451.7K自动生成的（数据很密集！）。</p>
-<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181602357.png" srcset="/img/loading.gif" lazyload alt=""></p>
-<p>SA-V划分为了训练、验证和测试集，作者根据视频作者和位置，保证验证和测试中会有新的object，并且其中视频上人挑出来的更加困难的视频（包含快速运动的物体、中途消失的物体、消失又出现的物体）。验证测试集不大，验证集是155个视频+293 masklets，测试集则150视频+278 masklets。</p>
-<p>Meta作为西方科技公司，有西方的政治正确，会保证数据的公平性，比如性别、年龄、地区等等。👍🏻</p>
+<h2 id="评测：DLC-Bench">评测：DLC-Bench</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181707465.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>为了专门评价DLC方面的性能，作者构建了一种比较奇怪的Benchmark。</p>
+<p>作者设计了一系列的positive和negative的问题，前者主要关注应该出现在描述中的特征；后者主要关注不应该出现的细节。如图所示，问题会对应ABCD四个答案，其中只有一个答案是对的，其他或多或少会有问题。</p>
+<p>随后，使用一个LLM来做题（没错，题目是给LLM做的，不是给这篇文章的DAM模型做的），问他DAM输出的caption属于哪个选项，每个选项有-1、0、1三种分数。</p>
+<p>最后，对所有题目进行平均得到最终分数。</p>
+<p>DLC-Bench的图片数据来自Objects365-v2的验证集，总共有892个人工验证的题目，生成过程稍微使用了LLM。</p>
 <h2 id="实验">实验</h2>
-<p>对分割研究不深，所以实验给不出什么具体分析，基本就是在各种场景都SOTA。</p>
-<h2 id="总结与启发">总结与启发</h2>
-<p>从SAM 1就对Meta的工程和应用能力很欣赏，他们能够发掘出PVS这种任务，我觉得是十分有价值的。此外，一边标注一边训练的范式很有意思，不知道能不能用到我的研究中来。</p>
-<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span>Hiera: A Hierarchical Vision Transformer without the Bells-and-Whistles
-<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+<p>DAM模型在多个任务中进行了测试：</p>
+<ol>
+<li>
+<p>Keyword-level Localized Captioning</p>
+<p>要求模型输出对应目标的关键词。其中LVIS是输出类别名，而PACO还要模型判断，假如包含了全部object则输出类别名，假如只包含部分则需要同时数据object的名称和部件的名称。</p>
+</li>
+<li>
+<p>Phrase-level Localized Captioning</p>
+<p>要求模型输出短语来描述目标和属性。使用传统的CIDEr、METEOR等指标评价。</p>
+</li>
+<li>
+<p>Detailed Localized Captioning</p>
+<p>在Objects365的一个Ref-L4子集上进行，在评价之前会通过GPT来缩句（不清楚这个怎么评测）。除此以外还用了文章提出的DLC-Bench</p>
+</li>
+<li>
+<p>Detailed Localized Video Captioning</p>
+<p>在HC-STVG（一个时空video grounding数据集）上评价，使用CIDEr等指标。在VideoRefer-Bench上评价，使用GPT给出1-5分的评价（在Subject Correspondence、Appearance Description、Temporal Description、Hallucination Detection四个维度上评分）。</p>
+</li>
+</ol>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181911227.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如图所示，在各个数据集上都很SOTA。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181914502.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>这是不同模型的定性比较，DAM模型描述的还是很精确的，但是有点体现不出来考虑了整体特征。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181917446.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>消融实验发现Local Crop很有必要，并且添加上Full的Context信息也很有帮助，文中的这种方法使用Focal Crop+Full的效果最好。</p>
+
             </div>
             <hr>
             <div>
@@ -362,9 +363,7 @@
                   <div class="post-meta">
                     <i class="iconfont icon-tags"></i>
                     
-                      <a class="hover-with-bg" href="/tags/Segment-Anything/">Segment Anything</a>
-                    
-                      <a class="hover-with-bg" href="/tags/SAM/">SAM</a>
+                      <a class="hover-with-bg" href="/tags/DAM/">DAM</a>
                     
                   </div>
                 
@@ -381,18 +380,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2025/07/18/DAM/">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile">论文笔记 Describe Anything Detailed Localized Image and Video Captioning</span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2025/07/17/Generalized%20VMR/">
-                        <span class="hidden-mobile">论文笔记 Generalized Video Moment Retrieval</span>
+                      <a href="/2025/07/18/SAM2/">
+                        <span class="hidden-mobile">论文笔记 SAM 2 Segment Anything in Images and Videos</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
