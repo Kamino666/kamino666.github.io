@@ -1,0 +1,646 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head><!-- hexo injector head_begin start -->
+  <script src="/js/Chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.1/dist/jquery.min.js"></script>
+<!-- hexo injector head_begin end -->
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/favicon.png">
+  <link rel="icon" href="/avatar.jpg">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="description" content="Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。">
+  <meta name="author" content="Kamino">
+  <meta name="keywords" content="Kamino">
+  <meta name="description" content="Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文笔记 SAM 2 Segment Anything in Images and Videos">
+<meta property="og:url" content="http://blog.kamino.link/2025/07/18/SAM2/index.html">
+<meta property="og:site_name" content="Kamino&#39;s Blog">
+<meta property="og:description" content="Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181410189.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181415179.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181416849.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181440370.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181443932.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181504583.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181452892.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559871.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559104.png">
+<meta property="og:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181602357.png">
+<meta property="article:published_time" content="2025-07-18T06:06:00.000Z">
+<meta property="article:modified_time" content="2025-07-18T08:14:03.109Z">
+<meta property="article:author" content="Kamino">
+<meta property="article:tag" content="VMR">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181410189.png">
+  
+  <title>论文笔记 SAM 2 Segment Anything in Images and Videos - Kamino&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" />
+
+
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/github-markdown-css@4.0.0/github-markdown.min.css" />
+  <link  rel="stylesheet" href="/lib/hint/hint.min.css" />
+
+  
+    
+    
+      
+      <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@10.4.0/styles/github-gist.min.css" />
+    
+  
+
+  
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.css" />
+  
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_ba1fz6golrf.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_kmeydafke9r.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+<!-- 自定义样式保持在最底部 -->
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    var CONFIG = {"hostname":"blog.kamino.link","root":"/","version":"1.8.11","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"right","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"copy_btn":true,"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":true,"baidu":"4a5b4b79f797585f54a6f176ffa56438","google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname"}},"search_path":"/local-search.xml"};
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+
+<body>
+  <header style="height: 70vh;">
+    <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Kamino</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/">
+                <i class="iconfont icon-home-fill"></i>
+                首页
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/">
+                <i class="iconfont icon-archive-fill"></i>
+                归档
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/">
+                <i class="iconfont icon-category-fill"></i>
+                分类
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/">
+                <i class="iconfont icon-tags-fill"></i>
+                标签
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/">
+                <i class="iconfont icon-user-fill"></i>
+                关于
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/">
+                <i class="iconfont icon-link-fill"></i>
+                友链
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              &nbsp;<i class="iconfont icon-search"></i>&nbsp;
+            </a>
+          </li>
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">&nbsp;<i
+                class="iconfont icon-dark" id="color-toggle-icon"></i>&nbsp;</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+    <div class="banner" id="banner" parallax=true
+         style="background: url('https://kamino-img.oss-cn-beijing.aliyuncs.com/20211020151909.png') no-repeat center center;
+           background-size: cover;">
+      <div class="full-bg-img">
+        <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+          <div class="page-header text-center fade-in-up">
+            <span class="h2" id="subtitle" title="论文笔记 SAM 2 Segment Anything in Images and Videos">
+              
+            </span>
+
+            
+              <div class="mt-3">
+  
+  
+    <span class="post-meta">
+      <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+      <time datetime="2025-07-18 14:06" pubdate>
+        2025年7月18日 下午
+      </time>
+    </span>
+  
+</div>
+
+<div class="mt-1">
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-chart"></i>
+      2.9k 字
+    </span>
+  
+
+  
+    <span class="post-meta mr-2">
+      <i class="iconfont icon-clock-fill"></i>
+      
+      
+      9 分钟
+    </span>
+  
+
+  
+  
+    
+      <!-- 不蒜子统计文章PV -->
+      <span id="busuanzi_container_page_pv" style="display: none">
+        <i class="iconfont icon-eye" aria-hidden="true"></i>
+        <span id="busuanzi_value_page_pv"></span> 次
+      </span>
+    
+  
+</div>
+
+            
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="d-none d-lg-block col-lg-2"></div>
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div class="py-5" id="board">
+          <article class="post-content mx-auto">
+            <!-- SEO header -->
+            <h1 style="display: none">论文笔记 SAM 2 Segment Anything in Images and Videos</h1>
+            
+              <p class="note note-info">
+                
+                  本文最后更新于：2025年7月18日 下午
+                
+              </p>
+            
+            <div class="markdown-body">
+              <h1>论文笔记 SAM 2：Segment Anything in Images and Videos</h1>
+<p>论文链接：<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2408.00714">https://arxiv.org/abs/2408.00714</a></p>
+<p>代码链接：<a target="_blank" rel="noopener" href="https://github.com/facebookresearch/sam2">https://github.com/facebookresearch/sam2</a></p>
+<p>Meta出的SAM的续作，旨在对图像和视频进行Promptable Visual Segmantation（PVS），文章贡献了数据和模型，相较于SAM，SAM2可以对视频进行分割，且提升了图像上的分割速度。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181410189.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>对于PVS任务，如上图（a）所示，用户可以用框、点或者mask作为prompt来进行分割，对于视频，只需要在几帧中进行提示即可，不需要每一帧都提示（甚至可以只标一个点，后续SAM2会自动跟踪）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181415179.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>如上图所示，对一帧进行标注可能会遇到后续丢失的情况，这个时候只需要补充一个点就可以，非常适合用户的交互。</p>
+<p>在架构上，为了处理视频，添加了Memory的部分，之前的预测存入memory bank中，然后在下一次预测前通过memory attention进行特征融合。</p>
+<p>在数据上，延续了前作的风格，使用了渐进式的数据构建，一边训练模型，一边用训练的模型辅助标记数据，再用新的数据训练更好的模型。</p>
+<h2 id="模型：SAM-2">模型：SAM 2</h2>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181416849.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<h3 id="Image-Encoder">Image Encoder</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181440370.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>图像编码器使用了Meta自家出的Hiera编码器<sup id="fnref:1" class="footnote-ref"><a href="#fn:1" rel="footnote"><span class="hint--top hint--rounded" aria-label="Hiera: A Hierarchical Vision Transformer without the Bells-and-Whistles
+">[1]</span></a></sup>，如上图所示，Hiera采用了MAE的训练方式，架构上使用了Hierarchical的结构，每个Stage后，特征维度翻倍、空间维度减为1/4。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181443932.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>Hiera主要解决MAE破坏2D网格的问题，如上图所示，传统MAE为了实现sparsity，会破坏不同区域之间的相邻性（编码时相邻token不空间相邻），Hiera将图像分成多个Mask Unit，一个Mask Unit包含多个token，在进行mask的时候，删除一整个mask unit，并且在模型设计上避免卷积在不同unit之间进行。此外，在前两个Stage，只在Mask Unit内部进行注意力机制。</p>
+<h3 id="Memory-Attention">Memory Attention</h3>
+<p>该模块旨在根据以往帧特征、以往预测、新提示来得到当前帧的特征。由L（4）个transformer blocks组成，每个block是一个self-attention（SA）和一个cross-attention（CA），后者的Key/Value是以往帧和object points的memory，这些memory后续保存在一个bank里。</p>
+<p>在SA和CA中都使用了2D RoPE。</p>
+<h3 id="Prompt-Encoder">Prompt Encoder</h3>
+<p>这部分和SAM一模一样，但是完全去掉了文本模态，允许输入positive和negative的click、boxes、masks。click和boxes的prompt会经过编码，然后加上prompt类别的可学习embedding。mask的prompt则是通过卷积之后与图像特征相加，假如没有mask，则一个特殊的<code>[NoMask]</code>embedding会与embedding相加。</p>
+<h3 id="Mask-Decoder">Mask Decoder</h3>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181504583.png" srcset="/img/loading.gif" lazyload alt="SAM"></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181452892.png" srcset="/img/loading.gif" lazyload alt="SAM2"></p>
+<p>上面两张图分别是SAM1和SAM2的Mask Decoder的架构，大体和前代是一样的，混合了自注意力、交叉注意力和MLP。</p>
+<p>对比下来，SAM 2新增了object pointer和occlusion score的输出。object pointer是放在memory bank中的、用来表示所标记的目标的特征。occlusion score则是用来表示当前帧是否包含之前标记的对象的一个二分类概率。此外，SAM 2还在输出阶段添加了两个stride的特征残差连接。</p>
+<p>在输入的时候，图中的<code>output tokens</code>就对应了后面的各个输出，比如为了要输出occlusion score，就会在开头添加一个额外的<code>[occlusion]</code> token，然后后面取这个token对应的embedding过MLP进行输出。</p>
+<p>SAM 2为了处理视频，还需要面另一个大问题，也就是画面中不存在对应的分割对象的情况。所以会学习一个occlusion score。</p>
+<h3 id="Memory-Encoder-Memory-Bank">Memory Encoder &amp; Memory Bank</h3>
+<p>Memory Encoder通过将mask进行卷积之后加上原始帧特征来产生memory特征。</p>
+<p>Memory Bank包含三部分：</p>
+<ol>
+<li>一个FIFO队列（First in first out），存放近N帧的特征</li>
+<li>另一个FIFO队列，存放M帧带有提示的帧特征</li>
+<li>Object Pointers</li>
+</ol>
+<p>1、3部分的特征会添加上时序信息。</p>
+<h2 id="数据：SA-V">数据：SA-V</h2>
+<h3 id="构建方法（数据引擎）">构建方法（数据引擎）</h3>
+<p>构建数据采用了人机协同的方法，分成3个阶段：</p>
+<ol>
+<li>使用一代SAM辅助人工标记收集到的图像和视频数据（把视频当作图像标注）。视频中的mask被称为masklet。</li>
+<li>用所收集数据训练<code>SAM 2 Mask</code>，这个模型只接收mask作为prompt。使用这个模型继续辅助人工标记数据，此时SAM 2级别一定对视频进行分割的能力，因此会加快。</li>
+<li>使用之前的数据训练完整版本的SAM 2，训完一轮之后再用它来标，标完再训一个新的，这样重复5次。</li>
+</ol>
+<p>此外，还有另一批标注者专门用来验证masklet的质量，假如object没有清晰边界（例如烟雾），那就排除它。</p>
+<p>最后，由于人类关注独立的object，为了提升泛化性，作者加进行了auto masklet generation。也就是给SAM 2在第一帧一大堆点，然后得到许多masklet，再经过标注者评价。这一步得到的标注会覆盖很多非中心对象的object。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559871.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181559104.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>两个表显示了这种数据引擎的强大之处，human-in-the-loop！</p>
+<p>![](/Users/kamino/Library/Application Support/typora-user-images/image-20250718160716131.png)</p>
+<p>这个图展示了Auto的强大之处（这背景是菜鸟驿站么……）。</p>
+<h3 id="最终公开的SA-V的数据">最终公开的SA-V的数据</h3>
+<p>包含50.9K视频、642.6K masklets，数据众包获得，所以Meta可以大大方方公开数据！！！</p>
+<p>masklets中有190.9K人工标注的和451.7K自动生成的（数据很密集！）。</p>
+<p><img src="https://kamino-img.oss-cn-beijing.aliyuncs.com/202507181602357.png" srcset="/img/loading.gif" lazyload alt=""></p>
+<p>SA-V划分为了训练、验证和测试集，作者根据视频作者和位置，保证验证和测试中会有新的object，并且其中视频上人挑出来的更加困难的视频（包含快速运动的物体、中途消失的物体、消失又出现的物体）。验证测试集不大，验证集是155个视频+293 masklets，测试集则150视频+278 masklets。</p>
+<p>Meta作为西方科技公司，有西方的政治正确，会保证数据的公平性，比如性别、年龄、地区等等。👍🏻</p>
+<h2 id="实验">实验</h2>
+<p>对分割研究不深，所以实验给不出什么具体分析，基本就是在各种场景都SOTA。</p>
+<h2 id="总结与启发">总结与启发</h2>
+<p>从SAM 1就对Meta的工程和应用能力很欣赏，他们能够发掘出PVS这种任务，我觉得是十分有价值的。此外，一边标注一边训练的范式很有意思，不知道能不能用到我的研究中来。</p>
+<section class="footnotes"><div class="footnote-list"><ol><li><span id="fn:1" class="footnote-text"><span>Hiera: A Hierarchical Vision Transformer without the Bells-and-Whistles
+<a href="#fnref:1" rev="footnote" class="footnote-backref"> ↩</a></span></span></li></ol></div></section>
+            </div>
+            <hr>
+            <div>
+              <div class="post-metas mb-3">
+                
+                  <div class="post-meta mr-3">
+                    <i class="iconfont icon-category"></i>
+                    
+                      <a class="hover-with-bg" href="/categories/%E8%AE%BA%E6%96%87%E7%AC%94%E8%AE%B0/">论文笔记</a>
+                    
+                  </div>
+                
+                
+                  <div class="post-meta">
+                    <i class="iconfont icon-tags"></i>
+                    
+                      <a class="hover-with-bg" href="/tags/VMR/">VMR</a>
+                    
+                  </div>
+                
+              </div>
+              
+                <p class="note note-warning">
+                  
+                    本博客所有文章除特别声明外，均采用 <a target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/deed.zh" rel="nofollow noopener noopener">CC BY-SA 4.0 协议</a> ，转载请注明出处！
+                  
+                </p>
+              
+              
+                <div class="post-prevnext">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/17/Generalized%20VMR/">
+                        <span class="hidden-mobile">论文笔记 Generalized Video Moment Retrieval</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+              <!-- Comments -->
+              <article class="comments" id="comments" lazyload>
+                
+                  
+                
+                
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'Kamino666/kamino666.github.io');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+              </article>
+            
+          </article>
+        </div>
+      </div>
+    </div>
+    
+      <div class="d-none d-lg-block col-lg-2 toc-container" id="toc-ctn">
+        <div id="toc">
+  <p class="toc-header"><i class="iconfont icon-list"></i>&nbsp;目录</p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+      </div>
+    
+  </div>
+</div>
+
+<!-- Custom -->
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v"
+                 for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+
+    
+  </main>
+
+  <footer class="text-center mt-5 py-3">
+  <div class="footer-content">
+     <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> <div> <span id="timeDate">载入天数...</span> <span id="times">载入时分秒...</span> <script src="/js/duration.js"></script> </div> 
+  </div>
+  
+  <div class="statistics">
+    
+    
+
+    
+      
+        <!-- 不蒜子统计PV -->
+        <span id="busuanzi_container_site_pv" style="display: none">
+            总访问量 
+            <span id="busuanzi_value_site_pv"></span>
+             次
+          </span>
+      
+      
+        <!-- 不蒜子统计UV -->
+        <span id="busuanzi_container_site_uv" style="display: none">
+            总访客数 
+            <span id="busuanzi_value_site_uv"></span>
+             人
+          </span>
+      
+    
+  </div>
+
+
+  
+
+  
+</footer>
+
+
+  <!-- SCRIPTS -->
+  
+  <script  src="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/nprogress@0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" ></script>
+<script  src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+<!-- Plugins -->
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+  
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/tocbot@4.12.0/dist/tocbot.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@3.5.7/dist/jquery.fancybox.min.js" ></script>
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/anchor-js@4.3.0/anchor.min.js" ></script>
+
+
+
+  <script defer src="https://cdn.jsdelivr.net/npm/clipboard@2.0.6/dist/clipboard.min.js" ></script>
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/typed.js@2.0.11/lib/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var title = document.getElementById('subtitle').title;
+      
+      typing(title)
+      
+    })(window, document);
+  </script>
+
+
+
+
+
+  
+
+  
+    <!-- KaTeX -->
+    <link  rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css" />
+  
+
+
+
+
+
+  <script  src="https://cdn.jsdelivr.net/npm/mermaid@8.8.3/dist/mermaid.min.js" ></script>
+  <script>
+    if (window.mermaid) {
+      mermaid.initialize({"theme":"default"});
+    }
+  </script>
+
+
+
+
+  
+    <!-- Baidu Analytics -->
+    <script defer>
+      var _hmt = _hmt || [];
+      (function () {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?4a5b4b79f797585f54a6f176ffa56438";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+      })();
+    </script>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+<!-- 主题的启动项 保持在最底部 -->
+<script  src="/js/boot.js" ></script>
+
+
+</body>
+</html>
